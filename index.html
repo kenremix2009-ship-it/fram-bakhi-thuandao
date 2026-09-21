@@ -335,7 +335,7 @@
 
   <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI -->
   <div class="modal-overlay" id="advancedModal">
-    <div class="modal-box" style="max-width: 650px;">
+    <div class="modal-box" style="max-width: 750px;">
       <div class="modal-header">
         <h3>⚙️ Quản Lý Nâng Cao & Phòng Thi Chuyên Dụng</h3>
         <button class="close-btn" onclick="closeAdvancedModal()">✖</button>
@@ -362,13 +362,15 @@
 
       <div id="liveManagementPanel" style="display: none; margin-top: 15px; background: #f8f9fa; padding: 12px; border-radius: 6px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
-          <b>Danh Sách Học Sinh Trong Phòng (<span id="manageStudentCount">0</span>)</b>
+          <b>Trạng Thái Phòng & Học Sinh (<span id="manageStudentCount">0</span>)</b>
           <div style="display: flex; gap: 5px;">
             <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="startLiveExamTrigger()">🚀 BẮT ĐẦU</button>
             <button class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="endLiveExamTrigger()">🛑 KẾT THÚC KÌ THI</button>
           </div>
         </div>
-        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+        
+        <p style="font-size: 12px; font-weight: bold; color: #1877f2; margin-top: 8px;">👥 Danh Sách Học Sinh Trong Phòng Chờ / Thi:</p>
+        <div class="table-responsive" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px;">
           <table>
             <thead>
               <tr>
@@ -380,6 +382,24 @@
             </thead>
             <tbody id="manageStudentsTableBody">
               <tr><td colspan="4">Chưa có học sinh</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size: 12px; font-weight: bold; color: #198754;">📊 Bảng Kết Quả Nộp Bài Của Học Sinh:</p>
+        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Hạng</th>
+                <th>Họ Tên</th>
+                <th>Điểm</th>
+                <th>Thời Gian</th>
+                <th>Tab Vi Phạm</th>
+              </tr>
+            </thead>
+            <tbody id="manageResultsTableBody">
+              <tr><td colspan="5">Chưa có học sinh nộp bài</td></tr>
             </tbody>
           </table>
         </div>
@@ -735,13 +755,12 @@
       } else { alert('Đề này không có file PDF.'); }
     }
 
-    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG (BẮT BUỘC MẬT KHẨU THUANBAKHI) ---
+    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG & XEM KẾT QUẢ ---
     async function openLiveManagementRoom() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageRoomPass').value.trim();
       if (!code || !pass) { alert('Nhập mã đề và mật khẩu quản lý!'); return; }
 
-      // Chỉ chấp nhận mật khẩu quản lý bí mật THUANBAKHI
       if (pass.toUpperCase() !== 'THUANBAKHI') {
         alert('❌ Mật khẩu quản lý không đúng!');
         return;
@@ -752,8 +771,9 @@
 
       managedExamCodeGlobal = code;
       document.getElementById('liveManagementPanel').style.display = 'block';
-      let roomRef = window.ref(window.db, `liverooms/${code}`);
 
+      // 1. Lắng nghe danh sách học sinh trong phòng chờ
+      let roomRef = window.ref(window.db, `liverooms/${code}`);
       window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
         let students = data.students || {};
@@ -777,6 +797,33 @@
             <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickStudent('${code}', '${id}')">Kick</button></td>
           `;
           tbody.appendChild(tr);
+        });
+      });
+
+      // 2. Lắng nghe bảng kết quả nộp bài của học sinh
+      let lbRef = window.ref(window.db, `leaderboard/${code}`);
+      window.onValue(lbRef, (snapshot) => {
+        let lbTbody = document.getElementById('manageResultsTableBody');
+        lbTbody.innerHTML = '';
+        if (!snapshot.exists()) {
+          lbTbody.innerHTML = '<tr><td colspan="5">Chưa có học sinh nào nộp bài.</td></tr>';
+          return;
+        }
+
+        let history = Object.values(snapshot.val());
+        history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
+
+        history.forEach((row, idx) => {
+          let tr = document.createElement('tr');
+          let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+          tr.innerHTML = `
+            <td><b>#${idx + 1}</b></td>
+            <td>${row.name}</td>
+            <td><b style="color:#198754;">${row.score}</b></td>
+            <td>${m}p ${s}s</td>
+            <td style="color:${row.tabSwitches > 0 ? 'red' : 'green'};">${row.tabSwitches}</td>
+          `;
+          lbTbody.appendChild(tr);
         });
       });
     }
