@@ -427,7 +427,7 @@
     window.dbRemove = remove;
     window.dbPush = push;
     window.onValue = onValue;
-    window.update = update;
+    window.dbUpdate = update;
   </script>
 
   <script>
@@ -697,7 +697,6 @@
 
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
-        // Khởi tạo trạng thái phòng chờ ban đầu trên Firebase
         await window.dbSet(window.ref(window.db, 'liverooms/' + code), { status: 'waiting' });
         alert(`🎉 Lưu đề thi [${code}] lên Cloud thành công!`);
       } catch (err) {
