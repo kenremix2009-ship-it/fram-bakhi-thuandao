@@ -98,6 +98,19 @@
 </head>
 <body>
 
+  <!-- BẢNG THÔNG BÁO GIỚI THIỆU KHI VỪA VÀO WEB -->
+  <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 15px;">
+    <div style="background: white; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
+      <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
+      <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
+      <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
+      </div>
+      <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
+    </div>
+  </div>
+
   <div class="navbar">
     <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
@@ -755,7 +768,6 @@
       } else { alert('Đề này không có file PDF.'); }
     }
 
-    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG & XEM KẾT QUẢ ---
     async function openLiveManagementRoom() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageRoomPass').value.trim();
@@ -772,7 +784,6 @@
       managedExamCodeGlobal = code;
       document.getElementById('liveManagementPanel').style.display = 'block';
 
-      // 1. Lắng nghe danh sách học sinh trong phòng chờ
       let roomRef = window.ref(window.db, `liverooms/${code}`);
       window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
@@ -800,7 +811,6 @@
         });
       });
 
-      // 2. Lắng nghe bảng kết quả nộp bài của học sinh
       let lbRef = window.ref(window.db, `leaderboard/${code}`);
       window.onValue(lbRef, (snapshot) => {
         let lbTbody = document.getElementById('manageResultsTableBody');
@@ -856,7 +866,6 @@
       }
     }
 
-    // ==================== HỌC SINH: VÀO THI / PHÒNG CHỜ ====================
     async function startExamProcess() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
