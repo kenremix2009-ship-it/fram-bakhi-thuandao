@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FRAM BÁ KHÍ - Hệ Thống Kiểm Tra Trực Tuyến</title>
+  <title>FRAM BÁ KHÍ V2 - Hệ Thống Kiểm Tra Trực Tuyến</title>
   
   <!-- PDF.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -15,7 +15,6 @@
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f0f2f5; color: #333; }
     
-    /* Navigation Bar */
     .navbar { background: #1877f2; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
     .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
     .nav-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
@@ -33,138 +32,74 @@
     .btn-success { background: #198754; }
     .btn-success:hover { background: #157347; }
 
-    /* Form Grid */
     .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-    /* Form Controls */
     input[type="text"], input[type="number"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px; margin-bottom: 12px; font-size: 14px; }
     label { font-weight: 600; font-size: 13px; color: #444; display: block; }
 
-    /* Views Layout */
     .view-section { display: none; }
     .view-section.active { display: block; }
 
-    /* Teacher - Question Item */
+    .section-title { background: #e7f3ff; color: #1877f2; padding: 8px 12px; border-radius: 6px; font-weight: bold; margin: 15px 0 10px 0; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
     .q-build-item { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
+    .advanced-settings-panel { background: #fffbe6; border: 1px solid #ffe58f; padding: 10px; border-radius: 6px; margin-top: 10px; display: none; }
     
-    /* Exam Split View for Student (Desktop) */
     .exam-layout { display: flex; gap: 15px; height: calc(100vh - 100px); }
     .exam-left { flex: 6; background: #525659; border-radius: 8px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
     .exam-right { flex: 4; background: white; border-radius: 8px; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
     .img-preview, .pdf-canvas { max-width: 100%; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 
-    /* Answer Circles & Options */
     .opt-group { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
     .opt-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .opt-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
 
-    /* TF Sub-branches styling */
     .tf-branch-row { display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #eee; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; }
     .tf-branch-opts { display: flex; gap: 5px; }
     .tf-sub-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
     .tf-sub-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
 
-    /* Timer & Info Header */
     .exam-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #eee; margin-bottom: 10px; }
     .timer { background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 14px; }
 
-    /* Review Explanation Box */
-    .explanation-box { background: #e7f3ff; border-left: 4px solid #1877f2; padding: 8px; margin-top: 6px; font-size: 13px; color: #1c1e21; border-radius: 0 4px 4px 0; }
+    .explanation-box { background: #e7f3ff; border-left: 4px solid #1877f2; padding: 8px; margin-top: 6px; font-size: 13px; color: #1c1e21; border-radius: 0 4px 4px 0; display: none; }
+    .toggle-exp-btn { background: #f0f2f5; border: 1px solid #ccd0d5; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
 
-    /* Table Styles */
     .table-responsive { width: 100%; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 500px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 13px; }
     th { background: #f4f6f8; font-weight: 600; }
 
-    /* --- KHUNG POPUP MODAL CHUNG --- */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      padding: 15px;
-    }
-    .modal-box {
-      background: white;
-      width: 100%;
-      max-width: 450px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      animation: popIn 0.2s ease-out;
-      position: relative;
-    }
-    @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
+    .modal-box { background: white; width: 100%; max-width: 450px; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; }
     .cheat-modal-box { text-align: center; }
     .cheat-icon { font-size: 40px; margin-bottom: 8px; }
     .cheat-title { color: #d32f2f; font-size: 18px; font-weight: bold; margin-bottom: 6px; }
     .cheat-desc { font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.4; }
-    .cheat-btn {
-      background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;
-    }
-    .cheat-btn:hover { background: #b71c1c; }
+    .cheat-btn { background: #d32f2f; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%; }
 
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
-    .close-btn:hover { color: #000; }
 
-    /* --- TỐI ƯU ĐIỆN THOẠI: XOAY DỌC (PORTRAIT) --- */
     @media (max-width: 900px) {
       .navbar { flex-direction: column; align-items: stretch; text-align: center; padding: 8px; }
       .nav-tabs { justify-content: center; }
       .form-grid-2 { grid-template-columns: 1fr; }
-      
-      .exam-layout { 
-        flex-direction: column; 
-        height: auto !important; 
-        gap: 10px;
-      }
-      .exam-left { 
-        height: 50vh; 
-        width: 100%; 
-      }
-      .exam-right { 
-        height: auto; 
-        max-height: 50vh; 
-        width: 100%; 
-      }
-      
-      .card { padding: 12px; }
-      h2 { font-size: 18px; }
+      .exam-layout { flex-direction: column; height: auto !important; gap: 10px; }
+      .exam-left { height: 50vh; width: 100%; }
+      .exam-right { height: auto; max-height: 50vh; width: 100%; }
     }
-
-    /* --- TỐI ƯU ĐIỆN THOẠI: XOAY NGANG (LANDSCAPE) --- */
     @media (max-width: 900px) and (orientation: landscape) {
-      .exam-layout {
-        flex-direction: row !important;
-        height: calc(100vh - 80px) !important;
-      }
-      .exam-left {
-        height: 100% !important;
-        flex: 6;
-      }
-      .exam-right {
-        height: 100% !important;
-        max-height: none !important;
-        flex: 4;
-      }
+      .exam-layout { flex-direction: row !important; height: calc(100vh - 80px) !important; }
+      .exam-left { height: 100% !important; flex: 6; }
+      .exam-right { height: 100% !important; max-height: none !important; flex: 4; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -174,12 +109,12 @@
 
   <div class="container">
 
-    <!-- ==================== PHẦN GIÁO VIÊN ==================== -->
+    <!-- ==================== GIÁO VIÊN: TẠO ĐỀ V2 ==================== -->
     <div id="teacherView" class="view-section active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-          <h2 style="font-size: 18px;">🛠️ Tạo Đề Kiểm Tra</h2>
-          <button class="btn btn-secondary" style="width: auto; padding: 6px 12px; font-size: 13px;" onclick="openAdvancedModal()">⚙️ Nâng Cao</button>
+          <h2 style="font-size: 18px;">🛠️ Tạo Đề Kiểm Tra V2</h2>
+          <button class="btn btn-secondary" style="width: auto; padding: 6px 12px; font-size: 13px;" onclick="openAdvancedModal()">⚙️ Nâng Cao & Quản Lý Phòng</button>
         </div>
         <hr style="margin: 10px 0;">
 
@@ -224,38 +159,107 @@
           <input type="file" id="teacherImgInput" accept="image/*" multiple>
         </div>
 
-        <h3 style="margin-top: 20px; margin-bottom: 8px; font-size: 16px;">📋 Đáp Án & Điểm Số</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm chuẩn 10 (tự động cân bằng).</p>
-
-        <div id="questionsBuilder"></div>
-
-        <div style="display: flex; gap: 10px; flex-direction: column; margin-top: 15px;">
-          <button class="btn btn-secondary" onclick="addQuestionRow()">+ Thêm Câu Hỏi</button>
-          <button class="btn btn-success" onclick="promptSaveExam()">💾 Lưu Lên Cloud</button>
+        <!-- Cấu hình phòng thi chuyên dụng -->
+        <div style="margin-top: 15px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold;">
+            <input type="checkbox" id="enableLiveRoom" onchange="toggleLiveRoomConfig()" style="width: 18px; height: 18px;"> 
+            🛡️ Bật Phòng Thi Chuyên Dụng (Live Exam Room)
+          </label>
+          <div id="liveRoomConfigBox" class="advanced-settings-panel">
+            <div class="form-grid-2" style="margin-bottom: 0;">
+              <div>
+                <label>Mật khẩu phòng thi:</label>
+                <input type="password" id="liveRoomPass" placeholder="Mật khẩu cho học sinh vào phòng...">
+              </div>
+              <div>
+                <label>Giới hạn số lượng học sinh:</label>
+                <input type="number" id="liveRoomLimit" placeholder="Ví dụ: 50" value="50">
+              </div>
+            </div>
+          </div>
         </div>
+
+        <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Điểm mặc định mỗi câu/nhánh là 0,25đ. Hệ thống tự động cân đối nếu tổng vượt quá 10đ theo ưu tiên: Trả lời ngắn > Đúng/Sai > Trắc nghiệm.</p>
+
+        <!-- MỤC I: TRẮC NGHIỆM -->
+        <div class="section-title">
+          <span>I. TRẮC NGHIỆM (A, B, C, D)</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
+        </div>
+        <div id="builderMC"></div>
+
+        <!-- MỤC II: ĐÚNG / SAI -->
+        <div class="section-title">
+          <span>II. ĐÚNG / SAI (Nhiều nhánh tùy chỉnh)</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
+        </div>
+        <div id="builderTF"></div>
+
+        <!-- MỤC III: TRẢ LỜI NGẮN -->
+        <div class="section-title">
+          <span>III. TRẢ LỜI NGẮN</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
+        </div>
+        <div id="builderSA"></div>
+
+        <button class="btn btn-success" style="margin-top: 20px; padding: 12px;" onclick="promptSaveExam()">💾 Lưu & Phát Hành Đề Thi Lên Cloud</button>
       </div>
     </div>
 
-    <!-- ==================== PHẦN HỌC SINH - ĐĂNG NHẬP ==================== -->
+    <!-- ==================== HỌC SINH: ĐĂNG NHẬP ==================== -->
     <div id="studentLoginView" class="view-section">
       <div class="card" style="max-width: 450px; margin: 20px auto; text-align: center;">
         <h2>🧑‍🎓 Học Sinh Vào Thi</h2>
-        <p style="color: #666; font-size: 13px; margin-top: 5px;">Điền thông tin để bắt đầu</p>
+        <p style="color: #666; font-size: 13px; margin-top: 5px;">Lựa chọn hình thức tham gia</p>
         <hr style="margin: 15px 0;">
 
         <div style="text-align: left;">
+          <label>Hình thức làm bài:</label>
+          <select id="examModeSelect" onchange="toggleStudentMode()">
+            <option value="normal">Thi Tự Do Bình Thường</option>
+            <option value="live">🛡️ Phòng Thi Chuyên Dụng (Live Exam)</option>
+          </select>
+
           <label>Họ và Tên:</label>
           <input type="text" id="studentName" placeholder="Nhập tên của bạn...">
 
           <label>Mã Bài Kiểm Tra:</label>
           <input type="text" id="studentExamCode" placeholder="Nhập mã bài thi...">
+
+          <div id="liveRoomPassBox" style="display: none;">
+            <label>Mật Khẩu Phòng Thi:</label>
+            <input type="password" id="studentLivePass" placeholder="Nhập mật khẩu phòng...">
+          </div>
         </div>
 
-        <button class="btn btn-success" id="btnStartExam" style="margin-top: 10px;" onclick="startExam()">🚀 Bắt Đầu Làm Bài</button>
+        <button class="btn btn-success" id="btnStartExam" style="margin-top: 10px;" onclick="startExamProcess()">🚀 Vào Thi / Vào Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- ==================== PHẦN HỌC SINH - LÀM BÀI ==================== -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM ==================== -->
+    <div id="studentWaitingRoomView" class="view-section">
+      <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
+        <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
+        <p id="waitingRoomExamTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
+        <hr style="margin: 20px 0;">
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+          <p>👤 <b>Thí sinh:</b> <span id="waitStudentName"></span></p>
+          <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="waitStudentCount" style="color: #1877f2; font-weight: bold;">1</span></p>
+          <p>⏱️ <b>Thời gian làm bài:</b> <span id="waitDuration"></span> phút</p>
+          <p>📋 <b>Cấu trúc đề:</b> <span id="waitStructureSummary"></span></p>
+        </div>
+
+        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
+          🔔 CHỜ GIÁO VIÊN BẮT ĐẦU KÌ THI...
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveWaitingRoom()">🚪 Rời Phòng Chờ</button>
+      </div>
+    </div>
+
+    <!-- ==================== HỌC SINH: LÀM BÀI ==================== -->
     <div id="studentExamView" class="view-section">
       <div class="exam-layout">
         <div class="exam-left" id="examMediaContainer"></div>
@@ -273,15 +277,15 @@
       </div>
     </div>
 
-    <!-- ==================== PHẦN HỌC SINH - XEM KẾT QUẢ ==================== -->
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ ==================== -->
     <div id="studentResultView" class="view-section">
-      <div class="card" style="max-width: 750px; margin: 0 auto;">
+      <div class="card" style="max-width: 800px; margin: 0 auto;">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
           <h2 style="color: #1877f2; font-size: 20px;">🎉 Kết Quả Bài Kiểm Tra</h2>
           <h1 style="font-size: 38px; color: #198754; margin: 8px 0;" id="resultScore">0 / 10</h1>
           <p id="resultDetailText" style="font-size: 13px;"></p>
         </div>
-        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px;">🔍 Chi Tiết Bài Làm & Lời Giải</h3>
+        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px;">🔍 Chi Tiết Bài Làm & Lời Giải Chú Thích</h3>
         <div id="resultReviewContainer"></div>
         <button class="btn" style="margin-top: 15px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
       </div>
@@ -329,18 +333,53 @@
     </div>
   </div>
 
-  <!-- MODAL NÂNG CAO -->
+  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI -->
   <div class="modal-overlay" id="advancedModal">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width: 650px;">
       <div class="modal-header">
-        <h3>⚙️ Quản Lý Nâng Cao</h3>
+        <h3>⚙️ Quản Lý Nâng Cao & Phòng Thi Chuyên Dụng</h3>
         <button class="close-btn" onclick="closeAdvancedModal()">✖</button>
       </div>
-      <label>Nhập Mã Đề Kiểm Tra:</label>
-      <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12">
-      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
-        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải File Đề PDF Gốc</button>
-        <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Vĩnh Viễn Trên Cloud</button>
+      
+      <div style="margin-bottom: 15px;">
+        <label>Mã Đề Kiểm Tra:</label>
+        <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12">
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF Gốc</button>
+        <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
+      </div>
+
+      <hr style="margin: 15px 0;">
+      <h4 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Phòng Thi Chuyên Dụng</h4>
+      <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã đề và Mật khẩu phòng thi (hoặc mật khẩu hệ thống) để quản lý:</p>
+      
+      <div class="form-grid-2">
+        <input type="password" id="manageRoomPass" placeholder="Nhập mật khẩu...">
+        <button class="btn btn-success" onclick="openLiveManagementRoom()">📡 Vào Phòng Quản Lý</button>
+      </div>
+
+      <div id="liveManagementPanel" style="display: none; margin-top: 15px; background: #f8f9fa; padding: 12px; border-radius: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <b>Danh Sách Học Sinh Trong Phòng (<span id="manageStudentCount">0</span>)</b>
+          <button class="btn btn-success" style="width: auto; padding: 6px 15px; font-size: 13px;" onclick="startLiveExamTrigger()">🚀 BẮT ĐẦU KÌ THI</button>
+        </div>
+        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Họ Tên</th>
+                <th>Trạng Thái</th>
+                <th>Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="manageStudentsTableBody">
+              <tr><td colspan="4">Chưa có học sinh</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -349,10 +388,10 @@
   <div class="modal-overlay" id="passwordModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>🔐 Xác Thực Mật Khẩu Giáo Viên</h3>
+        <h3>🔐 Xác Thực Bảo Mật</h3>
         <button class="close-btn" onclick="closePasswordModal()">✖</button>
       </div>
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;" id="passwordModalDesc">Vui lòng nhập mật khẩu để thực hiện thao tác:</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;" id="passwordModalDesc">Vui lòng nhập mật khẩu bảo mật:</p>
       <input type="password" id="teacherPasswordInput" placeholder="Nhập mật khẩu...">
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn btn-secondary" style="width: 50%;" onclick="closePasswordModal()">Hủy</button>
@@ -364,7 +403,7 @@
   <!-- FIREBASE SDK v9 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getDatabase, ref, set, get, child, remove, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC33ENu7xxo8Z9YXz_t3J8NZkfsShuuzKM",
@@ -387,6 +426,8 @@
     window.dbChild = child;
     window.dbRemove = remove;
     window.dbPush = push;
+    window.onValue = onValue;
+    window.update = update;
   </script>
 
   <script>
@@ -397,6 +438,7 @@
     let studentNameGlobal = '';
     let isExamActive = false;
     let pendingActionType = ''; 
+    let activeStudentRoomListener = null;
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -413,82 +455,114 @@
       document.getElementById('imageUploadSection').style.display = type === 'image' ? 'block' : 'none';
     }
 
-    function addQuestionRow() {
-      const container = document.getElementById('questionsBuilder');
-      const qIndex = container.children.length + 1;
-      const div = document.createElement('div');
+    function toggleLiveRoomConfig() {
+      const enabled = document.getElementById('enableLiveRoom').checked;
+      document.getElementById('liveRoomConfigBox').style.display = enabled ? 'block' : 'none';
+    }
+
+    function toggleStudentMode() {
+      const mode = document.getElementById('examModeSelect').value;
+      document.getElementById('liveRoomPassBox').style.display = mode === 'live' ? 'block' : 'none';
+    }
+
+    function addQuestionV2(type) {
+      let containerId = type === 'mc' ? 'builderMC' : (type === 'tf' ? 'builderTF' : 'builderSA');
+      let container = document.getElementById(containerId);
+      let qIndex = container.children.length + 1;
+      let div = document.createElement('div');
       div.className = 'q-build-item';
-      div.innerHTML = `
+      div.dataset.type = type;
+
+      let innerHtml = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
           <strong>Câu ${qIndex}</strong>
-          <button class="btn btn-danger" style="width: auto; padding: 3px 8px; font-size: 11px;" onclick="this.parentElement.parentElement.remove(); reindexQuestions();">Xóa</button>
-        </div>
-        <div class="form-grid-2">
-          <div>
-            <label>Loại câu hỏi:</label>
-            <select onchange="changeQType(this)">
-              <option value="mc">Trắc nghiệm (A,B,C,D)</option>
-              <option value="tf">Đúng / Sai (Tùy chỉnh số nhánh)</option>
-              <option value="sa">Trả lời ngắn</option>
-            </select>
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
+            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove();">Xóa</button>
           </div>
-          <div>
-            <label>Đáp án đúng:</label>
-            <div class="answer-input-box">
-              <select class="correct-ans">
-                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div>
-          <label>Điểm số:</label>
-          <input type="number" class="q-score" value="1" step="0.25">
-        </div>
-        <div>
-          <label>Chú thích / Lời giải chi tiết:</label>
-          <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải chi tiết..."></textarea>
         </div>
       `;
-      container.appendChild(div);
-    }
 
-    function reindexQuestions() {
-      const items = document.querySelectorAll('.q-build-item');
-      items.forEach((item, idx) => {
-        item.querySelector('strong').innerText = `Câu ${idx + 1}`;
-      });
-    }
-
-    function changeQType(selectEl) {
-      const type = selectEl.value;
-      const box = selectEl.parentElement.parentElement.querySelector('.answer-input-box');
       if (type === 'mc') {
-        box.innerHTML = `<select class="correct-ans"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>`;
+        innerHtml += `
+          <div style="display:flex; gap:10px; align-items:center;">
+            <label style="margin:0;">Đáp án đúng:</label>
+            <select class="correct-ans" style="width:100px; margin:0;">
+              <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+            </select>
+          </div>
+        `;
       } else if (type === 'tf') {
-        box.innerHTML = `
+        innerHtml += `
           <div>
-            <label style="font-size:12px; margin-bottom:2px;">Số lượng nhánh (VD: 4):</label>
-            <input type="number" class="tf-branch-count" value="4" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfBranchInputs(this)">
-            <div class="tf-branch-inputs-container"></div>
-          </div>`;
-        updateTfBranchInputs(box.querySelector('.tf-branch-count'));
+            <label style="font-size:12px; margin-bottom:2px;">Số lượng nhánh:</label>
+            <input type="number" class="tf-branch-count" value="4" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfV2Inputs(this)">
+            <div class="tf-branches-builder"></div>
+          </div>
+        `;
       } else {
-        box.innerHTML = `<input type="text" class="correct-ans" placeholder="Nhập đáp án đúng...">`;
+        innerHtml += `
+          <div>
+            <label>Đáp án đúng (Trả lời ngắn):</label>
+            <input type="text" class="correct-ans" placeholder="Nhập đáp án chính xác...">
+          </div>
+        `;
+      }
+
+      innerHtml += `
+        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:11px;">Điểm số riêng (Trống = 0.25đ):</label>
+              <input type="number" class="q-score-custom" placeholder="0.25" step="0.05" style="padding:4px; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:11px;">Gắn ảnh giải thích:</label>
+              <input type="file" class="q-exp-img-input" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
+            </div>
+          </div>
+          <div style="margin-top:6px;">
+            <label style="font-size:11px;">Chú thích / Lời giải chi tiết:</label>
+            <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải..." style="margin:0; font-size:12px;"></textarea>
+          </div>
+        </div>
+      `;
+
+      div.innerHTML = innerHtml;
+      container.appendChild(div);
+
+      if (type === 'tf') {
+        updateTfV2Inputs(div.querySelector('.tf-branch-count'));
       }
     }
 
-    function updateTfBranchInputs(countInput) {
-      const container = countInput.parentElement.querySelector('.tf-branch-inputs-container');
-      const count = parseInt(countInput.value) || 1;
-      let html = '<div style="font-size:12px; color:#555; display:flex; flex-wrap:wrap; gap:6px;">';
-      const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-      for(let i = 0; i < count; i++) {
+    function toggleAdvancedQSettings(btn) {
+      let panel = btn.parentElement.parentElement.parentElement.querySelector('.advanced-q-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateTfV2Inputs(countInput) {
+      let wrapper = countInput.parentElement.querySelector('.tf-branches-builder');
+      let count = parseInt(countInput.value) || 1;
+      let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
+      for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
-        html += `<span><b>${l}:</b> <select class="tf-ans-${i}" style="width:auto; padding:2px;"><option value="Đ">Đúng</option><option value="S">Sai</option></select></span>`;
+        html += `
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
+            <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <select class="tf-branch-ans-${i}" style="width:70px; padding:2px; margin:0; font-size:12px;">
+                <option value="Đ">Đúng</option>
+                <option value="S">Sai</option>
+              </select>
+              <input type="number" class="tf-branch-score-${i}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
+            </div>
+          </div>
+        `;
       }
       html += '</div>';
-      container.innerHTML = html;
+      wrapper.innerHTML = html;
     }
 
     const fileToBase64 = file => new Promise((resolve, reject) => {
@@ -501,45 +575,28 @@
     function promptSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
-      if (!code || !title) {
-        alert('Vui lòng nhập Mã bài thi và Tên bài thi trước!');
-        return;
-      }
+      if (!code || !title) { alert('Vui lòng nhập Mã bài thi và Tên bài thi!'); return; }
       pendingActionType = 'save';
-      document.getElementById('passwordModalDesc').innerText = 'Nhập mật khẩu để TẠO & LƯU bài kiểm tra:';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
     }
 
     function promptDeleteExam() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      if (!code) {
-        alert('Vui lòng nhập Mã bài kiểm tra cần xóa!');
-        return;
-      }
+      if (!code) { alert('Vui lòng nhập Mã bài thi!'); return; }
       pendingActionType = 'delete';
-      document.getElementById('passwordModalDesc').innerText = `Nhập mật khẩu để XÓA VĨNH VIỄN bài [${code}] trên Cloud:`;
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
     }
 
-    function closePasswordModal() {
-      document.getElementById('passwordModal').style.display = 'none';
-    }
+    function closePasswordModal() { document.getElementById('passwordModal').style.display = 'none'; }
 
     async function confirmPasswordAction() {
       const pass = document.getElementById('teacherPasswordInput').value.trim();
-      if (pass.toUpperCase() !== 'THUANBAKHI') {
-        alert('❌ Mật khẩu không chính xác! Vui lòng thử lại.');
-        return;
-      }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật!'); return; }
       closePasswordModal();
-
-      if (pendingActionType === 'save') {
-        await executeSaveExam();
-      } else if (pendingActionType === 'delete') {
-        await executeDeleteExam();
-      }
+      if (pendingActionType === 'save') await executeSaveExam();
+      else if (pendingActionType === 'delete') await executeDeleteExam();
     }
 
     async function executeSaveExam() {
@@ -547,58 +604,82 @@
       const title = document.getElementById('examTitle').value.trim();
       const duration = parseInt(document.getElementById('examDuration').value);
       const type = document.getElementById('examType').value;
+      const isLive = document.getElementById('enableLiveRoom').checked;
+      const livePass = document.getElementById('liveRoomPass').value.trim();
+      const liveLimit = parseInt(document.getElementById('liveRoomLimit').value) || 50;
 
-      const qItems = document.querySelectorAll('.q-build-item');
-      if (qItems.length === 0) {
-        alert('Vui lòng thêm ít nhất 1 câu hỏi!');
-        return;
-      }
+      const items = document.querySelectorAll('.q-build-item');
+      if (items.length === 0) { alert('Vui lòng tạo ít nhất 1 câu hỏi!'); return; }
 
       let questions = [];
-      let totalAssignedScore = 0;
+      let rawTotalScore = 0;
 
-      qItems.forEach((item, idx) => {
-        const qType = item.querySelector('select').value;
-        const score = parseFloat(item.querySelector('.q-score').value) || 0;
-        const exp = item.querySelector('.q-explanation').value.trim();
-
-        let correctAns = '';
-        if (qType === 'tf') {
-          const count = parseInt(item.querySelector('.tf-branch-count').value) || 1;
-          let ansArr = [];
-          for(let i = 0; i < count; i++) {
-            let sel = item.querySelector(`.tf-ans-${i}`);
-            ansArr.push(sel ? sel.value : 'Đ');
-          }
-          correctAns = ansArr.join(',');
-        } else {
-          correctAns = item.querySelector('.correct-ans').value.trim();
+      for (let idx = 0; idx < items.length; idx++) {
+        let item = items[idx];
+        let qType = item.dataset.type;
+        let customScoreInput = parseFloat(item.querySelector('.q-score-custom').value);
+        let defaultScore = !isNaN(customScoreInput) ? customScoreInput : 0.25;
+        let expText = item.querySelector('.q-explanation').value.trim();
+        let expImgInput = item.querySelector('.q-exp-img-input');
+        let expImgBase64 = '';
+        if (expImgInput && expImgInput.files.length > 0) {
+          expImgBase64 = await fileToBase64(expImgInput.files[0]);
         }
 
-        totalAssignedScore += score;
-        questions.push({
+        let qData = {
           id: idx + 1,
           type: qType,
-          correctAnswer: correctAns,
-          score: score,
-          explanation: exp
-        });
-      });
+          score: defaultScore,
+          explanation: expText,
+          expImage: expImgBase64
+        };
 
-      questions.forEach(q => {
-        q.finalScore = (q.score / totalAssignedScore) * 10;
-      });
+        if (qType === 'mc') {
+          qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
+          rawTotalScore += defaultScore;
+          questions.push(qData);
+        } else if (qType === 'tf') {
+          let count = parseInt(item.querySelector('.tf-branch-count').value) || 4;
+          let branches = [];
+          let branchScores = [];
+          let tfTotal = 0;
+          for (let i = 0; i < count; i++) {
+            let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
+            let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
+            let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
+            branches.push(ans);
+            branchScores.push(bScore);
+            tfTotal += bScore;
+          }
+          qData.correctAnswer = branches.join(',');
+          qData.branchScores = branchScores;
+          rawTotalScore += tfTotal;
+          questions.push(qData);
+        } else if (qType === 'sa') {
+          qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
+          rawTotalScore += defaultScore;
+          questions.push(qData);
+        }
+      }
+
+      if (rawTotalScore > 10) {
+        let scaleFactor = 10 / rawTotalScore;
+        questions.forEach(q => {
+          q.score = q.score * scaleFactor;
+          if (q.branchScores) {
+            q.branchScores = q.branchScores.map(bs => bs * scaleFactor);
+          }
+        });
+      }
 
       let mediaData = { type: type, files: [] };
       if (type === 'pdf') {
-        const fileInput = document.getElementById('teacherPdfInput');
-        if (fileInput.files.length > 0) {
-          mediaData.files.push(await fileToBase64(fileInput.files[0]));
-        }
+        let pdfInput = document.getElementById('teacherPdfInput');
+        if (pdfInput.files.length > 0) mediaData.files.push(await fileToBase64(pdfInput.files[0]));
       } else {
-        const fileInput = document.getElementById('teacherImgInput');
-        for (let i = 0; i < fileInput.files.length; i++) {
-          mediaData.files.push(await fileToBase64(fileInput.files[i]));
+        let imgInput = document.getElementById('teacherImgInput');
+        for (let i = 0; i < imgInput.files.length; i++) {
+          mediaData.files.push(await fileToBase64(imgInput.files[i]));
         }
       }
 
@@ -606,13 +687,16 @@
         code: code,
         title: title,
         duration: duration,
+        isLiveRoom: isLive,
+        livePassword: livePass,
+        liveLimit: liveLimit,
         media: mediaData,
         questions: questions
       };
 
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
-        alert(`🎉 Lưu bài thi thành công!\nMã bài thi: ${code}`);
+        alert(`🎉 Lưu đề thi [${code}] lên Cloud thành công!`);
       } catch (err) {
         alert('Lỗi: ' + err.message);
       }
@@ -623,145 +707,218 @@
       try {
         await window.dbRemove(window.ref(window.db, 'exams/' + code));
         await window.dbRemove(window.ref(window.db, 'leaderboard/' + code));
-        alert(`Đã xóa vĩnh viễn bài [${code}] trên Cloud!`);
+        await window.dbRemove(window.ref(window.db, 'liverooms/' + code));
+        alert(`Đã xóa vĩnh viễn bài [${code}]!`);
         closeAdvancedModal();
-      } catch (err) {
-        alert('Lỗi khi xóa: ' + err.message);
-      }
+      } catch (err) { alert('Lỗi: ' + err.message); }
     }
-
-    for(let i=0; i<5; i++) addQuestionRow();
 
     function openAdvancedModal() { document.getElementById('advancedModal').style.display = 'flex'; }
     function closeAdvancedModal() { document.getElementById('advancedModal').style.display = 'none'; }
 
     async function downloadExamPDF() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      if (!code) { alert('Nhập mã bài thi!'); return; }
-
+      if (!code) { alert('Nhập mã đề!'); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
       if (!snapshot.exists()) { alert('Không tìm thấy!'); return; }
-
       const exam = snapshot.val();
       if (exam.media && exam.media.type === 'pdf' && exam.media.files.length > 0) {
-        const a = document.createElement('a');
+        let a = document.createElement('a');
         a.href = exam.media.files[0];
-        a.download = `De_Thi_${code}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        alert('Bài này không có file PDF gốc.');
-      }
+        a.download = `De_${code}.pdf`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      } else { alert('Đề này không có file PDF.'); }
     }
 
-    // ==================== HỌC SINH LÀM BÀI ====================
-    async function startExam() {
-      const name = document.getElementById('studentName').value.trim();
-      const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
+    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG ---
+    async function openLiveManagementRoom() {
+      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      const pass = document.getElementById('manageRoomPass').value.trim();
+      if (!code || !pass) { alert('Nhập mã đề và mật khẩu phòng quản lý!'); return; }
 
-      if (!name || !code) {
-        alert('Vui lòng điền tên và mã bài thi!');
+      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+      if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
+      const exam = snapshot.val();
+
+      if (pass.toUpperCase() !== 'THUANBAKHI' && pass !== exam.livePassword) {
+        alert('❌ Mật khẩu phòng không đúng!');
         return;
       }
 
-      const btn = document.getElementById('btnStartExam');
-      btn.innerText = "⏳ Đang tải...";
-      btn.disabled = true;
+      document.getElementById('liveManagementPanel').style.display = 'block';
+      let roomRef = window.ref(window.db, `liverooms/${code}`);
 
-      try {
-        const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-        if (!snapshot.exists()) {
-          alert('Không tìm thấy mã bài thi!');
-          btn.innerText = "🚀 Bắt Đầu Làm Bài";
-          btn.disabled = false;
+      window.onValue(roomRef, (snapshot) => {
+        let data = snapshot.val() || {};
+        let students = data.students || {};
+        let tbody = document.getElementById('manageStudentsTableBody');
+        tbody.innerHTML = '';
+        let keys = Object.keys(students);
+        document.getElementById('manageStudentCount').innerText = keys.length;
+
+        if (keys.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4">Phòng chưa có học sinh nào.</td></tr>';
           return;
         }
 
-        currentExamData = snapshot.val();
-        studentNameGlobal = name;
-        tabSwitchCount = 0;
+        keys.forEach((id, idx) => {
+          let s = students[id];
+          let tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><b>#${idx + 1}</b></td>
+            <td>${s.name}</td>
+            <td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm bài' : 'Đang chờ'}</td>
+            <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickStudent('${code}', '${id}')">Kick</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+    }
 
-        document.getElementById('displayExamTitle').innerText = currentExamData.title;
-        document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${name}`;
+    async function kickStudent(code, studentId) {
+      if (confirm('Kick học sinh này ra khỏi phòng?')) {
+        await window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentId}`));
+      }
+    }
 
-        const mediaContainer = document.getElementById('examMediaContainer');
-        mediaContainer.innerHTML = '';
+    async function startLiveExamTrigger() {
+      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      await window.dbUpdate(window.ref(window.db, `liverooms/${code}`), { status: 'started' });
+      alert('🚀 Đã phát tín hiệu BẮT ĐẦU KÌ THI thành công!');
+    }
 
-        if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
-          const pdfData = currentExamData.media.files[0];
-          const pdf = await pdfjsLib.getDocument(pdfData).promise;
-          for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({ scale: 1.1 });
-            const canvas = document.createElement('canvas');
-            canvas.className = 'pdf-canvas';
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-            mediaContainer.appendChild(canvas);
+    // ==================== HỌC SINH: VÀO THI / PHÒNG CHỜ ====================
+    async function startExamProcess() {
+      const mode = document.getElementById('examModeSelect').value;
+      const name = document.getElementById('studentName').value.trim();
+      const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
+
+      if (!name || !code) { alert('Vui lòng điền tên và mã đề!'); return; }
+
+      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+      if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
+      currentExamData = snapshot.val();
+      studentNameGlobal = name;
+
+      if (mode === 'live') {
+        if (!currentExamData.isLiveRoom) { alert('Đề này không bật chế độ phòng thi chuyên dụng!'); return; }
+        let pass = document.getElementById('studentLivePass').value.trim();
+        if (pass !== currentExamData.livePassword) { alert('❌ Sai mật khẩu phòng thi!'); return; }
+
+        let studentKey = 's_' + Date.now();
+        let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentKey}`);
+        await window.dbSet(roomRef, { name: name, status: 'waiting' });
+
+        document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
+        document.getElementById('waitStudentName').innerText = name;
+        document.getElementById('waitDuration').innerText = currentExamData.duration;
+        let mcN = currentExamData.questions.filter(q=>q.type==='mc').length;
+        let tfN = currentExamData.questions.filter(q=>q.type==='tf').length;
+        let saN = currentExamData.questions.filter(q=>q.type==='sa').length;
+        document.getElementById('waitStructureSummary').innerText = `Trắc nghiệm: ${mcN} | Đúng/Sai: ${tfN} | Trả lời ngắn: ${saN}`;
+
+        switchView('studentWaitingRoomView');
+
+        let roomMainRef = window.ref(window.db, `liverooms/${code}`);
+        activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          let data = snapshot.val() || {};
+          let students = data.students || {};
+          let count = Object.keys(students).length;
+          document.getElementById('waitStudentCount').innerText = count;
+
+          if (!students[studentKey]) {
+            alert('Bạn đã bị giáo viên kick ra khỏi phòng!');
+            switchView('studentLoginView');
+            return;
           }
-        } else if (currentExamData.media.type === 'image') {
-          currentExamData.media.files.forEach(imgBase64 => {
-            const img = document.createElement('img');
-            img.src = imgBase64;
-            img.className = 'img-preview';
-            mediaContainer.appendChild(img);
-          });
-        }
 
-        const sheet = document.getElementById('studentAnswerSheet');
-        sheet.innerHTML = '';
-
-        currentExamData.questions.forEach(q => {
-          const item = document.createElement('div');
-          item.style.marginBottom = '12px';
-          item.style.paddingBottom = '8px';
-          item.style.borderBottom = '1px solid #eee';
-
-          let inputHtml = '';
-          if (q.type === 'mc') {
-            inputHtml = `
-              <div class="opt-group" data-qid="${q.id}">
-                <div class="opt-btn" onclick="selectOpt(this, 'A')">A</div>
-                <div class="opt-btn" onclick="selectOpt(this, 'B')">B</div>
-                <div class="opt-btn" onclick="selectOpt(this, 'C')">C</div>
-                <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
-              </div>`;
-          } else if (q.type === 'tf') {
-            const correctCount = q.correctAnswer.split(',').length;
-            const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-            for(let i = 0; i < correctCount; i++) {
-              let branch = letters[i] || (i+1);
-              inputHtml += `
-                <div class="tf-branch-row">
-                  <span style="font-weight:600; font-size:13px;">Nhánh ${branch}:</span>
-                  <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
-                    <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
-                    <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
-                  </div>
-                </div>`;
-            }
-          } else {
-            inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập đáp án...">`;
+          if (data.status === 'started') {
+            if (activeStudentRoomListener) activeStudentRoomListener();
+            window.dbUpdate(roomRef, { status: 'testing' });
+            launchExamInterface();
           }
-
-          item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
-          sheet.appendChild(item);
         });
 
-        timeLeft = currentExamData.duration * 60;
-        clearInterval(examTimer);
-        examTimer = setInterval(updateTimer, 1000);
-
-        isExamActive = true;
-        switchView('studentExamView');
-      } catch (err) {
-        alert('Lỗi: ' + err.message);
-      } finally {
-        btn.innerText = "🚀 Bắt Đầu Làm Bài";
-        btn.disabled = false;
+      } else {
+        launchExamInterface();
       }
+    }
+
+    function leaveWaitingRoom() {
+      if (activeStudentRoomListener) activeStudentRoomListener();
+      switchView('studentLoginView');
+    }
+
+    async function launchExamInterface() {
+      document.getElementById('displayExamTitle').innerText = currentExamData.title;
+      document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${studentNameGlobal}`;
+      tabSwitchCount = 0;
+
+      const mediaContainer = document.getElementById('examMediaContainer');
+      mediaContainer.innerHTML = '';
+
+      if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
+        let pdf = await pdfjsLib.getDocument(currentExamData.media.files[0]).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          let page = await pdf.getPage(i);
+          let viewport = page.getViewport({ scale: 1.1 });
+          let canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          canvas.height = viewport.height; canvas.width = viewport.width;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+          mediaContainer.appendChild(canvas);
+        }
+      } else if (currentExamData.media.type === 'image') {
+        currentExamData.media.files.forEach(imgB64 => {
+          let img = document.createElement('img');
+          img.src = imgB64; img.className = 'img-preview';
+          mediaContainer.appendChild(img);
+        });
+      }
+
+      const sheet = document.getElementById('studentAnswerSheet');
+      sheet.innerHTML = '';
+
+      currentExamData.questions.forEach(q => {
+        let item = document.createElement('div');
+        item.style.marginBottom = '12px'; item.style.paddingBottom = '8px'; item.style.borderBottom = '1px solid #eee';
+
+        let inputHtml = '';
+        if (q.type === 'mc') {
+          inputHtml = `
+            <div class="opt-group" data-qid="${q.id}">
+              <div class="opt-btn" onclick="selectOpt(this, 'A')">A</div>
+              <div class="opt-btn" onclick="selectOpt(this, 'B')">B</div>
+              <div class="opt-btn" onclick="selectOpt(this, 'C')">C</div>
+              <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
+            </div>`;
+        } else if (q.type === 'tf') {
+          let count = q.correctAnswer.split(',').length;
+          let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+          for(let i=0; i<count; i++) {
+            let l = letters[i] || (i+1);
+            inputHtml += `
+              <div class="tf-branch-row">
+                <span style="font-weight:600; font-size:13px;">Nhánh ${l}:</span>
+                <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
+                  <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
+                  <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
+                </div>
+              </div>`;
+          }
+        } else {
+          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
+        }
+
+        item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id} (${q.score.toFixed(2)}đ):</strong> ${inputHtml}`;
+        sheet.appendChild(item);
+      });
+
+      timeLeft = currentExamData.duration * 60;
+      clearInterval(examTimer);
+      examTimer = setInterval(updateTimer, 1000);
+      isExamActive = true;
+      switchView('studentExamView');
     }
 
     window.addEventListener('blur', function() {
@@ -773,37 +930,26 @@
     });
 
     function closeCheatModal() { document.getElementById('cheatModal').style.display = 'none'; }
-
     function selectOpt(btn, val) {
-      const parent = btn.parentElement;
-      parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      parent.dataset.val = val;
+      let p = btn.parentElement;
+      p.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected'); p.dataset.val = val;
     }
-
     function selectTfSub(btn, val) {
-      const parent = btn.parentElement;
-      parent.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      parent.dataset.val = val;
+      let p = btn.parentElement;
+      p.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected'); p.dataset.val = val;
     }
 
     function updateTimer() {
       timeLeft--;
-      let m = Math.floor(timeLeft / 60);
-      let s = timeLeft % 60;
+      let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
       document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-
-      if (timeLeft <= 0) {
-        clearInterval(examTimer);
-        alert('⌛ Hết giờ!');
-        submitStudentExam(true);
-      }
+      if (timeLeft <= 0) { clearInterval(examTimer); alert('⌛ Hết giờ!'); submitStudentExam(true); }
     }
 
     async function submitStudentExam(forced = false) {
-      if (!forced && !confirm('Nộp bài thi?')) return;
-
+      if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
       isExamActive = false;
 
@@ -811,48 +957,65 @@
       let reviewHtml = '';
 
       currentExamData.questions.forEach(q => {
-        let studentAns = '';
-        let isCorrect = false;
+        let studentAns = '', isCorrect = false, qEarned = 0;
 
         if (q.type === 'mc') {
-          const group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-          studentAns = group ? (group.dataset.val || '') : '';
+          let grp = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+          studentAns = grp ? (grp.dataset.val || '') : '';
           isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+          if (isCorrect) qEarned = q.score;
         } else if (q.type === 'tf') {
-          const correctCount = q.correctAnswer.split(',').length;
+          let correctArr = q.correctAnswer.split(',');
           let studentArr = [];
-          for(let i = 0; i < correctCount; i++) {
-            const row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
-            studentArr.push(row && row.dataset.val ? row.dataset.val : '_');
-          }
+          let branchScores = q.branchScores || correctArr.map(()=> q.score / correctArr.length);
+          let subEarned = 0;
+          correctArr.forEach((ansCorrect, i) => {
+            let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
+            let val = row && row.dataset.val ? row.dataset.val : '_';
+            studentArr.push(val);
+            if (val === ansCorrect) { subEarned += branchScores[i]; }
+          });
           studentAns = studentArr.join(',');
-          isCorrect = studentAns === q.correctAnswer;
-        } else {
-          const input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
+          qEarned = subEarned;
+          isCorrect = (studentAns === q.correctAnswer);
+        } else if (q.type === 'sa') {
+          let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
           studentAns = input ? input.value.trim() : '';
           isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+          if (isCorrect) qEarned = q.score;
         }
 
-        if (isCorrect) totalEarnedScore += q.finalScore;
+        totalEarnedScore += qEarned;
+
+        let explanationContent = '';
+        if (q.explanation || q.expImage) {
+          if (q.explanation) explanationContent += `<p>${q.explanation}</p>`;
+          if (q.expImage) explanationContent += `<img src="${q.expImage}" style="max-width:100%; margin-top:5px; border-radius:4px;">`;
+        } else {
+          explanationContent = `<b>tool duoc lam boi thuandao</b>`;
+        }
 
         reviewHtml += `
           <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
             <strong>Câu ${q.id}:</strong> 
             <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">
-              ${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${isCorrect ? q.finalScore.toFixed(2) : 0}/${q.finalScore.toFixed(2)} đ)
+              ${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}/${q.score.toFixed(2)} đ)
             </span>
             <div style="margin-top:4px;">
               - Bạn chọn: <b style="color:${isCorrect ? 'green' : 'red'};">${studentAns || 'Chưa làm'}</b><br>
               ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b>` : ''}
             </div>
-            ${q.explanation ? `<div class="explanation-box"><b>💡 Lời giải:</b> ${q.explanation}</div>` : ''}
+            <div>
+              <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+              <div class="explanation-box">${explanationContent}</div>
+            </div>
           </div>
         `;
       });
 
-      const finalScoreFormatted = Math.round(totalEarnedScore * 100) / 100;
-      const timeSpentSeconds = (currentExamData.duration * 60) - timeLeft;
-      const timeSpentFormatted = `${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
+      let finalScoreFormatted = Math.round(totalEarnedScore * 100) / 100;
+      let timeSpentSeconds = (currentExamData.duration * 60) - timeLeft;
+      let timeSpentFormatted = `${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
 
       document.getElementById('resultScore').innerText = `${finalScoreFormatted} / 10`;
       document.getElementById('resultDetailText').innerText = `Thời gian: ${timeSpentFormatted} | Số lần rời tab: ${tabSwitchCount}`;
@@ -870,42 +1033,40 @@
       switchView('studentResultView');
     }
 
+    function toggleResultExp(btn) {
+      let box = btn.nextElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
+    }
+
     async function loadLeaderboard() {
       const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
       const tbody = document.getElementById('lbTableBody');
       tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
+      if (!code) { alert('Nhập mã đề!'); return; }
 
-      if (!code) { alert('Nhập mã bài thi!'); return; }
+      let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
 
-      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
-      if (!snapshot.exists()) {
-        tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>';
-        return;
-      }
-
-      const dataObj = snapshot.val();
-      let history = Object.values(dataObj);
-
-      history.sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
-        return a.timeSpent - b.timeSpent;
-      });
+      let history = Object.values(snapshot.val());
+      history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
 
       tbody.innerHTML = '';
       history.forEach((row, idx) => {
-        const tr = document.createElement('tr');
-        const m = Math.floor(row.timeSpent / 60);
-        const s = row.timeSpent % 60;
-        tr.innerHTML = `
-          <td><b>#${idx + 1}</b></td>
-          <td>${row.name}</td>
-          <td><b style="color:#198754;">${row.score}</b></td>
-          <td>${m}p ${s}s</td>
-          <td style="color:${row.tabSwitches > 0 ? 'red' : 'green'};">${row.tabSwitches}</td>
-        `;
+        let tr = document.createElement('tr');
+        let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+        tr.innerHTML = `<td><b>#${idx + 1}</b></td><td>${row.name}</td><td><b style="color:#198754;">${row.score}</b></td><td>${m}p ${s}s</td><td style="color:${row.tabSwitches > 0 ? 'red' : 'green'};">${row.tabSwitches}</td>`;
         tbody.appendChild(tr);
       });
     }
+
+    addQuestionV2('mc');
+    addQuestionV2('tf');
   </script>
 </body>
 </html>
