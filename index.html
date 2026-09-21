@@ -168,8 +168,8 @@
           <div id="liveRoomConfigBox" class="advanced-settings-panel">
             <div class="form-grid-2" style="margin-bottom: 0;">
               <div>
-                <label>Mật khẩu phòng thi:</label>
-                <input type="password" id="liveRoomPass" placeholder="Mật khẩu cho học sinh vào phòng...">
+                <label>Mật khẩu phòng thi (cho học sinh):</label>
+                <input type="password" id="liveRoomPass" placeholder="Mật khẩu học sinh...">
               </div>
               <div>
                 <label>Giới hạn số lượng học sinh:</label>
@@ -353,17 +353,20 @@
 
       <hr style="margin: 15px 0;">
       <h4 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Phòng Thi Chuyên Dụng</h4>
-      <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã đề và Mật khẩu phòng thi (hoặc mật khẩu hệ thống) để quản lý:</p>
+      <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã đề và Mật khẩu quản lý:</p>
       
       <div class="form-grid-2">
-        <input type="password" id="manageRoomPass" placeholder="Nhập mật khẩu...">
+        <input type="password" id="manageRoomPass" placeholder="Nhập mật khẩu quản lý...">
         <button class="btn btn-success" onclick="openLiveManagementRoom()">📡 Vào Phòng Quản Lý</button>
       </div>
 
       <div id="liveManagementPanel" style="display: none; margin-top: 15px; background: #f8f9fa; padding: 12px; border-radius: 6px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
           <b>Danh Sách Học Sinh Trong Phòng (<span id="manageStudentCount">0</span>)</b>
-          <button class="btn btn-success" style="width: auto; padding: 6px 15px; font-size: 13px;" onclick="startLiveExamTrigger()">🚀 BẮT ĐẦU KÌ THI</button>
+          <div style="display: flex; gap: 5px;">
+            <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="startLiveExamTrigger()">🚀 BẮT ĐẦU</button>
+            <button class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="endLiveExamTrigger()">🛑 KẾT THÚC KÌ THI</button>
+          </div>
         </div>
         <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
           <table>
@@ -732,20 +735,20 @@
       } else { alert('Đề này không có file PDF.'); }
     }
 
-    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG ---
+    // --- QUẢN LÝ PHÒNG THI CHUYÊN DỤNG (BẮT BUỘC MẬT KHẨU THUANBAKHI) ---
     async function openLiveManagementRoom() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageRoomPass').value.trim();
-      if (!code || !pass) { alert('Nhập mã đề và mật khẩu phòng quản lý!'); return; }
+      if (!code || !pass) { alert('Nhập mã đề và mật khẩu quản lý!'); return; }
+
+      // Chỉ chấp nhận mật khẩu quản lý bí mật THUANBAKHI
+      if (pass.toUpperCase() !== 'THUANBAKHI') {
+        alert('❌ Mật khẩu quản lý không đúng!');
+        return;
+      }
 
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
       if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
-      const exam = snapshot.val();
-
-      if (pass.toUpperCase() !== 'THUANBAKHI' && pass !== exam.livePassword) {
-        alert('❌ Mật khẩu phòng không đúng!');
-        return;
-      }
 
       managedExamCodeGlobal = code;
       document.getElementById('liveManagementPanel').style.display = 'block';
@@ -790,7 +793,19 @@
         await window.dbUpdate(window.ref(window.db, `liverooms/${managedExamCodeGlobal}`), { status: 'started' });
         alert('🚀 Đã phát tín hiệu BẮT ĐẦU KÌ THI thành công đến tất cả thí sinh!');
       } catch (err) {
-        alert('Lỗi khởi động kì thi: ' + err.message);
+        alert('Lỗi: ' + err.message);
+      }
+    }
+
+    async function endLiveExamTrigger() {
+      if (!managedExamCodeGlobal) { alert('Chưa kết nối phòng thi!'); return; }
+      if (confirm('Xác nhận KẾT THÚC KÌ THI? Toàn bộ học sinh sẽ bị thu bài và chuyển sang màn hình kết quả.')) {
+        try {
+          await window.dbUpdate(window.ref(window.db, `liverooms/${managedExamCodeGlobal}`), { status: 'ended' });
+          alert('🛑 Đã kết thúc kì thi thành công!');
+        } catch (err) {
+          alert('Lỗi: ' + err.message);
+        }
       }
     }
 
@@ -843,6 +858,10 @@
             if (activeStudentRoomListener) activeStudentRoomListener();
             window.dbUpdate(roomRef, { status: 'testing' });
             launchExamInterface();
+          } else if (data.status === 'ended') {
+            if (activeStudentRoomListener) activeStudentRoomListener();
+            alert('Giáo viên đã kết thúc kì thi!');
+            switchView('studentLoginView');
           }
         });
 
@@ -926,6 +945,16 @@
       examTimer = setInterval(updateTimer, 1000);
       isExamActive = true;
       switchView('studentExamView');
+
+      let roomMainRef = window.ref(window.db, `liverooms/${currentExamData.code}`);
+      activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+        let data = snapshot.val() || {};
+        if (data.status === 'ended' && isExamActive) {
+          if (activeStudentRoomListener) activeStudentRoomListener();
+          alert('🛑 Giáo viên đã kết thúc bài thi. Hệ thống đang tự động nộp bài cho bạn!');
+          submitStudentExam(true);
+        }
+      });
     }
 
     window.addEventListener('blur', function() {
@@ -959,6 +988,7 @@
       if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
       isExamActive = false;
+      if (activeStudentRoomListener) activeStudentRoomListener();
 
       let totalEarnedScore = 0;
       let reviewHtml = '';
