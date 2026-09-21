@@ -439,6 +439,7 @@
     let isExamActive = false;
     let pendingActionType = ''; 
     let activeStudentRoomListener = null;
+    let managedExamCodeGlobal = '';
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -696,6 +697,8 @@
 
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
+        // Khởi tạo trạng thái phòng chờ ban đầu trên Firebase
+        await window.dbSet(window.ref(window.db, 'liverooms/' + code), { status: 'waiting' });
         alert(`🎉 Lưu đề thi [${code}] lên Cloud thành công!`);
       } catch (err) {
         alert('Lỗi: ' + err.message);
@@ -745,6 +748,7 @@
         return;
       }
 
+      managedExamCodeGlobal = code;
       document.getElementById('liveManagementPanel').style.display = 'block';
       let roomRef = window.ref(window.db, `liverooms/${code}`);
 
@@ -782,9 +786,13 @@
     }
 
     async function startLiveExamTrigger() {
-      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      await window.dbUpdate(window.ref(window.db, `liverooms/${code}`), { status: 'started' });
-      alert('🚀 Đã phát tín hiệu BẮT ĐẦU KÌ THI thành công!');
+      if (!managedExamCodeGlobal) { alert('Chưa kết nối phòng thi!'); return; }
+      try {
+        await window.dbUpdate(window.ref(window.db, `liverooms/${managedExamCodeGlobal}`), { status: 'started' });
+        alert('🚀 Đã phát tín hiệu BẮT ĐẦU KÌ THI thành công đến tất cả thí sinh!');
+      } catch (err) {
+        alert('Lỗi khởi động kì thi: ' + err.message);
+      }
     }
 
     // ==================== HỌC SINH: VÀO THI / PHÒNG CHỜ ====================
