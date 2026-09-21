@@ -59,6 +59,12 @@
     .opt-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .opt-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
 
+    /* TF Sub-branches styling */
+    .tf-branch-row { display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #eee; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; }
+    .tf-branch-opts { display: flex; gap: 5px; }
+    .tf-sub-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .tf-sub-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
+
     /* Timer & Info Header */
     .exam-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #eee; margin-bottom: 10px; }
     .timer { background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 14px; }
@@ -390,7 +396,7 @@
     let tabSwitchCount = 0;
     let studentNameGlobal = '';
     let isExamActive = false;
-    let pendingActionType = ''; // 'save' hoặc 'delete'
+    let pendingActionType = ''; 
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -419,15 +425,15 @@
         </div>
         <div class="form-grid-2">
           <div>
-            <label>Loại:</label>
+            <label>Loại câu hỏi:</label>
             <select onchange="changeQType(this)">
               <option value="mc">Trắc nghiệm (A,B,C,D)</option>
-              <option value="tf">Đúng / Sai</option>
+              <option value="tf">Đúng / Sai (Tùy chỉnh số nhánh)</option>
               <option value="sa">Trả lời ngắn</option>
             </select>
           </div>
           <div>
-            <label>Đáp án:</label>
+            <label>Đáp án đúng:</label>
             <div class="answer-input-box">
               <select class="correct-ans">
                 <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
@@ -436,11 +442,11 @@
           </div>
         </div>
         <div>
-          <label>Điểm:</label>
+          <label>Điểm số:</label>
           <input type="number" class="q-score" value="1" step="0.25">
         </div>
         <div>
-          <label>Chú thích / Lời giải:</label>
+          <label>Chú thích / Lời giải chi tiết:</label>
           <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải chi tiết..."></textarea>
         </div>
       `;
@@ -460,10 +466,29 @@
       if (type === 'mc') {
         box.innerHTML = `<select class="correct-ans"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>`;
       } else if (type === 'tf') {
-        box.innerHTML = `<select class="correct-ans"><option value="Đúng">Đúng</option><option value="Sai">Sai</option></select>`;
+        box.innerHTML = `
+          <div>
+            <label style="font-size:12px; margin-bottom:2px;">Số lượng nhánh (VD: 4):</label>
+            <input type="number" class="tf-branch-count" value="4" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfBranchInputs(this)">
+            <div class="tf-branch-inputs-container"></div>
+          </div>`;
+        updateTfBranchInputs(box.querySelector('.tf-branch-count'));
       } else {
         box.innerHTML = `<input type="text" class="correct-ans" placeholder="Nhập đáp án đúng...">`;
       }
+    }
+
+    function updateTfBranchInputs(countInput) {
+      const container = countInput.parentElement.querySelector('.tf-branch-inputs-container');
+      const count = parseInt(countInput.value) || 1;
+      let html = '<div style="font-size:12px; color:#555; display:flex; flex-wrap:wrap; gap:6px;">';
+      const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+      for(let i = 0; i < count; i++) {
+        let l = letters[i] || (i+1);
+        html += `<span><b>${l}:</b> <select class="tf-ans-${i}" style="width:auto; padding:2px;"><option value="Đ">Đúng</option><option value="S">Sai</option></select></span>`;
+      }
+      html += '</div>';
+      container.innerHTML = html;
     }
 
     const fileToBase64 = file => new Promise((resolve, reject) => {
@@ -473,7 +498,6 @@
       reader.onerror = error => reject(error);
     });
 
-    // --- HỆ THỐNG MẬT KHẨU BẢO MẬT ---
     function promptSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
@@ -535,9 +559,21 @@
 
       qItems.forEach((item, idx) => {
         const qType = item.querySelector('select').value;
-        const correctAns = item.querySelector('.correct-ans').value.trim();
         const score = parseFloat(item.querySelector('.q-score').value) || 0;
         const exp = item.querySelector('.q-explanation').value.trim();
+
+        let correctAns = '';
+        if (qType === 'tf') {
+          const count = parseInt(item.querySelector('.tf-branch-count').value) || 1;
+          let ansArr = [];
+          for(let i = 0; i < count; i++) {
+            let sel = item.querySelector(`.tf-ans-${i}`);
+            ansArr.push(sel ? sel.value : 'Đ');
+          }
+          correctAns = ansArr.join(',');
+        } else {
+          correctAns = item.querySelector('.correct-ans').value.trim();
+        }
 
         totalAssignedScore += score;
         questions.push({
@@ -693,11 +729,19 @@
                 <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
               </div>`;
           } else if (q.type === 'tf') {
-            inputHtml = `
-              <div class="opt-group" data-qid="${q.id}">
-                <div class="opt-btn" style="width:55px; border-radius:15px;" onclick="selectOpt(this, 'Đúng')">Đúng</div>
-                <div class="opt-btn" style="width:55px; border-radius:15px;" onclick="selectOpt(this, 'Sai')">Sai</div>
-              </div>`;
+            const correctCount = q.correctAnswer.split(',').length;
+            const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+            for(let i = 0; i < correctCount; i++) {
+              let branch = letters[i] || (i+1);
+              inputHtml += `
+                <div class="tf-branch-row">
+                  <span style="font-weight:600; font-size:13px;">Nhánh ${branch}:</span>
+                  <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
+                    <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
+                    <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
+                  </div>
+                </div>`;
+            }
           } else {
             inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập đáp án...">`;
           }
@@ -737,6 +781,13 @@
       parent.dataset.val = val;
     }
 
+    function selectTfSub(btn, val) {
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      parent.dataset.val = val;
+    }
+
     function updateTimer() {
       timeLeft--;
       let m = Math.floor(timeLeft / 60);
@@ -761,15 +812,27 @@
 
       currentExamData.questions.forEach(q => {
         let studentAns = '';
-        if (q.type === 'mc' || q.type === 'tf') {
+        let isCorrect = false;
+
+        if (q.type === 'mc') {
           const group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
           studentAns = group ? (group.dataset.val || '') : '';
+          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+        } else if (q.type === 'tf') {
+          const correctCount = q.correctAnswer.split(',').length;
+          let studentArr = [];
+          for(let i = 0; i < correctCount; i++) {
+            const row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
+            studentArr.push(row && row.dataset.val ? row.dataset.val : '_');
+          }
+          studentAns = studentArr.join(',');
+          isCorrect = studentAns === q.correctAnswer;
         } else {
           const input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
           studentAns = input ? input.value.trim() : '';
+          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
         }
 
-        const isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
         if (isCorrect) totalEarnedScore += q.finalScore;
 
         reviewHtml += `
