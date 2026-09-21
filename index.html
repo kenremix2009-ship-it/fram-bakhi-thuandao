@@ -37,7 +37,7 @@
     .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     /* Form Controls */
-    input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px; margin-bottom: 12px; font-size: 14px; }
+    input[type="text"], input[type="number"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px; margin-bottom: 12px; font-size: 14px; }
     label { font-weight: 600; font-size: 13px; color: #444; display: block; }
 
     /* Views Layout */
@@ -225,7 +225,7 @@
 
         <div style="display: flex; gap: 10px; flex-direction: column; margin-top: 15px;">
           <button class="btn btn-secondary" onclick="addQuestionRow()">+ Thêm Câu Hỏi</button>
-          <button class="btn btn-success" onclick="saveExam()">💾 Lưu Lên Cloud</button>
+          <button class="btn btn-success" onclick="promptSaveExam()">💾 Lưu Lên Cloud</button>
         </div>
       </div>
     </div>
@@ -334,7 +334,23 @@
       <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12">
       <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
         <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải File Đề PDF Gốc</button>
-        <button class="btn btn-danger" onclick="deleteExamPermanently()">🗑️ Xóa Vĩnh Viễn Trên Cloud</button>
+        <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Vĩnh Viễn Trên Cloud</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL XÁC THỰC MẬT KHẨU -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>🔐 Xác Thực Mật Khẩu Giáo Viên</h3>
+        <button class="close-btn" onclick="closePasswordModal()">✖</button>
+      </div>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;" id="passwordModalDesc">Vui lòng nhập mật khẩu để thực hiện thao tác:</p>
+      <input type="password" id="teacherPasswordInput" placeholder="Nhập mật khẩu...">
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn btn-secondary" style="width: 50%;" onclick="closePasswordModal()">Hủy</button>
+        <button class="btn btn-success" style="width: 50%;" onclick="confirmPasswordAction()">Xác Nhận</button>
       </div>
     </div>
   </div>
@@ -374,6 +390,7 @@
     let tabSwitchCount = 0;
     let studentNameGlobal = '';
     let isExamActive = false;
+    let pendingActionType = ''; // 'save' hoặc 'delete'
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -456,16 +473,56 @@
       reader.onerror = error => reject(error);
     });
 
-    async function saveExam() {
+    // --- HỆ THỐNG MẬT KHẨU BẢO MẬT ---
+    function promptSaveExam() {
+      const code = document.getElementById('examCode').value.trim().toUpperCase();
+      const title = document.getElementById('examTitle').value.trim();
+      if (!code || !title) {
+        alert('Vui lòng nhập Mã bài thi và Tên bài thi trước!');
+        return;
+      }
+      pendingActionType = 'save';
+      document.getElementById('passwordModalDesc').innerText = 'Nhập mật khẩu để TẠO & LƯU bài kiểm tra:';
+      document.getElementById('teacherPasswordInput').value = '';
+      document.getElementById('passwordModal').style.display = 'flex';
+    }
+
+    function promptDeleteExam() {
+      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      if (!code) {
+        alert('Vui lòng nhập Mã bài kiểm tra cần xóa!');
+        return;
+      }
+      pendingActionType = 'delete';
+      document.getElementById('passwordModalDesc').innerText = `Nhập mật khẩu để XÓA VĨNH VIỄN bài [${code}] trên Cloud:`;
+      document.getElementById('teacherPasswordInput').value = '';
+      document.getElementById('passwordModal').style.display = 'flex';
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').style.display = 'none';
+    }
+
+    async function confirmPasswordAction() {
+      const pass = document.getElementById('teacherPasswordInput').value.trim();
+      if (pass.toUpperCase() !== 'THUANBAKHI') {
+        alert('❌ Mật khẩu không chính xác! Vui lòng thử lại.');
+        return;
+      }
+      closePasswordModal();
+
+      if (pendingActionType === 'save') {
+        await executeSaveExam();
+      } else if (pendingActionType === 'delete') {
+        await executeDeleteExam();
+      }
+    }
+
+    async function executeSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
       const duration = parseInt(document.getElementById('examDuration').value);
       const type = document.getElementById('examType').value;
-
-      if (!code || !title) {
-        alert('Vui lòng nhập Mã bài thi và Tên bài thi!');
-        return;
-      }
 
       const qItems = document.querySelectorAll('.q-build-item');
       if (qItems.length === 0) {
@@ -525,6 +582,18 @@
       }
     }
 
+    async function executeDeleteExam() {
+      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      try {
+        await window.dbRemove(window.ref(window.db, 'exams/' + code));
+        await window.dbRemove(window.ref(window.db, 'leaderboard/' + code));
+        alert(`Đã xóa vĩnh viễn bài [${code}] trên Cloud!`);
+        closeAdvancedModal();
+      } catch (err) {
+        alert('Lỗi khi xóa: ' + err.message);
+      }
+    }
+
     for(let i=0; i<5; i++) addQuestionRow();
 
     function openAdvancedModal() { document.getElementById('advancedModal').style.display = 'flex'; }
@@ -547,18 +616,6 @@
         document.body.removeChild(a);
       } else {
         alert('Bài này không có file PDF gốc.');
-      }
-    }
-
-    async function deleteExamPermanently() {
-      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      if (!code) { alert('Nhập mã bài thi!'); return; }
-
-      if (confirm(`⚠️ Xóa vĩnh viễn bài [${code}] trên Cloud?`)) {
-        await window.dbRemove(window.ref(window.db, 'exams/' + code));
-        await window.dbRemove(window.ref(window.db, 'leaderboard/' + code));
-        alert('Đã xóa!');
-        closeAdvancedModal();
       }
     }
 
