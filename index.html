@@ -548,7 +548,10 @@
       let innerHtml = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
           <strong>Câu ${qIndex}</strong>
-          <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.remove();">Xóa</button>
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
+            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove();">Xóa</button>
+          </div>
         </div>
       `;
 
@@ -578,12 +581,36 @@
         `;
       }
 
+      innerHtml += `
+        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:11px;">Điểm số riêng (Trống = tự động phân bổ):</label>
+              <input type="number" class="q-score-custom" placeholder="0.25" step="0.05" style="padding:4px; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:11px;">Gắn ảnh giải thích:</label>
+              <input type="file" class="q-exp-img-input" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
+            </div>
+          </div>
+          <div style="margin-top:6px;">
+            <label style="font-size:11px;">Chú thích / Lời giải chi tiết:</label>
+            <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải..." style="margin:0; font-size:12px;"></textarea>
+          </div>
+        </div>
+      `;
+
       div.innerHTML = innerHtml;
       container.appendChild(div);
 
       if (type === 'tf') {
         updateTfV2Inputs(div.querySelector('.tf-branch-count'));
       }
+    }
+
+    function toggleAdvancedQSettings(btn) {
+      let panel = btn.parentElement.parentElement.parentElement.querySelector('.advanced-q-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
 
     function updateTfV2Inputs(countInput) {
@@ -596,10 +623,13 @@
         html += `
           <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
             <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
-            <select class="tf-branch-ans-${i}" style="width:80px; padding:2px; margin:0; font-size:12px;">
-              <option value="Đ">Đúng</option>
-              <option value="S">Sai</option>
-            </select>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <select class="tf-branch-ans-${i}" style="width:70px; padding:2px; margin:0; font-size:12px;">
+                <option value="Đ">Đúng</option>
+                <option value="S">Sai</option>
+              </select>
+              <input type="number" class="tf-branch-score-${i}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
+            </div>
           </div>
         `;
       }
@@ -630,6 +660,7 @@
       if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật!'); return; }
       closePasswordModal();
       if (pendingActionType === 'save') await executeSaveExam();
+      else if (pendingActionType === 'save_qp') await executeSaveQuickPractice();
     }
 
     async function executeSaveExam() {
@@ -650,9 +681,19 @@
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
-        let defaultScore = 0.25;
+        let customScoreInput = parseFloat(item.querySelector('.q-score-custom').value);
+        let defaultScore = !isNaN(customScoreInput) ? customScoreInput : 0.25;
+        let expText = item.querySelector('.q-explanation').value.trim();
+        let expImgInput = item.querySelector('.q-exp-img-input');
+        let expImgBase64 = '';
+        if (expImgInput && expImgInput.files.length > 0) {
+          expImgBase64 = await fileToBase64(expImgInput.files[0]);
+        }
 
-        let qData = { id: idx + 1, type: qType, score: defaultScore };
+        let qData = {
+          id: idx + 1, type: qType, score: defaultScore,
+          explanation: expText, expImage: expImgBase64
+        };
 
         if (qType === 'mc') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
@@ -661,11 +702,19 @@
         } else if (qType === 'tf') {
           let count = parseInt(item.querySelector('.tf-branch-count').value) || 4;
           let branches = [];
+          let branchScores = [];
+          let tfTotal = 0;
           for (let i = 0; i < count; i++) {
-            branches.push(item.querySelector(`.tf-branch-ans-${i}`).value);
+            let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
+            let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
+            let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
+            branches.push(ans);
+            branchScores.push(bScore);
+            tfTotal += bScore;
           }
           qData.correctAnswer = branches.join(',');
-          rawTotalScore += defaultScore;
+          qData.branchScores = branchScores;
+          rawTotalScore += tfTotal;
           questions.push(qData);
         } else if (qType === 'sa') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
@@ -675,7 +724,12 @@
       }
 
       let scaleFactor = 10 / rawTotalScore;
-      questions.forEach(q => q.score = q.score * scaleFactor);
+      questions.forEach(q => {
+        q.score = q.score * scaleFactor;
+        if (q.branchScores) {
+          q.branchScores = q.branchScores.map(bs => bs * scaleFactor);
+        }
+      });
 
       let mediaData = { type: type, files: [] };
       if (type === 'pdf') {
@@ -730,7 +784,7 @@
       }
     }
 
-    // --- TẠO BÀI LUYỆN NHANH ---
+    // --- TẠO BÀI LUYỆN NHANH (CÓ NÚT THU GỌN CHÚ THÍCH ...) ---
     function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -739,7 +793,10 @@
       div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
           <strong>Câu ${idx}</strong>
-          <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.remove()">Xóa</button>
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
+            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove()">Xóa</button>
+          </div>
         </div>
         <label>Nội dung câu hỏi:</label>
         <textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi..."></textarea>
@@ -761,11 +818,15 @@
 
         <div class="qp-answers-wrapper"></div>
 
-        <div style="margin-top: 8px; background: #fff; padding: 8px; border-radius: 4px; border: 1px dashed #ccc;">
+        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
+          <div style="margin-bottom:6px;">
+            <label style="font-size:11px;">Điểm số câu hỏi:</label>
+            <input type="number" class="qp-q-score" value="0.25" step="0.05" style="padding:4px; margin:0;">
+          </div>
           <label style="font-size: 11px;">Chú thích / Lời giải chi tiết:</label>
           <textarea class="qp-q-exp" rows="2" placeholder="Nhập giải thích..." style="margin-bottom:6px;"></textarea>
           <label style="font-size: 11px;">Hình ảnh giải thích (tùy chọn):</label>
-          <input type="file" class="qp-exp-img" accept="image/*">
+          <input type="file" class="qp-exp-img" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
         </div>
       `;
       container.appendChild(div);
@@ -805,14 +866,6 @@
       document.getElementById('passwordModal').style.display = 'flex';
     }
 
-    async function confirmPasswordAction() {
-      const pass = document.getElementById('teacherPasswordInput').value.trim();
-      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật!'); return; }
-      closePasswordModal();
-      if (pendingActionType === 'save') await executeSaveExam();
-      else if (pendingActionType === 'save_qp') await executeSaveQuickPractice();
-    }
-
     async function executeSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
@@ -839,13 +892,14 @@
           });
         }
         let correctOpt = item.querySelector('.qp-correct-opt').value;
+        let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || 0.25;
         let expText = item.querySelector('.qp-q-exp').value.trim();
         let expImgInput = item.querySelector('.qp-exp-img');
         let expImgB64 = expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
         questions.push({
           id: idx + 1, question: qText, image: qImgB64,
-          options: options, correct: correctOpt,
+          options: options, correct: correctOpt, score: scoreVal,
           explanation: expText, expImage: expImgB64
         });
       }
@@ -957,7 +1011,6 @@
         studentNameGlobal = name;
         launchQpPracticeInterface();
       } else {
-        // Thi chính thức hoặc Live Exam
         const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
         if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
         currentExamData = snapshot.val();
@@ -1102,12 +1155,12 @@
           let correctArr = q.correctAnswer.split(',');
           let studentArr = [];
           let subEarned = 0;
-          let branchScore = q.score / correctArr.length;
+          let branchScores = q.branchScores || correctArr.map(() => q.score / correctArr.length);
           correctArr.forEach((ansCorrect, i) => {
             let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
             let val = row && row.dataset.val ? row.dataset.val : '_';
             studentArr.push(val);
-            if (val === ansCorrect) subEarned += branchScore;
+            if (val === ansCorrect) subEarned += branchScores[i];
           });
           studentAns = studentArr.join(',');
           qEarned = subEarned;
@@ -1156,22 +1209,26 @@
           optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
         });
 
+        let hasExp = q.explanation || q.expImage;
+
         container.innerHTML += `
           <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
-            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1}: ${q.question}</p>
+            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
             ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
             <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
               ${optHtml}
             </div>
             <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
             
-            <div style="margin-top: 6px;">
-              <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleQpExp(${q.id})">...</button>
-              <div id="qp-exp-${q.id}" style="display:none; background:#e7f3ff; padding:8px; margin-top:5px; border-radius:4px; font-size:13px;">
-                ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">` : ''}
+            ${hasExp ? `
+              <div style="margin-top: 6px;">
+                <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
+                <div id="qp-exp-${q.id}" class="explanation-box">
+                  ${q.explanation ? `<p>${q.explanation}</p>` : ''}
+                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">` : ''}
+                </div>
               </div>
-            </div>
+            ` : ''}
           </div>
         `;
       });
@@ -1216,24 +1273,33 @@
 
     function toggleQpExp(qid) {
       let box = document.getElementById(`qp-exp-${qid}`);
-      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+      let btn = box.previousElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
     }
 
     async function submitQpPractice() {
       if (!confirm('Xác nhận nộp bài luyện nhanh?')) return;
       clearInterval(qpTimer);
 
-      let totalCorrect = 0;
-      let totalQ = currentQpData.questions.length;
+      let totalEarned = 0;
+      let totalMax = 0;
 
       currentQpData.questions.forEach(q => {
+        let qScore = q.score || 0.25;
+        totalMax += qScore;
         let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
         let val = group ? group.dataset.val : '';
-        if (val === q.correct) totalCorrect++;
+        if (val === q.correct) totalEarned += qScore;
       });
 
-      let finalScore = Math.round((totalCorrect / totalQ) * 10 * 100) / 100;
-      alert(`🎉 Hoàn thành bài luyện! Bạn đạt ${finalScore} / 10 điểm (${totalCorrect}/${totalQ} câu đúng).`);
+      let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
+      alert(`🎉 Hoàn thành bài luyện! Bạn đạt ${finalScore} / 10 điểm.`);
 
       await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
         name: studentNameGlobal, score: finalScore, timeSpent: qpTimeLeft, timestamp: Date.now()
