@@ -143,16 +143,15 @@
           <div>
             <label>Hình thức tải đề:</label>
             <select id="examType" onchange="toggleExamCreationType()">
-              <option value="pdf">Tải file Đề Thi (PDF, Word)</option>
+              <option value="pdf">Tải file PDF đề thi</option>
               <option value="image">Tải Ảnh Đề Thi</option>
             </select>
           </div>
         </div>
 
-        <!-- ĐÃ CẬP NHẬT: Thêm định dạng docx và doc vào thuộc tính accept -->
         <div id="pdfUploadSection">
-          <label>Chọn File Đề Thi (.pdf, .docx, .doc):</label>
-          <input type="file" id="teacherPdfInput" accept="application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword">
+          <label>Chọn File Đề Thi (.pdf):</label>
+          <input type="file" id="teacherPdfInput" accept="application/pdf">
         </div>
 
         <div id="imageUploadSection" style="display: none;">
@@ -462,7 +461,7 @@
         <h3>🔐 Xác Thực Bảo Mật Giáo Viên</h3>
         <button class="close-btn" onclick="closePasswordModal()">✖</button>
       </div>
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng nhập mật khẩu bảo mật (THUANBAKHI):</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng nhập mật khẩu bảo mật (********):</p>
       <input type="password" id="teacherPasswordInput" placeholder="Nhập mật khẩu...">
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn btn-secondary" style="width: 50%;" onclick="closePasswordModal()">Hủy</button>
@@ -488,7 +487,7 @@
 
       <div style="margin-bottom: 15px;">
         <label>Mật Khẩu Bảo Mật Quản Lý (Ẩn):</label>
-        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (THUANBAKHI)..." style="margin: 0;">
+        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (********)..." style="margin: 0;">
       </div>
 
       <div style="margin-bottom: 15px;">
@@ -496,7 +495,7 @@
       </div>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải File Đề Gốc</button>
+        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF Gốc</button>
         <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
       </div>
 
@@ -720,6 +719,7 @@
       wrapper.innerHTML = html;
     }
 
+    // --- TÍNH NĂNG MỚI: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ MẪU MÔ PHỎNG ẢNH ---
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
       
@@ -741,7 +741,7 @@
       const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
       sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
 
-      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu thành công!');
+      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn) vào hệ thống thành công!');
       input.value = '';
     }
 
@@ -877,12 +877,12 @@
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
       if (!snapshot.exists()) { alert('Không tìm thấy!'); return; }
       const exam = snapshot.val();
-      if (exam.media && exam.media.files.length > 0) {
+      if (exam.media && exam.media.type === 'pdf' && exam.media.files.length > 0) {
         let a = document.createElement('a');
         a.href = exam.media.files[0];
-        a.download = `De_${code}`;
+        a.download = `De_${code}.pdf`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      } else { alert('Đề này không có file đính kèm.'); }
+      } else { alert('Đề này không có file PDF.'); }
     }
 
     async function promptDeleteExam() {
@@ -957,6 +957,7 @@
       alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
+    // --- TẠO BÀI LUYỆN NHANH ---
     function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -1164,6 +1165,7 @@
       }
     }
 
+    // --- HỌC SINH THAM GIA ---
     async function startStudentParticipation() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
@@ -1267,27 +1269,16 @@
       const mediaContainer = document.getElementById('examMediaContainer');
       mediaContainer.innerHTML = '';
 
-      if (currentExamData.media && currentExamData.media.files.length > 0) {
-        let fileData = currentExamData.media.files[0];
-        // Kiểm tra nếu là file PDF để render bằng PDF.js
-        if (fileData.startsWith('data:application/pdf') || currentExamData.media.type === 'pdf') {
-          try {
-            let pdf = await pdfjsLib.getDocument(fileData).promise;
-            for (let i = 1; i <= pdf.numPages; i++) {
-              let page = await pdf.getPage(i);
-              let viewport = page.getViewport({ scale: 1.1 });
-              let canvas = document.createElement('canvas');
-              canvas.className = 'pdf-canvas';
-              canvas.height = viewport.height; canvas.width = viewport.width;
-              await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-              mediaContainer.appendChild(canvas);
-            }
-          } catch(e) {
-            mediaContainer.innerHTML = `<p style="color:white; padding:20px;">Không thể hiển thị trực tiếp file này. <a href="${fileData}" download="DeThi" style="color:#ffeb3b;">Tải xuống file đề</a></p>`;
-          }
-        } else {
-          // Các định dạng file khác (hoặc Word docx/doc) hiển thị liên kết tải về
-          mediaContainer.innerHTML = `<div style="text-align:center; padding:40px; color:white;"><h3>📄 Tài liệu đính kèm</h3><p style="margin:10px 0;">Đề thi sử dụng định dạng văn bản Word.</p><a href="${fileData}" download="DeThi" class="btn btn-success" style="display:inline-block; width:auto; text-decoration:none;">Tải xuống File Đề Thi</a></div>`;
+      if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
+        let pdf = await pdfjsLib.getDocument(currentExamData.media.files[0]).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          let page = await pdf.getPage(i);
+          let viewport = page.getViewport({ scale: 1.1 });
+          let canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          canvas.height = viewport.height; canvas.width = viewport.width;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+          mediaContainer.appendChild(canvas);
         }
       } else if (currentExamData.media.type === 'image') {
         currentExamData.media.files.forEach(imgB64 => {
@@ -1430,6 +1421,7 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
+    // --- LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
