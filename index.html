@@ -80,8 +80,25 @@
     .spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Thông báo hoàn thành loading mờ dần trong 5 giây */
-    #loadingCompleteToast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ffffff; border: 2px solid #198754; color: #198754; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999999; display: none; transition: opacity 5s ease-out; opacity: 1; }
+    /* Thông báo hoàn thành loading màu xanh, mờ dần trong 5 giây */
+    #loadingCompleteToast { 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: #ffffff; 
+      border: 2px solid #198754; 
+      color: #198754; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      z-index: 999999; 
+      display: none; 
+      transition: opacity 5s ease-out; 
+      opacity: 1; 
+    }
 
     @media (max-width: 900px) {
       .navbar { flex-direction: column; align-items: stretch; text-align: center; padding: 8px; }
@@ -99,9 +116,9 @@
   </div>
 
   <!-- THÔNG BÁO HOÀN THÀNH LOADING (MÀU XANH, MỜ DẦN TRONG 5 GIÂY) -->
-  <div id="loadingCompleteToast">Hoàn thành loading</div>
+  <div id="loadingCompleteToast">Hoàn thành</div>
 
-  <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN (HÌNH VUÔNG Ở GIỮA MÀN HÌNH) -->
+  <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN -->
   <div class="modal-overlay" id="cheatAlertModal">
     <div class="modal-box" style="text-align: center; max-width: 400px; padding: 25px;">
       <div style="font-size: 40px; color: #dc3545; margin-bottom: 10px;">⚠️</div>
@@ -120,15 +137,15 @@
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 6]</p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 6]</p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ V2[cite: 6]</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -189,7 +206,6 @@
           <input type="file" id="teacherImgInput" accept="image/*" multiple>
         </div>
 
-        <!-- Cấu hình phòng thi chuyên dụng -->
         <div style="margin-top: 15px;">
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold;">
             <input type="checkbox" id="enableLiveRoom" onchange="toggleLiveRoomConfig()" style="width: 18px; height: 18px;"> 
@@ -209,7 +225,6 @@
           </div>
         </div>
 
-        <!-- TÍNH NĂNG THÔNG MINH: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ ẢNH -->
         <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-top: 20px;">
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
           <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
@@ -219,21 +234,18 @@
         <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ (có cơ chế điểm nhánh) | Trả lời ngắn: 0.5đ.</p>
 
-        <!-- MỤC I: TRẮC NGHIỆM -->
         <div class="section-title">
           <span>I. TRẮC NGHIỆM (A, B, C, D) [Mặc định 0.25đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
         </div>
         <div id="builderMC"></div>
 
-        <!-- MỤC II: ĐÚNG / SAI -->
         <div class="section-title">
           <span>II. ĐÚNG / SAI (Cơ chế điểm nhánh: 0.1 / 0.25 / 0.5 / 1.0đ)</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
         </div>
         <div id="builderTF"></div>
 
-        <!-- MỤC III: TRẢ LỜI NGẮN -->
         <div class="section-title">
           <span>III. TRẢ LỜI NGẮN [Mặc định 0.5đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
@@ -533,7 +545,6 @@
         <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
       </div>
 
-      <!-- BẢNG ĐIỀU KHIỂN PHÒNG THI LIVE (CHUYÊN DỤNG) -->
       <div id="liveRoomDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
           <b>🛡️ Trạng Thái Phòng Live (<span id="liveRoomCount">0</span> học sinh)</b>
@@ -604,7 +615,6 @@
     let activeQpRoomListener = null;
     let isQpActive = false;
 
-    // Biến cho cơ chế chống gian lận mới (Tab-switching / Blur quá 7 giây)
     let cheatWarnings = 0;
     let totalTabLeaveTime = 0; 
     let tabLeaveStartTime = null;
@@ -654,7 +664,7 @@
       }
     }
 
-    // --- HIỆU ỨNG LOAD TRANG VÀ THÔNG BÁO HOÀN THÀNH MỜ DẦN TRONG 5 GIÂY ---
+    // --- HIỆU ỨNG LOADING VÀ HIỂN THỊ CHỮ HOÀN THÀNH MỜ DẦN TRONG 5 GIÂY ---
     function showLoadingSequence(callback) {
       const overlay = document.getElementById('loadingOverlay');
       overlay.style.display = 'flex';
@@ -663,7 +673,6 @@
         overlay.style.display = 'none';
         if (callback) callback();
         
-        // Hiển thị thông báo "Hoàn thành loading" màu xanh, mờ dần trong 5 giây
         const toast = document.getElementById('loadingCompleteToast');
         toast.style.display = 'block';
         toast.style.opacity = '1';
@@ -672,12 +681,11 @@
           toast.style.opacity = '0';
           setTimeout(() => {
             toast.style.display = 'none';
-          }, 5000); // 5 giây transition mờ dần
+          }, 5000); 
         }, 300);
       }, 1000);
     }
 
-    // --- XÂY DỰNG ĐỀ THI CHÍNH THỨC ---
     function addQuestionV2(type, defaultAns = '', customBranches = null) {
       let containerId = type === 'mc' ? 'builderMC' : (type === 'tf' ? 'builderTF' : 'builderSA');
       let container = document.getElementById(containerId);
@@ -1015,7 +1023,6 @@
       alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
-    // --- TẠO BÀI LUYỆN NHANH ---
     function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -1223,7 +1230,6 @@
       }
     }
 
-    // --- HỌC SINH THAM GIA ---
     async function startStudentParticipation() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
@@ -1400,7 +1406,6 @@
       switchView('studentExamView');
     }
 
-    // --- CƠ CHẾ CHỐNG GIAN LÂN MỚI (Quá 7 giây gửi cảnh báo) ---
     async function handleTabLeaveEvent(durationAway) {
       if (durationAway > CHEAT_TIME_THRESHOLD) {
         cheatWarnings++;
@@ -1545,7 +1550,6 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
