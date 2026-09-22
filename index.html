@@ -606,9 +606,9 @@
 
     // Biến cho cơ chế chống gian lận mới (Tab-switching / Blur quá 7 giây)
     let cheatWarnings = 0;
-    let totalTabLeaveTime = 0; // tổng thời gian rời phòng thi (tính bằng ms hoặc giây)
+    let totalTabLeaveTime = 0; 
     let tabLeaveStartTime = null;
-    const CHEAT_TIME_THRESHOLD = 7000; // 7 giây
+    const CHEAT_TIME_THRESHOLD = 7000; 
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -654,7 +654,7 @@
       }
     }
 
-    // --- HIỆU ỨNG LOAD TRANG MỚI VÀ MỜ DẦN SAU 5 GIÂY ---
+    // --- HIỆU ỨNG LOAD TRANG VÀ THÔNG BÁO HOÀN THÀNH MỜ DẦN TRONG 5 GIÂY ---
     function showLoadingSequence(callback) {
       const overlay = document.getElementById('loadingOverlay');
       overlay.style.display = 'flex';
@@ -663,7 +663,7 @@
         overlay.style.display = 'none';
         if (callback) callback();
         
-        // Hiển thị chữ hoàn thành loading (màu xanh) rồi mờ dần trong 5 giây
+        // Hiển thị thông báo "Hoàn thành loading" màu xanh, mờ dần trong 5 giây
         const toast = document.getElementById('loadingCompleteToast');
         toast.style.display = 'block';
         toast.style.opacity = '1';
@@ -672,7 +672,7 @@
           toast.style.opacity = '0';
           setTimeout(() => {
             toast.style.display = 'none';
-          }, 5000); // Mờ dần trong 5 giây
+          }, 5000); // 5 giây transition mờ dần
         }, 300);
       }, 1000);
     }
@@ -1393,7 +1393,6 @@
         if (timeLeft <= 0) { clearInterval(examTimer); alert('⌛ Hết giờ!'); submitStudentExam(true); }
       }, 1000);
 
-      // Kích hoạt chống gian lận mới
       cheatWarnings = 0;
       totalTabLeaveTime = 0;
       document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
@@ -1407,13 +1406,11 @@
         cheatWarnings++;
         totalTabLeaveTime += durationAway;
 
-        // Hiển thị khung hình vuông ở giữa màn hình theo yêu cầu
         document.getElementById('cheatModalCount').innerText = cheatWarnings;
         document.getElementById('cheatModalTime').innerText = (totalTabLeaveTime / 1000).toFixed(1) + ' giây';
         document.getElementById('cheatAlertModal').style.display = 'flex';
         document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
 
-        // Đồng bộ lên firebase nếu là phòng thi chuyên dụng
         if (currentExamData.isLiveRoom && studentSessionKeyGlobal) {
           await window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
             cheatWarnings: cheatWarnings,
@@ -1421,7 +1418,6 @@
           });
         }
 
-        // Kiểm tra loại phòng thi: Tự do không giới hạn, Chuyên dụng tối đa 10 lần (> 10 lần cưỡng chế nộp bài)
         if (currentExamData.isLiveRoom && cheatWarnings > 10) {
           alert('🚨 Bạn đã vi phạm quá 10 lần ở phòng thi chuyên dụng. Hệ thống sẽ cưỡng chế nộp bài!');
           dismissCheatAlert();
@@ -1536,7 +1532,6 @@
       document.getElementById('resultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
       document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
 
-      // Lưu kết quả lên bảng xếp hạng kèm thông tin vi phạm
       await window.dbPush(window.ref(window.db, 'leaderboard/' + currentExamData.code), {
         name: studentNameGlobal, 
         score: finalScore, 
@@ -1710,7 +1705,6 @@
       }
     }
 
-    // --- XẾP HẠNG (Thêm phần ">" để xem chi tiết số lần cảnh cáo và thời gian rời tab) ---
     async function loadLeaderboard() {
       const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
       const tbody = document.getElementById('lbTableBody');
