@@ -13,7 +13,7 @@
 
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f0f2f5; color: #333; }
+    body { background-color: #f0f2f5; color: #333; -webkit-user-select: none; user-select: none; } /* Chống bôi đen copy */
     
     .navbar { background: #1877f2; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
     .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
@@ -43,8 +43,8 @@
     .q-build-item { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
     .advanced-settings-panel { background: #fffbe6; border: 1px solid #ffe58f; padding: 10px; border-radius: 6px; margin-top: 10px; display: none; }
     
-    .exam-layout { display: flex; gap: 15px; height: calc(100vh - 100px); }
-    .exam-left { flex: 6; background: #525659; border-radius: 8px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+    .exam-layout { display: flex; gap: 15px; height: calc(100vh - 100px); position: relative; }
+    .exam-left { flex: 6; background: #525659; border-radius: 8px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; position: relative; }
     .exam-right { flex: 4; background: white; border-radius: 8px; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
     .img-preview, .pdf-canvas { max-width: 100%; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
@@ -81,6 +81,14 @@
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
 
+    /* Lớp mờ bảo vệ chống quét AI/Screen Sharing */
+    #antiAiShield {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px);
+      z-index: 999; display: none; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 20px; color: #d32f2f; font-weight: bold;
+    }
+
     @media (max-width: 900px) {
       .navbar { flex-direction: column; align-items: stretch; text-align: center; padding: 8px; }
       .nav-tabs { justify-content: center; }
@@ -88,11 +96,6 @@
       .exam-layout { flex-direction: column; height: auto !important; gap: 10px; }
       .exam-left { height: 50vh; width: 100%; }
       .exam-right { height: auto; max-height: 50vh; width: 100%; }
-    }
-    @media (max-width: 900px) and (orientation: landscape) {
-      .exam-layout { flex-direction: row !important; height: calc(100vh - 80px) !important; }
-      .exam-left { height: 100% !important; flex: 6; }
-      .exam-right { height: 100% !important; max-height: none !important; flex: 4; }
     }
   </style>
 </head>
@@ -275,6 +278,14 @@
     <!-- ==================== HỌC SINH: LÀM BÀI ==================== -->
     <div id="studentExamView" class="view-section">
       <div class="exam-layout">
+        <!-- Lớp chắn chống quay/chụp màn hình gửi AI -->
+        <div id="antiAiShield">
+          <div style="font-size: 50px; margin-bottom: 10px;">🚨</div>
+          <h2 style="font-size: 20px; margin-bottom: 8px;">PHÁT HIỆN HÀNH VI QUAY / CHỤP / CHIA SẺ MÀN HÌNH!</h2>
+          <p style="font-size: 14px; color: #444; max-width: 400px; line-height: 1.5;">Hệ thống bảo mật nghiêm cấm chia sẻ màn hình, dùng tool hoặc quay chụp màn hình gửi AI. Vui lòng tắt ngay lập tức để tiếp tục bài thi.</p>
+          <button class="btn btn-success" style="width: auto; margin-top: 15px; padding: 10px 20px;" onclick="dismissShield()">Đã tắt & Tiếp tục làm bài</button>
+        </div>
+
         <div class="exam-left" id="examMediaContainer"></div>
         <div class="exam-right">
           <div class="exam-header">
@@ -476,7 +487,7 @@
     let pendingActionType = ''; 
     let activeStudentRoomListener = null;
     let managedExamCodeGlobal = '';
-    let tabAwayTimer = null; // Biến đếm thời gian rời tab
+    let tabAwayTimer = null;
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -1014,30 +1025,57 @@
       });
     }
 
-    // --- HỆ THỐNG CHỐNG GIAN LẬN: TRỄ 5 GIÂY ---
+    // --- HỆ THỐNG CHỐNG GIAN LẬN: TAB (TRỄ 5 GIÂY) ---
     window.addEventListener('blur', function() {
       if (isExamActive) {
-        // Xóa bộ đếm cũ nếu có
         if (tabAwayTimer) clearTimeout(tabAwayTimer);
-        
-        // Bắt đầu đếm 5 giây
         tabAwayTimer = setTimeout(function() {
           if (isExamActive) {
             tabSwitchCount++;
             document.getElementById('cheatCountText').innerText = tabSwitchCount;
             document.getElementById('cheatModal').style.display = 'flex';
           }
-        }, 5000); // 5000ms = 5 giây
+        }, 5000);
       }
     });
 
     window.addEventListener('focus', function() {
-      // Nếu học sinh quay lại trước 5 giây, hủy lệnh phạt
       if (tabAwayTimer) {
         clearTimeout(tabAwayTimer);
         tabAwayTimer = null;
       }
     });
+
+    // --- HỆ THỐNG CHỐNG QUAY / CHỤP / CHIA SẺ MÀN HÌNH GỬI AI ---
+    // 1. Chặn phím PrintScreen hoặc lệnh chụp ảnh hệ thống
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'PrintScreen' || e.keyCode === 44) {
+        navigator.clipboard.writeText(''); // Xóa clipboard
+        triggerAntiAiAlert("Phát hiện phím chụp ảnh màn hình (PrintScreen)!");
+      }
+    });
+
+    // 2. Phát hiện khi người dùng rê chuột ra khỏi cửa sổ trình duyệt (nghi ngờ sang app quay màn hình/AI chat)
+    document.addEventListener('mouseleave', () => {
+      if (isExamActive) {
+        document.getElementById('antiAiShield').style.display = 'flex';
+      }
+    });
+
+    function dismissShield() {
+      document.getElementById('antiAiShield').style.display = 'none';
+      tabSwitchCount++; // Tăng nhẹ số lần cảnh báo gian lận
+      document.getElementById('cheatCountText').innerText = tabSwitchCount;
+    }
+
+    function triggerAntiAiAlert(reason) {
+      if (isExamActive) {
+        tabSwitchCount++;
+        document.getElementById('cheatCountText').innerText = tabSwitchCount;
+        document.getElementById('cheatModalText').innerHTML = `${reason}<br>Số lần vi phạm: <b id="cheatCountText" style="color: #d32f2f;">${tabSwitchCount}</b>`;
+        document.getElementById('cheatModal').style.display = 'flex';
+      }
+    }
 
     function closeCheatModal() { document.getElementById('cheatModal').style.display = 'none'; }
     function selectOpt(btn, val) {
@@ -1130,7 +1168,7 @@
       let timeSpentFormatted = `${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
 
       document.getElementById('resultScore').innerText = `${finalScoreFormatted} / 10`;
-      document.getElementById('resultDetailText').innerText = `Thời gian: ${timeSpentFormatted} | Số lần rời tab: ${tabSwitchCount}`;
+      document.getElementById('resultDetailText').innerText = `Thời gian: ${timeSpentFormatted} | Số lần vi phạm: ${tabSwitchCount}`;
       document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
 
       const record = {
