@@ -1245,11 +1245,24 @@
         }
 
         totalEarnedScore += qEarned;
+
+        let hasExp = q.explanation || q.expImage;
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
+
         reviewHtml += `
           <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
             <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span>
             <div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>
             ${!isCorrect ? `<div>- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}
+            
+            ${hasExp ? `
+              <div style="margin-top: 6px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
           </div>
         `;
       });
@@ -1385,6 +1398,7 @@
         let isCorrect = (val === q.correct);
         if (isCorrect) totalEarned += qScore;
 
+        let hasExp = q.explanation || q.expImage;
         let expContent = '';
         if (q.explanation) expContent += `<p>${q.explanation}</p>`;
         if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
@@ -1396,7 +1410,7 @@
               - Bạn chọn: <b style="color:${isCorrect ? 'green' : 'red'};">${val || 'Chưa chọn'}</b><br>
               ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
             </div>
-            ${expContent ? `
+            ${hasExp ? `
               <div style="margin-top:5px;">
                 <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
                 <div class="explanation-box">${expContent}</div>
