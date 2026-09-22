@@ -210,6 +210,16 @@
         </div>
         <div id="builderSA"></div>
 
+        <!-- NÚT THÊM CÂU HỎI NHANH CHUNG -->
+        <div style="margin-top: 15px; background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px dashed #ccc; text-align: center;">
+          <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #444;">Vui lòng tạo thêm 1 câu hỏi nhanh tại đây:</p>
+          <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-success" style="width: auto; font-size: 13px; padding: 6px 12px;" onclick="addQuestionV2('mc')">+ Thêm Trắc Nghiệm</button>
+            <button class="btn btn-success" style="width: auto; font-size: 13px; padding: 6px 12px;" onclick="addQuestionV2('tf')">+ Thêm Đúng/Sai</button>
+            <button class="btn btn-success" style="width: auto; font-size: 13px; padding: 6px 12px;" onclick="addQuestionV2('sa')">+ Thêm Trả Lời Ngắn</button>
+          </div>
+        </div>
+
         <button class="btn btn-success" style="margin-top: 20px; padding: 12px;" onclick="promptSaveExam()">💾 Lưu & Phát Hành Đề Thi Lên Cloud</button>
       </div>
     </div>
@@ -581,8 +591,8 @@
     let managedQpCodeGlobal = '';
     let activeQpRoomListener = null;
     let isQpActive = false;
-    let currentQpIndex = 0; // Biến lưu chỉ số câu hỏi đang làm của bài luyện nhanh
-    let qpUserAnswers = {}; // Lưu trữ lựa chọn của học sinh theo qid
+    let currentQpIndex = 0;
+    let qpUserAnswers = {};
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -628,7 +638,6 @@
       }
     }
 
-    // --- XÂY DỰNG ĐỀ THI CHÍNH THỨC ---
     function addQuestionV2(type, defaultAns = '', customBranches = null) {
       let containerId = type === 'mc' ? 'builderMC' : (type === 'tf' ? 'builderTF' : 'builderSA');
       let container = document.getElementById(containerId);
@@ -969,7 +978,6 @@
       alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
-    // --- TẠO BÀI LUYỆN NHANH ---
     function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -1177,7 +1185,6 @@
       }
     }
 
-    // --- HỌC SINH THAM GIA ---
     async function startStudentParticipation() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
@@ -1433,7 +1440,6 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- LÀM BÀI LUYỆN NHANH (HIỂN THỊ TỪNG CÂU 1 CÓ NÚT TIẾP TỤC / QUAY LẠI) ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       currentQpIndex = 0;
@@ -1500,7 +1506,6 @@
         </div>
       `;
 
-      // Cập nhật trạng thái hiển thị của nút Điều hướng
       document.getElementById('qpPrevBtn').style.display = currentQpIndex === 0 ? 'none' : 'block';
       
       if (currentQpIndex === totalQ - 1) {
@@ -1511,7 +1516,6 @@
         document.getElementById('qpSubmitBtn').style.display = 'none';
       }
 
-      // Nếu đã chọn đáp án từ trước, hiển thị trạng thái đã chọn cho học sinh
       if (savedAnswer) {
         let qObj = currentQpData.questions.find(item => item.id === q.id);
         let feedback = document.getElementById(`qp-feedback-${q.id}`);
@@ -1548,7 +1552,7 @@
       if (group.dataset.locked === "true") return; 
       group.dataset.locked = "true";
 
-      qpUserAnswers[qid] = label; // Lưu đáp án học sinh chọn
+      qpUserAnswers[qid] = label;
 
       group.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = 'none');
       btn.style.background = '#1877f2'; btn.style.color = 'white';
