@@ -75,6 +75,11 @@
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
 
+    /* Màn hình Loading khi vào thi */
+    #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
+    .loader-bar-container { width: 300px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+    .loader-bar-fill { width: 0%; height: 100%; background: #1877f2; transition: width 0.1s linear; }
+
     @media (max-width: 900px) {
       .navbar { flex-direction: column; align-items: stretch; text-align: center; padding: 8px; }
       .nav-tabs { justify-content: center; }
@@ -84,21 +89,31 @@
 </head>
 <body>
 
+  <!-- MÀN HÌNH LOADING KHI BẤM THAM GIA / VÀO THI -->
+  <div id="loadingOverlay">
+    <div style="font-size: 45px; margin-bottom: 10px;">⚡</div>
+    <h3 id="loadingText" style="color: #1877f2; font-size: 18px;">Đang tải tài nguyên đề thi...</h3>
+    <div class="loader-bar-container">
+      <div class="loader-bar-fill" id="loaderBarFill"></div>
+    </div>
+    <p id="loadingStatusSub" style="font-size: 13px; color: #666; margin-top: 8px;">Vui lòng chờ trong giây lát...</p>
+  </div>
+
   <!-- BẢNG THÔNG BÁO GIỚI THIỆU -->
   <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 15px;">
     <div style="background: white; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 6]</p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 6]</p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2[cite: 6]</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -182,30 +197,30 @@
         <!-- TÍNH NĂNG THÔNG MINH: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ ẢNH -->
         <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-top: 20px;">
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án (như mẫu chuẩn bên trên) vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
           <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processKeyImage(this)">
         </div>
 
         <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm chuẩn tự động quy đổi về 10.</p>
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ (có cơ chế điểm nhánh) | Trả lời ngắn: 0.5đ.</p>
 
         <!-- MỤC I: TRẮC NGHIỆM -->
         <div class="section-title">
-          <span>I. TRẮC NGHIỆM (A, B, C, D)</span>
+          <span>I. TRẮC NGHIỆM (A, B, C, D) [Mặc định 0.25đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
         </div>
         <div id="builderMC"></div>
 
         <!-- MỤC II: ĐÚNG / SAI -->
         <div class="section-title">
-          <span>II. ĐÚNG / SAI (Nhiều nhánh tùy chỉnh)</span>
+          <span>II. ĐÚNG / SAI (Cơ chế điểm nhánh: 0.1 / 0.25 / 0.5 / 1.0đ)</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
         </div>
         <div id="builderTF"></div>
 
         <!-- MỤC III: TRẢ LỜI NGẮN -->
         <div class="section-title">
-          <span>III. TRẢ LỜI NGẮN</span>
+          <span>III. TRẢ LỜI NGẮN [Mặc định 0.5đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
         </div>
         <div id="builderSA"></div>
@@ -288,6 +303,10 @@
 
     <!-- ==================== HỌC SINH: LÀM BÀI CHÍNH THỨC ==================== -->
     <div id="studentExamView" class="view-section">
+      <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px 15px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+        <span>🛡️ <b>Chế độ chống gian lân đang bật:</b> Chuyển tab quá 5 giây sẽ bị cảnh báo!</span>
+        <span id="cheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Cảnh báo: 0/3</span>
+      </div>
       <div class="exam-layout">
         <div class="exam-left" id="examMediaContainer"></div>
         <div class="exam-right">
@@ -569,6 +588,11 @@
     let activeQpRoomListener = null;
     let isQpActive = false;
 
+    // Biến cho cơ chế chống gian lân (Tab-switching / Blur)
+    let cheatWarnings = 0;
+    let tabLeaveStartTime = null;
+    const CHEAT_TIME_THRESHOLD = 5000; // 5 giây
+
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
@@ -613,7 +637,39 @@
       }
     }
 
-    // --- XÂY DỰNG ĐỀ THI CHÍNH THỨC ---
+    // --- HIỆU ỨNG LOAD TRANG KHI BẤM BẮT ĐẦU ---
+    function showLoadingSequence(callback) {
+      const overlay = document.getElementById('loadingOverlay');
+      const fill = document.getElementById('loaderBarFill');
+      const text = document.getElementById('loadingText');
+      const sub = document.getElementById('loadingStatusSub');
+
+      overlay.style.display = 'flex';
+      fill.style.width = '0%';
+      text.innerText = 'Đang kết nối dữ liệu đề thi...';
+      sub.innerText = 'Vui lòng chờ trong giây lát...';
+
+      let progress = 0;
+      let interval = setInterval(() => {
+        progress += 10;
+        fill.style.width = progress + '%';
+        if (progress === 40) {
+          text.innerText = 'Đang tải tài nguyên đề thi...';
+        } else if (progress === 80) {
+          text.innerText = 'Hoàn tất!';
+          sub.innerText = 'Chuẩn bị vào làm bài...';
+        }
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            overlay.style.display = 'none';
+            if (callback) callback();
+          }, 250);
+        }
+      }, 50);
+    }
+
+    // --- XÂY DỰNG ĐỀ THI CHÍNH THỨC (Cập nhật điểm cơ bản chuẩn) ---
     function addQuestionV2(type, defaultAns = '', customBranches = null) {
       let containerId = type === 'mc' ? 'builderMC' : (type === 'tf' ? 'builderTF' : 'builderSA');
       let container = document.getElementById(containerId);
@@ -621,6 +677,9 @@
       let div = document.createElement('div');
       div.className = 'q-build-item';
       div.dataset.type = type;
+
+      // Điểm mặc định theo yêu cầu: MC = 0.25, TF = 1.0 (phân bổ nhánh), SA = 0.5
+      let defaultScoreVal = type === 'mc' ? 0.25 : (type === 'tf' ? 1.0 : 0.5);
 
       let innerHtml = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
@@ -666,8 +725,8 @@
         <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <div>
-              <label style="font-size:11px;">Điểm số riêng (Trống = tự động phân bổ):</label>
-              <input type="number" class="q-score-custom" placeholder="0.25" step="0.05" style="padding:4px; margin:0;">
+              <label style="font-size:11px;">Điểm số riêng:</label>
+              <input type="number" class="q-score-custom" value="${defaultScoreVal}" step="0.05" style="padding:4px; margin:0;">
             </div>
             <div>
               <label style="font-size:11px;">Gắn ảnh giải thích:</label>
@@ -696,12 +755,17 @@
 
     function updateTfV2Inputs(countInput, presetValues = null) {
       let wrapper = countInput.parentElement.querySelector('.tf-branches-builder');
-      let count = parseInt(countInput.value) || 1;
+      let count = parseInt(countInput.value) || 4;
       let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      
+      // Quy chuẩn điểm nhánh theo yêu cầu (cho 4 nhánh: 0.1, 0.25, 0.5, 1.0 tương ứng tổng 1đ hoặc cấu hình tùy chỉnh)
+      let defaultBranchScores = [0.1, 0.15, 0.25, 0.5];
+
       let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
       for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
         let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
+        let bScore = defaultBranchScores[i] || 0.25;
         html += `
           <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
             <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
@@ -710,7 +774,7 @@
                 <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
                 <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
               </select>
-              <input type="number" class="tf-branch-score-${i}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
+              <input type="number" class="tf-branch-score-${i}" value="${bScore}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
             </div>
           </div>
         `;
@@ -719,7 +783,6 @@
       wrapper.innerHTML = html;
     }
 
-    // --- TÍNH NĂNG MỚI: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ MẪU MÔ PHỎNG ẢNH ---
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
       
@@ -741,7 +804,7 @@
       const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
       sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
 
-      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn) vào hệ thống thành công!');
+      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu vào hệ thống thành công!');
       input.value = '';
     }
 
@@ -784,13 +847,12 @@
       if (items.length === 0) { alert('Vui lòng tạo ít nhất 1 câu hỏi!'); return; }
 
       let questions = [];
-      let rawTotalScore = 0;
 
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
         let customScoreInput = parseFloat(item.querySelector('.q-score-custom').value);
-        let defaultScore = !isNaN(customScoreInput) ? customScoreInput : 0.25;
+        let defaultScore = !isNaN(customScoreInput) ? customScoreInput : (qType === 'mc' ? 0.25 : (qType === 'tf' ? 1.0 : 0.5));
         let expText = item.querySelector('.q-explanation').value.trim();
         let expImgInput = item.querySelector('.q-exp-img-input');
         let expImgBase64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
@@ -802,39 +864,26 @@
 
         if (qType === 'mc') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
-          rawTotalScore += defaultScore;
           questions.push(qData);
         } else if (qType === 'tf') {
           let count = parseInt(item.querySelector('.tf-branch-count').value) || 4;
           let branches = [];
           let branchScores = [];
-          let tfTotal = 0;
           for (let i = 0; i < count; i++) {
             let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
             let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
             let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
             branches.push(ans);
             branchScores.push(bScore);
-            tfTotal += bScore;
           }
           qData.correctAnswer = branches.join(',');
           qData.branchScores = branchScores;
-          rawTotalScore += tfTotal;
           questions.push(qData);
         } else if (qType === 'sa') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
-          rawTotalScore += defaultScore;
           questions.push(qData);
         }
       }
-
-      let scaleFactor = 10 / rawTotalScore;
-      questions.forEach(q => {
-        q.score = q.score * scaleFactor;
-        if (q.branchScores) {
-          q.branchScores = q.branchScores.map(bs => bs * scaleFactor);
-        }
-      });
 
       let mediaData = { type: type, files: [] };
       if (type === 'pdf') {
@@ -1174,87 +1223,89 @@
 
       if (!name || !code) { alert('Vui lòng điền đầy đủ tên và mã!'); return; }
 
-      if (mode === 'practice') {
-        const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-        if (!snapshot.exists()) { alert('Không tìm thấy bài luyện nhanh!'); return; }
-        let qpData = snapshot.val();
-        if (qpData.password && qpData.password !== pass) { alert('❌ Sai mật khẩu bài luyện nhanh!'); return; }
+      showLoadingSequence(async () => {
+        if (mode === 'practice') {
+          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
+          if (!snapshot.exists()) { alert('Không tìm thấy bài luyện nhanh!'); return; }
+          let qpData = snapshot.val();
+          if (qpData.password && qpData.password !== pass) { alert('❌ Sai mật khẩu bài luyện nhanh!'); return; }
 
-        currentQpData = qpData;
-        studentNameGlobal = name;
+          currentQpData = qpData;
+          studentNameGlobal = name;
 
-        let studentKey = 'qp_s_' + Date.now();
-        let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
-        await window.dbSet(roomRef, { name: name, status: 'waiting' });
-
-        document.getElementById('qpWaitTitle').innerText = qpData.title;
-        document.getElementById('qpWaitStudentName').innerText = name;
-        document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
-        switchView('qpWaitingRoomView');
-
-        let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
-        activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
-          let data = snapshot.val() || {};
-          let students = data.students || {};
-          document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
-
-          if (!students[studentKey]) {
-            alert('Bạn đã bị giáo viên kick!');
-            if (activeQpRoomListener) activeQpRoomListener();
-            switchView('studentLoginView');
-            return;
-          }
-
-          if (data.status === 'started') {
-            if (activeQpRoomListener) activeQpRoomListener();
-            window.dbUpdate(roomRef, { status: 'testing' });
-            launchQpPracticeInterface();
-          } else if (data.status === 'ended' && isQpActive) {
-            if (activeQpRoomListener) activeQpRoomListener();
-            alert('🛑 Giáo viên đã kết thúc bài luyện nhanh!');
-            submitQpPractice(true);
-          }
-        });
-
-      } else {
-        const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-        if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
-        currentExamData = snapshot.val();
-        studentNameGlobal = name;
-
-        if (mode === 'live') {
-          if (!currentExamData.isLiveRoom) { alert('Đề này không bật chế độ phòng thi chuyên dụng!'); return; }
-          if (pass !== currentExamData.livePassword) { alert('❌ Sai mật khẩu phòng thi!'); return; }
-
-          let studentKey = 's_' + Date.now();
-          let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentKey}`);
+          let studentKey = 'qp_s_' + Date.now();
+          let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
           await window.dbSet(roomRef, { name: name, status: 'waiting' });
 
-          document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
-          document.getElementById('waitStudentName').innerText = name;
-          document.getElementById('waitDuration').innerText = currentExamData.duration;
-          switchView('studentWaitingRoomView');
+          document.getElementById('qpWaitTitle').innerText = qpData.title;
+          document.getElementById('qpWaitStudentName').innerText = name;
+          document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
+          switchView('qpWaitingRoomView');
 
-          let roomMainRef = window.ref(window.db, `liverooms/${code}`);
-          activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
+          activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
             let data = snapshot.val() || {};
             let students = data.students || {};
-            document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
+            document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
 
-            if (!students[studentKey]) { alert('Bạn đã bị giáo viên kick!'); switchView('studentLoginView'); return; }
+            if (!students[studentKey]) {
+              alert('Bạn đã bị giáo viên kick!');
+              if (activeQpRoomListener) activeQpRoomListener();
+              switchView('studentLoginView');
+              return;
+            }
+
             if (data.status === 'started') {
-              if (activeStudentRoomListener) activeStudentRoomListener();
+              if (activeQpRoomListener) activeQpRoomListener();
               window.dbUpdate(roomRef, { status: 'testing' });
-              launchOfficialExamInterface();
-            } else if (data.status === 'ended') {
-              if (activeStudentRoomListener) activeStudentRoomListener();
-              alert('Kì thi đã kết thúc!'); switchView('studentLoginView');
+              launchQpPracticeInterface();
+            } else if (data.status === 'ended' && isQpActive) {
+              if (activeQpRoomListener) activeQpRoomListener();
+              alert('🛑 Giáo viên đã kết thúc bài luyện nhanh!');
+              submitQpPractice(true);
             }
           });
+
         } else {
-          launchOfficialExamInterface();
+          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+          if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
+          currentExamData = snapshot.val();
+          studentNameGlobal = name;
+
+          if (mode === 'live') {
+            if (!currentExamData.isLiveRoom) { alert('Đề này không bật chế độ phòng thi chuyên dụng!'); return; }
+            if (pass !== currentExamData.livePassword) { alert('❌ Sai mật khẩu phòng thi!'); return; }
+
+            let studentKey = 's_' + Date.now();
+            let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentKey}`);
+            await window.dbSet(roomRef, { name: name, status: 'waiting' });
+
+            document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
+            document.getElementById('waitStudentName').innerText = name;
+            document.getElementById('waitDuration').innerText = currentExamData.duration;
+            switchView('studentWaitingRoomView');
+
+            let roomMainRef = window.ref(window.db, `liverooms/${code}`);
+            activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+              let data = snapshot.val() || {};
+              let students = data.students || {};
+              document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
+
+              if (!students[studentKey]) { alert('Bạn đã bị giáo viên kick!'); switchView('studentLoginView'); return; }
+              if (data.status === 'started') {
+                if (activeStudentRoomListener) activeStudentRoomListener();
+                window.dbUpdate(roomRef, { status: 'testing' });
+                launchOfficialExamInterface();
+              } else if (data.status === 'ended') {
+                if (activeStudentRoomListener) activeStudentRoomListener();
+                alert('Kì thi đã kết thúc!'); switchView('studentLoginView');
+              }
+            });
+          } else {
+            launchOfficialExamInterface();
+          }
         }
-      }
+      });
     }
 
     function leaveQpWaitingRoom() {
@@ -1319,7 +1370,7 @@
           inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
         }
 
-        item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id} (${q.score.toFixed(2)}đ):</strong> ${inputHtml}`;
+        item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
         sheet.appendChild(item);
       });
 
@@ -1332,9 +1383,54 @@
         if (timeLeft <= 0) { clearInterval(examTimer); alert('⌛ Hết giờ!'); submitStudentExam(true); }
       }, 1000);
 
+      // Kích hoạt chống gian lân
+      cheatWarnings = 0;
+      document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0/3`;
       isExamActive = true;
       switchView('studentExamView');
     }
+
+    // --- CƠ CHẾ CHỐNG GIAN LÂN (Chuyển tab quá 5s) ---
+    document.addEventListener('visibilitychange', () => {
+      if (!isExamActive) return;
+      if (document.hidden) {
+        tabLeaveStartTime = Date.now();
+      } else {
+        if (tabLeaveStartTime) {
+          let durationAway = Date.now() - tabLeaveStartTime;
+          if (durationAway > CHEAT_TIME_THRESHOLD) {
+            cheatWarnings++;
+            alert(`⚠️ CẢNH BÁO GIAN LÂN (${cheatWarnings}/3)!\nBạn đã rời khỏi tab làm bài trong thời gian ${(durationAway/1000).toFixed(1)} giây.`);
+            document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}/3`;
+            if (cheatWarnings >= 3) {
+              alert('🚨 Bạn đã vi phạm quy chế chống gian lân 3 lần. Hệ thống sẽ tự động nộp bài!');
+              submitStudentExam(true);
+            }
+          }
+          tabLeaveStartTime = null;
+        }
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (!isExamActive) return;
+      tabLeaveStartTime = Date.now();
+    });
+
+    window.addEventListener('focus', () => {
+      if (!isExamActive || !tabLeaveStartTime) return;
+      let durationAway = Date.now() - tabLeaveStartTime;
+      if (durationAway > CHEAT_TIME_THRESHOLD) {
+        cheatWarnings++;
+        alert(`⚠️ CẢNH BÁO GIAN LÂN (${cheatWarnings}/3)!\nHành vi chuyển tab hoặc rời màn hình thi đã bị ghi nhận.`);
+        document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}/3`;
+        if (cheatWarnings >= 3) {
+          alert('🚨 Bạn đã vi phạm quy chế 3 lần. Hệ thống tự động nộp bài!');
+          submitStudentExam(true);
+        }
+      }
+      tabLeaveStartTime = null;
+    });
 
     function selectOpt(btn, val) {
       let p = btn.parentElement;
@@ -1366,7 +1462,7 @@
           let correctArr = q.correctAnswer.split(',');
           let studentArr = [];
           let subEarned = 0;
-          let branchScores = q.branchScores || correctArr.map(() => q.score / correctArr.length);
+          let branchScores = q.branchScores || [0.1, 0.15, 0.25, 0.5];
           correctArr.forEach((ansCorrect, i) => {
             let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
             let val = row && row.dataset.val ? row.dataset.val : '_';
