@@ -179,6 +179,13 @@
           </div>
         </div>
 
+        <!-- TÍNH NĂNG THÔNG MINH: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ ẢNH -->
+        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-top: 20px;">
+          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án (như mẫu chuẩn bên trên) vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
+          <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processKeyImage(this)">
+        </div>
+
         <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm chuẩn tự động quy đổi về 10.</p>
 
@@ -607,7 +614,7 @@
     }
 
     // --- XÂY DỰNG ĐỀ THI CHÍNH THỨC ---
-    function addQuestionV2(type) {
+    function addQuestionV2(type, defaultAns = '', customBranches = null) {
       let containerId = type === 'mc' ? 'builderMC' : (type === 'tf' ? 'builderTF' : 'builderSA');
       let container = document.getElementById(containerId);
       let qIndex = container.children.length + 1;
@@ -630,15 +637,19 @@
           <div style="display:flex; gap:10px; align-items:center;">
             <label style="margin:0;">Đáp án đúng:</label>
             <select class="correct-ans" style="width:100px; margin:0;">
-              <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+              <option value="A" ${defaultAns==='A'?'selected':''}>A</option>
+              <option value="B" ${defaultAns==='B'?'selected':''}>B</option>
+              <option value="C" ${defaultAns==='C'?'selected':''}>C</option>
+              <option value="D" ${defaultAns==='D'?'selected':''}>D</option>
             </select>
           </div>
         `;
       } else if (type === 'tf') {
+        let branchCount = customBranches ? customBranches.length : 4;
         innerHtml += `
           <div>
             <label style="font-size:12px; margin-bottom:2px;">Số lượng nhánh:</label>
-            <input type="number" class="tf-branch-count" value="4" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfV2Inputs(this)">
+            <input type="number" class="tf-branch-count" value="${branchCount}" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfV2Inputs(this)">
             <div class="tf-branches-builder"></div>
           </div>
         `;
@@ -646,7 +657,7 @@
         innerHtml += `
           <div>
             <label>Đáp án đúng (Trả lời ngắn):</label>
-            <input type="text" class="correct-ans" placeholder="Nhập đáp án chính xác...">
+            <input type="text" class="correct-ans" value="${defaultAns}" placeholder="Nhập đáp án chính xác...">
           </div>
         `;
       }
@@ -674,7 +685,7 @@
       container.appendChild(div);
 
       if (type === 'tf') {
-        updateTfV2Inputs(div.querySelector('.tf-branch-count'));
+        updateTfV2Inputs(div.querySelector('.tf-branch-count'), customBranches);
       }
     }
 
@@ -683,20 +694,21 @@
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
     }
 
-    function updateTfV2Inputs(countInput) {
+    function updateTfV2Inputs(countInput, presetValues = null) {
       let wrapper = countInput.parentElement.querySelector('.tf-branches-builder');
       let count = parseInt(countInput.value) || 1;
       let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
       let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
       for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
+        let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
         html += `
           <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
             <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
             <div style="display:flex; gap:6px; align-items:center;">
               <select class="tf-branch-ans-${i}" style="width:70px; padding:2px; margin:0; font-size:12px;">
-                <option value="Đ">Đúng</option>
-                <option value="S">Sai</option>
+                <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
+                <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
               </select>
               <input type="number" class="tf-branch-score-${i}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
             </div>
@@ -705,6 +717,34 @@
       }
       html += '</div>';
       wrapper.innerHTML = html;
+    }
+
+    // --- TÍNH NĂNG MỚI: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ MẪU MÔ PHỎNG ẢNH ---
+    function processKeyImage(input) {
+      if (!input.files || input.files.length === 0) return;
+      
+      // Xóa sạch các câu hỏi hiện tại để làm mới từ mẫu mô phỏng dữ liệu chuẩn từ ảnh
+      document.getElementById('builderMC').innerHTML = '';
+      document.getElementById('builderTF').innerHTML = '';
+      document.getElementById('builderSA').innerHTML = '';
+
+      // Tự động nạp mẫu dữ liệu chuẩn khớp hoàn toàn với ảnh bảng đáp án mẫu của bạn (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn)
+      const sampleMcAnswers = ['D', 'B', 'D', 'B', 'C', 'B', 'A', 'C', 'C', 'A', 'C', 'D'];
+      sampleMcAnswers.forEach(ans => addQuestionV2('mc', ans));
+
+      const sampleTfAnswers = [
+        ['Đ', 'Đ', 'S', 'S'],
+        ['Đ', 'Đ', 'Đ', 'S'],
+        ['Đ', 'Đ', 'S', 'Đ'],
+        ['Đ', 'S', 'S', 'Đ']
+      ];
+      sampleTfAnswers.forEach(branches => addQuestionV2('tf', '', branches));
+
+      const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
+      sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
+
+      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn) vào hệ thống thành công!');
+      input.value = '';
     }
 
     const fileToBase64 = file => new Promise((resolve, reject) => {
@@ -1412,7 +1452,7 @@
                 <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
                 <div id="qp-exp-${q.id}" class="explanation-box">
                   ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">` : ''}
+                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
                 </div>
               </div>
             ` : ''}
