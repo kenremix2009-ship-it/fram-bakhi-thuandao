@@ -90,8 +90,8 @@
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 1]</p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 1]</p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
@@ -442,15 +442,28 @@
 
   </div>
 
-  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH CỦA HỌC SINH -->
+  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH CỦA HỌC SINH (HIỂN THỊ TỪNG CÂU 1) -->
   <div id="qpPracticingView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
     <div class="card">
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
-        <h2 id="qpPlayTitle" style="color: #1877f2; font-size: 18px;">Bài Luyện Tập</h2>
+        <div>
+          <h2 id="qpPlayTitle" style="color: #1877f2; font-size: 18px;">Bài Luyện Tập</h2>
+          <small id="qpQuestionProgressText" style="color: #666; font-weight: bold;"></small>
+        </div>
         <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f;">00:00</span>
       </div>
-      <div id="qpPlayQuestionsContainer"></div>
-      <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="submitQpPractice(false)">📤 Nộp Bài Luyện Nhanh</button>
+
+      <!-- Khu vực chứa duy nhất 1 câu hỏi hiện tại -->
+      <div id="qpSingleQuestionContainer"></div>
+
+      <!-- Thanh điều hướng câu hỏi trước / tiếp theo -->
+      <div style="display: flex; justify-content: space-between; margin-top: 20px; gap: 10px;">
+        <button id="qpPrevBtn" class="btn btn-secondary" style="width: auto; padding: 8px 16px;" onclick="changeQpQuestion(-1)">⬅️ Câu Trước</button>
+        <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end;">
+          <button id="qpNextBtn" class="btn" style="width: auto; padding: 8px 20px;" onclick="changeQpQuestion(1)">Tiếp Tục ➡️</button>
+          <button id="qpSubmitBtn" class="btn btn-success" style="display: none; width: auto; padding: 8px 20px;" onclick="submitQpPractice(false)">📤 Nộp Bài Luyện Nhanh</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -568,6 +581,8 @@
     let managedQpCodeGlobal = '';
     let activeQpRoomListener = null;
     let isQpActive = false;
+    let currentQpIndex = 0; // Biến lưu chỉ số câu hỏi đang làm của bài luyện nhanh
+    let qpUserAnswers = {}; // Lưu trữ lựa chọn của học sinh theo qid
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -619,7 +634,6 @@
       let container = document.getElementById(containerId);
       let qIndex = container.children.length + 1;
       let div = document.createElement('div');
-      div.className = 'q-build-item';
       div.dataset.type = type;
 
       let innerHtml = `
@@ -719,16 +733,12 @@
       wrapper.innerHTML = html;
     }
 
-    // --- TÍNH NĂNG MỚI: TỰ ĐỘNG ĐIỀN ĐÁP ÁN TỪ MẪU MÔ PHỎNG ẢNH ---
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
-      
-      // Xóa sạch các câu hỏi hiện tại để làm mới từ mẫu mô phỏng dữ liệu chuẩn từ ảnh
       document.getElementById('builderMC').innerHTML = '';
       document.getElementById('builderTF').innerHTML = '';
       document.getElementById('builderSA').innerHTML = '';
 
-      // Tự động nạp mẫu dữ liệu chuẩn khớp hoàn toàn với ảnh bảng đáp án mẫu của bạn (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn)
       const sampleMcAnswers = ['D', 'B', 'D', 'B', 'C', 'B', 'A', 'C', 'C', 'A', 'C', 'D'];
       sampleMcAnswers.forEach(ans => addQuestionV2('mc', ans));
 
@@ -743,7 +753,7 @@
       const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
       sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
 
-      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu (12 Trắc nghiệm, 4 Đúng/Sai, 6 Trả lời ngắn) vào hệ thống thành công!');
+      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu thành công!');
       input.value = '';
     }
 
@@ -1423,42 +1433,12 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- LÀM BÀI LUYỆN NHANH ---
+    // --- LÀM BÀI LUYỆN NHANH (HIỂN THỊ TỪNG CÂU 1 CÓ NÚT TIẾP TỤC / QUAY LẠI) ---
     function launchQpPracticeInterface() {
       isQpActive = true;
+      currentQpIndex = 0;
+      qpUserAnswers = {};
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      container.innerHTML = '';
-
-      currentQpData.questions.forEach((q, idx) => {
-        let optHtml = '';
-        q.options.forEach(opt => {
-          optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
-        });
-
-        let hasExp = q.explanation || q.expImage;
-
-        container.innerHTML += `
-          <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
-            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
-            ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-            <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
-              ${optHtml}
-            </div>
-            <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
-            
-            ${hasExp ? `
-              <div style="margin-top: 6px;">
-                <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
-                <div id="qp-exp-${q.id}" class="explanation-box">
-                  ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      });
 
       qpTimeLeft = 0;
       clearInterval(qpTimer);
@@ -1469,6 +1449,7 @@
       }, 1000);
 
       switchView('qpPracticingView');
+      renderCurrentQpQuestion();
 
       let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
       activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
@@ -1481,11 +1462,93 @@
       });
     }
 
+    function renderCurrentQpQuestion() {
+      let totalQ = currentQpData.questions.length;
+      let q = currentQpData.questions[currentQpIndex];
+      
+      document.getElementById('qpQuestionProgressText').innerText = `Câu ${currentQpIndex + 1} / ${totalQ}`;
+      
+      let container = document.getElementById('qpSingleQuestionContainer');
+      let optHtml = '';
+      let savedAnswer = qpUserAnswers[q.id] || '';
+
+      q.options.forEach(opt => {
+        let isSelected = (savedAnswer === opt.label);
+        optHtml += `<div class="opt-btn ${isSelected ? 'selected' : ''}" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 10px 14px; border-radius: 6px; margin-bottom: 6px;">${opt.label}. ${opt.text}</div>`;
+      });
+
+      let hasExp = q.explanation || q.expImage;
+
+      container.innerHTML = `
+        <div style="background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+          <p style="font-weight: bold; font-size: 15px; margin-bottom: 10px; color: #1c1e21;">Câu ${currentQpIndex + 1} (${q.score || 0.25}đ): ${q.question}</p>
+          ${q.image ? `<img src="${q.image}" class="img-preview" style="max-height: 250px;">` : ''}
+          <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px; margin-top: 10px;">
+            ${optHtml}
+          </div>
+          <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 8px;"></div>
+          
+          ${hasExp ? `
+            <div style="margin-top: 8px;">
+              <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">Xem giải thích ▾</button>
+              <div id="qp-exp-${q.id}" class="explanation-box">
+                ${q.explanation ? `<p>${q.explanation}</p>` : ''}
+                ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      // Cập nhật trạng thái hiển thị của nút Điều hướng
+      document.getElementById('qpPrevBtn').style.display = currentQpIndex === 0 ? 'none' : 'block';
+      
+      if (currentQpIndex === totalQ - 1) {
+        document.getElementById('qpNextBtn').style.display = 'none';
+        document.getElementById('qpSubmitBtn').style.display = 'block';
+      } else {
+        document.getElementById('qpNextBtn').style.display = 'block';
+        document.getElementById('qpSubmitBtn').style.display = 'none';
+      }
+
+      // Nếu đã chọn đáp án từ trước, hiển thị trạng thái đã chọn cho học sinh
+      if (savedAnswer) {
+        let qObj = currentQpData.questions.find(item => item.id === q.id);
+        let feedback = document.getElementById(`qp-feedback-${q.id}`);
+        let group = container.querySelector(`.opt-group[data-qid="${q.id}"]`);
+        group.querySelectorAll('.opt-btn').forEach(b => {
+          let label = b.innerText.charAt(0);
+          if (label === savedAnswer) {
+            b.style.background = (savedAnswer === qObj.correct) ? '#198754' : '#dc3545';
+            b.style.color = 'white';
+          } else if (label === qObj.correct) {
+            b.style.background = '#198754';
+            b.style.color = 'white';
+          }
+        });
+        if (savedAnswer === qObj.correct) {
+          feedback.innerHTML = `<span style="color: #198754;">✓ Chính xác! Đáp án đúng là ${qObj.correct}</span>`;
+        } else {
+          feedback.innerHTML = `<span style="color: #dc3545;">✗ Sai rồi! Đáp án đúng là ${qObj.correct}</span>`;
+        }
+      }
+    }
+
+    function changeQpQuestion(direction) {
+      let newIndex = currentQpIndex + direction;
+      if (newIndex >= 0 && newIndex < currentQpData.questions.length) {
+        currentQpIndex = newIndex;
+        renderCurrentQpQuestion();
+      }
+    }
+
     function selectQpOpt(btn, qid, label) {
       if (!isQpActive) return; 
       let group = btn.parentElement;
       if (group.dataset.locked === "true") return; 
       group.dataset.locked = "true";
+
+      qpUserAnswers[qid] = label; // Lưu đáp án học sinh chọn
 
       group.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = 'none');
       btn.style.background = '#1877f2'; btn.style.color = 'white';
@@ -1513,10 +1576,10 @@
       let btn = box.previousElementSibling;
       if (box.style.display === 'block') {
         box.style.display = 'none';
-        btn.innerText = '>';
+        btn.innerText = 'Xem giải thích ▾';
       } else {
         box.style.display = 'block';
-        btn.innerText = 'v';
+        btn.innerText = 'Ẩn giải thích ▴';
       }
     }
 
@@ -1534,8 +1597,7 @@
       currentQpData.questions.forEach(q => {
         let qScore = q.score || 0.25;
         totalMax += qScore;
-        let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-        let val = group ? (group.dataset.val || '') : '';
+        let val = qpUserAnswers[q.id] || '';
         let isCorrect = (val === q.correct);
         if (isCorrect) totalEarned += qScore;
 
