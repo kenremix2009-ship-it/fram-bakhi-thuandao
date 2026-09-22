@@ -473,13 +473,36 @@
       
       <div style="margin-bottom: 15px;">
         <label>Mã Đề Kiểm Tra:</label>
-        <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12">
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0; flex: 1;">
+          <button class="btn" style="width: auto; padding: 8px 12px;" onclick="connectLiveRoomDashboard()">📡 Kết Nối Quản Lý</button>
+        </div>
       </div>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
         <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF Gốc</button>
         <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
       </div>
+
+      <!-- BẢNG ĐIỀU KHIỂN PHÒNG THI LIVE (CHUYÊN DỤNG) -->
+      <div id="liveRoomDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
+          <b>🛡️ Trạng Thái Phòng Live (<span id="liveRoomCount">0</span> học sinh)</b>
+          <div style="display: flex; gap: 5px;">
+            <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateLiveRoomStatus('started')">🚀 BẮT ĐẦU</button>
+            <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateLiveRoomStatus('ended')">🛑 KẾT THÚC</button>
+          </div>
+        </div>
+        
+        <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh Trong Phòng Chờ:</p>
+        <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
+          <table>
+            <thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Thao Tác</th></tr></thead>
+            <tbody id="liveRoomStudentsBody"><tr><td colspan="4">Chưa có học sinh</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -521,6 +544,8 @@
     let isExamActive = false;
     let pendingActionType = ''; 
     let activeStudentRoomListener = null;
+    let managedLiveCodeGlobal = '';
+    let liveRoomDashboardListener = null;
 
     let currentQpData = null;
     let qpTimer = null;
@@ -790,7 +815,10 @@
     }
 
     function openAdvancedModal() { document.getElementById('advancedModal').style.display = 'flex'; }
-    function closeAdvancedModal() { document.getElementById('advancedModal').style.display = 'none'; }
+    function closeAdvancedModal() { 
+      if (liveRoomDashboardListener) liveRoomDashboardListener();
+      document.getElementById('advancedModal').style.display = 'none'; 
+    }
 
     async function downloadExamPDF() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
@@ -816,6 +844,60 @@
         alert('Đã xóa thành công!');
         closeAdvancedModal();
       }
+    }
+
+    async function connectLiveRoomDashboard() {
+      const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      if (!code) { alert('Vui lòng nhập mã đề kiểm tra!'); return; }
+
+      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+      if (!snapshot.exists()) { alert('Không tìm thấy đề thi này!'); return; }
+      let exam = snapshot.val();
+      if (!exam.isLiveRoom) { alert('Đề thi này không bật tính năng Phòng thi chuyên dụng!'); return; }
+
+      managedLiveCodeGlobal = code;
+      document.getElementById('liveRoomDashboard').style.display = 'block';
+
+      if (liveRoomDashboardListener) liveRoomDashboardListener();
+
+      let roomRef = window.ref(window.db, `liverooms/${code}`);
+      liveRoomDashboardListener = window.onValue(roomRef, (snapshot) => {
+        let data = snapshot.val() || {};
+        let students = data.students || {};
+        let tbody = document.getElementById('liveRoomStudentsBody');
+        tbody.innerHTML = '';
+        let keys = Object.keys(students);
+        document.getElementById('liveRoomCount').innerText = keys.length;
+
+        if (keys.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4">Chưa có học sinh trong phòng chờ.</td></tr>';
+          return;
+        }
+
+        keys.forEach((id, idx) => {
+          let s = students[id];
+          tbody.innerHTML += `
+            <tr>
+              <td><b>#${idx + 1}</b></td>
+              <td>${s.name}</td>
+              <td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm bài' : 'Đang chờ'}</td>
+              <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickLiveStudent('${code}', '${id}')">Kick</button></td>
+            </tr>
+          `;
+        });
+      });
+    }
+
+    async function kickLiveStudent(code, studentId) {
+      if (confirm('Bạn có chắc muốn kick học sinh này khỏi phòng?')) {
+        await window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentId}`));
+      }
+    }
+
+    async function updateLiveRoomStatus(status) {
+      if (!managedLiveCodeGlobal) { alert('Chưa kết nối phòng live!'); return; }
+      await window.dbUpdate(window.ref(window.db, `liverooms/${managedLiveCodeGlobal}`), { status: status });
+      alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
     // --- TẠO BÀI LUYỆN NHANH ---
