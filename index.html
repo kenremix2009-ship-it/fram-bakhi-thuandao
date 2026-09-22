@@ -339,7 +339,7 @@
       <div class="cheat-icon">⚠️</div>
       <div class="cheat-title">CẢNH BÁO GIAN LẬN!</div>
       <div class="cheat-desc" id="cheatModalText">
-        Bạn vừa rời khỏi màn hình bài thi.<br>
+        Bạn đã rời khỏi màn hình bài thi quá 5 giây.<br>
         Số lần vi phạm: <b id="cheatCountText" style="color: #d32f2f;">1</b>
       </div>
       <button class="cheat-btn" onclick="closeCheatModal()">ĐÃ HIỂU & TẮT</button>
@@ -476,6 +476,7 @@
     let pendingActionType = ''; 
     let activeStudentRoomListener = null;
     let managedExamCodeGlobal = '';
+    let tabAwayTimer = null; // Biến đếm thời gian rời tab
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -651,7 +652,6 @@
       let questions = [];
       let rawTotalScore = 0;
 
-      // Bước 1: Thu thập cấu trúc và điểm gốc giáo viên nhập
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
@@ -700,11 +700,7 @@
         }
       }
 
-      // Bước 2: Tự động cân bằng chuẩn hóa tổng điểm về đúng 10 điểm
-      if (rawTotalScore <= 0) {
-        alert('Tổng điểm không hợp lệ!');
-        return;
-      }
+      if (rawTotalScore <= 0) { alert('Tổng điểm không hợp lệ!'); return; }
       
       let scaleFactor = 10 / rawTotalScore;
       questions.forEach(q => {
@@ -1018,11 +1014,28 @@
       });
     }
 
+    // --- HỆ THỐNG CHỐNG GIAN LẬN: TRỄ 5 GIÂY ---
     window.addEventListener('blur', function() {
       if (isExamActive) {
-        tabSwitchCount++;
-        document.getElementById('cheatCountText').innerText = tabSwitchCount;
-        document.getElementById('cheatModal').style.display = 'flex';
+        // Xóa bộ đếm cũ nếu có
+        if (tabAwayTimer) clearTimeout(tabAwayTimer);
+        
+        // Bắt đầu đếm 5 giây
+        tabAwayTimer = setTimeout(function() {
+          if (isExamActive) {
+            tabSwitchCount++;
+            document.getElementById('cheatCountText').innerText = tabSwitchCount;
+            document.getElementById('cheatModal').style.display = 'flex';
+          }
+        }, 5000); // 5000ms = 5 giây
+      }
+    });
+
+    window.addEventListener('focus', function() {
+      // Nếu học sinh quay lại trước 5 giây, hủy lệnh phạt
+      if (tabAwayTimer) {
+        clearTimeout(tabAwayTimer);
+        tabAwayTimer = null;
       }
     });
 
@@ -1050,6 +1063,7 @@
       clearInterval(examTimer);
       isExamActive = false;
       if (activeStudentRoomListener) activeStudentRoomListener();
+      if (tabAwayTimer) { clearTimeout(tabAwayTimer); tabAwayTimer = null; }
 
       let totalEarnedScore = 0;
       let reviewHtml = '';
