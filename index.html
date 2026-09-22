@@ -447,7 +447,7 @@
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU BẢO MẬT -->
+  <!-- MODAL XÁC THỰC MẬT KHẨU BẢO MẬT CHUNG -->
   <div class="modal-overlay" id="passwordModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -475,8 +475,16 @@
         <label>Mã Đề Kiểm Tra:</label>
         <div style="display: flex; gap: 8px;">
           <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0; flex: 1;">
-          <button class="btn" style="width: auto; padding: 8px 12px;" onclick="connectLiveRoomDashboard()">📡 Kết Nối Quản Lý</button>
         </div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <label>Mật Khẩu Bảo Mật Quản Lý (Ẩn):</label>
+        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (THUANBAKHI)..." style="margin: 0;">
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <button class="btn" style="background: #198754;" onclick="connectLiveRoomDashboard()">📡 Kết Nối Quản Lý Phòng Live</button>
       </div>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
@@ -814,7 +822,12 @@
       } catch (err) { alert('Lỗi: ' + err.message); }
     }
 
-    function openAdvancedModal() { document.getElementById('advancedModal').style.display = 'flex'; }
+    function openAdvancedModal() { 
+      document.getElementById('advLivePass').value = '';
+      document.getElementById('liveRoomDashboard').style.display = 'none';
+      document.getElementById('advancedModal').style.display = 'flex'; 
+    }
+    
     function closeAdvancedModal() { 
       if (liveRoomDashboardListener) liveRoomDashboardListener();
       document.getElementById('advancedModal').style.display = 'none'; 
@@ -836,7 +849,10 @@
 
     async function promptDeleteExam() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      const pass = document.getElementById('advLivePass').value.trim();
       if (!code) { alert('Nhập mã đề!'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật quản lý!'); return; }
+      
       if (confirm(`Xóa vĩnh viễn đề thi [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `exams/${code}`));
         await window.dbRemove(window.ref(window.db, `leaderboard/${code}`));
@@ -848,7 +864,10 @@
 
     async function connectLiveRoomDashboard() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
+      const pass = document.getElementById('advLivePass').value.trim();
+
       if (!code) { alert('Vui lòng nhập mã đề kiểm tra!'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Mật khẩu bảo mật không đúng!'); return; }
 
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
       if (!snapshot.exists()) { alert('Không tìm thấy đề thi này!'); return; }
