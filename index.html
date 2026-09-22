@@ -311,6 +311,20 @@
       </div>
     </div>
 
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ BÀI LUYỆN NHANH ==================== -->
+    <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
+      <div class="card">
+        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
+          <h2 style="color: #1877f2; font-size: 20px;">🎉 Kết Quả Bài Luyện Nhanh</h2>
+          <h1 style="font-size: 38px; color: #198754; margin: 8px 0;" id="qpResultScore">0 / 10</h1>
+          <p id="qpResultDetailText" style="font-size: 13px;"></p>
+        </div>
+        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px;">🔍 Chi Tiết Đáp Án & Chú Thích Từng Câu</h3>
+        <div id="qpResultReviewContainer"></div>
+        <button class="btn" style="margin-top: 15px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
+      </div>
+    </div>
+
     <!-- ==================== BẢNG XẾP HẠNG ==================== -->
     <div id="leaderboardView" class="view-section">
       <div class="card">
@@ -429,7 +443,7 @@
         <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f;">00:00</span>
       </div>
       <div id="qpPlayQuestionsContainer"></div>
-      <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="submitQpPractice()">📤 Nộp Bài Luyện Nhanh</button>
+      <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="submitQpPractice(false)">📤 Nộp Bài Luyện Nhanh</button>
     </div>
   </div>
 
@@ -1302,7 +1316,6 @@
 
       switchView('qpPracticingView');
 
-      // Lắng nghe lệnh kết thúc từ giáo viên khi đang làm bài
       let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
       activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
         let data = snapshot.val() || {};
@@ -1315,7 +1328,7 @@
     }
 
     function selectQpOpt(btn, qid, label) {
-      if (!isQpActive) return; // Nếu đã kết thúc thì không cho chọn
+      if (!isQpActive) return; 
       let group = btn.parentElement;
       if (group.dataset.locked === "true") return; 
       group.dataset.locked = "true";
@@ -1362,22 +1375,57 @@
 
       let totalEarned = 0;
       let totalMax = 0;
+      let reviewHtml = '';
 
       currentQpData.questions.forEach(q => {
         let qScore = q.score || 0.25;
         totalMax += qScore;
         let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-        let val = group ? group.dataset.val : '';
-        if (val === q.correct) totalEarned += qScore;
+        let val = group ? (group.dataset.val || '') : '';
+        let isCorrect = (val === q.correct);
+        if (isCorrect) totalEarned += qScore;
+
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
+
+        reviewHtml += `
+          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
+            <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qScore}đ)</span>
+            <div style="margin-top:4px;">
+              - Bạn chọn: <b style="color:${isCorrect ? 'green' : 'red'};">${val || 'Chưa chọn'}</b><br>
+              ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
+            </div>
+            ${expContent ? `
+              <div style="margin-top:5px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
       });
 
       let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
-      alert(`🎉 Hoàn thành bài luyện! Bạn đạt ${finalScore} / 10 điểm.`);
+      document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
+      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(qpTimeLeft / 60)}p ${qpTimeLeft % 60}s`;
+      document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
 
       await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
         name: studentNameGlobal, score: finalScore, timeSpent: qpTimeLeft, timestamp: Date.now()
       });
-      switchView('studentLoginView');
+      switchView('qpResultView');
+    }
+
+    function toggleResultExp(btn) {
+      let box = btn.nextElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
     }
 
     async function loadLeaderboard() {
