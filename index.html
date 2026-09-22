@@ -237,7 +237,28 @@
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM ==================== -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
+    <div id="qpWaitingRoomView" class="view-section">
+      <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
+        <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
+        <p id="qpWaitTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
+        <hr style="margin: 20px 0;">
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+          <p>👤 <b>Thí sinh:</b> <span id="qpWaitStudentName"></span></p>
+          <p>📋 <b>Số lượng câu hỏi:</b> <span id="qpWaitQCount" style="color: #1877f2; font-weight: bold;">0</span></p>
+          <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="qpWaitStudentCount" style="color: #198754; font-weight: bold;">1</span></p>
+        </div>
+
+        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
+          🔔 ĐỢI GIÁO VIÊN BẮT ĐẦU...
+        </div>
+
+        <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveQpWaitingRoom()">🚪 Rời Phòng Chờ</button>
+      </div>
+    </div>
+
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM CHÍNH THỨC ==================== -->
     <div id="studentWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
@@ -491,6 +512,8 @@
     let qpTimer = null;
     let qpTimeLeft = 0;
     let managedQpCodeGlobal = '';
+    let activeQpRoomListener = null;
+    let isQpActive = false;
 
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -685,10 +708,7 @@
         let defaultScore = !isNaN(customScoreInput) ? customScoreInput : 0.25;
         let expText = item.querySelector('.q-explanation').value.trim();
         let expImgInput = item.querySelector('.q-exp-img-input');
-        let expImgBase64 = '';
-        if (expImgInput && expImgInput.files.length > 0) {
-          expImgBase64 = await fileToBase64(expImgInput.files[0]);
-        }
+        let expImgBase64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
         let qData = {
           id: idx + 1, type: qType, score: defaultScore,
@@ -784,7 +804,7 @@
       }
     }
 
-    // --- TẠO BÀI LUYỆN NHANH (CÓ NÚT THU GỌN CHÚ THÍCH ...) ---
+    // --- TẠO BÀI LUYỆN NHANH ---
     function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -880,7 +900,7 @@
         let item = items[idx];
         let qText = item.querySelector('.qp-q-text').value.trim();
         let qImgInput = item.querySelector('.qp-q-img');
-        let qImgB64 = qImgInput.files.length > 0 ? await fileToBase64(qImgInput.files[0]) : '';
+        let qImgB64 = qImgInput && qImgInput.files.length > 0 ? await fileToBase64(qImgInput.files[0]) : '';
         
         let ansCount = parseInt(item.querySelector('.qp-ans-count').value);
         let options = [];
@@ -895,7 +915,7 @@
         let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || 0.25;
         let expText = item.querySelector('.qp-q-exp').value.trim();
         let expImgInput = item.querySelector('.qp-exp-img');
-        let expImgB64 = expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
+        let expImgB64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
         questions.push({
           id: idx + 1, question: qText, image: qImgB64,
@@ -1009,7 +1029,40 @@
 
         currentQpData = qpData;
         studentNameGlobal = name;
-        launchQpPracticeInterface();
+
+        let studentKey = 'qp_s_' + Date.now();
+        let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
+        await window.dbSet(roomRef, { name: name, status: 'waiting' });
+
+        document.getElementById('qpWaitTitle').innerText = qpData.title;
+        document.getElementById('qpWaitStudentName').innerText = name;
+        document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
+        switchView('qpWaitingRoomView');
+
+        let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
+        activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          let data = snapshot.val() || {};
+          let students = data.students || {};
+          document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
+
+          if (!students[studentKey]) {
+            alert('Bạn đã bị giáo viên kick!');
+            if (activeQpRoomListener) activeQpRoomListener();
+            switchView('studentLoginView');
+            return;
+          }
+
+          if (data.status === 'started') {
+            if (activeQpRoomListener) activeQpRoomListener();
+            window.dbUpdate(roomRef, { status: 'testing' });
+            launchQpPracticeInterface();
+          } else if (data.status === 'ended' && isQpActive) {
+            if (activeQpRoomListener) activeQpRoomListener();
+            alert('🛑 Giáo viên đã kết thúc bài luyện nhanh!');
+            submitQpPractice(true);
+          }
+        });
+
       } else {
         const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
         if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
@@ -1049,6 +1102,11 @@
           launchOfficialExamInterface();
         }
       }
+    }
+
+    function leaveQpWaitingRoom() {
+      if (activeQpRoomListener) activeQpRoomListener();
+      switchView('studentLoginView');
     }
 
     async function launchOfficialExamInterface() {
@@ -1199,6 +1257,7 @@
 
     // --- LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
+      isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
       let container = document.getElementById('qpPlayQuestionsContainer');
       container.innerHTML = '';
@@ -1241,11 +1300,22 @@
         document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
       }, 1000);
 
-      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-      document.getElementById('qpPracticingView').classList.add('active');
+      switchView('qpPracticingView');
+
+      // Lắng nghe lệnh kết thúc từ giáo viên khi đang làm bài
+      let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
+      activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
+        let data = snapshot.val() || {};
+        if (data.status === 'ended' && isQpActive) {
+          if (activeQpRoomListener) activeQpRoomListener();
+          alert('🛑 Giáo viên đã cưỡng chế kết thúc bài luyện nhanh!');
+          submitQpPractice(true);
+        }
+      });
     }
 
     function selectQpOpt(btn, qid, label) {
+      if (!isQpActive) return; // Nếu đã kết thúc thì không cho chọn
       let group = btn.parentElement;
       if (group.dataset.locked === "true") return; 
       group.dataset.locked = "true";
@@ -1283,9 +1353,12 @@
       }
     }
 
-    async function submitQpPractice() {
-      if (!confirm('Xác nhận nộp bài luyện nhanh?')) return;
+    async function submitQpPractice(forced = false) {
+      if (!forced && !confirm('Xác nhận nộp bài luyện nhanh?')) return;
+      if (!isQpActive && !forced) return;
+      isQpActive = false;
       clearInterval(qpTimer);
+      if (activeQpRoomListener) activeQpRoomListener();
 
       let totalEarned = 0;
       let totalMax = 0;
