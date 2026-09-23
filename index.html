@@ -649,10 +649,30 @@
         <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
 
         <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Dán link nhạc trực tiếp (.mp3, .wav) để phát cho tất cả mọi người đang online cùng nghe. Có thể lấy link bằng cách bỏ file nhạc vào cùng thư mục deploy trên Vercel (VD: https://ten-web.vercel.app/nhac1.mp3), hoặc dùng link raw từ GitHub:</p>
-        <input type="text" id="supremeAudioUrlInput" placeholder="Dán link nhạc vào đây, VD: https://fram-bakhi-thuandao.vercel.app/nhac1.mp3" style="margin-bottom: 10px;">
+        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Danh sách phát nhạc trực tuyến (Playlist) cho toàn hệ thống. Bạn có thể thêm file nhạc trực tiếp từ thiết bị của mình:</p>
+        
+        <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px dashed #ccc; margin-bottom: 12px;">
+          <label style="font-weight: bold; color: #1877f2; margin-bottom: 6px;">➕ Thêm file nhạc từ tệp tải xuống:</label>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <input type="file" id="localAudioFileInput" accept="audio/*" style="margin: 0; flex: 1; background: white; padding: 6px;">
+            <input type="text" id="localAudioNameInput" placeholder="Tên bài hát..." style="margin: 0; width: 200px;">
+            <button class="btn btn-success" style="width: auto; padding: 9px 16px;" onclick="addLocalAudioToList()">Thêm Vào Danh Sách</button>
+          </div>
+        </div>
+
+        <label style="font-weight: bold; margin-bottom: 6px;">📜 Danh sách bài hát hiện tại:</label>
+        <div class="table-responsive" style="max-height: 200px; overflow-y: auto; margin-bottom: 12px;">
+          <table>
+            <thead>
+              <tr><th>STT</th><th>Tên Bài Hát</th><th>Nguồn</th><th>Thao Tác</th></tr>
+            </thead>
+            <tbody id="supremePlaylistTableBody">
+              <tr><td colspan="4">Chưa có bài hát nào trong list.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div style="display: flex; gap: 10px;">
-          <button class="btn btn-success" onclick="uploadAndPlayGlobalAudio()">🎵 Phát Nhạc Chung Từ Link</button>
           <button class="btn btn-danger" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
 
@@ -815,7 +835,6 @@
     window.onValue = onValue;
     window.dbUpdate = update;
 
-    // Firebase Storage - dùng để tải file nhạc lớn lên thay vì nhét base64 vào Realtime Database
     window.storage = storage;
     window.storageRef = storageRef;
     window.uploadBytes = uploadBytes;
@@ -868,7 +887,6 @@
 
             if (noticeSpan) noticeSpan.innerText = data.text;
 
-            // Tự động ẩn sau thời gian định sẵn nếu có
             if (data.durationSec) {
               setTimeout(() => {
                 banner.style.display = 'none';
@@ -880,7 +898,7 @@
           }
         });
 
-        // Lắng nghe trạng thái phát nhạc đồng bộ
+        // Lắng nghe playlist và trạng thái phát nhạc đồng bộ
         window.onValue(window.ref(window.db, 'system/audio'), (snapshot) => {
           let data = snapshot.val();
           const audioPlayer = document.getElementById('globalAudioPlayer');
@@ -898,12 +916,12 @@
             if (audioStatusSpan) audioStatusSpan.innerText = 'Đang tắt';
           }
         });
+
+        // Lắng nghe danh sách playlist trên Cloud
+        loadSupremePlaylist();
       }, 1500);
     });
 
-    // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY BLOCKED) ---
-    // Hầu hết trình duyệt chặn audio.play() nếu người dùng chưa từng tương tác với trang.
-    // Biến này đánh dấu "đang có nhạc chờ phát" để thử lại ngay khi người dùng bấm/chạm/gõ phím lần đầu.
     let pendingGlobalAudioPlay = false;
 
     function tryPlayGlobalAudio() {
@@ -917,21 +935,18 @@
           pendingGlobalAudioPlay = false;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Đang phát nhạc trực tuyến 🎵';
         }).catch(() => {
-          // Bị chặn autoplay -> chờ người dùng tương tác lần đầu rồi thử lại
           pendingGlobalAudioPlay = true;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Nhạc đang chờ bạn chạm/bấm vào trang để phát 🔇';
         });
       }
     }
 
-    // Ngay khi người dùng tương tác lần đầu tiên với trang, thử phát lại nhạc nếu đang bị chặn
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.addEventListener(evt, () => {
         if (pendingGlobalAudioPlay) tryPlayGlobalAudio();
       }, { passive: true });
     });
 
-    // --- HÀM HIỂN THỊ TOAST THÔNG BÁO NÂNG TẦM TRẢI NGHIỆM ---
     function showToast(message, isError = false) {
       const toast = document.getElementById('systemToast');
       toast.innerText = message;
@@ -968,12 +983,12 @@
         showToast('👑 Chào mừng Nhà Phát Triển tối cao!');
         switchView('supremeView');
         loadAllSupremeExams();
+        loadSupremePlaylist();
       } else {
         showToast('❌ Sai mật khẩu vua!', true);
       }
     }
 
-    // --- CÁC CHỨC NĂNG DÀNH CHO TỐI CAO NHÀ PHÁT TRIỂN ---
     async function loadAllSupremeExams() {
       let tbody = document.getElementById('supremeExamsTableBody');
       tbody.innerHTML = '<tr><td colspan="4">⏳ Đang tải toàn bộ dữ liệu từ Cloud...</td></tr>';
@@ -1107,25 +1122,94 @@
       reader.onerror = error => reject(error);
     });
 
-    async function uploadAndPlayGlobalAudio() {
-      let urlInput = document.getElementById('supremeAudioUrlInput');
-      let audioUrl = urlInput.value.trim();
+    // --- TÍNH NĂNG MỚI: QUẢN LÝ PLAYLIST VÀ THÊM FILE NHẠC TỪ TỆP TẢI XUỐNG ---
+    async function addLocalAudioToList() {
+      let fileInput = document.getElementById('localAudioFileInput');
+      let nameInput = document.getElementById('localAudioNameInput');
 
-      if (!audioUrl) { showToast('Vui lòng dán link nhạc vào ô nhập!', true); return; }
-      if (!/^https?:\/\//i.test(audioUrl)) { showToast('Link nhạc không hợp lệ, phải bắt đầu bằng http:// hoặc https://', true); return; }
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showToast('Vui lòng chọn file nhạc từ tệp tải xuống!', true);
+        return;
+      }
 
-      showToast('⏳ Đang lưu link nhạc...');
+      let file = fileInput.files[0];
+      let songName = nameInput.value.trim() || file.name;
+
+      showToast('⏳ Đang tải file nhạc lên hệ thống...');
       try {
-        // Chỉ lưu đường link nhạc (chuỗi ngắn) vào Realtime Database, không upload file gì cả
+        let base64Data = await fileToBase64(file);
+        
+        let playlistSnap = await window.dbGet(window.dbChild(window.dbRef, 'system/playlist'));
+        let playlist = playlistSnap.exists() ? playlistSnap.val() : [];
+
+        playlist.push({
+          name: songName,
+          url: base64Data,
+          timestamp: Date.now()
+        });
+
+        await window.dbSet(window.ref(window.db, 'system/playlist'), playlist);
+        fileInput.value = '';
+        nameInput.value = '';
+        showToast('🎵 Đã thêm bài hát vào danh sách thành công!');
+        loadSupremePlaylist();
+      } catch (err) {
+        console.error('Lỗi tải file nhạc:', err);
+        showToast('❌ Lỗi khi thêm nhạc: ' + (err && err.message ? err.message : err), true);
+      }
+    }
+
+    async function loadSupremePlaylist() {
+      let tbody = document.getElementById('supremePlaylistTableBody');
+      if (!tbody) return;
+
+      let snap = await window.dbGet(window.dbChild(window.dbRef, 'system/playlist'));
+      if (!snap.exists()) {
+        tbody.innerHTML = '<tr><td colspan="4">Chưa có bài hát nào trong list.</td></tr>';
+        return;
+      }
+
+      let playlist = snap.val();
+      tbody.innerHTML = '';
+      playlist.forEach((song, idx) => {
+        tbody.innerHTML += `
+          <tr>
+            <td><b>#${idx + 1}</b></td>
+            <td style="text-align: left; padding-left: 10px;">${song.name}</td>
+            <td>File trực tiếp</td>
+            <td>
+              <div style="display:flex; gap:6px; justify-content:center;">
+                <button class="btn btn-success" style="padding:2px 8px; font-size:11px; width:auto;" onclick="playPlaylistSong('${song.url}')">▶️ Phát</button>
+                <button class="btn btn-danger" style="padding:2px 8px; font-size:11px; width:auto;" onclick="deletePlaylistSong(${idx})">🗑️ Xóa</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function playPlaylistSong(audioUrl) {
+      try {
         await window.dbSet(window.ref(window.db, 'system/audio'), {
           audioUrl: audioUrl,
           isPlaying: true,
           timestamp: Date.now()
         });
-        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
+        showToast('🎵 Đang phát bài hát cho mọi người cùng nghe!');
       } catch (err) {
-        console.error('Lỗi phát nhạc chung:', err);
-        showToast('❌ Lỗi khi lưu/phát nhạc: ' + (err && err.message ? err.message : err), true);
+        showToast('❌ Lỗi phát nhạc: ' + err.message, true);
+      }
+    }
+
+    async function deletePlaylistSong(index) {
+      if (!confirm('Bạn có chắc muốn xóa bài hát này khỏi danh sách?')) return;
+      let snap = await window.dbGet(window.dbChild(window.dbRef, 'system/playlist'));
+      if (snap.exists()) {
+        let playlist = snap.val();
+        playlist.splice(index, 1);
+        await window.dbSet(window.ref(window.db, 'system/playlist'), playlist);
+        showToast('🗑️ Đã xóa bài hát thành công!');
+        loadSupremePlaylist();
       }
     }
 
@@ -1826,9 +1910,8 @@
             document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
 
             if (!students[studentKey]) {
-              showToast('Bạn đã bị giáo viên kick!', true);
-              if (activeQpRoomListener) activeQpRoomListener();
-              switchView('studentLoginView');
+              alert('Bạn đã bị giáo viên kick khỏi phòng!');
+              leaveQpWaitingRoom();
               return;
             }
 
@@ -1836,10 +1919,51 @@
               if (activeQpRoomListener) activeQpRoomListener();
               window.dbUpdate(roomRef, { status: 'testing' });
               launchQpPracticeInterface();
-            } else if (data.status === 'ended' && isQpActive) {
-              if (activeQpRoomListener) activeQpRoomListener();
-              showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
-              submitQpPractice(true);
+            } else if (data.status === 'ended') {
+              alert('Phòng luyện đã kết thúc!');
+              leaveQpWaitingRoom();
+            }
+          });
+
+        } else if (mode === 'live') {
+          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
+          let exam = snapshot.val();
+          if (!exam.isLiveRoom) { showToast('Đề thi này không phải là phòng thi chuyên dụng!', true); return; }
+          if (exam.livePassword && exam.livePassword !== pass) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
+
+          currentExamData = exam;
+          studentNameGlobal = name;
+          studentSessionKey = 'live_s_' + Date.now();
+          studentSessionKeyGlobal = studentSessionKey;
+
+          let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKey}`);
+          await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
+
+          document.getElementById('waitingRoomExamTitle').innerText = exam.title;
+          document.getElementById('waitStudentName').innerText = name;
+          document.getElementById('waitDuration').innerText = exam.duration;
+          switchView('studentWaitingRoomView');
+
+          let roomMainRef = window.ref(window.db, `liverooms/${code}`);
+          activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+            let data = snapshot.val() || {};
+            let students = data.students || {};
+            document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
+
+            if (!students[studentSessionKey]) {
+              alert('Bạn đã bị giáo viên kick khỏi phòng!');
+              leaveWaitingRoom();
+              return;
+            }
+
+            if (data.status === 'started') {
+              if (activeStudentRoomListener) activeStudentRoomListener();
+              window.dbUpdate(roomRef, { status: 'testing' });
+              startOfficialExamSession();
+            } else if (data.status === 'ended') {
+              alert('Phòng thi đã kết thúc!');
+              leaveWaitingRoom();
             }
           });
 
@@ -1847,163 +1971,177 @@
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
           if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
           currentExamData = snapshot.val();
+          if (currentExamData.isLiveRoom) { showToast('Đề thi này yêu cầu vào qua Phòng thi chuyên dụng (Live Exam)!', true); return; }
           studentNameGlobal = name;
-
-          if (mode === 'live') {
-            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', true); return; }
-            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
-
-            studentSessionKeyGlobal = 's_' + Date.now();
-            let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`);
-            await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
-
-            document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
-            document.getElementById('waitStudentName').innerText = name;
-            document.getElementById('waitDuration').innerText = currentExamData.duration;
-            switchView('studentWaitingRoomView');
-
-            let roomMainRef = window.ref(window.db, `liverooms/${code}`);
-            activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
-              let data = snapshot.val() || {};
-              let students = data.students || {};
-              document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
-
-              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', true); switchView('studentLoginView'); return; }
-              if (data.status === 'started') {
-                if (activeStudentRoomListener) activeStudentRoomListener();
-                window.dbUpdate(roomRef, { status: 'testing' });
-                launchOfficialExamInterface();
-              } else if (data.status === 'ended') {
-                if (activeStudentRoomListener) activeStudentRoomListener();
-                showToast('Kì thi đã kết thúc!'); switchView('studentLoginView');
-              }
-            });
-          } else {
-            studentSessionKeyGlobal = 's_free_' + Date.now();
-            launchOfficialExamInterface();
-          }
+          studentSessionKeyGlobal = 'free_' + Date.now();
+          startOfficialExamSession();
         }
       });
+    }
+
+    function leaveWaitingRoom() {
+      if (activeStudentRoomListener) activeStudentRoomListener();
+      if (studentSessionKeyGlobal && document.getElementById('studentExamCode').value) {
+        let code = document.getElementById('studentExamCode').value.trim().toUpperCase();
+        window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`));
+      }
+      switchView('studentLoginView');
+      showToast('Đã rời phòng chờ.');
     }
 
     function leaveQpWaitingRoom() {
       if (activeQpRoomListener) activeQpRoomListener();
       switchView('studentLoginView');
+      showToast('Đã rời phòng chờ bài luyện.');
     }
 
-    async function launchOfficialExamInterface() {
+    function startOfficialExamSession() {
+      switchView('studentExamView');
       document.getElementById('displayExamTitle').innerText = currentExamData.title;
       document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${studentNameGlobal}`;
 
-      const mediaContainer = document.getElementById('examMediaContainer');
-      mediaContainer.innerHTML = '';
-
-      if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
-        let pdf = await pdfjsLib.getDocument(currentExamData.media.files[0]).promise;
-        for (let i = 1; i <= pdf.numPages; i++) {
-          let page = await pdf.getPage(i);
-          let viewport = page.getViewport({ scale: 1.1 });
-          let canvas = document.createElement('canvas');
-          canvas.className = 'pdf-canvas';
-          canvas.height = viewport.height; canvas.width = viewport.width;
-          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-          mediaContainer.appendChild(canvas);
-        }
-      } else if (currentExamData.media.type === 'image') {
-        currentExamData.media.files.forEach(imgB64 => {
-          let img = document.createElement('img');
-          img.src = imgB64; img.className = 'img-preview';
-          mediaContainer.appendChild(img);
-        });
-      }
-
-      const sheet = document.getElementById('studentAnswerSheet');
-      sheet.innerHTML = '';
-
-      currentExamData.questions.forEach(q => {
-        let item = document.createElement('div');
-        item.style.marginBottom = '12px'; item.style.paddingBottom = '8px'; item.style.borderBottom = '1px solid #eee';
-
-        let inputHtml = '';
-        if (q.type === 'mc') {
-          inputHtml = `<div class="opt-group" data-qid="${q.id}">
-            <div class="opt-btn" onclick="selectOpt(this, 'A')">A</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'B')">B</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'C')">C</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
-          </div>`;
-        } else if (q.type === 'tf') {
-          let count = q.correctAnswer.split(',').length;
-          let letters = ['a', 'b', 'c', 'd'];
-          for(let i=0; i<count; i++) {
-            inputHtml += `<div class="tf-branch-row">
-              <span style="font-size:13px;">Nhánh ${letters[i]}:</span>
-              <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
-                <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
-                <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
-              </div>
-            </div>`;
-          }
-        } else {
-          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
-        }
-
-        item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
-        sheet.appendChild(item);
-      });
-
       timeLeft = currentExamData.duration * 60;
-      clearInterval(examTimer);
+      updateTimerDisplay();
+      if (examTimer) clearInterval(examTimer);
       examTimer = setInterval(() => {
         timeLeft--;
-        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-        if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(examTimer);
+          submitStudentExam(true);
+        }
       }, 1000);
 
-      cheatWarnings = 0;
-      totalTabLeaveTime = 0;
-      document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
-      isExamActive = true;
-      switchView('studentExamView');
+      renderExamMediaAndAnswers();
+      initAntiCheatSystem();
     }
 
-    async function handleTabLeaveEvent(durationAway) {
-      if (durationAway > CHEAT_TIME_THRESHOLD) {
-        cheatWarnings++;
-        totalTabLeaveTime += durationAway;
+    function updateTimerDisplay() {
+      let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+      document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
 
-        document.getElementById('cheatModalCount').innerText = cheatWarnings;
-        document.getElementById('cheatModalTime').innerText = (totalTabLeaveTime / 1000).toFixed(1) + ' giây';
-        document.getElementById('cheatAlertModal').style.display = 'flex';
-        
-        document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
-        let qpBadge = document.getElementById('qpCheatWarningBadge');
-        if (qpBadge) qpBadge.innerText = `Cảnh báo: ${cheatWarnings}`;
+    async function renderExamMediaAndAnswers() {
+      let mediaContainer = document.getElementById('examMediaContainer');
+      mediaContainer.innerHTML = '';
+      let media = currentExamData.media;
 
-        if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
-          await window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
-            cheatWarnings: cheatWarnings,
-            totalLeaveTime: totalTabLeaveTime
+      if (media && media.files && media.files.length > 0) {
+        if (media.type === 'pdf') {
+          let loadingTask = pdfjsLib.getDocument(media.files[0]);
+          let pdfDoc = await loadingTask.promise;
+          for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+            let page = await pdfDoc.getPage(pageNum);
+            let viewport = page.getViewport({ scale: 1.5 });
+            let canvas = document.createElement('canvas');
+            canvas.className = 'pdf-canvas';
+            let context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+            mediaContainer.appendChild(canvas);
+          }
+        } else {
+          media.files.forEach(imgBase64 => {
+            let img = document.createElement('img');
+            img.src = imgBase64;
+            img.className = 'img-preview';
+            mediaContainer.appendChild(img);
           });
         }
+      }
 
-        if (currentQpData && currentQpData.enableAntiCheat) {
-          if (currentQpData.antiCheatType === 'limited') {
-            let maxW = currentQpData.maxWarnings || 5;
-            if (cheatWarnings >= maxW) {
-              showToast(`🚨 Đã đạt giới hạn ${maxW} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, true);
-              dismissCheatAlert();
-              submitQpPractice(true);
-              return;
-            }
-          }
+      let sheet = document.getElementById('studentAnswerSheet');
+      sheet.innerHTML = '';
+      currentExamData.questions.forEach((q, idx) => {
+        let qDiv = document.createElement('div');
+        qDiv.style.marginBottom = '15px';
+        qDiv.style.padding = '10px';
+        qDiv.style.background = '#f8f9fa';
+        qDiv.style.borderRadius = '6px';
+        qDiv.dataset.qid = q.id;
+        qDiv.dataset.qtype = q.type;
+
+        let inner = `<p style="font-weight:bold; font-size:13px; margin-bottom:8px;">Câu ${q.id} (${q.score}đ):</p>`;
+
+        if (q.type === 'mc') {
+          inner += `<div class="opt-group">`;
+          ['A', 'B', 'C', 'D'].forEach(opt => {
+            inner += `<div class="opt-btn" onclick="selectMcOpt(this, '${opt}')">${opt}</div>`;
+          });
+          inner += `</div>`;
+        } else if (q.type === 'tf') {
+          let branches = q.correctAnswer.split(',');
+          inner += `<div style="display:flex; flex-direction:column; gap:5px;">`;
+          branches.forEach((_, bIdx) => {
+            let l = ['a', 'b', 'c', 'd'][bIdx];
+            inner += `
+              <div class="tf-branch-row" data-branch="${bIdx}">
+                <span style="font-size:12px; font-weight:bold;">Ý ${l})</span>
+                <div class="tf-branch-opts">
+                  <div class="tf-sub-btn" onclick="selectTfOpt(this, 'Đ')">Đ</div>
+                  <div class="tf-sub-btn" onclick="selectTfOpt(this, 'S')">S</div>
+                </div>
+              </div>
+            `;
+          });
+          inner += `</div>`;
+        } else if (q.type === 'sa') {
+          inner += `<input type="text" class="student-sa-input" placeholder="Nhập câu trả lời ngắn..." style="margin:0; font-size:13px;">`;
         }
 
-        if (currentExamData && currentExamData.isLiveRoom && cheatWarnings > 10) {
-          showToast('🚨 Bạn đã vi phạm quá 10 lần. Hệ thống tự động nộp bài!', true);
-          dismissCheatAlert();
-          submitStudentExam(true);
+        qDiv.innerHTML = inner;
+        sheet.appendChild(qDiv);
+      });
+    }
+
+    function selectMcOpt(btn, opt) {
+      let group = btn.parentElement;
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.dataset.selected = opt;
+    }
+
+    function selectTfOpt(btn, val) {
+      let row = btn.parentElement;
+      row.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.dataset.selected = val;
+    }
+
+    function initAntiCheatSystem() {
+      cheatWarnings = 0;
+      totalTabLeaveTime = 0;
+      document.getElementById('cheatWarningBadge').innerText = 'Cảnh báo: 0';
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
+
+    function handleVisibilityChange() {
+      if (!isExamActive) return;
+      if (document.hidden) {
+        tabLeaveStartTime = Date.now();
+      } else {
+        if (tabLeaveStartTime) {
+          let leaveDuration = Date.now() - tabLeaveStartTime;
+          totalTabLeaveTime += leaveDuration;
+          tabLeaveStartTime = null;
+
+          if (leaveDuration >= CHEAT_TIME_THRESHOLD) {
+            cheatWarnings++;
+            document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
+            document.getElementById('cheatModalCount').innerText = cheatWarnings;
+            document.getElementById('cheatModalTime').innerText = Math.round(totalTabLeaveTime / 1000) + 's';
+            document.getElementById('cheatAlertModal').style.display = 'flex';
+
+            if (studentSessionKeyGlobal && document.getElementById('studentExamCode').value) {
+              let code = document.getElementById('studentExamCode').value.trim().toUpperCase();
+              window.dbUpdate(window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`), {
+                cheatWarnings: cheatWarnings,
+                totalLeaveTime: totalTabLeaveTime
+              });
+            }
+          }
         }
       }
     }
@@ -2012,491 +2150,302 @@
       document.getElementById('cheatAlertModal').style.display = 'none';
     }
 
-    document.addEventListener('visibilitychange', () => {
-      if (!isExamActive && !isQpActive) return;
-      if (document.hidden) {
-        tabLeaveStartTime = Date.now();
-      } else {
-        if (tabLeaveStartTime) {
-          let durationAway = Date.now() - tabLeaveStartTime;
-          handleTabLeaveEvent(durationAway);
-          tabLeaveStartTime = null;
-        }
-      }
-    });
-
-    window.addEventListener('blur', () => {
-      if (!isExamActive && !isQpActive) return;
-      tabLeaveStartTime = Date.now();
-    });
-
-    window.addEventListener('focus', () => {
-      if ((!isExamActive && !isQpActive) || !tabLeaveStartTime) return;
-      let durationAway = Date.now() - tabLeaveStartTime;
-      handleTabLeaveEvent(durationAway);
-      tabLeaveStartTime = null;
-    });
-
-    function selectOpt(btn, val) {
-      let p = btn.parentElement;
-      p.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected'); p.dataset.val = val;
-    }
-    function selectTfSub(btn, val) {
-      let p = btn.parentElement;
-      p.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected'); p.dataset.val = val;
-    }
-
-    async function submitStudentExam(forced = false) {
-      if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
-      clearInterval(examTimer);
+    async function submitStudentExam(isAuto = false) {
+      if (!isAuto && !confirm('Bạn có chắc muốn nộp bài thi?')) return;
       isExamActive = false;
+      if (examTimer) clearInterval(examTimer);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
 
-      let totalEarnedScore = 0;
-      let reviewHtml = '';
+      let totalScore = 0;
+      let maxPossibleScore = 0;
+      let reviewDetails = [];
 
-      currentExamData.questions.forEach(q => {
-        let studentAns = '', isCorrect = false, qEarned = 0;
+      let qDivs = document.querySelectorAll('#studentAnswerSheet > div');
+      qDivs.forEach((qDiv, idx) => {
+        let q = currentExamData.questions[idx];
+        maxPossibleScore += q.score;
+
+        let studentAns = '';
+        let isCorrect = false;
+
         if (q.type === 'mc') {
-          let grp = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-          studentAns = grp ? (grp.dataset.val || '') : '';
-          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
-          if (isCorrect) qEarned = q.score;
+          let sel = qDiv.querySelector('.opt-btn.selected');
+          studentAns = sel ? sel.dataset.selected : '';
+          if (studentAns === q.correctAnswer) {
+            totalScore += q.score;
+            isCorrect = true;
+          }
         } else if (q.type === 'tf') {
-          let correctArr = q.correctAnswer.split(',');
-          let studentArr = [];
-          let subEarned = 0;
-          let branchScores = q.branchScores || [0.1, 0.15, 0.25, 0.5];
-          correctArr.forEach((ansCorrect, i) => {
-            let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
-            let val = row && row.dataset.val ? row.dataset.val : '_';
-            studentArr.push(val);
-            if (val === ansCorrect) subEarned += branchScores[i];
+          let rows = qDiv.querySelectorAll('.tf-branch-row');
+          let subAnswers = [];
+          let correctBranches = q.correctAnswer.split(',');
+          let branchScores = q.branchScores || [0.25, 0.25, 0.25, 0.25];
+          let qEarned = 0;
+
+          rows.forEach((row, bIdx) => {
+            let sel = row.querySelector('.tf-sub-btn.selected');
+            let val = sel ? sel.dataset.selected : '';
+            subAnswers.push(val || '_');
+            if (val === correctBranches[bIdx]) {
+              qEarned += branchScores[bIdx];
+            }
           });
-          studentAns = studentArr.join(',');
-          qEarned = subEarned;
-          isCorrect = (studentAns === q.correctAnswer);
+          studentAns = subAnswers.join(',');
+          totalScore += qEarned;
+          if (qEarned === q.score) isCorrect = true;
         } else if (q.type === 'sa') {
-          let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
+          let input = qDiv.querySelector('.student-sa-input');
           studentAns = input ? input.value.trim() : '';
-          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
-          if (isCorrect) qEarned = q.score;
+          if (studentAns.toLowerCase() === q.correctAnswer.toLowerCase()) {
+            totalScore += q.score;
+            isCorrect = true;
+          }
         }
 
-        totalEarnedScore += qEarned;
-
-        let hasExp = q.explanation || q.expImage;
-        let expContent = '';
-        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
-        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
-
-        reviewHtml += `
-          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
-            <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span>
-            <div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>
-            ${!isCorrect ? `<div>- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}
-            
-            ${hasExp ? `
-              <div style="margin-top: 6px;">
-                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
-                <div class="explanation-box">${expContent}</div>
-              </div>
-            ` : ''}
-          </div>
-        `;
+        reviewDetails.push({
+          id: q.id, type: q.type, studentAns: studentAns,
+          correctAns: q.correctAnswer, isCorrect: isCorrect,
+          score: q.score, explanation: q.explanation, expImage: q.expImage
+        });
       });
 
-      let finalScore = Math.round(totalEarnedScore * 100) / 100;
-      let timeSpentSeconds = (currentExamData.duration * 60) - timeLeft;
+      totalScore = Math.round(totalScore * 100) / 100;
+      let examCode = document.getElementById('studentExamCode').value.trim().toUpperCase();
 
-      document.getElementById('resultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('resultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
-      document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
-
-      await window.dbPush(window.ref(window.db, 'leaderboard/' + currentExamData.code), {
-        name: studentNameGlobal, 
-        score: finalScore, 
-        timeSpent: timeSpentSeconds, 
+      let record = {
+        name: studentNameGlobal,
+        score: totalScore,
+        maxScore: maxPossibleScore,
+        timeSpent: (currentExamData.duration * 60) - timeLeft,
         cheatWarnings: cheatWarnings,
         totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
         timestamp: Date.now()
-      });
-      showToast('📤 Nộp bài thành công!');
+      };
+
+      await window.dbPush(window.ref(window.db, `leaderboard/${examCode}`), record);
+
+      if (studentSessionKeyGlobal && currentExamData.isLiveRoom) {
+        await window.dbRemove(window.ref(window.db, `liverooms/${examCode}/students/${studentSessionKeyGlobal}`));
+      }
+
       switchView('studentResultView');
-    }
+      document.getElementById('resultScore').innerText = `${totalScore} / ${maxPossibleScore}`;
+      document.getElementById('resultDetailText').innerText = `Họ tên: ${studentNameGlobal} | Số lần cảnh cáo: ${cheatWarnings}`;
 
-    function leaveWaitingRoom() { switchView('studentLoginView'); }
-
-    function launchQpPracticeInterface() {
-      isQpActive = true;
-      currentQpV2Index = 0;
-      qpStudentAnswers = {};
-      document.getElementById('qpPlayTitle').innerText = currentQpData.title;
-
-      if (currentQpData.enableAntiCheat) {
-        document.getElementById('qpCheatWarningBanner').style.display = 'flex';
-        cheatWarnings = 0;
-        totalTabLeaveTime = 0;
-        document.getElementById('qpCheatWarningBadge').innerText = `Cảnh báo: 0`;
-      } else {
-        document.getElementById('qpCheatWarningBanner').style.display = 'none';
-      }
-
-      if (currentQpData.useLayoutV2) {
-        renderQpQuestionV2Item();
-      } else {
-        renderQpLayoutV1();
-      }
-
-      if (currentQpData.enableTimer) {
-        qpTimeLeft = (currentQpData.durationMinutes || 15) * 60;
-        document.getElementById('qpPlayTimer').style.display = 'block';
-        clearInterval(qpTimer);
-        qpTimer = setInterval(() => {
-          qpTimeLeft--;
-          let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
-          document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-          if (qpTimeLeft <= 0) {
-            clearInterval(qpTimer);
-            showToast('⌛ Đã hết thời gian làm bài!', true);
-            submitQpPractice(true);
-          }
-        }, 1000);
-      } else {
-        qpTimeLeft = 0;
-        document.getElementById('qpPlayTimer').style.display = 'none';
-        clearInterval(qpTimer);
-        qpTimer = setInterval(() => { qpTimeLeft++; }, 1000);
-      }
-
-      switchView('qpPracticingView');
-
-      if (currentQpData.isAdvancedMode) {
-        let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
-        activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
-          let data = snapshot.val() || {};
-          if (data.status === 'ended' && isQpActive) {
-            if (activeQpRoomListener) activeQpRoomListener();
-            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
-            submitQpPractice(true);
-          }
-        });
-      }
-    }
-
-    function renderQpLayoutV1() {
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      container.innerHTML = '';
-      document.getElementById('qpPrevBtn').style.display = 'none';
-      document.getElementById('qpNextBtn').style.display = 'none';
-      document.getElementById('qpSubmitBtn').style.display = 'block';
-
-      currentQpData.questions.forEach((q, idx) => {
-        let optHtml = '';
-        q.options.forEach(opt => {
-          optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
-        });
-
-        let hasExp = q.explanation || q.expImage;
-
-        container.innerHTML += `
-          <div class="card" style="background: #fdfdfd; border: 1px solid #ddd; margin-bottom: 12px;">
-            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
-            ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-            <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
-              ${optHtml}
-            </div>
-            <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
-            
-            ${hasExp ? `
-              <div style="margin-top: 6px;">
-                <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
-                <div id="qp-exp-${q.id}" class="explanation-box">
-                  ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
-                </div>
-              </div>
-            ` : ''}
+      let revContainer = document.getElementById('resultReviewContainer');
+      revContainer.innerHTML = '';
+      reviewDetails.forEach(rd => {
+        revContainer.innerHTML += `
+          <div style="background:#f8f9fa; border:1px solid ${rd.isCorrect?'#198754':'#dc3545'}; padding:10px; border-radius:6px; margin-bottom:8px;">
+            <b>Câu ${rd.id}:</b> Bạn chọn: <b>${rd.studentAns || 'Không làm'}</b> | Đáp án chuẩn: <b style="color:green;">${rd.correctAns}</b>
+            ${rd.explanation ? `<div style="margin-top:6px; font-size:12px; color:#333;">💡 <b>Lời giải:</b> ${rd.explanation}</div>` : ''}
+            ${rd.expImage ? `<img src="${rd.expImage}" style="max-width:100%; margin-top:6px; border-radius:4px;">` : ''}
           </div>
         `;
       });
-    }
-
-    function renderQpQuestionV2Item() {
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      let q = currentQpData.questions[currentQpV2Index];
-      let totalQ = currentQpData.questions.length;
-
-      let isAnswered = qpStudentAnswers.hasOwnProperty(q.id);
-      let savedVal = isAnswered ? qpStudentAnswers[q.id] : '';
-
-      document.getElementById('qpPrevBtn').style.display = currentQpV2Index > 0 ? 'block' : 'none';
-      let nextBtn = document.getElementById('qpNextBtn');
-      let submitBtn = document.getElementById('qpSubmitBtn');
-
-      if (currentQpV2Index < totalQ - 1) {
-        nextBtn.style.display = 'block';
-        nextBtn.innerText = isAnswered ? 'Tiếp Tục ➡️' : 'Xác Nhận & Tiếp Tục ➡️';
-        submitBtn.style.display = 'none';
-      } else {
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'block';
-        submitBtn.innerText = isAnswered ? '📤 Nộp Bài Luyện Nhanh' : 'Xác Nhận & Nộp Bài';
-      }
-
-      let optHtml = '';
-      q.options.forEach(opt => {
-        let isSel = (savedVal === opt.label);
-        let bgStyle = '';
-        
-        if (isAnswered) {
-          if (opt.label === savedVal) {
-             bgStyle = (savedVal === q.correct) ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;';
-          } else if (opt.label === q.correct) {
-             bgStyle = 'background: #198754; color: white;';
-          }
-        } else {
-           let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-           if (group && group.dataset.val === opt.label) {
-               isSel = true;
-               bgStyle = 'background: #1877f2; color: white;';
-           }
-        }
-
-        let clickEvent = isAnswered ? '' : `onclick="selectQpOpt(this, ${q.id}, '${opt.label}')"`;
-        let cursorStyle = isAnswered ? 'cursor: not-allowed; opacity: 0.8;' : 'cursor: pointer;';
-
-        optHtml += `<div class="opt-btn ${isSel ? 'selected' : ''}" ${clickEvent} style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px; ${bgStyle} ${cursorStyle}">${opt.label}. ${opt.text}</div>`;
-      });
-
-      let hasExp = q.explanation || q.expImage;
-      let feedbackHtml = '';
-      if (isAnswered) {
-          if (savedVal === q.correct) {
-              feedbackHtml = `<span style="color: #198754;">✓ Chính xác! Đáp án đúng là ${q.correct}</span>`;
-          } else {
-              feedbackHtml = `<span style="color: #dc3545;">✗ Sai rồi! Đáp án đúng là ${q.correct}</span>`;
-          }
-      }
-
-      container.innerHTML = `
-        <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-weight: bold; color: #1877f2;">Câu ${currentQpV2Index + 1} / ${totalQ} ${isAnswered ? '<span style="color:red;font-size:12px;">(Đã khóa)</span>' : ''}</span>
-            <span style="font-size: 12px; color: #666;">Điểm: ${q.score || 0.25}đ</span>
-          </div>
-          <p style="font-weight: bold; margin-bottom: 8px;">${q.question}</p>
-          ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-          <div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction: column; gap: 6px;">
-            ${optHtml}
-          </div>
-          <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;">${feedbackHtml}</div>
-          
-          ${(hasExp && isAnswered) ? `
-            <div style="margin-top: 6px;">
-              <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
-              <div id="qp-exp-${q.id}" class="explanation-box">
-                ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }
-
-    function nextQpQuestionV2() {
-      let q = currentQpData.questions[currentQpV2Index];
-      
-      if (!qpStudentAnswers.hasOwnProperty(q.id)) {
-        let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-        let selectedVal = group ? group.dataset.val : '';
-        
-        if (!selectedVal) {
-          showToast('Vui lòng chọn 1 đáp án để xác nhận làm tiếp!', true);
-          return;
-        }
-        qpStudentAnswers[q.id] = selectedVal; 
-      }
-
-      if (currentQpV2Index < currentQpData.questions.length - 1) {
-        currentQpV2Index++;
-        renderQpQuestionV2Item();
-      }
-    }
-
-    function prevQpQuestionV2() {
-      if (currentQpV2Index > 0) {
-        currentQpV2Index--;
-        renderQpQuestionV2Item();
-      }
-    }
-
-    function selectQpOpt(btn, qid, label) {
-      if (!isQpActive) return; 
-      let group = btn.parentElement;
-      group.querySelectorAll('.opt-btn').forEach(b => {
-        b.classList.remove('selected');
-        b.style.background = 'white';
-        b.style.color = '#333';
-      });
-      btn.classList.add('selected'); 
-      btn.style.background = '#1877f2'; 
-      btn.style.color = 'white';
-      group.dataset.val = label;
-    }
-
-    function toggleQpExp(qid) {
-      let box = document.getElementById(`qp-exp-${qid}`);
-      let btn = box.previousElementSibling;
-      if (box.style.display === 'block') {
-        box.style.display = 'none';
-        btn.innerText = '>';
-      } else {
-        box.style.display = 'block';
-        btn.innerText = 'v';
-      }
-    }
-
-    async function submitQpPractice(forced = false) {
-      if (!forced && !confirm('Xác nhận nộp bài luyện nhanh?')) return;
-      if (!isQpActive && !forced) return;
-      isQpActive = false;
-      clearInterval(qpTimer);
-      if (activeQpRoomListener) activeQpRoomListener();
-
-      let totalEarned = 0;
-      let totalMax = 0;
-      let reviewHtml = '';
-
-      currentQpData.questions.forEach(q => {
-        let qScore = q.score || 0.25;
-        totalMax += qScore;
-        
-        let val = '';
-        if (currentQpData.useLayoutV2) {
-            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-            if (group && group.dataset.val && !qpStudentAnswers.hasOwnProperty(q.id)) {
-                qpStudentAnswers[q.id] = group.dataset.val;
-            }
-            val = qpStudentAnswers[q.id] || '';
-        } else {
-            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-            val = group ? (group.dataset.val || '') : '';
-        }
-        
-        let isCorrect = (val && val === q.correct);
-        let isUnanswered = !val;
-
-        if (isCorrect) totalEarned += qScore;
-
-        let statusColor = isUnanswered ? '#1877f2' : (isCorrect ? '#52c41a' : '#ff4d4f');
-        let statusText = isUnanswered ? 'Chưa làm' : (isCorrect ? '✓ Đúng' : '✗ Sai');
-
-        let hasExp = q.explanation || q.expImage;
-        let expContent = '';
-        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
-        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
-
-        reviewHtml += `
-          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isUnanswered ? '#e7f3ff' : (isCorrect ? '#f6ffed' : '#fff2f0')}; font-size: 13px;">
-            <strong>Câu ${q.id}:</strong> <span style="color:${statusColor}; font-weight:bold;">${statusText} (+${qScore}đ)</span>
-            <div style="margin-top:4px;">
-              - Bạn chọn: <b style="color:${statusColor};">${val || 'Không làm'}</b><br>
-              ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
-            </div>
-            ${hasExp ? `
-              <div style="margin-top:5px;">
-                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
-                <div class="explanation-box">${expContent}</div>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      });
-
-      let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
-      let timeSpentSeconds = currentQpData.enableTimer ? ((currentQpData.durationMinutes || 15) * 60) - qpTimeLeft : qpTimeLeft;
-
-      document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
-      document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
-
-      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
-        name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, timestamp: Date.now()
-      });
-      showToast('📤 Nộp bài luyện thành công!');
-      switchView('qpResultView');
-    }
-
-    function toggleResultExp(btn) {
-      let box = btn.nextElementSibling;
-      if (box.style.display === 'block') {
-        box.style.display = 'none';
-        btn.innerText = '>';
-      } else {
-        box.style.display = 'block';
-        btn.innerText = 'v';
-      }
     }
 
     async function loadLeaderboard() {
-      const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
-      const tbody = document.getElementById('lbTableBody');
-      tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
-      if (!code) { showToast('Nhập mã bài!', true); return; }
+      let code = document.getElementById('searchLbCode').value.trim().toUpperCase();
+      if (!code) { showToast('Vui lòng nhập mã bài thi!', true); return; }
 
       let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      let tbody = document.getElementById('lbTableBody');
+      tbody.innerHTML = '';
+
       if (!snapshot.exists()) {
-        snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
+        tbody.innerHTML = '<tr><td colspan="5">Chưa có kết quả nào cho mã đề này.</td></tr>';
+        return;
       }
 
-      if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
+      let data = Object.values(snapshot.val());
+      data.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
 
-      let history = Object.values(snapshot.val());
-      history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-
-      tbody.innerHTML = '';
-      history.forEach((row, idx) => {
+      data.forEach((row, idx) => {
         let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
-        let warnings = row.cheatWarnings || 0;
-        let leaveSec = row.totalLeaveTime || 0;
-        let rowId = `lb_detail_${idx}`;
-
         tbody.innerHTML += `
           <tr>
             <td><b>#${idx + 1}</b></td>
             <td>${row.name}</td>
             <td><b style="color:#198754;">${row.score}</b></td>
             <td>${m}p ${s}s</td>
-            <td>
-              <button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button>
-              <div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">
-                - Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>
-                - Thời gian rời phòng thi: <b>${leaveSec} giây</b>
-              </div>
-            </td>
-          </tr>`;
+            <td style="color:${(row.cheatWarnings||0)>0?'red':'green'};">${row.cheatWarnings || 0} lần (${row.totalLeaveTime || 0}s)</td>
+          </tr>
+        `;
       });
-      showToast('📊 Tải bảng xếp hạng thành công!');
     }
 
-    function toggleLbDetail(rowId) {
-      let el = document.getElementById(rowId);
-      let btn = el.previousElementSibling;
-      if (el.style.display === 'block') {
-        el.style.display = 'none';
-        btn.innerText = '>';
+    // --- PHẦN BÀI LUYỆN NHANH CỦA HỌC SINH ---
+    function launchQpPracticeInterface() {
+      switchView('qpPracticingView');
+      document.getElementById('qpPlayTitle').innerText = currentQpData.title;
+
+      isQpActive = true;
+      qpStudentAnswers = {};
+
+      if (currentQpData.enableTimer && currentQpData.durationMinutes > 0) {
+        qpTimeLeft = currentQpData.durationMinutes * 60;
+        document.getElementById('qpPlayTimer').style.display = 'block';
+        updateQpTimerDisplay();
+        if (qpTimer) clearInterval(qpTimer);
+        qpTimer = setInterval(() => {
+          qpTimeLeft--;
+          updateQpTimerDisplay();
+          if (qpTimeLeft <= 0) {
+            clearInterval(qpTimer);
+            submitQpPractice(true);
+          }
+        }, 1000);
       } else {
-        el.style.display = 'block';
-        btn.innerText = 'v';
+        document.getElementById('qpPlayTimer').style.display = 'none';
+      }
+
+      if (currentQpData.enableAntiCheat) {
+        document.getElementById('qpCheatWarningBanner').style.display = 'flex';
+      } else {
+        document.getElementById('qpCheatWarningBanner').style.display = 'none';
+      }
+
+      if (currentQpData.useLayoutV2) {
+        currentQpV2Index = 0;
+        document.getElementById('qpPrevBtn').style.display = 'inline-block';
+        document.getElementById('qpNextBtn').style.display = 'inline-block';
+        document.getElementById('qpSubmitBtn').style.display = 'none';
+        renderQpV2Question();
+      } else {
+        document.getElementById('qpPrevBtn').style.display = 'none';
+        document.getElementById('qpNextBtn').style.display = 'none';
+        document.getElementById('qpSubmitBtn').style.display = 'block';
+        renderQpV1Questions();
       }
     }
 
-    addQuestionV2('mc');
-    addQuestionV2('tf');
+    function updateQpTimerDisplay() {
+      let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
+      document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function renderQpV1Questions() {
+      let container = document.getElementById('qpPlayQuestionsContainer');
+      container.innerHTML = '';
+      currentQpData.questions.forEach((q, idx) => {
+        let div = document.createElement('div');
+        div.className = 'card';
+        div.style.marginBottom = '12px';
+        let optsHtml = q.options.map(o => `
+          <label style="display:flex; align-items:center; gap:8px; margin:6px 0; cursor:pointer;">
+            <input type="radio" name="qp_v1_q_${idx}" value="${o.label}" onchange="qpStudentAnswers[${idx}]='${o.label}'" style="width:16px; height:16px;">
+            <b>${o.label}.</b> ${o.text}
+          </label>
+        `).join('');
+
+        div.innerHTML = `
+          <p style="font-weight:bold; margin-bottom:8px;">Câu ${q.id} (${q.score}đ): ${q.question}</p>
+          ${q.image ? `<img src="${q.image}" style="max-width:100%; border-radius:4px; margin-bottom:8px;">` : ''}
+          ${optsHtml}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderQpV2Question() {
+      let container = document.getElementById('qpPlayQuestionsContainer');
+      let q = currentQpData.questions[currentQpV2Index];
+      let total = currentQpData.questions.length;
+
+      let optsHtml = q.options.map(o => {
+        let isChecked = qpStudentAnswers[currentQpV2Index] === o.label ? 'checked' : '';
+        return `
+          <label style="display:flex; align-items:center; gap:8px; margin:8px 0; cursor:pointer; background:#f8f9fa; padding:8px; border-radius:6px; border:1px solid #ddd;">
+            <input type="radio" name="qp_v2_curr" value="${o.label}" ${isChecked} onchange="qpStudentAnswers[${currentQpV2Index}]='${o.label}'" style="width:18px; height:18px;">
+            <b>${o.label}.</b> ${o.text}
+          </label>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div style="font-size:12px; color:#666; margin-bottom:5px;">Câu ${currentQpV2Index + 1} / ${total}</div>
+        <p style="font-weight:bold; margin-bottom:10px;">${q.question}</p>
+        ${q.image ? `<img src="${q.image}" style="max-width:100%; border-radius:4px; margin-bottom:10px;">` : ''}
+        ${optsHtml}
+      `;
+
+      document.getElementById('qpPrevBtn').style.display = currentQpV2Index > 0 ? 'inline-block' : 'none';
+      if (currentQpV2Index === total - 1) {
+        document.getElementById('qpNextBtn').style.display = 'none';
+        document.getElementById('qpSubmitBtn').style.display = 'block';
+      } else {
+        document.getElementById('qpNextBtn').style.display = 'inline-block';
+        document.getElementById('qpSubmitBtn').style.display = 'none';
+      }
+    }
+
+    function prevQpQuestionV2() {
+      if (currentQpV2Index > 0) {
+        currentQpV2Index--;
+        renderQpV2Question();
+      }
+    }
+
+    function nextQpQuestionV2() {
+      if (currentQpV2Index < currentQpData.questions.length - 1) {
+        currentQpV2Index++;
+        renderQpV2Question();
+      }
+    }
+
+    async function submitQpPractice(isAuto = false) {
+      if (!isAuto && !confirm('Bạn có chắc muốn nộp bài luyện nhanh?')) return;
+      isQpActive = false;
+      if (qpTimer) clearInterval(qpTimer);
+
+      let totalScore = 0;
+      let maxScore = 0;
+      let review = [];
+
+      currentQpData.questions.forEach((q, idx) => {
+        maxScore += q.score;
+        let userAns = qpStudentAnswers[idx] || '';
+        let isCorrect = userAns === q.correct;
+        if (isCorrect) totalScore += q.score;
+
+        review.push({
+          id: q.id, question: q.question, userAns: userAns,
+          correct: q.correct, isCorrect: isCorrect,
+          explanation: q.explanation, expImage: q.expImage
+        });
+      });
+
+      totalScore = Math.round(totalScore * 100) / 100;
+      let timeSpent = (currentQpData.durationMinutes * 60) - qpTimeLeft;
+
+      let record = {
+        name: studentNameGlobal,
+        score: totalScore,
+        maxScore: maxScore,
+        timeSpent: timeSpent > 0 ? timeSpent : 0,
+        timestamp: Date.now()
+      };
+
+      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), record);
+
+      switchView('qpResultView');
+      document.getElementById('qpResultScore').innerText = `${totalScore} / ${maxScore}`;
+      document.getElementById('qpResultDetailText').innerText = `Học sinh: ${studentNameGlobal}`;
+
+      let revContainer = document.getElementById('qpResultReviewContainer');
+      revContainer.innerHTML = '';
+      review.forEach(r => {
+        revContainer.innerHTML += `
+          <div style="background:#f8f9fa; border:1px solid ${r.isCorrect?'#198754':'#dc3545'}; padding:10px; border-radius:6px; margin-bottom:8px;">
+            <b>Câu ${r.id}:</b> ${r.question}<br>
+            - Bạn chọn: <b>${r.userAns || 'Không làm'}</b> | Đáp án chuẩn: <b style="color:green;">${r.correct}</b>
+            ${r.explanation ? `<div style="margin-top:6px; font-size:12px;">💡 <b>Lời giải:</b> ${r.explanation}</div>` : ''}
+            ${r.expImage ? `<img src="${r.expImage}" style="max-width:100%; margin-top:6px; border-radius:4px;">` : ''}
+          </div>
+        `;
+      });
+    }
   </script>
 </body>
 </html>
-
