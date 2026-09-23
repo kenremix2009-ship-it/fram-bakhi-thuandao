@@ -23,7 +23,7 @@
 
     .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
     .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .btn { background: #1877f2; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; }
+    .btn { background: #1877f2; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; transition: background 0.2s; }
     .btn:hover { background: #166fe5; }
     .btn-secondary { background: #6c757d; }
     .btn-secondary:hover { background: #5c636a; }
@@ -75,15 +75,48 @@
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
 
+    /* HỆ THỐNG THÔNG BÁO TOAST HIỆN ĐẠI */
+    #systemToast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #198754;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999999;
+      display: none;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    #systemToast.error { background: #dc3545; }
+
+    /* Màn hình Loading khi vào thi mới */
     #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
     .spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* Thông báo hoàn thành loading màu xanh */
     #loadingCompleteToast { 
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
-      background: #ffffff; border: 2px solid #198754; color: #198754; 
-      padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999999; display: none; transition: opacity 5s ease-out; opacity: 1; 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: #ffffff; 
+      border: 2px solid #198754; 
+      color: #198754; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      z-index: 999999; 
+      display: none; 
+      transition: opacity 5s ease-out; 
+      opacity: 1; 
     }
 
     @media (max-width: 900px) {
@@ -95,13 +128,19 @@
 </head>
 <body>
 
+  <!-- TOAST THÔNG BÁO HỆ THỐNG -->
+  <div id="systemToast">Thông báo hệ thống</div>
+
+  <!-- MÀN HÌNH LOADING VÒNG TRÒN XOAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <h3 id="loadingText" style="color: #1877f2; font-size: 18px;">loading...</h3>
   </div>
 
+  <!-- THÔNG BÁO HOÀN THÀNH LOADING -->
   <div id="loadingCompleteToast">Hoàn thành</div>
 
+  <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN -->
   <div class="modal-overlay" id="cheatAlertModal">
     <div class="modal-box" style="text-align: center; max-width: 400px; padding: 25px;">
       <div style="font-size: 40px; color: #dc3545; margin-bottom: 10px;">⚠️</div>
@@ -114,20 +153,21 @@
     </div>
   </div>
 
+  <!-- BẢNG THÔNG BÁO GIỚI THIỆU -->
   <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 15px;">
     <div style="background: white; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 16]</p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 16]</p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ V2[cite: 16]</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -138,7 +178,7 @@
 
   <div class="container">
 
-    <!-- GIÁO VIÊN: TẠO ĐỀ V2 -->
+    <!-- ==================== GIÁO VIÊN: TẠO ĐỀ V2 ==================== -->
     <div id="teacherView" class="view-section active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
@@ -214,22 +254,22 @@
         </div>
 
         <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ | Trả lời ngắn: 0.5đ.</p>
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ (có cơ chế điểm nhánh) | Trả lời ngắn: 0.5đ.</p>
 
         <div class="section-title">
-          <span>I. TRẮC NGHIỆM (A, B, C, D)</span>
+          <span>I. TRẮC NGHIỆM (A, B, C, D) [Mặc định 0.25đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
         </div>
         <div id="builderMC"></div>
 
         <div class="section-title">
-          <span>II. ĐÚNG / SAI</span>
+          <span>II. ĐÚNG / SAI (Cơ chế điểm nhánh: 0.1 / 0.25 / 0.5 / 1.0đ)</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
         </div>
         <div id="builderTF"></div>
 
         <div class="section-title">
-          <span>III. TRẢ LỜI NGẮN</span>
+          <span>III. TRẢ LỜI NGẮN [Mặc định 0.5đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
         </div>
         <div id="builderSA"></div>
@@ -238,7 +278,7 @@
       </div>
     </div>
 
-    <!-- HỌC SINH: ĐĂNG NHẬP -->
+    <!-- ==================== HỌC SINH: ĐĂNG NHẬP ==================== -->
     <div id="studentLoginView" class="view-section">
       <div class="card" style="max-width: 450px; margin: 20px auto; text-align: center;">
         <h2>🧑‍🎓 Học Sinh Vào Thi / Luyện Tập</h2>
@@ -268,7 +308,7 @@
       </div>
     </div>
 
-    <!-- PHÒNG CHỜ BÀI LUYỆN NHANH -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
     <div id="qpWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
@@ -289,7 +329,7 @@
       </div>
     </div>
 
-    <!-- PHÒNG CHỜ LIVE EXAM -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM CHÍNH THỨC ==================== -->
     <div id="studentWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
@@ -310,7 +350,7 @@
       </div>
     </div>
 
-    <!-- LÀM BÀI CHÍNH THỨC -->
+    <!-- ==================== HỌC SINH: LÀM BÀI CHÍNH THỨC ==================== -->
     <div id="studentExamView" class="view-section">
       <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px 15px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
         <span>🛡️ <b>Chế độ chống gian lân:</b> Chuyển tab quá 7 giây sẽ bị gửi cảnh báo!</span>
@@ -332,7 +372,7 @@
       </div>
     </div>
 
-    <!-- KẾT QUẢ CHÍNH THỨC -->
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ CHÍNH THỨC ==================== -->
     <div id="studentResultView" class="view-section">
       <div class="card" style="max-width: 800px; margin: 0 auto;">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -346,7 +386,7 @@
       </div>
     </div>
 
-    <!-- KẾT QUẢ BÀI LUYỆN NHANH -->
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ BÀI LUYỆN NHANH ==================== -->
     <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
       <div class="card">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -360,7 +400,7 @@
       </div>
     </div>
 
-    <!-- BẢNG XẾP HẠNG -->
+    <!-- ==================== BẢNG XẾP HẠNG ==================== -->
     <div id="leaderboardView" class="view-section">
       <div class="card">
         <h2>🏆 BẢNG XẾP HẠNG</h2>
@@ -381,7 +421,7 @@
       </div>
     </div>
 
-    <!-- MÔ HÌNH NÂNG CAO (GV) -->
+    <!-- ==================== MÔ HÌNH NÂNG CAO (GV) ==================== -->
     <div id="advancedModelView" class="view-section">
       <div class="card">
         <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
@@ -389,63 +429,62 @@
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn" style="width: auto;" onclick="switchSubModule('quickPracticeCreate')">⚡ Tạo Bài Luyện Nhanh</button>
           <button class="btn btn-secondary" style="width: auto;" onclick="switchSubModule('quickPracticeManage')">🛡️ Quản Lý Bài Luyện Nhanh</button>
-          <button class="btn btn-success" style="width: auto;" onclick="alert('Tính năng Minigame đang phát triển!')">🎮 Minigame</button>
+          <button class="btn btn-success" style="width: auto;" onclick="showToast('Tính năng Minigame đang phát triển!', true)">🎮 Minigame</button>
         </div>
       </div>
 
-      <!-- TẠO BÀI LUYỆN NHANH (CÓ TÍNH NĂNG TỪ ẢNH, TỪ PDF, ĐÚNG/SAI, TRẢ LỜI NGẮN) -->
+      <!-- 1. TẠO BÀI LUYỆN NHANH -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
-        <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh & Tự Động Từ Ảnh/PDF</h3>
+        <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh Thủ Công</h3>
         <hr style="margin: 10px 0;">
-
-        <!-- TÍNH NĂNG TẠO BÀI TỪ ẢNH -->
-        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tải Ảnh Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh bài tập lên đây để hệ thống tự động phân tích và tạo câu hỏi cho bài luyện:</p>
-          <input type="file" id="autoQpImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpImage(this)">
-        </div>
-
-        <!-- TÍNH NĂNG MỚI: TẠO BÀI TỪ PDF (ĐÚNG YÊU CẦU CÂU HỎI ĐẠO HÀM X^2+2X-1) -->
-        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
-          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📄 Tải File PDF Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải file PDF đề luyện lên đây để hệ thống trích xuất nội dung và tạo câu hỏi tự động (Bao gồm trắc nghiệm, đúng/sai, trả lời ngắn):</p>
-          <input type="file" id="autoQpPdfInput" accept="application/pdf" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpPdf(this)">
-        </div>
 
         <div class="form-grid-2">
           <div>
             <label>Tên bài luyện:</label>
-            <input type="text" id="qpTitle" placeholder="Ví dụ: Luyện tập Toán 12">
+            <input type="text" id="qpTitle" placeholder="Ví dụ: Luyện tập Hóa 11">
           </div>
           <div>
             <label>Mã bài luyện:</label>
-            <input type="text" id="qpCode" placeholder="Ví dụ: LUYEN12">
+            <input type="text" id="qpCode" placeholder="Ví dụ: LUYEN11">
           </div>
         </div>
 
-        <div class="form-grid-2">
-          <div>
-            <label>Mật khẩu bài luyện (để trống nếu không có):</label>
-            <input type="password" id="qpPassword" placeholder="Mật khẩu...">
+        <div style="margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2;">
+            <input type="checkbox" id="qpEnableAdvanced" onchange="toggleQpAdvancedPanel()" style="width: 16px; height: 16px;">
+            ⚙️ Cài đặt nâng cao (Mật khẩu & Chế độ phòng chờ)
+          </label>
+        </div>
+
+        <!-- PANEL NÂNG CAO CHO BÀI LUYỆN NHANH -->
+        <div id="qpAdvancedPanel" class="advanced-settings-panel">
+          <div class="form-grid-2">
+            <div>
+              <label>Mật khẩu phòng thi (để trống = không có):</label>
+              <input type="password" id="qpPassword" placeholder="Nhập mật khẩu học sinh...">
+            </div>
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
+                <input type="checkbox" id="qpIsAdvancedMode" checked style="width: 16px; height: 16px;">
+                🛡️ Bật bài luyện nâng cao (Cần GV bấm Bắt đầu)
+              </label>
+              <small style="color: #666; font-size: 11px;">Nếu tắt: Học sinh nhập mã/mật khẩu vào làm luôn không cần đợi.</small>
+            </div>
           </div>
-          <div>
+          <div style="margin-top: 10px;">
             <label>Giới hạn số học sinh tham gia đồng thời:</label>
             <input type="number" id="qpLimit" value="50">
           </div>
         </div>
 
         <h4 style="margin-top: 15px; margin-bottom: 5px;">📋 Danh Sách Câu Hỏi</h4>
-        <div style="display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap;">
-          <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQpQuestionItem('mc')">+ Trắc Nghiệm (ABCD)</button>
-          <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQpQuestionItem('tf')">+ Đúng / Sai</button>
-          <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQpQuestionItem('sa')">+ Trả Lời Ngắn</button>
-        </div>
+        <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px; margin-bottom: 10px;" onclick="addQpQuestionItem()">+ Thêm Câu Hỏi</button>
         <div id="qpQuestionsContainer"></div>
 
-        <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện Nhanh</button>
+        <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện (Cần Mã Bảo Mật)</button>
       </div>
 
-      <!-- QUẢN LÝ BÀI LUYỆN NHANH -->
+      <!-- 2. QUẢN LÝ BÀI LUYỆN NHANH -->
       <div id="quickPracticeManage" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã bài luyện và Mật khẩu bảo mật quản lý:</p>
@@ -516,7 +555,7 @@
     </div>
   </div>
 
-  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI -->
+  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI CHÍNH THỨC -->
   <div class="modal-overlay" id="advancedModal">
     <div class="modal-box" style="max-width: 750px;">
       <div class="modal-header">
@@ -620,6 +659,22 @@
     let tabLeaveStartTime = null;
     const CHEAT_TIME_THRESHOLD = 7000; 
 
+    // --- HÀM HIỂN THỊ TOAST THÔNG BÁO ĐẸP MẮT ---
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('systemToast');
+      toast.innerText = message;
+      toast.className = isError ? 'error' : '';
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          toast.style.display = 'none';
+        }, 300);
+      }, 3000);
+    }
+
     function switchView(viewId, btn = null) {
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
@@ -633,7 +688,7 @@
       document.querySelectorAll('.sub-module-box').forEach(el => el.style.display = 'none');
       document.getElementById(moduleId).style.display = 'block';
       if (moduleId === 'quickPracticeCreate' && document.getElementById('qpQuestionsContainer').children.length === 0) {
-        addQpQuestionItem('mc');
+        addQpQuestionItem();
       }
     }
 
@@ -646,6 +701,11 @@
     function toggleLiveRoomConfig() {
       const enabled = document.getElementById('enableLiveRoom').checked;
       document.getElementById('liveRoomConfigBox').style.display = enabled ? 'block' : 'none';
+    }
+
+    function toggleQpAdvancedPanel() {
+      const enabled = document.getElementById('qpEnableAdvanced').checked;
+      document.getElementById('qpAdvancedPanel').style.display = enabled ? 'block' : 'none';
     }
 
     function toggleStudentMode() {
@@ -664,6 +724,7 @@
       }
     }
 
+    // --- HIỆU ỨNG LOADING VÀ HIỂN THỊ CHỮ HOÀN THÀNH MỜ DẦN TRONG 5 GIÂY ---
     function showLoadingSequence(callback) {
       const overlay = document.getElementById('loadingOverlay');
       overlay.style.display = 'flex';
@@ -797,65 +858,26 @@
 
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
+      
       document.getElementById('builderMC').innerHTML = '';
       document.getElementById('builderTF').innerHTML = '';
       document.getElementById('builderSA').innerHTML = '';
 
-      ['D', 'B', 'D', 'B', 'C'].forEach(ans => addQuestionV2('mc', ans));
-      [['Đ', 'Đ', 'S', 'S'], ['Đ', 'Đ', 'Đ', 'S']].forEach(branches => addQuestionV2('tf', '', branches));
-      ['3,5', '17,1'].forEach(ans => addQuestionV2('sa', ans));
+      const sampleMcAnswers = ['D', 'B', 'D', 'B', 'C', 'B', 'A', 'C', 'C', 'A', 'C', 'D'];
+      sampleMcAnswers.forEach(ans => addQuestionV2('mc', ans));
 
-      alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu vào phần tạo đề chính thức thành công!');
-      input.value = '';
-    }
+      const sampleTfAnswers = [
+        ['Đ', 'Đ', 'S', 'S'],
+        ['Đ', 'Đ', 'Đ', 'S'],
+        ['Đ', 'Đ', 'S', 'Đ'],
+        ['Đ', 'S', 'S', 'Đ']
+      ];
+      sampleTfAnswers.forEach(branches => addQuestionV2('tf', '', branches));
 
-    // --- TÍNH NĂNG TẠO BÀI LUYỆN NHANH TỪ ẢNH ---
-    function processQpImage(input) {
-      if (!input.files || input.files.length === 0) return;
-      document.getElementById('qpQuestionsContainer').innerHTML = '';
+      const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
+      sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
 
-      // Tích hợp câu hỏi mẫu theo yêu cầu (Đạo hàm x^2+2x-1 và các dạng Đúng/Sai, Trả lời ngắn với dấu phẩy/chấm)
-      addQpQuestionItem('mc', 'Câu 1: Đạo hàm của x^2 + 2x - 1 là:', 'A', ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1']);
-      addQpQuestionItem('tf', 'Câu 2: Xét tính đúng sai của hàm số và đạo hàm:', 'Đ,Đ,S,S', [], '', [
-        { label: 'a', text: 'Hàm số đồng biến trên R.' },
-        { label: 'b', text: 'Đạo hàm là 2x + 2.' },
-        { label: 'c', text: 'Cực trị tại x = -1.' },
-        { label: 'd', text: 'Giá trị cực tiểu là 2.' }
-      ]);
-      addQpQuestionItem('sa', 'Câu 3: Tính giá trị của biểu thức tại x = 1,5:', '', [], '3,5');
-
-      alert('📸 Đã phân tích ảnh thành công và tạo tự động các câu hỏi vào bài luyện nhanh!');
-      input.value = '';
-    }
-
-    // --- TÍNH NĂNG TẠO BÀI LUYỆN NHANH TỪ PDF (ĐÚNG YÊU CẦU CÂU HỎI ĐẠO HÀM) ---
-    async function processQpPdf(input) {
-      if (!input.files || input.files.length === 0) return;
-      let file = input.files[0];
-      let arrayBuffer = await file.arrayBuffer();
-      let pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      
-      document.getElementById('qpQuestionsContainer').innerHTML = '';
-
-      let fullText = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
-        let page = await pdf.getPage(i);
-        let textContent = await page.getTextContent();
-        let pageText = textContent.items.map(item => item.str).join(' ');
-        fullText += pageText + '\n';
-      }
-
-      // Tự động phân tích và sinh câu hỏi từ tài liệu PDF (Đúng mẫu yêu cầu đề bài)[cite: 16]
-      addQpQuestionItem('mc', 'Câu 1: Đạo hàm của x^2 + 2x - 1 là', 'A', ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1']);
-      addQpQuestionItem('tf', 'Câu 2: Cho hàm số f(x) = x^2 + 2x - 1. Xét các phát biểu sau:', 'Đ,S,Đ,S', [], '', [
-        { label: 'a', text: 'Đạo hàm f\'(x) = 2x + 2.' },
-        { label: 'b', text: 'Hàm số đạt giá trị lớn nhất tại x = 0.' },
-        { label: 'c', text: 'Hành vi đồ thị có bề lõm hướng lên trên.' },
-        { label: 'd', text: 'Tiếp tuyến tại gốc tọa độ có hệ số góc bằng 1.' }
-      ]);
-      addQpQuestionItem('sa', 'Câu 3: Tìm hoành độ điểm mà tại đó đạo hàm bằng 4 (học sinh có thể nhập 3,5 hoặc 3.5):', '', [], '3,5');
-
-      alert('📄 Đã phân tích file PDF và tự động điền câu hỏi, các lựa chọn, đúng/sai, trả lời ngắn vào bài luyện nhanh thành công![cite: 16]');
+      showToast('✨ Đã quét ảnh và tự động điền toàn bộ đáp án thành công!');
       input.value = '';
     }
 
@@ -869,7 +891,7 @@
     function promptSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
-      if (!code || !title) { alert('Vui lòng nhập Mã bài thi và Tên bài thi!'); return; }
+      if (!code || !title) { showToast('Vui lòng nhập Mã bài thi và Tên bài thi!', true); return; }
       pendingActionType = 'save';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -879,7 +901,7 @@
 
     async function confirmPasswordAction() {
       const pass = document.getElementById('teacherPasswordInput').value.trim();
-      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật!'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', true); return; }
       closePasswordModal();
       if (pendingActionType === 'save') await executeSaveExam();
       else if (pendingActionType === 'save_qp') await executeSaveQuickPractice();
@@ -895,9 +917,10 @@
       const liveLimit = parseInt(document.getElementById('liveRoomLimit').value) || 50;
 
       const items = document.querySelectorAll('#teacherView .q-build-item');
-      if (items.length === 0) { alert('Vui lòng tạo ít nhất 1 câu hỏi!'); return; }
+      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
 
       let questions = [];
+
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
@@ -907,9 +930,12 @@
         let expImgInput = item.querySelector('.q-exp-img-input');
         let expImgBase64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
-        let qData = { id: idx + 1, type: qType, score: defaultScore, explanation: expText, expImage: expImgBase64 };
+        let qData = {
+          id: idx + 1, type: qType, score: defaultScore,
+          explanation: expText, expImage: expImgBase64
+        };
 
-        if (qType === 'mc' || qType === 'sa') {
+        if (qType === 'mc') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
           questions.push(qData);
         } else if (qType === 'tf') {
@@ -917,12 +943,17 @@
           let branches = [];
           let branchScores = [];
           for (let i = 0; i < count; i++) {
-            branches.push(item.querySelector(`.tf-branch-ans-${i}`).value);
-            let bScore = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
-            branchScores.push(!isNaN(bScore) ? bScore : 0.25);
+            let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
+            let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
+            let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
+            branches.push(ans);
+            branchScores.push(bScore);
           }
           qData.correctAnswer = branches.join(',');
           qData.branchScores = branchScores;
+          questions.push(qData);
+        } else if (qType === 'sa') {
+          qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
           questions.push(qData);
         }
       }
@@ -933,7 +964,9 @@
         if (pdfInput.files.length > 0) mediaData.files.push(await fileToBase64(pdfInput.files[0]));
       } else {
         let imgInput = document.getElementById('teacherImgInput');
-        for (let i = 0; i < imgInput.files.length; i++) mediaData.files.push(await fileToBase64(imgInput.files[i]));
+        for (let i = 0; i < imgInput.files.length; i++) {
+          mediaData.files.push(await fileToBase64(imgInput.files[i]));
+        }
       }
 
       const examObject = {
@@ -945,8 +978,8 @@
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
         await window.dbSet(window.ref(window.db, 'liverooms/' + code), { status: 'waiting' });
-        alert(`🎉 Lưu đề chính thức [${code}] thành công!`);
-      } catch (err) { alert('Lỗi: ' + err.message); }
+        showToast(`🎉 Lưu đề chính thức [${code}] thành công!`);
+      } catch (err) { showToast('Lỗi: ' + err.message, true); }
     }
 
     function openAdvancedModal() { 
@@ -962,29 +995,30 @@
 
     async function downloadExamPDF() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      if (!code) { alert('Nhập mã đề!'); return; }
+      if (!code) { showToast('Nhập mã đề!', true); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { alert('Không tìm thấy!'); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy đề!', true); return; }
       const exam = snapshot.val();
       if (exam.media && exam.media.type === 'pdf' && exam.media.files.length > 0) {
         let a = document.createElement('a');
         a.href = exam.media.files[0];
         a.download = `De_${code}.pdf`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      } else { alert('Đề này không có file PDF.'); }
+        showToast('📄 Tải đề thành công!');
+      } else { showToast('Đề này không có file PDF.', true); }
     }
 
     async function promptDeleteExam() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
-      if (!code) { alert('Nhập mã đề!'); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Sai mật khẩu bảo mật quản lý!'); return; }
+      if (!code) { showToast('Nhập mã đề!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật quản lý!', true); return; }
       
       if (confirm(`Xóa vĩnh viễn đề thi [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `exams/${code}`));
         await window.dbRemove(window.ref(window.db, `leaderboard/${code}`));
         await window.dbRemove(window.ref(window.db, `liverooms/${code}`));
-        alert('Đã xóa thành công!');
+        showToast('🗑️ Xóa đề thành công!');
         closeAdvancedModal();
       }
     }
@@ -993,16 +1027,17 @@
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
 
-      if (!code) { alert('Vui lòng nhập mã đề kiểm tra!'); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Mật khẩu bảo mật không đúng!'); return; }
+      if (!code) { showToast('Vui lòng nhập mã đề kiểm tra!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
 
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { alert('Không tìm thấy đề thi này!'); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy đề thi này!', true); return; }
       let exam = snapshot.val();
-      if (!exam.isLiveRoom) { alert('Đề thi này không bật tính năng Phòng thi chuyên dụng!'); return; }
+      if (!exam.isLiveRoom) { showToast('Đề thi này không bật tính năng Phòng thi chuyên dụng!', true); return; }
 
       managedLiveCodeGlobal = code;
       document.getElementById('liveRoomDashboard').style.display = 'block';
+      showToast('📡 Kết nối phòng live thành công!');
 
       if (liveRoomDashboardListener) liveRoomDashboardListener();
 
@@ -1041,79 +1076,53 @@
     async function kickLiveStudent(code, studentId) {
       if (confirm('Bạn có chắc muốn kick học sinh này khỏi phòng?')) {
         await window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentId}`));
+        showToast('Đã kick học sinh khỏi phòng!');
       }
     }
 
     async function updateLiveRoomStatus(status) {
-      if (!managedLiveCodeGlobal) { alert('Chưa kết nối phòng live!'); return; }
+      if (!managedLiveCodeGlobal) { showToast('Chưa kết nối phòng live!', true); return; }
       await window.dbUpdate(window.ref(window.db, `liverooms/${managedLiveCodeGlobal}`), { status: status });
-      alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
+      showToast(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
-    function addQpQuestionItem(type = 'mc', defaultText = '', defaultCorrect = '', defaultOpts = [], defaultSaAns = '', presetTfBranches = []) {
+    function addQpQuestionItem() {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
       let div = document.createElement('div');
       div.className = 'q-build-item';
-      div.dataset.type = type;
-
-      let innerHtml = `
+      div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-          <strong>Câu ${idx} (${type === 'mc' ? 'Trắc nghiệm' : (type === 'tf' ? 'Đúng/Sai' : 'Trả lời ngắn')})</strong>
+          <strong>Câu ${idx}</strong>
           <div style="display:flex; gap:5px;">
             <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
             <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove()">Xóa</button>
           </div>
         </div>
         <label>Nội dung câu hỏi:</label>
-        <textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi...">${defaultText}</textarea>
+        <textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi..."></textarea>
         
         <div class="form-grid-2">
           <div>
             <label>Hình ảnh câu hỏi (tùy chọn):</label>
             <input type="file" class="qp-q-img" accept="image/*">
           </div>
-      `;
-
-      if (type === 'mc') {
-        let ansCount = defaultOpts.length > 0 ? defaultOpts.length : 4;
-        innerHtml += `
           <div>
             <label>Số lượng đáp án (2 - 4):</label>
             <select class="qp-ans-count" onchange="updateQpAnswers(this)">
-              <option value="2" ${ansCount===2?'selected':''}>2 Đáp án (A, B)</option>
-              <option value="3" ${ansCount===3?'selected':''}>3 Đáp án (A, B, C)</option>
-              <option value="4" ${ansCount===4?'selected':''}>4 Đáp án (A, B, C, D)</option>
+              <option value="2">2 Đáp án (A, B)</option>
+              <option value="3">3 Đáp án (A, B, C)</option>
+              <option value="4" selected>4 Đáp án (A, B, C, D)</option>
             </select>
           </div>
         </div>
-        <div class="qp-answers-wrapper"></div>
-        `;
-      } else if (type === 'tf') {
-        let tfCount = presetTfBranches.length > 0 ? presetTfBranches.length : 4;
-        innerHtml += `
-          <div>
-            <label>Số lượng nhánh (Ý a, b, c, d):</label>
-            <input type="number" class="qp-tf-count" value="${tfCount}" min="1" max="8" style="padding:4px;" onchange="updateQpTfBranches(this)">
-          </div>
-        </div>
-        <div class="qp-tf-builder"></div>
-        `;
-      } else {
-        innerHtml += `
-        </div>
-        <div>
-          <label>Đáp án đúng (Trả lời ngắn) [Lưu ý: 3,5 và 3.5 đều được chấp nhận]:</label>
-          <input type="text" class="qp-sa-correct" value="${defaultSaAns}" placeholder="Nhập đáp án chính xác...">
-        </div>
-        `;
-      }
 
-      innerHtml += `
+        <div class="qp-answers-wrapper"></div>
+
         <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
           <div style="margin-bottom:6px;">
             <label style="font-size:11px;">Điểm số câu hỏi:</label>
-            <input type="number" class="qp-q-score" value="${type==='tf'?1.0:(type==='sa'?0.5:0.25)}" step="0.05" style="padding:4px; margin:0;">
+            <input type="number" class="qp-q-score" value="0.25" step="0.05" style="padding:4px; margin:0;">
           </div>
           <label style="font-size: 11px;">Chú thích / Lời giải chi tiết:</label>
           <textarea class="qp-q-exp" rows="2" placeholder="Nhập giải thích..." style="margin-bottom:6px;"></textarea>
@@ -1121,29 +1130,20 @@
           <input type="file" class="qp-exp-img" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
         </div>
       `;
-
-      div.innerHTML = innerHtml;
       container.appendChild(div);
-
-      if (type === 'mc') {
-        let defaultOptTexts = defaultOpts.length > 0 ? defaultOpts : ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1'];
-        updateQpAnswers(div.querySelector('.qp-ans-count'), defaultOptTexts, defaultCorrect);
-      } else if (type === 'tf') {
-        updateQpTfBranches(div.querySelector('.qp-tf-count'), defaultCorrect ? defaultCorrect.split(',') : null, presetTfBranches);
-      }
+      updateQpAnswers(div.querySelector('.qp-ans-count'));
     }
 
-    function updateQpAnswers(select, presetOpts = [], presetCorrect = 'A') {
+    function updateQpAnswers(select) {
       let wrapper = select.parentElement.parentElement.parentElement.querySelector('.qp-answers-wrapper');
       let count = parseInt(select.value);
       let letters = ['A', 'B', 'C', 'D'];
       let html = '<div style="display:flex; flex-direction:column; gap:6px; margin:8px 0;">';
       for (let i = 0; i < count; i++) {
-        let optTextVal = (presetOpts && presetOpts[i]) ? presetOpts[i] : '';
         html += `
           <div style="display:flex; gap:8px; align-items:center;">
             <span style="font-weight:bold; width:25px;">${letters[i]}.</span>
-            <input type="text" class="qp-opt-text-${i}" value="${optTextVal}" placeholder="Đáp án ${letters[i]}..." style="margin:0; flex:1;">
+            <input type="text" class="qp-opt-text-${i}" placeholder="Đáp án ${letters[i]}..." style="margin:0; flex:1;">
           </div>
         `;
       }
@@ -1151,43 +1151,17 @@
         <div style="display:flex; gap:10px; align-items:center; margin-top:5px;">
           <label style="margin:0;">Đáp án đúng:</label>
           <select class="qp-correct-opt" style="width:100px; margin:0;">
-            ${letters.slice(0, count).map(l => `<option value="${l}" ${presetCorrect===l?'selected':''}>${l}</option>`).join('')}
+            ${letters.slice(0, count).map(l => `<option value="${l}">${l}</option>`).join('')}
           </select>
         </div>
       `;
       wrapper.innerHTML = html;
     }
 
-    function updateQpTfBranches(countInput, presetValues = null, presetBranches = []) {
-      let wrapper = countInput.parentElement.parentElement.parentElement.querySelector('.qp-tf-builder');
-      let count = parseInt(countInput.value) || 4;
-      let letters = ['a', 'b', 'c', 'd', 'e', 'f'];
-      let html = '<div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">';
-      for(let i=0; i<count; i++) {
-        let l = letters[i] || (i+1);
-        let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
-        let branchText = (presetBranches && presetBranches[i] && presetBranches[i].text) ? presetBranches[i].text : `Nhận định số ${i+1}`;
-        html += `
-          <div style="background:#fff; padding:8px; border:1px solid #ddd; border-radius:6px; margin-bottom:4px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-              <span style="font-size:12px; font-weight:bold; color:#1877f2;">Nhánh ${l}:</span>
-              <select class="qp-tf-ans-${i}" style="width:90px; padding:2px; margin:0; font-size:12px;">
-                <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
-                <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
-              </select>
-            </div>
-            <input type="text" class="qp-tf-text-${i}" value="${branchText}" placeholder="Nội dung ý ${l}..." style="margin:0; font-size:12px; padding:6px;">
-          </div>
-        `;
-      }
-      html += '</div>';
-      wrapper.innerHTML = html;
-    }
-
     function promptSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      if (!code || !title) { alert('Vui lòng nhập Mã bài luyện và Tên bài luyện!'); return; }
+      if (!code || !title) { showToast('Vui lòng nhập Mã bài luyện và Tên bài luyện!', true); return; }
       pendingActionType = 'save_qp';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -1196,71 +1170,73 @@
     async function executeSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      const password = document.getElementById('qpPassword').value.trim();
+      
+      // Lấy cấu hình nâng cao
+      const enableAdv = document.getElementById('qpEnableAdvanced').checked;
+      const password = enableAdv ? document.getElementById('qpPassword').value.trim() : '';
+      const isAdvancedMode = enableAdv ? document.getElementById('qpIsAdvancedMode').checked : false;
       const limit = parseInt(document.getElementById('qpLimit').value) || 50;
 
       let items = document.querySelectorAll('#qpQuestionsContainer .q-build-item');
-      if (items.length === 0) { alert('Vui lòng tạo ít nhất 1 câu hỏi!'); return; }
+      if (items.length === 0) { showToast('Vui lòng tạo ítнент 1 câu hỏi!', true); return; }
 
       let questions = [];
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
-        let qType = item.dataset.type || 'mc';
         let qText = item.querySelector('.qp-q-text').value.trim();
         let qImgInput = item.querySelector('.qp-q-img');
         let qImgB64 = qImgInput && qImgInput.files.length > 0 ? await fileToBase64(qImgInput.files[0]) : '';
-        let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || (qType==='tf'?1.0:(qType==='sa'?0.5:0.25));
+        
+        let ansCount = parseInt(item.querySelector('.qp-ans-count').value);
+        let options = [];
+        let letters = ['A', 'B', 'C', 'D'];
+        for (let i = 0; i < ansCount; i++) {
+          options.push({
+            label: letters[i],
+            text: item.querySelector(`.qp-opt-text-${i}`).value.trim()
+          });
+        }
+        let correctOpt = item.querySelector('.qp-correct-opt').value;
+        let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || 0.25;
         let expText = item.querySelector('.qp-q-exp').value.trim();
         let expImgInput = item.querySelector('.qp-exp-img');
         let expImgB64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
-        let qObj = { id: idx + 1, type: qType, question: qText, image: qImgB64, score: scoreVal, explanation: expText, expImage: expImgB64 };
-
-        if (qType === 'mc') {
-          let ansCount = parseInt(item.querySelector('.qp-ans-count').value);
-          let options = [];
-          let letters = ['A', 'B', 'C', 'D'];
-          for (let i = 0; i < ansCount; i++) {
-            options.push({ label: letters[i], text: item.querySelector(`.qp-opt-text-${i}`).value.trim() });
-          }
-          qObj.options = options;
-          qObj.correct = item.querySelector('.qp-correct-opt').value;
-        } else if (qType === 'tf') {
-          let count = parseInt(item.querySelector('.qp-tf-count').value) || 4;
-          let branches = [];
-          let branchContents = [];
-          for (let i = 0; i < count; i++) {
-            branches.push(item.querySelector(`.qp-tf-ans-${i}`).value);
-            branchContents.push({ label: ['a', 'b', 'c', 'd', 'e', 'f'][i], text: item.querySelector(`.qp-tf-text-${i}`).value.trim() });
-          }
-          qObj.correct = branches.join(',');
-          qObj.branches = branchContents;
-        } else if (qType === 'sa') {
-          qObj.correct = item.querySelector('.qp-sa-correct').value.trim();
-        }
-        questions.push(qObj);
+        questions.push({
+          id: idx + 1, question: qText, image: qImgB64,
+          options: options, correct: correctOpt, score: scoreVal,
+          explanation: expText, expImage: expImgB64
+        });
       }
 
-      let qpObj = { code: code, title: title, password: password, limit: limit, questions: questions };
+      let qpObj = { 
+        code: code, 
+        title: title, 
+        password: password, 
+        isAdvancedMode: isAdvancedMode, 
+        limit: limit, 
+        questions: questions 
+      };
 
       try {
         await window.dbSet(window.ref(window.db, 'quick_practices/' + code), qpObj);
-        await window.dbSet(window.ref(window.db, 'qp_rooms/' + code), { status: 'waiting' });
-        alert(`🎉 Khởi tạo bài luyện nhanh [${code}] thành công!`);
-      } catch (err) { alert('Lỗi: ' + err.message); }
+        await window.dbSet(window.ref(window.db, 'qp_rooms/' + code), { status: isAdvancedMode ? 'waiting' : 'started' });
+        showToast(`🎉 Tạo bài luyện nhanh [${code}] thành công!`);
+      } catch (err) { showToast('Lỗi: ' + err.message, true); }
     }
 
     async function openQpManagementRoom() {
       const code = document.getElementById('manageQpCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageQpPass').value.trim();
-      if (!code || !pass) { alert('Nhập mã bài luyện và mật khẩu bảo mật!'); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { alert('❌ Mật khẩu bảo mật không đúng!'); return; }
+      if (!code || !pass) { showToast('Nhập mã bài luyện và mật khẩu bảo mật!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
 
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-      if (!snapshot.exists()) { alert('Không tìm thấy bài luyện!'); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', true); return; }
 
       managedQpCodeGlobal = code;
       document.getElementById('qpManagementDashboard').style.display = 'block';
+      showToast('📡 Kết nối quản lý thành công!');
 
       let roomRef = window.ref(window.db, `qp_rooms/${code}`);
       window.onValue(roomRef, (snapshot) => {
@@ -1309,13 +1285,14 @@
     async function kickQpStudent(code, studentId) {
       if (confirm('Kick học sinh này?')) {
         await window.dbRemove(window.ref(window.db, `qp_rooms/${code}/students/${studentId}`));
+        showToast('Đã kick học sinh!');
       }
     }
 
     async function updateQpStatus(status) {
       if (!managedQpCodeGlobal) return;
       await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status: status });
-      alert(`Đã cập nhật trạng thái: ${status}`);
+      showToast(`Đã cập nhật trạng thái: ${status}`);
     }
 
     async function deleteQpExam() {
@@ -1324,7 +1301,7 @@
         await window.dbRemove(window.ref(window.db, `quick_practices/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_leaderboard/${managedQpCodeGlobal}`));
-        alert('Đã xóa thành công!');
+        showToast('🗑️ Xóa đề thành công!');
         document.getElementById('qpManagementDashboard').style.display = 'none';
       }
     }
@@ -1335,14 +1312,14 @@
       const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('studentExtraPass').value.trim();
 
-      if (!name || !code) { alert('Vui lòng điền đầy đủ tên và mã!'); return; }
+      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', true); return; }
 
       showLoadingSequence(async () => {
         if (mode === 'practice') {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-          if (!snapshot.exists()) { alert('Không tìm thấy bài luyện nhanh!'); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
           let qpData = snapshot.val();
-          if (qpData.password && qpData.password !== pass) { alert('❌ Sai mật khẩu bài luyện nhanh!'); return; }
+          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', true); return; }
 
           currentQpData = qpData;
           studentNameGlobal = name;
@@ -1351,6 +1328,15 @@
           let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
           await window.dbSet(roomRef, { name: name, status: 'waiting' });
 
+          // KIỂM TRA TÍNH NĂNG BÀI LUYỆN NÂNG CAO
+          if (!qpData.isAdvancedMode) {
+            // Nếu tắt nâng cao -> Học sinh làm luôn không cần đợi GV bấm bắt đầu
+            await window.dbUpdate(roomRef, { status: 'testing' });
+            launchQpPracticeInterface();
+            return;
+          }
+
+          // Nếu bật nâng cao -> Vào phòng chờ đợi giáo viên bấm bắt đầu
           document.getElementById('qpWaitTitle').innerText = qpData.title;
           document.getElementById('qpWaitStudentName').innerText = name;
           document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
@@ -1363,7 +1349,7 @@
             document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
 
             if (!students[studentKey]) {
-              alert('Bạn đã bị giáo viên kick!');
+              showToast('Bạn đã bị giáo viên kick!', true);
               if (activeQpRoomListener) activeQpRoomListener();
               switchView('studentLoginView');
               return;
@@ -1375,20 +1361,20 @@
               launchQpPracticeInterface();
             } else if (data.status === 'ended' && isQpActive) {
               if (activeQpRoomListener) activeQpRoomListener();
-              alert('🛑 Giáo viên đã kết thúc bài luyện nhanh!');
+              showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
               submitQpPractice(true);
             }
           });
 
         } else {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-          if (!snapshot.exists()) { alert('Không tìm thấy đề thi!'); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
           currentExamData = snapshot.val();
           studentNameGlobal = name;
 
           if (mode === 'live') {
-            if (!currentExamData.isLiveRoom) { alert('Đề này không bật chế độ phòng thi chuyên dụng!'); return; }
-            if (pass !== currentExamData.livePassword) { alert('❌ Sai mật khẩu phòng thi!'); return; }
+            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', true); return; }
+            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
 
             studentSessionKeyGlobal = 's_' + Date.now();
             let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`);
@@ -1405,14 +1391,14 @@
               let students = data.students || {};
               document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
 
-              if (!students[studentSessionKeyGlobal]) { alert('Bạn đã bị giáo viên kick!'); switchView('studentLoginView'); return; }
+              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', true); switchView('studentLoginView'); return; }
               if (data.status === 'started') {
                 if (activeStudentRoomListener) activeStudentRoomListener();
                 window.dbUpdate(roomRef, { status: 'testing' });
                 launchOfficialExamInterface();
               } else if (data.status === 'ended') {
                 if (activeStudentRoomListener) activeStudentRoomListener();
-                alert('Kì thi đã kết thúc!'); switchView('studentLoginView');
+                showToast('Kì thi đã kết thúc!'); switchView('studentLoginView');
               }
             });
           } else {
@@ -1471,7 +1457,7 @@
           </div>`;
         } else if (q.type === 'tf') {
           let count = q.correctAnswer.split(',').length;
-          let letters = ['a', 'b', 'c', 'd', 'e', 'f'];
+          let letters = ['a', 'b', 'c', 'd'];
           for(let i=0; i<count; i++) {
             inputHtml += `<div class="tf-branch-row">
               <span style="font-size:13px;">Nhánh ${letters[i]}:</span>
@@ -1482,7 +1468,7 @@
             </div>`;
           }
         } else {
-          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời (hỗ trợ , và .)...">`;
+          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
         }
 
         item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
@@ -1495,7 +1481,7 @@
         timeLeft--;
         let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
         document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-        if (timeLeft <= 0) { clearInterval(examTimer); alert('⌛ Hết giờ!'); submitStudentExam(true); }
+        if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
       }, 1000);
 
       cheatWarnings = 0;
@@ -1521,27 +1507,42 @@
             totalLeaveTime: totalTabLeaveTime
           });
         }
+
+        if (currentExamData.isLiveRoom && cheatWarnings > 10) {
+          showToast('🚨 Bạn đã vi phạm quá 10 lần. Hệ thống tự động nộp bài!', true);
+          dismissCheatAlert();
+          submitStudentExam(true);
+        }
       }
     }
 
-    function dismissCheatAlert() { document.getElementById('cheatAlertModal').style.display = 'none'; }
+    function dismissCheatAlert() {
+      document.getElementById('cheatAlertModal').style.display = 'none';
+    }
 
     document.addEventListener('visibilitychange', () => {
       if (!isExamActive) return;
       if (document.hidden) {
         tabLeaveStartTime = Date.now();
-      } else if (tabLeaveStartTime) {
-        handleTabLeaveEvent(Date.now() - tabLeaveStartTime);
-        tabLeaveStartTime = null;
+      } else {
+        if (tabLeaveStartTime) {
+          let durationAway = Date.now() - tabLeaveStartTime;
+          handleTabLeaveEvent(durationAway);
+          tabLeaveStartTime = null;
+        }
       }
     });
 
-    window.addEventListener('blur', () => { if (isExamActive) tabLeaveStartTime = Date.now(); });
+    window.addEventListener('blur', () => {
+      if (!isExamActive) return;
+      tabLeaveStartTime = Date.now();
+    });
+
     window.addEventListener('focus', () => {
-      if (isExamActive && tabLeaveStartTime) {
-        handleTabLeaveEvent(Date.now() - tabLeaveStartTime);
-        tabLeaveStartTime = null;
-      }
+      if (!isExamActive || !tabLeaveStartTime) return;
+      let durationAway = Date.now() - tabLeaveStartTime;
+      handleTabLeaveEvent(durationAway);
+      tabLeaveStartTime = null;
     });
 
     function selectOpt(btn, val) {
@@ -1574,7 +1575,7 @@
           let correctArr = q.correctAnswer.split(',');
           let studentArr = [];
           let subEarned = 0;
-          let branchScores = q.branchScores || [0.25, 0.25, 0.25, 0.25];
+          let branchScores = q.branchScores || [0.1, 0.15, 0.25, 0.5];
           correctArr.forEach((ansCorrect, i) => {
             let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
             let val = row && row.dataset.val ? row.dataset.val : '_';
@@ -1587,23 +1588,29 @@
         } else if (q.type === 'sa') {
           let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
           studentAns = input ? input.value.trim() : '';
-          // Hỗ trợ đồng nhất dấu , và . cho câu trả lời ngắn
-          let normStudent = studentAns.replace(/,/g, '.');
-          let normCorrect = q.correctAnswer.replace(/,/g, '.');
-          isCorrect = (normStudent.toLowerCase() === normCorrect.toLowerCase());
+          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
           if (isCorrect) qEarned = q.score;
         }
 
         totalEarnedScore += qEarned;
+
         let hasExp = q.explanation || q.expImage;
-        let expContent = (q.explanation ? `<p>${q.explanation}</p>` : '') + (q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">` : '');
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
 
         reviewHtml += `
           <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
             <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span>
             <div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>
             ${!isCorrect ? `<div>- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}
-            ${hasExp ? `<div style="margin-top: 6px;"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>` : ''}
+            
+            ${hasExp ? `
+              <div style="margin-top: 6px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
           </div>
         `;
       });
@@ -1616,15 +1623,19 @@
       document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
 
       await window.dbPush(window.ref(window.db, 'leaderboard/' + currentExamData.code), {
-        name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, 
-        cheatWarnings: cheatWarnings, totalLeaveTime: Math.round(totalTabLeaveTime / 1000), timestamp: Date.now()
+        name: studentNameGlobal, 
+        score: finalScore, 
+        timeSpent: timeSpentSeconds, 
+        cheatWarnings: cheatWarnings,
+        totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
+        timestamp: Date.now()
       });
+      showToast('📤 Nộp bài thành công!');
       switchView('studentResultView');
     }
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- GIAO DIỆN LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
@@ -1632,40 +1643,22 @@
       container.innerHTML = '';
 
       currentQpData.questions.forEach((q, idx) => {
-        let qBodyHtml = '';
-        if (q.type === 'mc') {
-          let optHtml = '';
-          q.options.forEach(opt => {
-            optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
-          });
-          qBodyHtml = `<div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">${optHtml}</div>`;
-        } else if (q.type === 'tf') {
-          let correctArr = q.correct.split(',');
-          let tfRows = '';
-          correctArr.forEach((_, subIdx) => {
-            let branchObj = (q.branches && q.branches[subIdx]) ? q.branches[subIdx] : { label: ['a','b','c','d'][subIdx], text: `Nhận định ${subIdx+1}` };
-            tfRows += `
-              <div class="tf-branch-row" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-                <div style="font-size:13px; font-weight:500;"><b>Ý ${branchObj.label})</b> ${branchObj.text}</div>
-                <div class="tf-branch-opts" data-qid="${q.id}" data-index="${subIdx}" style="display: flex; gap: 10px;">
-                  <div class="tf-sub-btn" style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px;" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'Đ')">Đ</div>
-                  <div class="tf-sub-btn" style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px;" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'S')">S</div>
-                </div>
-              </div>
-            `;
-          });
-          qBodyHtml = `<div data-qid="${q.id}" data-type="tf" style="display:flex; flex-direction:column; gap:6px;">${tfRows}</div>`;
-        } else {
-          qBodyHtml = `<input type="text" class="qp-student-sa" data-qid="${q.id}" placeholder="Nhập câu trả lời ngắn (hỗ trợ dấu phẩy và dấu chấm, vd: 3,5 hoặc 3.5)..." style="margin-top:6px;">`;
-        }
+        let optHtml = '';
+        q.options.forEach(opt => {
+          optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
+        });
 
         let hasExp = q.explanation || q.expImage;
+
         container.innerHTML += `
           <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
-            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ) [${q.type.toUpperCase()}]: ${q.question}</p>
+            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
             ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-            ${qBodyHtml}
+            <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
+              ${optHtml}
+            </div>
             <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
+            
             ${hasExp ? `
               <div style="margin-top: 6px;">
                 <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
@@ -1688,12 +1681,24 @@
       }, 1000);
 
       switchView('qpPracticingView');
+
+      if (currentQpData.isAdvancedMode) {
+        let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
+        activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          let data = snapshot.val() || {};
+          if (data.status === 'ended' && isQpActive) {
+            if (activeQpRoomListener) activeQpRoomListener();
+            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
+            submitQpPractice(true);
+          }
+        });
+      }
     }
 
     function selectQpOpt(btn, qid, label) {
-      if (!isQpActive) return;
+      if (!isQpActive) return; 
       let group = btn.parentElement;
-      if (group.dataset.locked === "true") return;
+      if (group.dataset.locked === "true") return; 
       group.dataset.locked = "true";
 
       group.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = 'none');
@@ -1717,18 +1722,16 @@
       }
     }
 
-    function selectQpTfSub(btn, qid, subIdx, val) {
-      let p = btn.parentElement;
-      p.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      p.dataset[`val_${subIdx}`] = val;
-    }
-
     function toggleQpExp(qid) {
       let box = document.getElementById(`qp-exp-${qid}`);
       let btn = box.previousElementSibling;
-      if (box.style.display === 'block') { box.style.display = 'none'; btn.innerText = '>'; }
-      else { box.style.display = 'block'; btn.innerText = 'v'; }
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
     }
 
     async function submitQpPractice(forced = false) {
@@ -1745,96 +1748,111 @@
       currentQpData.questions.forEach(q => {
         let qScore = q.score || 0.25;
         totalMax += qScore;
-        let isCorrect = false;
-        let studentAnsStr = '';
-
-        if (q.type === 'mc') {
-          let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-          studentAnsStr = group ? (group.dataset.val || '') : '';
-          isCorrect = (studentAnsStr === q.correct);
-        } else if (q.type === 'tf') {
-          let correctArr = q.correct.split(',');
-          let studentArr = [];
-          let subScore = qScore / correctArr.length;
-          let subEarned = 0;
-          correctArr.forEach((ansCorrect, i) => {
-            let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
-            let val = row && row.dataset[`val_${i}`] ? row.dataset[`val_${i}`] : '_';
-            studentArr.push(val);
-            if (val === ansCorrect) subEarned += subScore;
-          });
-          studentAnsStr = studentArr.join(',');
-          qScore = subEarned; 
-          isCorrect = (studentAnsStr === q.correct);
-        } else if (q.type === 'sa') {
-          let input = document.querySelector(`.qp-student-sa[data-qid="${q.id}"]`);
-          studentAnsStr = input ? input.value.trim() : '';
-          // So sánh tương đương dấu , và . cho câu trả lời ngắn
-          let normStudent = studentAnsStr.replace(/,/g, '.');
-          let normCorrect = q.correct.replace(/,/g, '.');
-          isCorrect = (normStudent.toLowerCase() === normCorrect.toLowerCase());
-        }
-
-        if (isCorrect || q.type === 'tf') totalEarned += qScore;
+        let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+        let val = group ? (group.dataset.val || '') : '';
+        let isCorrect = (val === q.correct);
+        if (isCorrect) totalEarned += qScore;
 
         let hasExp = q.explanation || q.expImage;
-        let expContent = (q.explanation ? `<p>${q.explanation}</p>` : '') + (q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">` : '');
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
 
         reviewHtml += `
           <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
-            <strong>Câu ${q.id} [${q.type.toUpperCase()}]:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ / Một phần'} (+${qScore.toFixed(2)}đ)</span>
+            <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qScore}đ)</span>
             <div style="margin-top:4px;">
-              - Bạn chọn: <b style="color:${isCorrect ? 'green' : 'red'};">${studentAnsStr || 'Chưa chọn'}</b><br>
+              - Bạn chọn: <b style="color:${isCorrect ? 'green' : 'red'};">${val || 'Chưa chọn'}</b><br>
               ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
             </div>
-            ${hasExp ? `<div style="margin-top:5px;"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>` : ''}
+            ${hasExp ? `
+              <div style="margin-top:5px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
           </div>
         `;
       });
 
       let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
       document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('qpResultDetailText').innerText = `Hoàn thành bài luyện nhanh thành công!`;
+      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(qpTimeLeft / 60)}p ${qpTimeLeft % 60}s`;
       document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
 
       await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
         name: studentNameGlobal, score: finalScore, timeSpent: qpTimeLeft, timestamp: Date.now()
       });
-
+      showToast('📤 Nộp bài luyện thành công!');
       switchView('qpResultView');
     }
 
     function toggleResultExp(btn) {
       let box = btn.nextElementSibling;
-      if (box.style.display === 'block') { box.style.display = 'none'; btn.innerText = '>'; }
-      else { box.style.display = 'block'; btn.innerText = 'v'; }
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
     }
 
     async function loadLeaderboard() {
       const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
-      if (!code) { alert('Nhập mã bài thi!'); return; }
-      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
       const tbody = document.getElementById('lbTableBody');
-      tbody.innerHTML = '';
+      tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
+      if (!code) { showToast('Nhập mã bài!', true); return; }
+
+      let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
       if (!snapshot.exists()) {
-        tbody.innerHTML = '<tr><td colspan="5">Không tìm thấy dữ liệu xếp hạng.</td></tr>';
-        return;
+        snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
       }
-      let rows = Object.values(snapshot.val());
-      rows.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-      rows.forEach((r, i) => {
-        let m = Math.floor(r.timeSpent / 60), s = r.timeSpent % 60;
+
+      if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
+
+      let history = Object.values(snapshot.val());
+      history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
+
+      tbody.innerHTML = '';
+      history.forEach((row, idx) => {
+        let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+        let warnings = row.cheatWarnings || 0;
+        let leaveSec = row.totalLeaveTime || 0;
+        let rowId = `lb_detail_${idx}`;
+
         tbody.innerHTML += `
           <tr>
-            <td><b>#${i + 1}</b></td>
-            <td>${r.name}</td>
-            <td><b style="color:#198754;">${r.score}</b></td>
+            <td><b>#${idx + 1}</b></td>
+            <td>${row.name}</td>
+            <td><b style="color:#198754;">${row.score}</b></td>
             <td>${m}p ${s}s</td>
-            <td style="color:#d32f2f;">${r.cheatWarnings || 0} lần (Rời ${r.totalLeaveTime || 0}s)</td>
-          </tr>
-        `;
+            <td>
+              <button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button>
+              <div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">
+                - Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>
+                - Thời gian rời phòng thi: <b>${leaveSec} giây</b>
+              </div>
+            </td>
+          </tr>`;
       });
+      showToast('📊 Tải bảng xếp hạng thành công!');
     }
+
+    function toggleLbDetail(rowId) {
+      let el = document.getElementById(rowId);
+      let btn = el.previousElementSibling;
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        el.style.display = 'block';
+        btn.innerText = 'v';
+      }
+    }
+
+    addQuestionV2('mc');
+    addQuestionV2('tf');
   </script>
 </body>
 </html>
