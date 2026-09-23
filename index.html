@@ -649,10 +649,10 @@
         <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
 
         <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Tải lên file âm thanh (.mp3, .wav) để phát cho tất cả mọi người đang online cùng nghe:</p>
-        <input type="file" id="supremeAudioFileInput" accept="audio/*" style="margin-bottom: 10px;">
+        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Dán link nhạc trực tiếp (.mp3, .wav) để phát cho tất cả mọi người đang online cùng nghe. Có thể lấy link bằng cách bỏ file nhạc vào cùng thư mục deploy trên Vercel (VD: https://ten-web.vercel.app/nhac1.mp3), hoặc dùng link raw từ GitHub:</p>
+        <input type="text" id="supremeAudioUrlInput" placeholder="Dán link nhạc vào đây, VD: https://fram-bakhi-thuandao.vercel.app/nhac1.mp3" style="margin-bottom: 10px;">
         <div style="display: flex; gap: 10px;">
-          <button class="btn btn-success" onclick="uploadAndPlayGlobalAudio()">🎵 Tải Lên & Phát Nhạc Chung</button>
+          <button class="btn btn-success" onclick="uploadAndPlayGlobalAudio()">🎵 Phát Nhạc Chung Từ Link</button>
           <button class="btn btn-danger" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
 
@@ -788,6 +788,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC33ENu7xxo8Z9YXz_t3J8NZkfsShuuzKM",
@@ -801,6 +802,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const storage = getStorage(app);
 
     window.db = db;
     window.ref = ref;
@@ -812,6 +814,12 @@
     window.dbPush = push;
     window.onValue = onValue;
     window.dbUpdate = update;
+
+    // Firebase Storage - dùng để tải file nhạc lớn lên thay vì nhét base64 vào Realtime Database
+    window.storage = storage;
+    window.storageRef = storageRef;
+    window.uploadBytes = uploadBytes;
+    window.getDownloadURL = getDownloadURL;
   </script>
 
   <script>
@@ -1100,26 +1108,21 @@
     });
 
     async function uploadAndPlayGlobalAudio() {
-      let fileInput = document.getElementById('supremeAudioFileInput');
-      if (!fileInput.files || fileInput.files.length === 0) { showToast('Vui lòng chọn 1 file âm thanh!', true); return; }
+      let urlInput = document.getElementById('supremeAudioUrlInput');
+      let audioUrl = urlInput.value.trim();
 
-      const file = fileInput.files[0];
-      const MAX_AUDIO_SIZE = 4 * 1024 * 1024; // 4MB - giới hạn an toàn khi lưu base64 trực tiếp vào Realtime Database
-      if (file.size > MAX_AUDIO_SIZE) {
-        showToast('⚠️ File nhạc quá lớn (>4MB) nên sẽ bị lỗi khi lưu. Hãy chọn file nhỏ hơn hoặc nén lại!', true);
-        return;
-      }
+      if (!audioUrl) { showToast('Vui lòng dán link nhạc vào ô nhập!', true); return; }
+      if (!/^https?:\/\//i.test(audioUrl)) { showToast('Link nhạc không hợp lệ, phải bắt đầu bằng http:// hoặc https://', true); return; }
 
-      showToast('⏳ Đang tải file âm thanh lên hệ thống...');
+      showToast('⏳ Đang lưu link nhạc...');
       try {
-        let base64Audio = await fileToBase64(file);
+        // Chỉ lưu đường link nhạc (chuỗi ngắn) vào Realtime Database, không upload file gì cả
         await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioUrl: base64Audio,
+          audioUrl: audioUrl,
           isPlaying: true,
           timestamp: Date.now()
         });
         showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
-        fileInput.value = '';
       } catch (err) {
         console.error('Lỗi phát nhạc chung:', err);
         showToast('❌ Lỗi khi lưu/phát nhạc: ' + (err && err.message ? err.message : err), true);
