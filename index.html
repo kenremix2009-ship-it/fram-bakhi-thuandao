@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>FRAM BÁ KHÍ V2 - Hệ Thống Kiểm Tra Trực Tuyến</title>
   
   <!-- PDF.js library -->
@@ -12,18 +12,19 @@
   </script>
 
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
-    body { background-color: #f0f2f5; color: #333; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { background-color: #f0f2f5; color: #333; -webkit-text-size-adjust: 100%; }
     
-    .navbar { background: #1877f2; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
-    .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
-    .nav-tabs { display: flex; gap: 5px; flex-wrap: wrap; }
-    .nav-tabs button { background: transparent; border: none; color: white; padding: 6px 12px; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+    .navbar { background: #1877f2; color: white; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 8px; position: sticky; top: 0; z-index: 1000; }
+    .logo { font-size: 17px; font-weight: bold; letter-spacing: 0.5px; }
+    .nav-tabs { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; width: 100%; }
+    .nav-tabs button { background: transparent; border: none; color: white; padding: 8px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 4px; transition: 0.2s; flex: 1 1 auto; min-width: 0; }
     .nav-tabs button.active, .nav-tabs button:hover { background: rgba(255,255,255,0.2); }
 
-    .container { max-width: 1200px; margin: 15px auto; padding: 0 10px; }
-    .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .btn { background: #1877f2; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; width: 100%; transition: background 0.2s; }
+    .container { max-width: 1200px; margin: 10px auto; padding: 0 8px; }
+    .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .btn { background: #1877f2; color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; width: 100%; transition: background 0.2s; touch-action: manipulation; }
     .btn:hover { background: #166fe5; }
     .btn-secondary { background: #6c757d; }
     .btn-secondary:hover { background: #5c636a; }
@@ -34,60 +35,61 @@
     .btn-warning { background: #ffc107; color: #000; }
     .btn-warning:hover { background: #ffca2c; }
 
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    input[type="text"], input[type="number"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 5px; margin-bottom: 12px; font-size: 14px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    input[type="text"], input[type="number"], input[type="password"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px; margin-bottom: 10px; font-size: 14px; }
     label { font-weight: 600; font-size: 13px; color: #444; display: block; }
 
     .view-section { display: none; }
     .view-section.active { display: block; }
 
-    .section-title { background: #e7f3ff; color: #1877f2; padding: 8px 12px; border-radius: 6px; font-weight: bold; margin: 15px 0 10px 0; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .q-build-item { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
+    .section-title { background: #e7f3ff; color: #1877f2; padding: 8px 10px; border-radius: 6px; font-weight: bold; margin: 12px 0 8px 0; font-size: 13px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .q-build-item { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 10px; border-radius: 6px; margin-bottom: 10px; }
     .advanced-settings-panel { background: #fffbe6; border: 1px solid #ffe58f; padding: 10px; border-radius: 6px; margin-top: 10px; display: none; }
     
-    .exam-layout { display: flex; gap: 15px; height: calc(100vh - 100px); }
-    .exam-left { flex: 6; background: #525659; border-radius: 8px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-    .exam-right { flex: 4; background: white; border-radius: 8px; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    /* ===== GIAO DIỆN LÀM BÀI: MOBILE ===== */
+    .exam-layout { display: flex; flex-direction: column; gap: 8px; }
+    .exam-left { background: #525659; border-radius: 8px; overflow-y: auto; padding: 6px; display: flex; flex-direction: column; align-items: center; -webkit-overflow-scrolling: touch; }
+    .exam-right { background: white; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     
-    .img-preview, .pdf-canvas { max-width: 100%; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .img-preview, .pdf-canvas { max-width: 100%; margin-bottom: 8px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: block; }
 
-    .opt-group { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
-    .opt-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .opt-group { display: flex; gap: 6px; margin: 6px 0; flex-wrap: wrap; }
+    .opt-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; touch-action: manipulation; user-select: none; }
     .opt-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
 
-    .tf-branch-row { display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #eee; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; }
+    .tf-branch-row { display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #eee; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; }
     .tf-branch-opts { display: flex; gap: 5px; }
-    .tf-sub-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .tf-sub-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; touch-action: manipulation; user-select: none; }
     .tf-sub-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
 
-    .exam-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #eee; margin-bottom: 10px; }
-    .timer { background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 14px; }
+    .exam-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #eee; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
+    .timer { background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 13px; }
 
     .explanation-box { background: #e7f3ff; border-left: 4px solid #1877f2; padding: 8px; margin-top: 6px; font-size: 13px; color: #1c1e21; border-radius: 0 4px 4px 0; display: none; }
-    .toggle-exp-btn { background: #f0f2f5; border: 1px solid #ccd0d5; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
+    .toggle-exp-btn { background: #f0f2f5; border: 1px solid #ccd0d5; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; touch-action: manipulation; }
 
-    .table-responsive { width: 100%; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 500px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 13px; }
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; min-width: 480px; }
+    th, td { border: 1px solid #ddd; padding: 6px; text-align: center; font-size: 12px; }
     th { background: #f4f6f8; font-weight: 600; }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
-    .modal-box { background: white; width: 100%; max-width: 450px; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-    .modal-header h3 { font-size: 16px; color: #1877f2; }
-    .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 9999; padding: 12px; }
+    .modal-box { background: white; width: 100%; max-width: 450px; padding: 16px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    .modal-header h3 { font-size: 15px; color: #1877f2; }
+    .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 4px 8px; }
 
-    /* HỆ THỐNG THÔNG BÁO TOAST NÂNG TẦM TRẢI NGHIỆM */
     #systemToast {
       position: fixed;
-      top: 25px;
-      right: 25px;
+      top: 20px;
+      right: 15px;
+      left: 15px;
       background: linear-gradient(135deg, #198754, #157347);
       color: white;
-      padding: 14px 24px;
-      border-radius: 12px;
+      padding: 12px 18px;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       box-shadow: 0 8px 24px rgba(25, 135, 84, 0.3);
       z-index: 9999999;
       display: none;
@@ -95,59 +97,45 @@
       opacity: 0;
       transform: translateY(-20px);
       border-left: 5px solid #fff;
+      text-align: center;
     }
-    #systemToast.error { 
-      background: linear-gradient(135deg, #dc3545, #bb2d3b); 
-      box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); 
-    }
-    #systemToast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    #systemToast.error { background: linear-gradient(135deg, #dc3545, #bb2d3b); box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); }
+    #systemToast.show { opacity: 1; transform: translateY(0); }
 
-    /* BANNER THÔNG BÁO TOÀN CẦU TỪ NHÀ PHÁT TRIỂN - 3 VỊ TRÍ */
     #globalBroadcastBanner {
       position: fixed;
       left: 0;
       width: 100%;
-      padding: 15px 25px;
+      padding: 12px 15px;
       text-align: center;
       font-weight: bold;
+      font-size: 14px;
       z-index: 99999999;
       display: none;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      animation: slideDown 0.5s ease;
     }
-    #globalBroadcastBanner.pos-top { top: 0; }
+    #globalBroadcastBanner.pos-top { top: 0; animation: slideDown 0.5s ease; }
     #globalBroadcastBanner.pos-middle { top: 50%; transform: translateY(-50%); }
-    #globalBroadcastBanner.pos-bottom { bottom: 0; }
-    @keyframes slideDown {
-      from { transform: translateY(-100%); }
-      to { transform: translateY(0); }
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    #globalBroadcastBanner.pos-bottom { animation: slideUp 0.5s ease; }
+    #globalBroadcastBanner.pos-bottom { bottom: 0; animation: slideUp 0.5s ease; }
+    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-    /* Màn hình Loading */
     #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
-    .spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    .spinner { width: 45px; height: 45px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     #loadingCompleteToast { 
       position: fixed; 
-      top: 20px; 
+      top: 15px; 
       left: 50%; 
       transform: translateX(-50%); 
       background: #ffffff; 
       border: 2px solid #198754; 
       color: #198754; 
-      padding: 10px 20px; 
+      padding: 8px 16px; 
       border-radius: 8px; 
       font-weight: bold; 
-      font-size: 16px; 
+      font-size: 14px; 
       box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
       z-index: 999999; 
       display: none; 
@@ -155,42 +143,135 @@
       opacity: 1; 
     }
 
-    .audio-list-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
-    .audio-list-item .audio-name { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .audio-list-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border: 1px solid #ddd; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; gap: 6px; }
+    .audio-list-item .audio-name { font-size: 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 
+    /* ===== CẢI TIẾN CHO MOBILE: BÀI LÀM ===== */
+    #studentExamView .exam-layout {
+      flex-direction: column;
+      gap: 8px;
+    }
+    #studentExamView .exam-left {
+      max-height: 45vh;
+      min-height: 200px;
+    }
+    #studentExamView .exam-right {
+      flex: none;
+    }
+
+    /* ===== CỐ ĐỊNH CHỐNG LOẠN KHI CHẠM NHIỀU NGÓN ===== */
+    .opt-btn, .tf-sub-btn, .btn, .nav-tabs button, .toggle-exp-btn {
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body { overscroll-behavior: contain; }
+
+    /* ===== MOBILE CHUNG ===== */
     @media (max-width: 900px) {
-      .navbar { flex-direction: column; align-items: stretch; text-align: center; padding: 8px; }
-      .nav-tabs { justify-content: center; }
-      .form-grid-2 { grid-template-columns: 1fr; }
+      .container { padding: 0 6px; margin: 8px auto; }
+      .card { padding: 10px; margin-bottom: 10px; border-radius: 6px; }
+      .navbar { padding: 8px; }
+      .logo { font-size: 15px; width: 100%; text-align: center; }
+      .nav-tabs button { font-size: 11px; padding: 6px 6px; }
+      
+      /* Form tạo đề */
+      .form-grid-2 { grid-template-columns: 1fr; gap: 6px; }
+      input[type="text"], input[type="number"], input[type="password"], select, textarea { font-size: 13px; padding: 9px; }
+      
+      /* Section title */
+      .section-title { font-size: 12px; padding: 6px 8px; }
+      
+      /* Modal */
+      .modal-box { padding: 14px; max-height: 85vh; }
+      .modal-header h3 { font-size: 14px; }
+      
+      /* Exam */
+      .exam-layout { height: auto; }
+      .exam-left { max-height: 45vh; }
+      .exam-header { padding-bottom: 6px; }
+      .timer { font-size: 12px; padding: 3px 8px; }
+      .opt-btn { width: 42px; height: 42px; font-size: 15px; }
+      .tf-sub-btn { width: 36px; height: 36px; }
+      
+      /* Bảng */
+      table { min-width: 420px; }
+      th, td { padding: 5px; font-size: 11px; }
+
+      /* Supreme audio */
+      .audio-list-item { flex-wrap: wrap; }
+      .audio-list-item .audio-name { font-size: 11px; }
+    }
+
+    /* ===== MOBILE NHỎ ===== */
+    @media (max-width: 480px) {
+      .nav-tabs button { font-size: 10px; padding: 5px 4px; }
+      .logo { font-size: 14px; }
+      .opt-btn { width: 40px; height: 40px; font-size: 14px; }
+    }
+
+    /* ===== FIX RUNG LẮC TRÊN iOS ===== */
+    * { -webkit-overflow-scrolling: touch; }
+    input, textarea, select { -webkit-appearance: none; appearance: none; border-radius: 6px; }
+    select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; background-size: 14px; padding-right: 30px; }
+
+    /* ===== FIX EXAM VIEW CHO MOBILE: ĐỀ TRÊN, TRẢ LỜI DƯỚI ===== */
+    @media (max-width: 900px) {
+      #studentExamView .exam-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        height: auto !important;
+      }
+      #studentExamView .exam-left {
+        flex: none !important;
+        max-height: 50vh !important;
+        min-height: 200px !important;
+        width: 100% !important;
+        overflow-y: auto !important;
+      }
+      #studentExamView .exam-right {
+        flex: none !important;
+        width: 100% !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+      }
+    }
+
+    /* ===== FIX EXAM VIEW TRÊN DESKTOP ===== */
+    @media (min-width: 901px) {
+      .exam-layout { display: flex; flex-direction: row; gap: 15px; height: calc(100vh - 140px); }
+      .exam-left { flex: 6; }
+      .exam-right { flex: 4; }
+    }
+
+    /* ===== NÚT BACK / HEADER CỐ ĐỊNH KHI LÀM BÀI ===== */
+    .sticky-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: white;
+      padding: 6px 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- BANNER THÔNG BÁO TOÀN CẦU -->
   <div id="globalBroadcastBanner" class="pos-top">Thông báo từ nhà phát triển</div>
-
-  <!-- AUDIO PHÁT NHẠC ĐỒNG BỘ TOÀN HỆ THỐNG -->
   <audio id="globalAudioPlayer" style="display:none;" loop></audio>
-
-  <!-- TOAST THÔNG BÁO HỆ THỐNG -->
   <div id="systemToast">Thông báo hệ thống</div>
 
-  <!-- MÀN HÌNH LOADING VÒNG TRÒN XOAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
-    <h3 id="loadingText" style="color: #1877f2; font-size: 18px;">loading...</h3>
+    <h3 id="loadingText" style="color: #1877f2; font-size: 16px;">loading...</h3>
   </div>
-
-  <!-- THÔNG BÁO HOÀN THÀNH LOADING -->
   <div id="loadingCompleteToast">Hoàn thành</div>
 
-  <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN -->
   <div class="modal-overlay" id="cheatAlertModal">
-    <div class="modal-box" style="text-align: center; max-width: 400px; padding: 25px;">
-      <div style="font-size: 40px; color: #dc3545; margin-bottom: 10px;">⚠️</div>
-      <h3 style="color: #dc3545; font-size: 20px; margin-bottom: 15px;">Cảnh Báo</h3>
-      <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 14px; line-height: 1.6;">
+    <div class="modal-box" style="text-align: center; max-width: 360px; padding: 20px;">
+      <div style="font-size: 36px; color: #dc3545; margin-bottom: 8px;">⚠️</div>
+      <h3 style="color: #dc3545; font-size: 18px; margin-bottom: 12px;">Cảnh Báo</h3>
+      <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: left; font-size: 13px; line-height: 1.5;">
         <p>📌 <b>Số lần cảnh báo:</b> <span id="cheatModalCount" style="color: #d32f2f; font-weight: bold;">0</span></p>
         <p>⏱️ <b>Thời gian thoát khỏi phòng thi:</b> <span id="cheatModalTime" style="color: #d32f2f; font-weight: bold;">0s</span></p>
       </div>
@@ -198,27 +279,26 @@
     </div>
   </div>
 
-  <!-- BẢNG THÔNG BÁO GIỚI THIỆU -->
-  <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 15px;">
-    <div style="background: white; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
-      <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
-      <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
-      <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
+  <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 12px;">
+    <div style="background: white; width: 100%; max-width: 360px; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
+      <div style="font-size: 36px; margin-bottom: 6px;">⚡</div>
+      <h3 style="color: #1877f2; font-size: 16px; margin-bottom: 10px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
+      <div style="font-size: 12px; color: #444; line-height: 1.6; margin-bottom: 16px; background: #f8f9fa; padding: 10px; border-radius: 8px; text-align: left;">
         <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
+        <p style="margin-top: 6px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
       </div>
-      <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
+      <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
     <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
-      <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
-      <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
-      <button onclick="switchView('leaderboardView', this)">🏆 XẾP HẠNG</button>
-      <button onclick="switchView('advancedModelView', this)">⚙️ MÔ HÌNH NÂNG CAO (GV)</button>
-      <button onclick="checkSupremeAccess(this)" style="background: #ffc107; color: #000; font-weight: bold;">👑 TỐI CAO NHÀ PHÁT TRIỂN</button>
+      <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GV</button>
+      <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HS</button>
+      <button onclick="switchView('leaderboardView', this)">🏆 XH</button>
+      <button onclick="switchView('advancedModelView', this)">⚙️ NC</button>
+      <button onclick="checkSupremeAccess(this)" style="background: #ffc107; color: #000; font-weight: bold;">👑 TC</button>
     </div>
   </div>
 
@@ -227,11 +307,11 @@
     <!-- ==================== GIÁO VIÊN: TẠO ĐỀ V2 ==================== -->
     <div id="teacherView" class="view-section active">
       <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-          <h2 style="font-size: 18px;">🛠️ Tạo Đề Kiểm Tra V2</h2>
-          <button class="btn btn-secondary" style="width: auto; padding: 6px 12px; font-size: 13px;" onclick="openAdvancedModal()">⚙️ Nâng Cao & Quản Lý Phòng</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+          <h2 style="font-size: 15px;">🛠️ Tạo Đề Kiểm Tra V2</h2>
+          <button class="btn btn-secondary" style="width: auto; padding: 6px 10px; font-size: 12px;" onclick="openAdvancedModal()">⚙️ Nâng Cao</button>
         </div>
-        <hr style="margin: 10px 0;">
+        <hr style="margin: 8px 0;">
 
         <div class="form-grid-2">
           <div>
@@ -246,16 +326,6 @@
 
         <div class="form-grid-2">
           <div>
-            <label>Thời gian làm bài:</label>
-            <select id="examDuration">
-              <option value="15">15 Phút</option>
-              <option value="30">30 Phút</option>
-              <option value="45" selected>45 Phút</option>
-              <option value="90">90 Phút</option>
-              <option value="120">120 Phút</option>
-            </select>
-          </div>
-          <div>
             <label>Hình thức tải đề:</label>
             <select id="examType" onchange="toggleExamCreationType()">
               <option value="pdf">Tải file PDF đề thi</option>
@@ -264,7 +334,78 @@
           </div>
         </div>
 
-        <div id="pdfUploadSection">
+        <!-- ====== CHỨC NĂNG NÂNG CAO MỚI CHO TẠO ĐỀ ====== -->
+        <div style="margin-top: 10px; background: #f0f8ff; border: 1px dashed #1877f2; padding: 10px; border-radius: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold; font-size: 13px; margin-bottom: 8px;">
+            <input type="checkbox" id="advExamOptionsToggle" onchange="toggleAdvExamOptions()" style="width: 16px; height: 16px;">
+            ⚙️ Cài đặt nâng cao (Thời gian, Chống gian lận)
+          </label>
+          
+          <div id="advExamOptionsPanel" style="display: none;">
+            <!-- Bật đếm ngược thời gian -->
+            <div style="margin-bottom: 10px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                <input type="checkbox" id="advEnableTimer" checked onchange="toggleAdvTimerInput()" style="width: 16px; height: 16px;">
+                ⏱️ Bật đếm ngược thời gian làm bài
+              </label>
+              <div id="advTimerInputBox" style="margin-top: 5px;">
+                <label style="font-size: 12px; margin-bottom: 2px;">Thời gian làm bài:</label>
+                <select id="examDuration">
+                  <option value="15">15 Phút</option>
+                  <option value="30">30 Phút</option>
+                  <option value="45" selected>45 Phút</option>
+                  <option value="90">90 Phút</option>
+                  <option value="120">120 Phút</option>
+                </select>
+                <small style="color: #666; font-size: 11px;">Nếu tắt, thời gian làm bài sẽ không giới hạn.</small>
+              </div>
+            </div>
+
+            <!-- Bật chống gian lận -->
+            <div style="margin-bottom: 10px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
+                <input type="checkbox" id="advEnableAntiCheat" checked onchange="toggleAdvAntiCheatInput()" style="width: 16px; height: 16px;">
+                🛡️ Bật chống gian lận (Rời tab)
+              </label>
+              <div id="advAntiCheatBox" style="margin-top: 5px;">
+                <label style="font-size: 12px; margin-bottom: 2px;">Thời gian rời tab để tính 1 lần cảnh báo (giây):</label>
+                <input type="number" id="advCheatThreshold" value="7" min="1" style="padding: 6px;">
+                
+                <label style="font-size: 12px; margin-top: 6px; margin-bottom: 2px;">Giới hạn số lần cảnh báo:</label>
+                <select id="advCheatLimitType" onchange="toggleAdvCheatLimitInput()" style="padding: 6px;">
+                  <option value="unlimited">Không giới hạn (chỉ đếm số lần & thời gian)</option>
+                  <option value="limited">Giới hạn (đạt tới sẽ cưỡng chế nộp bài)</option>
+                </select>
+                <div id="advCheatLimitInputBox" style="display: none; margin-top: 5px;">
+                  <label style="font-size: 12px; margin-bottom: 2px;">Số lần cảnh báo tối đa:</label>
+                  <input type="number" id="advMaxWarnings" value="5" min="1" style="padding: 6px;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bật phòng live -->
+            <div style="border-top: 1px dashed #1877f2; padding-top: 8px; margin-top: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold; font-size: 13px;">
+                <input type="checkbox" id="enableLiveRoom" onchange="toggleLiveRoomConfig()" style="width: 16px; height: 16px;"> 
+                🛡️ Bật Phòng Thi Chuyên Dụng (Live Exam Room)
+              </label>
+              <div id="liveRoomConfigBox" style="display: none; margin-top: 6px;">
+                <div class="form-grid-2" style="gap: 6px;">
+                  <div>
+                    <label style="font-size: 12px;">Mật khẩu phòng thi:</label>
+                    <input type="password" id="liveRoomPass" placeholder="Mật khẩu học sinh..." style="padding: 6px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 12px;">Giới hạn học sinh:</label>
+                    <input type="number" id="liveRoomLimit" placeholder="50" value="50" style="padding: 6px;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="pdfUploadSection" style="margin-top: 10px;">
           <label>Chọn File Đề Thi (.pdf):</label>
           <input type="file" id="teacherPdfInput" accept="application/pdf">
         </div>
@@ -274,67 +415,48 @@
           <input type="file" id="teacherImgInput" accept="image/*" multiple>
         </div>
 
-        <div style="margin-top: 15px;">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold;">
-            <input type="checkbox" id="enableLiveRoom" onchange="toggleLiveRoomConfig()" style="width: 18px; height: 18px;"> 
-            🛡️ Bật Phòng Thi Chuyên Dụng (Live Exam Room)
-          </label>
-          <div id="liveRoomConfigBox" class="advanced-settings-panel">
-            <div class="form-grid-2" style="margin-bottom: 0;">
-              <div>
-                <label>Mật khẩu phòng thi (cho học sinh):</label>
-                <input type="password" id="liveRoomPass" placeholder="Mật khẩu học sinh...">
-              </div>
-              <div>
-                <label>Giới hạn số lượng học sinh:</label>
-                <input type="number" id="liveRoomLimit" placeholder="Ví dụ: 50" value="50">
-              </div>
-            </div>
-          </div>
+        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 10px; border-radius: 8px; margin-top: 15px;">
+          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 13px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
+          <p style="font-size: 11px; color: #555; margin-bottom: 6px;">Tải ảnh chứa bảng đáp án vào đây để hệ thống tự động điền:</p>
+          <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size: 12px; margin: 0; background: white; padding: 6px;" onchange="processKeyImage(this)">
         </div>
 
-        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-top: 20px;">
-          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
-          <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processKeyImage(this)">
-        </div>
-
-        <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ (có cơ chế điểm nhánh) | Trả lời ngắn: 0.5đ.</p>
+        <h3 style="margin-top: 18px; margin-bottom: 6px; font-size: 14px;">📋 Cấu Trúc Câu Hỏi V2</h3>
+        <p style="font-size: 11px; color: #666; margin-bottom: 8px;">* Thang điểm mặc định: TN ABCD: 0.25đ | Đúng/Sai: 1.0đ | Trả lời ngắn: 0.5đ.</p>
 
         <div class="section-title">
-          <span>I. TRẮC NGHIỆM (A, B, C, D) [Mặc định 0.25đ/câu]</span>
-          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
+          <span>I. TRẮC NGHIỆM (A, B, C, D)</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="addQuestionV2('mc')">+ Thêm</button>
         </div>
         <div id="builderMC"></div>
 
         <div class="section-title">
-          <span>II. ĐÚNG / SAI (Cơ chế điểm nhánh: 0.1 / 0.25 / 0.5 / 1.0đ)</span>
-          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
+          <span>II. ĐÚNG / SAI</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="addQuestionV2('tf')">+ Thêm</button>
         </div>
         <div id="builderTF"></div>
 
         <div class="section-title">
-          <span>III. TRẢ LỜI NGẮN [Mặc định 0.5đ/câu]</span>
-          <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
+          <span>III. TRẢ LỜI NGẮN</span>
+          <button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="addQuestionV2('sa')">+ Thêm</button>
         </div>
         <div id="builderSA"></div>
 
-        <button class="btn btn-success" style="margin-top: 20px; padding: 12px;" onclick="promptSaveExam()">💾 Lưu & Phát Hành Đề Thi Lên Cloud</button>
+        <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveExam()">💾 Lưu & Phát Hành Đề Thi</button>
       </div>
     </div>
 
     <!-- ==================== HỌC SINH: ĐĂNG NHẬP ==================== -->
     <div id="studentLoginView" class="view-section">
-      <div class="card" style="max-width: 450px; margin: 20px auto; text-align: center;">
-        <h2>🧑‍🎓 Học Sinh Vào Thi / Luyện Tập</h2>
-        <hr style="margin: 15px 0;">
+      <div class="card" style="max-width: 420px; margin: 15px auto; text-align: center;">
+        <h2 style="font-size: 16px;">🧑‍🎓 Học Sinh Vào Thi / Luyện Tập</h2>
+        <hr style="margin: 12px 0;">
 
         <div style="text-align: left;">
-          <label>Hình thức tham gia:</label>
+          <label>Hình thức:</label>
           <select id="examModeSelect" onchange="toggleStudentMode()">
-            <option value="normal">Thi Tự Do Bình Thường</option>
-            <option value="live">🛡️ Phòng Thi Chuyên Dụng (Live Exam)</option>
+            <option value="normal">Thi Tự Do</option>
+            <option value="live">🛡️ Phòng Thi Chuyên Dụng</option>
             <option value="practice">⚡ Bài Luyện Nhanh</option>
           </select>
 
@@ -346,118 +468,118 @@
 
           <div id="extraPassBox" style="display: none;">
             <label id="extraPassLabel">Mật Khẩu:</label>
-            <input type="password" id="studentExtraPass" placeholder="Nhập mật khẩu (nếu có)...">
+            <input type="password" id="studentExtraPass" placeholder="Nhập mật khẩu...">
           </div>
         </div>
 
-        <button class="btn btn-success" style="margin-top: 10px;" onclick="startStudentParticipation()">🚀 Bắt Đầu Ngay</button>
+        <button class="btn btn-success" style="margin-top: 8px;" onclick="startStudentParticipation()">🚀 Bắt Đầu Ngay</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
+    <!-- ==================== PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
     <div id="qpWaitingRoomView" class="view-section">
-      <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
-        <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
-        <p id="qpWaitTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
-        <hr style="margin: 20px 0;">
+      <div class="card" style="max-width: 560px; margin: 30px auto; text-align: center; padding: 22px;">
+        <h2 style="color: #1877f2; margin-bottom: 8px; font-size: 16px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
+        <p id="qpWaitTitle" style="font-weight: bold; font-size: 14px; color: #333;"></p>
+        <hr style="margin: 15px 0;">
 
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 15px; font-size: 13px; line-height: 1.5;">
           <p>👤 <b>Thí sinh:</b> <span id="qpWaitStudentName"></span></p>
           <p>📋 <b>Số lượng câu hỏi:</b> <span id="qpWaitQCount" style="color: #1877f2; font-weight: bold;">0</span></p>
           <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="qpWaitStudentCount" style="color: #198754; font-weight: bold;">1</span></p>
         </div>
 
-        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 15px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 12px; border-radius: 8px;">
           🔔 ĐỢI GIÁO VIÊN BẮT ĐẦU...
         </div>
 
-        <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveQpWaitingRoom()">🚪 Rời Phòng Chờ</button>
+        <button class="btn btn-secondary" style="margin-top: 15px;" onclick="leaveQpWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM CHÍNH THỨC ==================== -->
+    <!-- ==================== PHÒNG CHỜ LIVE EXAM ==================== -->
     <div id="studentWaitingRoomView" class="view-section">
-      <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
-        <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
-        <p id="waitingRoomExamTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
-        <hr style="margin: 20px 0;">
+      <div class="card" style="max-width: 560px; margin: 30px auto; text-align: center; padding: 22px;">
+        <h2 style="color: #1877f2; margin-bottom: 8px; font-size: 16px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
+        <p id="waitingRoomExamTitle" style="font-weight: bold; font-size: 14px; color: #333;"></p>
+        <hr style="margin: 15px 0;">
 
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
+        <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left; margin-bottom: 15px; font-size: 13px; line-height: 1.5;">
           <p>👤 <b>Thí sinh:</b> <span id="waitStudentName"></span></p>
           <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="waitStudentCount" style="color: #1877f2; font-weight: bold;">1</span></p>
           <p>⏱️ <b>Thời gian làm bài:</b> <span id="waitDuration"></span> phút</p>
         </div>
 
-        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
+        <div style="font-size: 15px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 12px; border-radius: 8px;">
           🔔 CHỜ GIÁO VIÊN BẮT ĐẦU KÌ THI...
         </div>
 
-        <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveWaitingRoom()">🚪 Rời Phòng Chờ</button>
+        <button class="btn btn-secondary" style="margin-top: 15px;" onclick="leaveWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: LÀM BÀI CHÍNH THỨC ==================== -->
+    <!-- ==================== LÀM BÀI CHÍNH THỨC ==================== -->
     <div id="studentExamView" class="view-section">
-      <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px 15px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
-        <span>🛡️ <b>Chế độ chống gian lận:</b> Chuyển tab quá 7 giây sẽ bị gửi cảnh báo!</span>
-        <span id="cheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Cảnh báo: 0</span>
+      <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 8px 12px; margin-bottom: 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+        <span>🛡️ <b>Chống gian lận:</b> Rời tab quá <span id="cheatThresholdDisplay">7</span> giây sẽ bị cảnh báo!</span>
+        <span id="cheatWarningBadge" style="background: #dc3545; color: white; padding: 3px 10px; border-radius: 10px; font-weight: bold; font-size: 12px;">Cảnh báo: 0</span>
       </div>
       <div class="exam-layout">
         <div class="exam-left" id="examMediaContainer"></div>
         <div class="exam-right">
           <div class="exam-header">
             <div>
-              <h4 id="displayExamTitle" style="font-size: 14px;">Đề Thi</h4>
+              <h4 id="displayExamTitle" style="font-size: 13px;">Đề Thi</h4>
               <small id="displayStudentInfo" style="color: #666; font-size: 11px;"></small>
             </div>
             <div class="timer" id="timerDisplay">00:00</div>
           </div>
-          <div style="flex: 1; overflow-y: auto;" id="studentAnswerSheet"></div>
-          <button class="btn btn-danger" style="margin-top: 10px;" onclick="submitStudentExam(false)">📤 Nộp Bài Thi</button>
+          <div id="studentAnswerSheet" style="flex: 1;"></div>
+          <button class="btn btn-danger" style="margin-top: 8px;" onclick="submitStudentExam(false)">📤 Nộp Bài Thi</button>
         </div>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: XEM KẾT QUẢ CHÍNH THỨC ==================== -->
+    <!-- ==================== KẾT QUẢ CHÍNH THỨC ==================== -->
     <div id="studentResultView" class="view-section">
       <div class="card" style="max-width: 800px; margin: 0 auto;">
-        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
-          <h2 style="color: #1877f2; font-size: 20px;">🎉 Kết Quả Bài Kiểm Tra</h2>
-          <h1 style="font-size: 38px; color: #198754; margin: 8px 0;" id="resultScore">0 / 10</h1>
-          <p id="resultDetailText" style="font-size: 13px;"></p>
+        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+          <h2 style="color: #1877f2; font-size: 17px;">🎉 Kết Quả Bài Kiểm Tra</h2>
+          <h1 style="font-size: 32px; color: #198754; margin: 6px 0;" id="resultScore">0 / 10</h1>
+          <p id="resultDetailText" style="font-size: 12px;"></p>
         </div>
-        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px;">🔍 Chi Tiết Bài Làm & Lời Giải Chú Thích</h3>
+        <h3 style="margin-top: 12px; margin-bottom: 8px; font-size: 14px;">🔍 Chi Tiết Bài Làm</h3>
         <div id="resultReviewContainer"></div>
-        <button class="btn" style="margin-top: 15px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
+        <button class="btn" style="margin-top: 12px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: XEM KẾT QUẢ BÀI LUYỆN NHANH ==================== -->
-    <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
+    <!-- ==================== KẾT QUẢ LUYỆN NHANH ==================== -->
+    <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 15px auto; padding: 0 6px;">
       <div class="card">
-        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
-          <h2 style="color: #1877f2; font-size: 20px;">🎉 Kết Quả Bài Luyện Nhanh</h2>
-          <h1 style="font-size: 38px; color: #198754; margin: 8px 0;" id="qpResultScore">0 / 10</h1>
-          <p id="qpResultDetailText" style="font-size: 13px;"></p>
+        <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+          <h2 style="color: #1877f2; font-size: 17px;">🎉 Kết Quả Bài Luyện Nhanh</h2>
+          <h1 style="font-size: 32px; color: #198754; margin: 6px 0;" id="qpResultScore">0 / 10</h1>
+          <p id="qpResultDetailText" style="font-size: 12px;"></p>
         </div>
-        <h3 style="margin-top: 15px; margin-bottom: 10px; font-size: 15px;">🔍 Chi Tiết Đáp Án & Chú Thích Từng Câu</h3>
+        <h3 style="margin-top: 12px; margin-bottom: 8px; font-size: 14px;">🔍 Chi Tiết Đáp Án</h3>
         <div id="qpResultReviewContainer"></div>
-        <button class="btn" style="margin-top: 15px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
+        <button class="btn" style="margin-top: 12px;" onclick="switchView('studentLoginView')">Trở Về Đăng Nhập</button>
       </div>
     </div>
 
     <!-- ==================== BẢNG XẾP HẠNG ==================== -->
     <div id="leaderboardView" class="view-section">
       <div class="card">
-        <h2>🏆 BẢNG XẾP HẠNG</h2>
-        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-          <input type="text" id="searchLbCode" placeholder="Nhập mã bài thi..." style="margin:0; flex:1; min-width: 150px;">
+        <h2 style="font-size: 16px;">🏆 BẢNG XẾP HẠNG</h2>
+        <div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;">
+          <input type="text" id="searchLbCode" placeholder="Nhập mã bài thi..." style="margin:0; flex:1; min-width: 120px;">
           <button class="btn" style="width: auto;" onclick="loadLeaderboard()">Xem</button>
         </div>
         <div class="table-responsive">
           <table id="lbTable">
             <thead>
-              <tr><th>Hạng</th><th>Họ Tên</th><th>Điểm</th><th>Thời Gian</th><th>Chi Tiết Vi Phạm</th></tr>
+              <tr><th>Hạng</th><th>Họ Tên</th><th>Điểm</th><th>Thời Gian</th><th>Vi Phạm</th></tr>
             </thead>
             <tbody id="lbTableBody">
               <tr><td colspan="5" style="color: #888;">Nhập mã bài để xem</td></tr>
@@ -470,19 +592,19 @@
     <!-- ==================== MÔ HÌNH NÂNG CAO (GV) ==================== -->
     <div id="advancedModelView" class="view-section">
       <div class="card">
-        <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
-        <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Lựa chọn tính năng quản lý nâng cao:</p>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <h2 style="font-size: 16px;">⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
+        <p style="color: #666; font-size: 12px; margin-bottom: 12px;">Lựa chọn tính năng quản lý nâng cao:</p>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button class="btn" style="width: auto;" onclick="switchSubModule('quickPracticeCreate')">⚡ Tạo Bài Luyện Nhanh</button>
-          <button class="btn btn-secondary" style="width: auto;" onclick="switchSubModule('quickPracticeManage')">🛡️ Quản Lý Bài Luyện Nhanh</button>
+          <button class="btn btn-secondary" style="width: auto;" onclick="switchSubModule('quickPracticeManage')">🛡️ Quản Lý Bài Luyện</button>
           <button class="btn btn-success" style="width: auto;" onclick="showToast('Tính năng Minigame đang phát triển!', true)">🎮 Minigame</button>
         </div>
       </div>
 
       <!-- 1. TẠO BÀI LUYỆN NHANH -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
-        <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh Thủ Công</h3>
-        <hr style="margin: 10px 0;">
+        <h3 style="color: #1877f2; margin-bottom: 8px; font-size: 15px;">⚡ Tạo Bài Luyện Nhanh</h3>
+        <hr style="margin: 8px 0;">
 
         <div class="form-grid-2">
           <div>
@@ -495,111 +617,105 @@
           </div>
         </div>
 
-        <div style="margin-bottom: 12px;">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2;">
+        <div style="margin-bottom: 10px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-size: 13px;">
             <input type="checkbox" id="qpEnableAdvanced" onchange="toggleQpAdvancedPanel()" style="width: 16px; height: 16px;">
-            ⚙️ Cài đặt nâng cao (Thời gian, Chống gian lận, Giao diện V2 & Phòng chờ)
+            ⚙️ Cài đặt nâng cao
           </label>
         </div>
 
-        <!-- PANEL NÂNG CAO CHO BÀI LUYỆN NHANH -->
         <div id="qpAdvancedPanel" class="advanced-settings-panel">
           <div class="form-grid-2">
             <div>
-              <label>Mật khẩu phòng thi (để trống = không có):</label>
-              <input type="password" id="qpPassword" placeholder="Nhập mật khẩu học sinh...">
+              <label>Mật khẩu phòng thi:</label>
+              <input type="password" id="qpPassword" placeholder="Nhập mật khẩu...">
             </div>
             <div>
               <label style="display: flex; align-items: center; gap: 6px; margin-top: 5px;">
                 <input type="checkbox" id="qpIsAdvancedMode" checked style="width: 16px; height: 16px;">
-                🛡️ Bật bài luyện nâng cao (Cần GV bấm Bắt đầu)
+                🛡️ Bài luyện nâng cao (Cần GV Bắt đầu)
               </label>
-              <small style="color: #666; font-size: 11px;">Nếu tắt: Học sinh nhập mã/mật khẩu vào làm luôn không cần đợi.</small>
             </div>
           </div>
 
-          <div class="form-grid-2" style="margin-top: 10px;">
+          <div class="form-grid-2" style="margin-top: 8px;">
             <div>
               <label style="display: flex; align-items: center; gap: 6px;">
                 <input type="checkbox" id="qpEnableTimer" checked onchange="toggleQpTimerConfig()" style="width: 16px; height: 16px;">
-                ⏱️ Bật thời gian làm bài (đếm ngược)
+                ⏱️ Bật thời gian
               </label>
-              <div id="qpTimerInputBox" style="margin-top: 5px;">
+              <div id="qpTimerInputBox" style="margin-top: 4px;">
                 <input type="number" id="qpDurationMinutes" value="15" min="1" placeholder="Số phút...">
-                <small style="color: #666; font-size: 11px;">Đơn vị: Phút. (Nếu tắt, thời gian sẽ không giới hạn).</small>
               </div>
             </div>
             <div>
               <label style="display: flex; align-items: center; gap: 6px;">
                 <input type="checkbox" id="qpEnableAntiCheat" checked onchange="toggleQpAntiCheatConfig()" style="width: 16px; height: 16px;">
-                🛡️ Bật chống gian lận (Rời tab)
+                🛡️ Bật chống gian lận
               </label>
-              <div id="qpAntiCheatBox" style="margin-top: 5px;">
-                <label style="font-size: 12px; margin-bottom: 2px;">Kiểu cảnh cáo:</label>
-                <select id="qpAntiCheatType" onchange="toggleQpAntiCheatType()" style="margin-bottom: 5px; padding: 6px;">
+              <div id="qpAntiCheatBox" style="margin-top: 4px;">
+                <select id="qpAntiCheatType" onchange="toggleQpAntiCheatType()" style="padding: 6px;">
                   <option value="limited">Cảnh cáo có hạn</option>
                   <option value="infinite">Cảnh cáo vô hạn</option>
                 </select>
                 <div id="qpMaxWarningBox">
-                  <label style="font-size: 12px; margin-bottom: 2px;">Số lần cảnh cáo tối đa:</label>
-                  <input type="number" id="qpMaxWarnings" value="5" min="1" style="padding: 6px; margin-bottom: 0;">
+                  <input type="number" id="qpMaxWarnings" value="5" min="1" style="padding: 6px;">
                 </div>
               </div>
             </div>
           </div>
 
-          <div style="margin-top: 12px; border-top: 1px dashed #ffe58f; padding-top: 8px;">
-            <label style="display: flex; align-items: center; gap: 6px; font-weight: bold; color: #1877f2;">
+          <div style="margin-top: 10px; border-top: 1px dashed #ffe58f; padding-top: 6px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-weight: bold; color: #1877f2; font-size: 12px;">
               <input type="checkbox" id="qpUseLayoutV2" checked style="width: 16px; height: 16px;">
-              ✨ Sử dụng Giao diện làm bài V2 (Làm từng câu, bấm Tiếp tục)
+              ✨ Giao diện V2 (Làm từng câu)
             </label>
-            <small style="color: #666; font-size: 11px;">Nếu tắt sẽ dùng giao diện V1 (Tất cả câu hỏi hiển thị trên 1 trang).</small>
           </div>
 
-          <div style="margin-top: 10px;">
-            <label>Giới hạn số học sinh tham gia đồng thời:</label>
+          <div style="margin-top: 8px;">
+            <label>Giới hạn học sinh:</label>
             <input type="number" id="qpLimit" value="50">
           </div>
         </div>
 
-        <h4 style="margin-top: 15px; margin-bottom: 5px;">📋 Danh Sách Câu Hỏi</h4>
-        <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px; margin-bottom: 10px;" onclick="addQpQuestionItem()">+ Thêm Câu Hỏi</button>
+        <h4 style="margin-top: 12px; margin-bottom: 4px; font-size: 13px;">📋 Danh Sách Câu Hỏi</h4>
+        <button class="btn btn-secondary" style="width: auto; padding: 4px 8px; font-size: 11px; margin-bottom: 8px;" onclick="addQpQuestionItem()">+ Thêm Câu Hỏi</button>
         <div id="qpQuestionsContainer"></div>
 
-        <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện (Cần Mã Bảo Mật)</button>
+        <button class="btn btn-success" style="margin-top: 12px; padding: 10px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện</button>
       </div>
 
       <!-- 2. QUẢN LÝ BÀI LUYỆN NHANH -->
       <div id="quickPracticeManage" class="card sub-module-box" style="display: none;">
-        <h3 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã bài luyện và Mật khẩu bảo mật quản lý:</p>
+        <h3 style="color: #1877f2; margin-bottom: 8px; font-size: 15px;">🛡️ Quản Lý Bài Luyện Nhanh</h3>
+        <p style="font-size: 11px; color: #666; margin-bottom: 8px;">Nhập Mã và Mật khẩu bảo mật:</p>
         
         <div class="form-grid-2">
-          <input type="text" id="manageQpCode" placeholder="Nhập mã bài luyện...">
-          <input type="password" id="manageQpPass" placeholder="Mật khẩu bảo mật quản lý...">
+          <input type="text" id="manageQpCode" placeholder="Mã bài luyện...">
+          <input type="password" id="manageQpPass" placeholder="Mật khẩu bảo mật...">
         </div>
-        <button class="btn btn-success" style="margin-bottom: 15px;" onclick="openQpManagementRoom()">📡 Kết Nối Quản Lý</button>
+        <button class="btn btn-success" style="margin-bottom: 12px;" onclick="openQpManagementRoom()">📡 Kết Nối</button>
 
-        <div id="qpManagementDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
-            <b>Trạng Thái (<span id="qpManageCount">0</span> học sinh)</b>
-            <div style="display: flex; gap: 5px;">
-              <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateQpStatus('started')">🚀 BẮT ĐẦU</button>
-              <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateQpStatus('ended')">🛑 KẾT THÚC</button>
-              <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="deleteQpExam()">🗑️ XÓA BÀI</button>
+        <div id="qpManagementDashboard" style="display: none; background: #f8f9fa; padding: 10px; border-radius: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+            <b style="font-size: 12px;">Trạng Thái (<span id="qpManageCount">0</span> HS)</b>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="updateQpStatus('started')">🚀 BẮT ĐẦU</button>
+              <button class="btn btn-danger" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="updateQpStatus('ended')">🛑 KẾT THÚC</button>
+              <button class="btn btn-danger" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="deleteQpExam()">🗑️ XÓA</button>
             </div>
           </div>
           
-          <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh:</p>
-          <div class="table-responsive" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px;">
+          <p style="font-size: 11px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh:</p>
+          <div class="table-responsive" style="max-height: 150px; overflow-y: auto; margin-bottom: 12px;">
             <table>
               <thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Thao Tác</th></tr></thead>
               <tbody id="qpManageStudentsBody"><tr><td colspan="4">Chưa có học sinh</td></tr></tbody>
             </table>
           </div>
 
-          <p style="font-size: 12px; font-weight: bold; color: #198754;">📊 Bảng Kết Quả:</p>
-          <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+          <p style="font-size: 11px; font-weight: bold; color: #198754;">📊 Kết Quả:</p>
+          <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
             <table>
               <thead><tr><th>Hạng</th><th>Họ Tên</th><th>Điểm</th><th>Thời Gian</th></tr></thead>
               <tbody id="qpManageResultsBody"><tr><td colspan="4">Chưa có kết quả</td></tr></tbody>
@@ -610,35 +726,34 @@
 
     </div>
 
-    <!-- ==================== MỤC TỐI CAO NHÀ PHÁT TRIỂN ==================== -->
+    <!-- ==================== TỐI CAO NHÀ PHÁT TRIỂN ==================== -->
     <div id="supremeView" class="view-section">
       <div class="card" style="border: 2px solid #ffc107;">
-        <h2 style="color: #d32f2f; margin-bottom: 15px;">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
-        <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Chào mừng bạn đến bảng điều khiển tối cao của hệ thống. Tại đây bạn có thể quản trị toàn bộ dữ liệu, phát thông báo toàn cục và đồng bộ phát nhạc.</p>
+        <h2 style="color: #d32f2f; margin-bottom: 12px; font-size: 16px;">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
         
-        <div class="section-title"><span>1. QUẢN LÝ TẤT CẢ ĐỀ THI & BÀI LUYỆN</span></div>
-        <div style="margin-bottom: 15px;">
-          <button class="btn" style="width: auto; background: #0d6efd;" onclick="loadAllSupremeExams()">🔄 Tải Lại Danh Sách Đề</button>
+        <div class="section-title"><span>1. QUẢN LÝ ĐỀ THI & BÀI LUYỆN</span></div>
+        <div style="margin-bottom: 12px;">
+          <button class="btn" style="width: auto; background: #0d6efd;" onclick="loadAllSupremeExams()">🔄 Tải Lại Danh Sách</button>
         </div>
         <div class="table-responsive">
           <table>
             <thead>
-              <tr><th>Mã Đề</th><th>Tên Đề / Bài Luyện</th><th>Loại</th><th>Thao Tác Quản Trị</th></tr>
+              <tr><th>Mã Đề</th><th>Tên</th><th>Loại</th><th>Thao Tác</th></tr>
             </thead>
             <tbody id="supremeExamsTableBody">
-              <tr><td colspan="4">Bấm "Tải Lại Danh Sách Đề" để xem.</td></tr>
+              <tr><td colspan="4">Bấm "Tải Lại" để xem.</td></tr>
             </tbody>
           </table>
         </div>
 
-        <div class="section-title" style="margin-top: 25px;"><span>2. PHÁT THÔNG BÁO TOÀN CẦU (BROADCAST)</span></div>
+        <div class="section-title" style="margin-top: 20px;"><span>2. PHÁT THÔNG BÁO TOÀN CẦU</span></div>
         <div class="form-grid-2">
           <div>
-            <label>Nội dung thông báo:</label>
-            <input type="text" id="supremeBroadcastText" placeholder="Nhập nội dung thông báo đẩy đến tất cả máy...">
+            <label>Nội dung:</label>
+            <input type="text" id="supremeBroadcastText" placeholder="Nhập nội dung...">
           </div>
           <div>
-            <label>Vị trí hiển thị:</label>
+            <label>Vị trí:</label>
             <select id="supremeBroadcastPosition">
               <option value="top">Trên cùng</option>
               <option value="middle">Giữa màn hình</option>
@@ -648,48 +763,48 @@
         </div>
         <div class="form-grid-2">
           <div>
-            <label>Màu nền Banner:</label>
-            <input type="color" id="supremeBgColor" value="#ff4d4f" style="width:100%; height:38px; padding:2px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+            <label>Màu nền:</label>
+            <input type="color" id="supremeBgColor" value="#ff4d4f" style="width:100%; height:36px; padding:2px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
           </div>
           <div>
             <label>Màu chữ:</label>
-            <input type="color" id="supremeTextColor" value="#ffffff" style="width:100%; height:38px; padding:2px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+            <input type="color" id="supremeTextColor" value="#ffffff" style="width:100%; height:36px; padding:2px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
           </div>
         </div>
         <div class="form-grid-2">
           <div>
-            <label>Thời gian hiển thị (giây):</label>
+            <label>Thời gian (giây):</label>
             <input type="number" id="supremeDurationSec" value="10" min="1" max="300">
           </div>
           <div>
-            <label>Độ đậm nhạt (Opacity từ 0.1 đến 1.0):</label>
+            <label>Opacity (0.1 - 1.0):</label>
             <input type="number" id="supremeOpacity" value="0.95" step="0.05" min="0.1" max="1.0">
           </div>
         </div>
-        <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
+        <button class="btn btn-success" style="margin-top: 8px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo</button>
 
-        <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN (CHUNK-BASED)</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Thêm file nhạc vào danh sách (hỗ trợ file lớn tới ~12MB, tự động chia nhỏ khi lưu trữ). Bấm "Phát" để tất cả mọi người cùng nghe:</p>
+        <div class="section-title" style="margin-top: 20px;"><span>3. HỆ THỐNG PHÁT NHẠC (CHUNK-BASED)</span></div>
+        <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Thêm file nhạc (tối đa 12MB), bấm Phát để mọi người cùng nghe:</p>
         
         <div style="margin-bottom: 10px;">
-          <label for="supremeAudioFileInput" class="btn btn-secondary" style="display: inline-block; width: auto; padding: 8px 16px; font-size: 13px; cursor: pointer; margin: 0;">➕ Thêm file nhạc vào danh sách</label>
+          <label for="supremeAudioFileInput" class="btn btn-secondary" style="display: inline-block; width: auto; padding: 8px 14px; font-size: 12px; cursor: pointer; margin: 0;">➕ Thêm file nhạc</label>
           <input type="file" id="supremeAudioFileInput" accept="audio/*" style="display: none;" onchange="uploadSupremeAudio(this)">
         </div>
 
         <div id="supremeAudioListContainer">
-          <p style="font-size: 13px; color: #888; font-style: italic;">Chưa có file nhạc nào trong danh sách.</p>
+          <p style="font-size: 12px; color: #888; font-style: italic;">Chưa có file nhạc nào.</p>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
           <button class="btn btn-danger" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
 
-        <div class="section-title" style="margin-top: 25px;"><span>4. QUẢN LÍ CHUNG TRẠNG THÁI (THÔNG BÁO & NHẠC)</span></div>
-        <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 13px;">
-          <p>📌 <b>Thông báo đang lưu trên Cloud:</b> <span id="currentCloudNotice" style="color: #1877f2; font-weight: bold;">Không có</span></p>
-          <p style="margin-top: 6px;">🎵 <b>Trạng thái nhạc nền:</b> <span id="currentAudioStatus" style="color: #198754; font-weight: bold;">Đang tắt</span></p>
-          <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="clearGlobalBroadcast()">🗑️ Xóa Thông Báo Hiện Tại</button>
+        <div class="section-title" style="margin-top: 20px;"><span>4. TRẠNG THÁI CHUNG</span></div>
+        <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; font-size: 12px;">
+          <p>📌 <b>Thông báo:</b> <span id="currentCloudNotice" style="color: #1877f2; font-weight: bold;">Không có</span></p>
+          <p style="margin-top: 6px;">🎵 <b>Nhạc nền:</b> <span id="currentAudioStatus" style="color: #198754; font-weight: bold;">Đang tắt</span></p>
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button class="btn btn-danger" style="width: auto; padding: 6px 10px; font-size: 11px;" onclick="clearGlobalBroadcast()">🗑️ Xóa Thông Báo</button>
           </div>
         </div>
 
@@ -698,112 +813,109 @@
 
   </div>
 
-  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH CỦA HỌC SINH -->
-  <div id="qpPracticingView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
+  <!-- ==================== GIAO DIỆN LÀM BÀI LUYỆN NHANH ==================== -->
+  <div id="qpPracticingView" class="view-section" style="max-width: 800px; margin: 12px auto; padding: 0 6px;">
     <div class="card">
-      <div id="qpCheatWarningBanner" class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 8px 12px; margin-bottom: 10px; font-size: 13px; display: none; justify-content: space-between; align-items: center;">
-        <span>🛡️ <b>Chống gian lận:</b> Rời khỏi màn hình/tab sẽ bị tính cảnh báo!</span>
-        <span id="qpCheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Cảnh báo: 0</span>
+      <div id="qpCheatWarningBanner" class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 6px 10px; margin-bottom: 8px; font-size: 12px; display: none; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+        <span>🛡️ <b>Chống gian lận:</b> Rời tab sẽ bị cảnh báo!</span>
+        <span id="qpCheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 11px;">Cảnh báo: 0</span>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
-        <h2 id="qpPlayTitle" style="color: #1877f2; font-size: 18px;">Bài Luyện Tập</h2>
-        <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f;">00:00</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+        <h2 id="qpPlayTitle" style="color: #1877f2; font-size: 15px;">Bài Luyện Tập</h2>
+        <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f; font-size: 14px;">00:00</span>
       </div>
 
-      <!-- Container chứa câu hỏi (Hỗ trợ V1 hoặc V2) -->
       <div id="qpPlayQuestionsContainer"></div>
 
-      <div id="qpActionFooter" style="margin-top: 15px; display: flex; justify-content: space-between; gap: 10px;">
-        <button id="qpPrevBtn" class="btn btn-secondary" style="display: none; width: auto;" onclick="prevQpQuestionV2()">⬅️ Câu Trước</button>
-        <button id="qpNextBtn" class="btn" style="display: none; width: auto; margin-left: auto;" onclick="nextQpQuestionV2()">Tiếp Tục ➡️</button>
-        <button id="qpSubmitBtn" class="btn btn-success" style="padding: 12px; flex: 1;" onclick="submitQpPractice(false)">📤 Nộp Bài Luyện Nhanh</button>
+      <div id="qpActionFooter" style="margin-top: 12px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+        <button id="qpPrevBtn" class="btn btn-secondary" style="display: none; width: auto;" onclick="prevQpQuestionV2()">⬅️ Trước</button>
+        <button id="qpNextBtn" class="btn" style="display: none; width: auto; margin-left: auto;" onclick="nextQpQuestionV2()">Tiếp ➡️</button>
+        <button id="qpSubmitBtn" class="btn btn-success" style="padding: 10px; flex: 1;" onclick="submitQpPractice(false)">📤 Nộp Bài</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU BẢO MẬT CHUNG -->
+  <!-- MODAL XÁC THỰC MẬT KHẨU -->
   <div class="modal-overlay" id="passwordModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>🔐 Xác Thực Bảo Mật Giáo Viên</h3>
+        <h3>🔐 Xác Thực Bảo Mật</h3>
         <button class="close-btn" onclick="closePasswordModal()">✖</button>
       </div>
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng nhập mật khẩu bảo mật (********):</p>
+      <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Nhập mật khẩu bảo mật:</p>
       <input type="password" id="teacherPasswordInput" placeholder="Nhập mật khẩu...">
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
         <button class="btn btn-secondary" style="width: 50%;" onclick="closePasswordModal()">Hủy</button>
         <button class="btn btn-success" style="width: 50%;" onclick="confirmPasswordAction()">Xác Nhận</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU VUA (TỐI CAO) -->
+  <!-- MODAL MẬT KHẨU VUA -->
   <div class="modal-overlay" id="supremePasswordModal">
-    <div class="modal-box" style="max-width: 400px; text-align: center;">
+    <div class="modal-box" style="max-width: 360px; text-align: center;">
       <div class="modal-header">
         <h3>👑 Xác Thực Mật Khẩu Vua</h3>
         <button class="close-btn" onclick="document.getElementById('supremePasswordModal').style.display='none'">✖</button>
       </div>
-      <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Khu vực tối cao dành riêng cho nhà phát triển:</p>
-      <input type="password" id="supremePassInput" placeholder="Nhập mật khẩu vua..." style="margin-bottom: 15px;">
-      <button class="btn btn-warning" onclick="verifySupremePassword()">Xác Nhận Truy Cập</button>
+      <p style="font-size: 12px; color: #555; margin-bottom: 10px;">Khu vực tối cao:</p>
+      <input type="password" id="supremePassInput" placeholder="Nhập mật khẩu vua..." style="margin-bottom: 12px;">
+      <button class="btn btn-warning" onclick="verifySupremePassword()">Xác Nhận</button>
     </div>
   </div>
 
-  <!-- MODAL XEM CHI TIẾT ĐỀ THI / ĐÁP ÁN (DÀNH CHO TỐI CAO) -->
+  <!-- MODAL CHI TIẾT ĐỀ THI -->
   <div class="modal-overlay" id="supremeDetailModal">
     <div class="modal-box" style="max-width: 700px;">
       <div class="modal-header">
         <h3 id="supremeModalTitle">Chi Tiết Đề Thi</h3>
         <button class="close-btn" onclick="document.getElementById('supremeDetailModal').style.display='none'">✖</button>
       </div>
-      <div id="supremeModalContent" style="max-height: 70vh; overflow-y: auto; font-size: 13px; line-height: 1.6;"></div>
+      <div id="supremeModalContent" style="max-height: 65vh; overflow-y: auto; font-size: 12px; line-height: 1.5;"></div>
     </div>
   </div>
 
-  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI CHÍNH THỨC -->
+  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI -->
   <div class="modal-overlay" id="advancedModal">
-    <div class="modal-box" style="max-width: 750px;">
+    <div class="modal-box" style="max-width: 700px;">
       <div class="modal-header">
-        <h3>⚙️ Quản Lý Đề Thi Chính Thức & Phòng Thi Live</h3>
+        <h3>⚙️ Quản Lý Đề Thi & Phòng Live</h3>
         <button class="close-btn" onclick="closeAdvancedModal()">✖</button>
       </div>
       
-      <div style="margin-bottom: 15px;">
+      <div style="margin-bottom: 12px;">
         <label>Mã Đề Kiểm Tra:</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0; flex: 1;">
-        </div>
+        <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0;">
       </div>
 
-      <div style="margin-bottom: 15px;">
-        <label>Mật Khẩu Bảo Mật Quản Lý (Ẩn):</label>
-        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (********)..." style="margin: 0;">
+      <div style="margin-bottom: 12px;">
+        <label>Mật Khẩu Bảo Mật:</label>
+        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu (********)..." style="margin: 0;">
       </div>
 
-      <div style="margin-bottom: 15px;">
+      <div style="margin-bottom: 12px;">
         <button class="btn" style="background: #198754;" onclick="connectLiveRoomDashboard()">📡 Kết Nối Quản Lý Phòng Live</button>
       </div>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF Gốc</button>
-        <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+        <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF</button>
+        <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề</button>
       </div>
 
-      <div id="liveRoomDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
-          <b>🛡️ Trạng Thái Phòng Live (<span id="liveRoomCount">0</span> học sinh)</b>
-          <div style="display: flex; gap: 5px;">
-            <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateLiveRoomStatus('started')">🚀 BẮT ĐẦU</button>
-            <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateLiveRoomStatus('ended')">🛑 KẾT THÚC</button>
+      <div id="liveRoomDashboard" style="display: none; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #ddd; margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 4px;">
+          <b style="font-size: 12px;">🛡️ Phòng Live (<span id="liveRoomCount">0</span> HS)</b>
+          <div style="display: flex; gap: 4px;">
+            <button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="updateLiveRoomStatus('started')">🚀 BẮT ĐẦU</button>
+            <button class="btn btn-danger" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="updateLiveRoomStatus('ended')">🛑 KẾT THÚC</button>
           </div>
         </div>
         
-        <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh (Theo Dõi Cảnh Báo):</p>
+        <p style="font-size: 11px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh:</p>
         <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
           <table>
-            <thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Số Lần Cảnh Cáo</th><th>Thời Gian Rời Tab</th><th>Thao Tác</th></tr></thead>
+            <thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Cảnh Cáo</th><th>TG Rời Tab</th><th>Thao Tác</th></tr></thead>
             <tbody id="liveRoomStudentsBody"><tr><td colspan="6">Chưa có học sinh</td></tr></tbody>
           </table>
         </div>
@@ -812,7 +924,7 @@
     </div>
   </div>
 
-  <!-- FIREBASE SDK v9 - CHỈ GIỮ DATABASE, BỎ STORAGE -->
+  <!-- FIREBASE SDK v9 - CHỈ DATABASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
@@ -866,21 +978,26 @@
     let cheatWarnings = 0;
     let totalTabLeaveTime = 0; 
     let tabLeaveStartTime = null;
-    const CHEAT_TIME_THRESHOLD = 7000; 
+    
+    // Biến động: có thể thay đổi từ cài đặt đề thi
+    let currentCheatThreshold = 7000; // mặc định 7 giây
+    let currentAntiCheatEnabled = true;
+    let currentCheatLimitType = 'unlimited'; // 'unlimited' hoặc 'limited'
+    let currentMaxWarnings = 5;
+    let currentTimerEnabled = true;
 
     // --- BIẾN TOÀN CỤC CHO HỆ THỐNG ÂM THANH CHUNK ---
-    const AUDIO_CHUNK_SIZE = 2 * 1024 * 1024; // 2MB per chunk
-    const AUDIO_MAX_SIZE = 12 * 1024 * 1024;  // 12MB max
-    let audioBlobCache = {};                  // { audioKey: Blob }
-    let currentLoadedAudioKey = null;         // để tránh tải lại liên tục
+    const AUDIO_CHUNK_SIZE = 2 * 1024 * 1024;
+    const AUDIO_MAX_SIZE = 12 * 1024 * 1024;
+    let audioBlobCache = {};
+    let currentLoadedAudioKey = null;
     let supremeAudioListListener = null;
+    let pendingGlobalAudioPlay = false;
 
-    // Lắng nghe dữ liệu toàn cục (Thông báo đẩy & Phát nhạc đồng bộ từ Firebase)
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (!window.db) return;
 
-        // Lắng nghe thông báo toàn cục
         window.onValue(window.ref(window.db, 'system/broadcast'), (snapshot) => {
           let data = snapshot.val();
           const banner = document.getElementById('globalBroadcastBanner');
@@ -891,22 +1008,15 @@
             banner.style.backgroundColor = data.bgColor || '#ff4d4f';
             banner.style.color = data.textColor || '#ffffff';
             banner.style.opacity = data.opacity || 0.95;
-
-            // Xử lý vị trí
             banner.classList.remove('pos-top', 'pos-middle', 'pos-bottom');
             let pos = data.position || 'top';
             if (pos === 'middle') banner.classList.add('pos-middle');
             else if (pos === 'bottom') banner.classList.add('pos-bottom');
             else banner.classList.add('pos-top');
-
             banner.style.display = 'block';
-
             if (noticeSpan) noticeSpan.innerText = data.text;
-
             if (data.durationSec) {
-              setTimeout(() => {
-                banner.style.display = 'none';
-              }, data.durationSec * 1000);
+              setTimeout(() => { banner.style.display = 'none'; }, data.durationSec * 1000);
             }
           } else {
             banner.style.display = 'none';
@@ -914,7 +1024,6 @@
           }
         });
 
-        // Lắng nghe trạng thái phát nhạc đồng bộ (CHUNK-BASED)
         window.onValue(window.ref(window.db, 'system/audio'), async (snapshot) => {
           let data = snapshot.val();
           const audioPlayer = document.getElementById('globalAudioPlayer');
@@ -929,14 +1038,10 @@
             return;
           }
 
-          // Nếu audioKey thay đổi, tải lại blob
           if (currentLoadedAudioKey !== data.audioKey) {
             if (audioStatusSpan) audioStatusSpan.innerText = 'Đang tải nhạc... ⏳';
             let blob = await getAudioBlobFromChunks(data.audioKey);
-            if (!blob) {
-              if (audioStatusSpan) audioStatusSpan.innerText = 'Lỗi tải nhạc ❌';
-              return;
-            }
+            if (!blob) { if (audioStatusSpan) audioStatusSpan.innerText = 'Lỗi tải nhạc ❌'; return; }
             audioBlobCache[data.audioKey] = blob;
             let url = URL.createObjectURL(blob);
             audioPlayer.src = url;
@@ -948,28 +1053,22 @@
       }, 1500);
     });
 
-    // Hàm tải blob từ các chunk
     async function getAudioBlobFromChunks(audioKey) {
       try {
         let chunkSnap = await window.dbGet(window.dbChild(window.dbRef, `system/audio_chunks/${audioKey}`));
         if (!chunkSnap.exists()) return null;
         let chunksObj = chunkSnap.val();
         let chunkKeys = Object.keys(chunksObj).sort((a, b) => parseInt(a) - parseInt(b));
-        let totalChunks = chunkKeys.length;
         let blobs = [];
-        for (let i = 0; i < totalChunks; i++) {
+        for (let i = 0; i < chunkKeys.length; i++) {
           let b64 = chunksObj[chunkKeys[i]];
           let blob = base64ToBlob(b64);
           if (blob) blobs.push(blob);
         }
         return new Blob(blobs, { type: 'audio/mpeg' });
-      } catch (err) {
-        console.error('Lỗi tải chunk:', err);
-        return null;
-      }
+      } catch (err) { console.error('Lỗi tải chunk:', err); return null; }
     }
 
-    // Chuyển base64 thành Blob
     function base64ToBlob(base64Data) {
       try {
         let parts = base64Data.split(',');
@@ -977,56 +1076,41 @@
         let bstr = atob(parts[1]);
         let n = bstr.length;
         let u8arr = new Uint8Array(n);
-        for (let i = 0; i < n; i++) {
-          u8arr[i] = bstr.charCodeAt(i);
-        }
+        for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
         return new Blob([u8arr], { type: mime });
-      } catch (e) {
-        console.error('base64ToBlob error', e);
-        return null;
-      }
+      } catch (e) { console.error('base64ToBlob error', e); return null; }
     }
-
-    // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY BLOCKED) ---
-    let pendingGlobalAudioPlay = false;
 
     function tryPlayGlobalAudio() {
       const audioPlayer = document.getElementById('globalAudioPlayer');
       const audioStatusSpan = document.getElementById('currentAudioStatus');
       if (!audioPlayer || !audioPlayer.src) return;
-
       const playPromise = audioPlayer.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
           pendingGlobalAudioPlay = false;
-          if (audioStatusSpan) audioStatusSpan.innerText = 'Đang phát nhạc trực tuyến 🎵';
+          if (audioStatusSpan) audioStatusSpan.innerText = 'Đang phát nhạc 🎵';
         }).catch(() => {
           pendingGlobalAudioPlay = true;
-          if (audioStatusSpan) audioStatusSpan.innerText = 'Nhạc đang chờ bạn chạm/bấm vào trang để phát 🔇';
+          if (audioStatusSpan) audioStatusSpan.innerText = 'Nhạc đang chờ bạn chạm/bấm để phát 🔇';
         });
       }
     }
 
     ['click', 'touchstart', 'keydown'].forEach(evt => {
-      document.addEventListener(evt, () => {
-        if (pendingGlobalAudioPlay) tryPlayGlobalAudio();
-      }, { passive: true });
+      document.addEventListener(evt, () => { if (pendingGlobalAudioPlay) tryPlayGlobalAudio(); }, { passive: true });
     });
 
-    // --- HÀM HIỂN THỊ TOAST THÔNG BÁO NÂNG TẦM TRẢI NGHIỆM ---
     function showToast(message, isError = false) {
       const toast = document.getElementById('systemToast');
       toast.innerText = message;
       toast.className = isError ? 'error show' : 'show';
       toast.style.display = 'block';
-      
       setTimeout(() => {
         toast.className = isError ? 'error' : '';
         toast.style.opacity = '0';
-        setTimeout(() => {
-          toast.style.display = 'none';
-        }, 400);
-      }, 3500);
+        setTimeout(() => { toast.style.display = 'none'; }, 400);
+      }, 3000);
     }
 
     function switchView(viewId, btn = null) {
@@ -1038,7 +1122,7 @@
       }
     }
 
-    function checkSupremeAccess(btn) {
+    function checkSupremeAccess() {
       document.getElementById('supremePassInput').value = '';
       document.getElementById('supremePasswordModal').style.display = 'flex';
     }
@@ -1051,105 +1135,59 @@
         switchView('supremeView');
         loadAllSupremeExams();
         loadSupremeAudioList();
-      } else {
-        showToast('❌ Sai mật khẩu vua!', true);
-      }
+      } else { showToast('❌ Sai mật khẩu vua!', true); }
     }
 
-    // --- CÁC CHỨC NĂNG DÀNH CHO TỐI CAO NHÀ PHÁT TRIỂN ---
+    // ================== TỐI CAO ==================
     async function loadAllSupremeExams() {
       let tbody = document.getElementById('supremeExamsTableBody');
-      tbody.innerHTML = '<tr><td colspan="4">⏳ Đang tải toàn bộ dữ liệu từ Cloud...</td></tr>';
-
+      tbody.innerHTML = '<tr><td colspan="4">⏳ Đang tải...</td></tr>';
       let examsSnap = await window.dbGet(window.dbChild(window.dbRef, 'exams'));
       let qpSnap = await window.dbGet(window.dbChild(window.dbRef, 'quick_practices'));
-
       tbody.innerHTML = '';
       let count = 0;
-
       if (examsSnap.exists()) {
         let exams = examsSnap.val();
         Object.keys(exams).forEach(code => {
-          let e = exams[code];
-          count++;
-          tbody.innerHTML += `
-            <tr>
-              <td><b>${code}</b></td>
-              <td>${e.title}</td>
-              <td><span style="background:#e7f3ff; color:#1877f2; padding:2px 6px; border-radius:4px; font-weight:bold;">Chính thức</span></td>
-              <td>
-                <div style="display:flex; gap:6px; justify-content:center;">
-                  <button class="btn btn-secondary" style="padding:2px 8px; font-size:11px; width:auto;" onclick="supremeViewDetail('exam', '${code}')">👁️ Xem</button>
-                  <button class="btn btn-danger" style="padding:2px 8px; font-size:11px; width:auto;" onclick="supremeDeleteData('exams', '${code}')">🗑️ Xóa</button>
-                </div>
-              </td>
-            </tr>
-          `;
+          let e = exams[code]; count++;
+          tbody.innerHTML += `<tr><td><b>${code}</b></td><td>${e.title}</td><td><span style="background:#e7f3ff; color:#1877f2; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:11px;">Chính thức</span></td><td><div style="display:flex; gap:4px; justify-content:center;"><button class="btn btn-secondary" style="padding:2px 6px; font-size:10px; width:auto;" onclick="supremeViewDetail('exam', '${code}')">👁️</button><button class="btn btn-danger" style="padding:2px 6px; font-size:10px; width:auto;" onclick="supremeDeleteData('exams', '${code}')">🗑️</button></div></td></tr>`;
         });
       }
-
       if (qpSnap.exists()) {
         let qps = qpSnap.val();
         Object.keys(qps).forEach(code => {
-          let q = qps[code];
-          count++;
-          tbody.innerHTML += `
-            <tr>
-              <td><b>${code}</b></td>
-              <td>${q.title}</td>
-              <td><span style="background:#fff3cd; color:#856404; padding:2px 6px; border-radius:4px; font-weight:bold;">Bài Luyện Nhanh</span></td>
-              <td>
-                <div style="display:flex; gap:6px; justify-content:center;">
-                  <button class="btn btn-secondary" style="padding:2px 8px; font-size:11px; width:auto;" onclick="supremeViewDetail('qp', '${code}')">👁️ Xem</button>
-                  <button class="btn btn-danger" style="padding:2px 8px; font-size:11px; width:auto;" onclick="supremeDeleteData('quick_practices', '${code}')">🗑️ Xóa</button>
-                </div>
-              </td>
-            </tr>
-          `;
+          let q = qps[code]; count++;
+          tbody.innerHTML += `<tr><td><b>${code}</b></td><td>${q.title}</td><td><span style="background:#fff3cd; color:#856404; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:11px;">Luyện nhanh</span></td><td><div style="display:flex; gap:4px; justify-content:center;"><button class="btn btn-secondary" style="padding:2px 6px; font-size:10px; width:auto;" onclick="supremeViewDetail('qp', '${code}')">👁️</button><button class="btn btn-danger" style="padding:2px 6px; font-size:10px; width:auto;" onclick="supremeDeleteData('quick_practices', '${code}')">🗑️</button></div></td></tr>`;
         });
       }
-
-      if (count === 0) {
-        tbody.innerHTML = '<tr><td colspan="4">Không có đề thi hay bài luyện nào trên hệ thống.</td></tr>';
-      }
+      if (count === 0) tbody.innerHTML = '<tr><td colspan="4">Không có dữ liệu.</td></tr>';
     }
 
     async function supremeViewDetail(type, code) {
       let path = type === 'exam' ? `exams/${code}` : `quick_practices/${code}`;
       let snap = await window.dbGet(window.dbChild(window.dbRef, path));
-      if (!snap.exists()) { showToast('Không tìm thấy dữ liệu!', true); return; }
+      if (!snap.exists()) { showToast('Không tìm thấy!', true); return; }
       let data = snap.val();
-
-      document.getElementById('supremeModalTitle').innerText = `Chi Tiết [${code}] - ${data.title}`;
+      document.getElementById('supremeModalTitle').innerText = `[${code}] - ${data.title}`;
       let contentDiv = document.getElementById('supremeModalContent');
-      
-      let html = `<p><b>Mã:</b> ${data.code} | <b>Tên:</b> ${data.title}</p><hr style="margin:10px 0;">`;
-      html += `<b>Danh sách câu hỏi & Đáp án chuẩn:</b><br>`;
-
+      let html = `<p><b>Mã:</b> ${data.code} | <b>Tên:</b> ${data.title}</p><hr style="margin:8px 0;">`;
+      html += `<b>Danh sách câu hỏi:</b><br>`;
       if (type === 'exam') {
         data.questions.forEach(q => {
-          html += `<div style="background:#f8f9fa; padding:8px; border-radius:6px; margin-top:8px;">
-            <b>Câu ${q.id} (${q.type}):</b> Đáp án chuẩn: <b style="color:green;">${q.correctAnswer}</b><br>
-            <small>Điểm: ${q.score} | Giải thích: ${q.explanation || 'Không có'}</small>
-          </div>`;
+          html += `<div style="background:#f8f9fa; padding:6px; border-radius:6px; margin-top:6px;"><b>Câu ${q.id} (${q.type}):</b> ĐA: <b style="color:green;">${q.correctAnswer}</b><br><small>Điểm: ${q.score} | Giải thích: ${q.explanation || 'Không'}</small></div>`;
         });
       } else {
         data.questions.forEach(q => {
           let opts = q.options.map(o => `${o.label}. ${o.text}`).join(' | ');
-          html += `<div style="background:#f8f9fa; padding:8px; border-radius:6px; margin-top:8px;">
-            <b>Câu ${q.id}:</b> ${q.question}<br>
-            - Các đáp án: ${opts}<br>
-            - Đáp án đúng: <b style="color:green;">${q.correct}</b>
-          </div>`;
+          html += `<div style="background:#f8f9fa; padding:6px; border-radius:6px; margin-top:6px;"><b>Câu ${q.id}:</b> ${q.question}<br>- Đáp án: ${opts}<br>- Đúng: <b style="color:green;">${q.correct}</b></div>`;
         });
       }
-
       contentDiv.innerHTML = html;
       document.getElementById('supremeDetailModal').style.display = 'flex';
     }
 
     async function supremeDeleteData(folder, code) {
-      if (confirm(`Bạn có chắc muốn xóa vĩnh viễn [${code}] khỏi hệ thống?`)) {
+      if (confirm(`Xóa vĩnh viễn [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `${folder}/${code}`));
         if (folder === 'exams') {
           await window.dbRemove(window.ref(window.db, `leaderboard/${code}`));
@@ -1158,7 +1196,7 @@
           await window.dbRemove(window.ref(window.db, `qp_rooms/${code}`));
           await window.dbRemove(window.ref(window.db, `qp_leaderboard/${code}`));
         }
-        showToast('🗑️ Đã xóa thành công!');
+        showToast('🗑️ Đã xóa!');
         loadAllSupremeExams();
       }
     }
@@ -1170,21 +1208,25 @@
       let textColor = document.getElementById('supremeTextColor').value;
       let durationSec = parseInt(document.getElementById('supremeDurationSec').value) || 10;
       let opacity = parseFloat(document.getElementById('supremeOpacity').value) || 0.95;
-
-      if (!text) { showToast('Vui lòng nhập nội dung thông báo!', true); return; }
-
-      let broadcastObj = { text, position, bgColor, textColor, durationSec, opacity, timestamp: Date.now() };
-      await window.dbSet(window.ref(window.db, 'system/broadcast'), broadcastObj);
-      showToast('📢 Đã phát thông báo toàn hệ thống thành công!');
+      if (!text) { showToast('Nhập nội dung!', true); return; }
+      await window.dbSet(window.ref(window.db, 'system/broadcast'), { text, position, bgColor, textColor, durationSec, opacity, timestamp: Date.now() });
+      showToast('📢 Đã phát thông báo!');
       document.getElementById('supremeBroadcastText').value = '';
     }
 
     async function clearGlobalBroadcast() {
       await window.dbRemove(window.ref(window.db, 'system/broadcast'));
-      showToast('🗑️ Đã xóa thông báo toàn cục!');
+      showToast('🗑️ Đã xóa thông báo!');
     }
 
-    // ================== HỆ THỐNG ÂM THANH CHUNK-BASED ==================
+    const fileToBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
+    // ================== ÂM THANH ==================
     async function loadSupremeAudioList() {
       if (supremeAudioListListener) supremeAudioListListener();
       let listRef = window.ref(window.db, 'system/audio_list');
@@ -1197,21 +1239,13 @@
       let container = document.getElementById('supremeAudioListContainer');
       let keys = Object.keys(audioList);
       if (keys.length === 0) {
-        container.innerHTML = '<p style="font-size: 13px; color: #888; font-style: italic;">Chưa có file nhạc nào trong danh sách.</p>';
+        container.innerHTML = '<p style="font-size: 12px; color: #888; font-style: italic;">Chưa có file nhạc nào.</p>';
         return;
       }
       let html = '';
       keys.forEach(key => {
         let item = audioList[key];
-        html += `
-          <div class="audio-list-item">
-            <span class="audio-name">🎵 ${item.name || key}</span>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="playSupremeAudio('${key}')">▶ Phát</button>
-              <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="deleteSupremeAudio('${key}')">🗑️ Xóa</button>
-            </div>
-          </div>
-        `;
+        html += `<div class="audio-list-item"><span class="audio-name">🎵 ${item.name || key}</span><div style="display: flex; gap: 4px; flex-shrink: 0;"><button class="btn btn-success" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="playSupremeAudio('${key}')">▶</button><button class="btn btn-danger" style="width: auto; padding: 4px 8px; font-size: 11px;" onclick="deleteSupremeAudio('${key}')">🗑️</button></div></div>`;
       });
       container.innerHTML = html;
     }
@@ -1219,130 +1253,94 @@
     async function uploadSupremeAudio(input) {
       if (!input.files || input.files.length === 0) return;
       let file = input.files[0];
-
       if (file.size > AUDIO_MAX_SIZE) {
-        showToast(`File quá lớn (${(file.size/1024/1024).toFixed(1)}MB). Tối đa ${AUDIO_MAX_SIZE/1024/1024}MB.`, true);
-        input.value = '';
-        return;
+        showToast(`File quá lớn (${(file.size/1024/1024).toFixed(1)}MB). Tối đa 12MB.`, true);
+        input.value = ''; return;
       }
-
-      showToast('⏳ Đang xử lý file nhạc...');
-
+      showToast('⏳ Đang xử lý...');
       try {
-        // Đọc file thành base64
         let base64Full = await fileToBase64(file);
-        // base64Full có dạng "data:audio/mpeg;base64,...."
-        // Tách bỏ phần prefix
         let parts = base64Full.split(',');
         let mime = parts[0].match(/:(.*?);/)[1];
         let b64Data = parts[1];
-
-        // Chia nhỏ chuỗi base64 thành các chunk 2MB (thực tế là 2 * 1024 * 1024 ký tự base64)
         let chunkCount = Math.ceil(b64Data.length / AUDIO_CHUNK_SIZE);
         let audioKey = 'audio_' + Date.now();
-
-        showToast(`⏳ Đang lưu ${chunkCount} chunk lên Cloud...`);
-
+        showToast(`⏳ Lưu ${chunkCount} chunk...`);
         for (let i = 0; i < chunkCount; i++) {
           let chunkData = b64Data.slice(i * AUDIO_CHUNK_SIZE, (i + 1) * AUDIO_CHUNK_SIZE);
-          // Chunk cần lưu dạng data URI để tái tạo Blob
           let chunkUri = `data:${mime};base64,${chunkData}`;
           await window.dbSet(window.ref(window.db, `system/audio_chunks/${audioKey}/${i}`), chunkUri);
         }
-
-        // Lưu thông tin file vào danh sách
-        await window.dbSet(window.ref(window.db, `system/audio_list/${audioKey}`), {
-          name: file.name,
-          mime: mime,
-          size: file.size,
-          chunks: chunkCount,
-          timestamp: Date.now()
-        });
-
-        showToast(`✅ Đã thêm "${file.name}" vào danh sách nhạc!`);
+        await window.dbSet(window.ref(window.db, `system/audio_list/${audioKey}`), { name: file.name, mime, size: file.size, chunks: chunkCount, timestamp: Date.now() });
+        showToast(`✅ Đã thêm "${file.name}"!`);
         input.value = '';
       } catch (err) {
-        console.error('Lỗi upload nhạc:', err);
-        showToast('❌ Lỗi khi thêm nhạc: ' + (err.message || err), true);
+        console.error(err); showToast('❌ Lỗi: ' + (err.message || err), true);
         input.value = '';
       }
     }
 
     async function playSupremeAudio(audioKey) {
       try {
-        // Lấy thông tin file
         let listSnap = await window.dbGet(window.dbChild(window.dbRef, `system/audio_list/${audioKey}`));
-        if (!listSnap.exists()) { showToast('Không tìm thấy file nhạc!', true); return; }
-
-        showToast('⏳ Đang tải và phát nhạc...');
-
-        // Cập nhật trạng thái hệ thống để tất cả mọi người nghe
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioKey: audioKey,
-          isPlaying: true,
-          timestamp: Date.now()
-        });
-        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
-      } catch (err) {
-        console.error('Lỗi phát nhạc:', err);
-        showToast('❌ Lỗi khi phát nhạc: ' + (err.message || err), true);
-      }
+        if (!listSnap.exists()) { showToast('Không tìm thấy file!', true); return; }
+        showToast('⏳ Đang tải và phát...');
+        await window.dbSet(window.ref(window.db, 'system/audio'), { audioKey, isPlaying: true, timestamp: Date.now() });
+        showToast('🎵 Đã phát nhạc chung!');
+      } catch (err) { showToast('❌ Lỗi: ' + (err.message || err), true); }
     }
 
     async function deleteSupremeAudio(audioKey) {
-      if (!confirm('Bạn có chắc muốn xóa file nhạc này khỏi danh sách?')) return;
-
-      // Dừng nhạc nếu đang phát file này
+      if (!confirm('Xóa file nhạc này?')) return;
       let audioSnap = await window.dbGet(window.dbChild(window.dbRef, 'system/audio'));
       let audioData = audioSnap.val() || {};
       if (audioData.audioKey === audioKey && audioData.isPlaying) {
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioKey: '',
-          isPlaying: false,
-          timestamp: Date.now()
-        });
+        await window.dbSet(window.ref(window.db, 'system/audio'), { audioKey: '', isPlaying: false, timestamp: Date.now() });
       }
-
       await window.dbRemove(window.ref(window.db, `system/audio_list/${audioKey}`));
       await window.dbRemove(window.ref(window.db, `system/audio_chunks/${audioKey}`));
-      showToast('🗑️ Đã xóa file nhạc khỏi danh sách!');
+      showToast('🗑️ Đã xóa!');
     }
 
     async function stopGlobalAudio() {
       try {
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioKey: '',
-          isPlaying: false,
-          timestamp: Date.now()
-        });
-        showToast('🛑 Đã dừng phát nhạc.');
-      } catch (err) {
-        console.error('Lỗi khi dừng nhạc:', err);
-        showToast('❌ Lỗi khi dừng nhạc: ' + (err && err.message ? err.message : err), true);
-      }
+        await window.dbSet(window.ref(window.db, 'system/audio'), { audioKey: '', isPlaying: false, timestamp: Date.now() });
+        showToast('🛑 Đã dừng nhạc.');
+      } catch (err) { showToast('❌ Lỗi: ' + (err.message || err), true); }
     }
 
-    // --- CÁC HÀM CÒN LẠI GIỮ NGUYÊN ---
-
-    const fileToBase64 = file => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-
+    // ================== GIÁO VIÊN ==================
     function switchSubModule(moduleId) {
       document.querySelectorAll('.sub-module-box').forEach(el => el.style.display = 'none');
       document.getElementById(moduleId).style.display = 'block';
-      if (moduleId === 'quickPracticeCreate' && document.getElementById('qpQuestionsContainer').children.length === 0) {
-        addQpQuestionItem();
-      }
+      if (moduleId === 'quickPracticeCreate' && document.getElementById('qpQuestionsContainer').children.length === 0) addQpQuestionItem();
     }
 
     function toggleExamCreationType() {
       const type = document.getElementById('examType').value;
       document.getElementById('pdfUploadSection').style.display = type === 'pdf' ? 'block' : 'none';
       document.getElementById('imageUploadSection').style.display = type === 'image' ? 'block' : 'none';
+    }
+
+    // ===== NÂNG CAO CHO TẠO ĐỀ =====
+    function toggleAdvExamOptions() {
+      const enabled = document.getElementById('advExamOptionsToggle').checked;
+      document.getElementById('advExamOptionsPanel').style.display = enabled ? 'block' : 'none';
+    }
+
+    function toggleAdvTimerInput() {
+      const enabled = document.getElementById('advEnableTimer').checked;
+      document.getElementById('advTimerInputBox').style.display = enabled ? 'block' : 'none';
+    }
+
+    function toggleAdvAntiCheatInput() {
+      const enabled = document.getElementById('advEnableAntiCheat').checked;
+      document.getElementById('advAntiCheatBox').style.display = enabled ? 'block' : 'none';
+    }
+
+    function toggleAdvCheatLimitInput() {
+      const type = document.getElementById('advCheatLimitType').value;
+      document.getElementById('advCheatLimitInputBox').style.display = (type === 'limited') ? 'block' : 'none';
     }
 
     function toggleLiveRoomConfig() {
@@ -1375,35 +1373,25 @@
       const passBox = document.getElementById('extraPassBox');
       const passLabel = document.getElementById('extraPassLabel');
       const codeLabel = document.getElementById('lblCodeText');
-
       if (mode === 'practice' || mode === 'live') {
         passBox.style.display = 'block';
-        passLabel.innerText = mode === 'practice' ? 'Mật Khẩu Bài Luyện (nếu có):' : 'Mật Khẩu Phòng Thi:';
-        codeLabel.innerText = mode === 'practice' ? 'Mã Bài Luyện Nhanh:' : 'Mã Bài Kiểm Tra:';
+        passLabel.innerText = mode === 'practice' ? 'Mật Khẩu (nếu có):' : 'Mật Khẩu Phòng:';
+        codeLabel.innerText = mode === 'practice' ? 'Mã Bài Luyện:' : 'Mã Bài KT:';
       } else {
         passBox.style.display = 'none';
-        codeLabel.innerText = 'Mã Bài Kiểm Tra:';
+        codeLabel.innerText = 'Mã Bài KT:';
       }
     }
 
     function showLoadingSequence(callback) {
       const overlay = document.getElementById('loadingOverlay');
       overlay.style.display = 'flex';
-
       setTimeout(() => {
         overlay.style.display = 'none';
         if (callback) callback();
-        
         const toast = document.getElementById('loadingCompleteToast');
-        toast.style.display = 'block';
-        toast.style.opacity = '1';
-        
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          setTimeout(() => {
-            toast.style.display = 'none';
-          }, 5000); 
-        }, 300);
+        toast.style.display = 'block'; toast.style.opacity = '1';
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => { toast.style.display = 'none'; }, 5000); }, 300);
       }, 1000);
     }
 
@@ -1414,74 +1402,20 @@
       let div = document.createElement('div');
       div.className = 'q-build-item';
       div.dataset.type = type;
-
       let defaultScoreVal = type === 'mc' ? 0.25 : (type === 'tf' ? 1.0 : 0.5);
-
-      let innerHtml = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-          <strong>Câu ${qIndex}</strong>
-          <div style="display:flex; gap:5px;">
-            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
-            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove();">Xóa</button>
-          </div>
-        </div>
-      `;
-
+      let innerHtml = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><strong style="font-size:12px;">Câu ${qIndex}</strong><div style="display:flex; gap:4px;"><button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 10px;" onclick="toggleAdvancedQSettings(this)">⚙️</button><button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 10px;" onclick="this.parentElement.parentElement.parentElement.remove();">Xóa</button></div></div>`;
       if (type === 'mc') {
-        innerHtml += `
-          <div style="display:flex; gap:10px; align-items:center;">
-            <label style="margin:0;">Đáp án đúng:</label>
-            <select class="correct-ans" style="width:100px; margin:0;">
-              <option value="A" ${defaultAns==='A'?'selected':''}>A</option>
-              <option value="B" ${defaultAns==='B'?'selected':''}>B</option>
-              <option value="C" ${defaultAns==='C'?'selected':''}>C</option>
-              <option value="D" ${defaultAns==='D'?'selected':''}>D</option>
-            </select>
-          </div>
-        `;
+        innerHtml += `<div style="display:flex; gap:8px; align-items:center;"><label style="margin:0; font-size:12px;">ĐA đúng:</label><select class="correct-ans" style="width:80px; margin:0; padding:6px;"><option value="A" ${defaultAns==='A'?'selected':''}>A</option><option value="B" ${defaultAns==='B'?'selected':''}>B</option><option value="C" ${defaultAns==='C'?'selected':''}>C</option><option value="D" ${defaultAns==='D'?'selected':''}>D</option></select></div>`;
       } else if (type === 'tf') {
         let branchCount = customBranches ? customBranches.length : 4;
-        innerHtml += `
-          <div>
-            <label style="font-size:12px; margin-bottom:2px;">Số lượng nhánh:</label>
-            <input type="number" class="tf-branch-count" value="${branchCount}" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfV2Inputs(this)">
-            <div class="tf-branches-builder"></div>
-          </div>
-        `;
+        innerHtml += `<div><label style="font-size:11px; margin-bottom:2px;">Số nhánh:</label><input type="number" class="tf-branch-count" value="${branchCount}" min="1" max="10" style="padding:4px; margin-bottom:6px;" onchange="updateTfV2Inputs(this)"><div class="tf-branches-builder"></div></div>`;
       } else {
-        innerHtml += `
-          <div>
-            <label>Đáp án đúng (Trả lời ngắn):</label>
-            <input type="text" class="correct-ans" value="${defaultAns}" placeholder="Nhập đáp án chính xác...">
-          </div>
-        `;
+        innerHtml += `<div><label style="font-size:12px;">Đáp án đúng:</label><input type="text" class="correct-ans" value="${defaultAns}" placeholder="Nhập đáp án..." style="padding:6px;"></div>`;
       }
-
-      innerHtml += `
-        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-            <div>
-              <label style="font-size:11px;">Điểm số riêng:</label>
-              <input type="number" class="q-score-custom" value="${defaultScoreVal}" step="0.05" style="padding:4px; margin:0;">
-            </div>
-            <div>
-              <label style="font-size:11px;">Gắn ảnh giải thích:</label>
-              <input type="file" class="q-exp-img-input" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
-            </div>
-          </div>
-          <div style="margin-top:6px;">
-            <label style="font-size:11px;">Chú thích / Lời giải chi tiết:</label>
-            <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải..." style="margin:0; font-size:12px;"></textarea>
-          </div>
-        </div>
-      `;
-
+      innerHtml += `<div class="advanced-q-panel" style="display:none; margin-top:6px; background:#fff; border:1px dashed #ccc; padding:6px; border-radius:4px;"><div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;"><div><label style="font-size:10px;">Điểm riêng:</label><input type="number" class="q-score-custom" value="${defaultScoreVal}" step="0.05" style="padding:4px; margin:0;"></div><div><label style="font-size:10px;">Ảnh giải thích:</label><input type="file" class="q-exp-img-input" accept="image/*" style="font-size:10px; padding:2px; margin:0;"></div></div><div style="margin-top:4px;"><label style="font-size:10px;">Chú thích / Lời giải:</label><textarea class="q-explanation" rows="2" placeholder="Nhập lời giải..." style="margin:0; font-size:11px; padding:4px;"></textarea></div></div>`;
       div.innerHTML = innerHtml;
       container.appendChild(div);
-
-      if (type === 'tf') {
-        updateTfV2Inputs(div.querySelector('.tf-branch-count'), customBranches);
-      }
+      if (type === 'tf') updateTfV2Inputs(div.querySelector('.tf-branch-count'), customBranches);
     }
 
     function toggleAdvancedQSettings(btn) {
@@ -1494,24 +1428,12 @@
       let count = parseInt(countInput.value) || 4;
       let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
       let defaultBranchScores = [0.1, 0.15, 0.25, 0.5];
-
       let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
       for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
         let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
         let bScore = defaultBranchScores[i] || 0.25;
-        html += `
-          <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
-            <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <select class="tf-branch-ans-${i}" style="width:70px; padding:2px; margin:0; font-size:12px;">
-                <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
-                <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
-              </select>
-              <input type="number" class="tf-branch-score-${i}" value="${bScore}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
-            </div>
-          </div>
-        `;
+        html += `<div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 6px; border:1px solid #ddd; border-radius:4px;"><span style="font-size:11px; font-weight:bold;">Nhánh ${l}:</span><div style="display:flex; gap:4px; align-items:center;"><select class="tf-branch-ans-${i}" style="width:60px; padding:2px; margin:0; font-size:11px;"><option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option><option value="S" ${presetAns==='S'?'selected':''}>Sai</option></select><input type="number" class="tf-branch-score-${i}" value="${bScore}" placeholder="Điểm" step="0.05" style="width:50px; padding:2px; margin:0; font-size:11px;"></div></div>`;
       }
       html += '</div>';
       wrapper.innerHTML = html;
@@ -1519,33 +1441,23 @@
 
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
-      
       document.getElementById('builderMC').innerHTML = '';
       document.getElementById('builderTF').innerHTML = '';
       document.getElementById('builderSA').innerHTML = '';
-
       const sampleMcAnswers = ['D', 'B', 'D', 'B', 'C', 'B', 'A', 'C', 'C', 'A', 'C', 'D'];
       sampleMcAnswers.forEach(ans => addQuestionV2('mc', ans));
-
-      const sampleTfAnswers = [
-        ['Đ', 'Đ', 'S', 'S'],
-        ['Đ', 'Đ', 'Đ', 'S'],
-        ['Đ', 'Đ', 'S', 'Đ'],
-        ['Đ', 'S', 'S', 'Đ']
-      ];
+      const sampleTfAnswers = [['Đ','Đ','S','S'],['Đ','Đ','Đ','S'],['Đ','Đ','S','Đ'],['Đ','S','S','Đ']];
       sampleTfAnswers.forEach(branches => addQuestionV2('tf', '', branches));
-
       const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
       sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
-
-      showToast('✨ Đã quét ảnh và tự động điền toàn bộ đáp án thành công!');
+      showToast('✨ Đã quét ảnh và tự động điền!');
       input.value = '';
     }
 
     function promptSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
-      if (!code || !title) { showToast('Vui lòng nhập Mã bài thi và Tên bài thi!', true); return; }
+      if (!code || !title) { showToast('Nhập Mã và Tên bài thi!', true); return; }
       pendingActionType = 'save';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -1555,7 +1467,7 @@
 
     async function confirmPasswordAction() {
       const pass = document.getElementById('teacherPasswordInput').value.trim();
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu!', true); return; }
       closePasswordModal();
       if (pendingActionType === 'save') await executeSaveExam();
       else if (pendingActionType === 'save_qp') await executeSaveQuickPractice();
@@ -1564,17 +1476,32 @@
     async function executeSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
-      const duration = parseInt(document.getElementById('examDuration').value);
       const type = document.getElementById('examType').value;
+
+      // Lấy cài đặt nâng cao
+      const advEnabled = document.getElementById('advExamOptionsToggle').checked;
+      let timerEnabled = true, duration = 45;
+      let antiCheatEnabled = true, cheatThreshold = 7, cheatLimitType = 'unlimited', maxWarnings = 5;
+
+      if (advEnabled) {
+        timerEnabled = document.getElementById('advEnableTimer').checked;
+        if (timerEnabled) duration = parseInt(document.getElementById('examDuration').value) || 45;
+        antiCheatEnabled = document.getElementById('advEnableAntiCheat').checked;
+        cheatThreshold = parseInt(document.getElementById('advCheatThreshold').value) || 7;
+        cheatLimitType = document.getElementById('advCheatLimitType').value;
+        if (cheatLimitType === 'limited') maxWarnings = parseInt(document.getElementById('advMaxWarnings').value) || 5;
+      } else {
+        duration = parseInt(document.getElementById('examDuration').value) || 45;
+      }
+
       const isLive = document.getElementById('enableLiveRoom').checked;
       const livePass = document.getElementById('liveRoomPass').value.trim();
       const liveLimit = parseInt(document.getElementById('liveRoomLimit').value) || 50;
 
       const items = document.querySelectorAll('#teacherView .q-build-item');
-      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
+      if (items.length === 0) { showToast('Tạo ít nhất 1 câu hỏi!', true); return; }
 
       let questions = [];
-
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
@@ -1583,33 +1510,19 @@
         let expText = item.querySelector('.q-explanation').value.trim();
         let expImgInput = item.querySelector('.q-exp-img-input');
         let expImgBase64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
-
-        let qData = {
-          id: idx + 1, type: qType, score: defaultScore,
-          explanation: expText, expImage: expImgBase64
-        };
-
-        if (qType === 'mc') {
-          qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
-          questions.push(qData);
-        } else if (qType === 'tf') {
+        let qData = { id: idx + 1, type: qType, score: defaultScore, explanation: expText, expImage: expImgBase64 };
+        if (qType === 'mc') { qData.correctAnswer = item.querySelector('.correct-ans').value.trim(); questions.push(qData); }
+        else if (qType === 'tf') {
           let count = parseInt(item.querySelector('.tf-branch-count').value) || 4;
-          let branches = [];
-          let branchScores = [];
+          let branches = []; let branchScores = [];
           for (let i = 0; i < count; i++) {
             let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
             let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
             let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
-            branches.push(ans);
-            branchScores.push(bScore);
+            branches.push(ans); branchScores.push(bScore);
           }
-          qData.correctAnswer = branches.join(',');
-          qData.branchScores = branchScores;
-          questions.push(qData);
-        } else if (qType === 'sa') {
-          qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
-          questions.push(qData);
-        }
+          qData.correctAnswer = branches.join(','); qData.branchScores = branchScores; questions.push(qData);
+        } else if (qType === 'sa') { qData.correctAnswer = item.querySelector('.correct-ans').value.trim(); questions.push(qData); }
       }
 
       let mediaData = { type: type, files: [] };
@@ -1618,21 +1531,20 @@
         if (pdfInput.files.length > 0) mediaData.files.push(await fileToBase64(pdfInput.files[0]));
       } else {
         let imgInput = document.getElementById('teacherImgInput');
-        for (let i = 0; i < imgInput.files.length; i++) {
-          mediaData.files.push(await fileToBase64(imgInput.files[i]));
-        }
+        for (let i = 0; i < imgInput.files.length; i++) mediaData.files.push(await fileToBase64(imgInput.files[i]));
       }
 
       const examObject = {
-        code: code, title: title, duration: duration,
-        isLiveRoom: isLive, livePassword: livePass, liveLimit: liveLimit,
-        media: mediaData, questions: questions
+        code, title, duration,
+        timerEnabled, antiCheatEnabled, cheatThreshold, cheatLimitType, maxWarnings,
+        isLiveRoom: isLive, livePassword: livePass, liveLimit,
+        media: mediaData, questions
       };
 
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
         await window.dbSet(window.ref(window.db, 'liverooms/' + code), { status: 'waiting' });
-        showToast(`🎉 Lưu đề chính thức [${code}] thành công!`);
+        showToast(`🎉 Lưu đề [${code}] thành công!`);
       } catch (err) { showToast('Lỗi: ' + err.message, true); }
     }
 
@@ -1651,50 +1563,41 @@
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       if (!code) { showToast('Nhập mã đề!', true); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy đề!', true); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy!', true); return; }
       const exam = snapshot.val();
       if (exam.media && exam.media.type === 'pdf' && exam.media.files.length > 0) {
-        let a = document.createElement('a');
-        a.href = exam.media.files[0];
-        a.download = `De_${code}.pdf`;
+        let a = document.createElement('a'); a.href = exam.media.files[0]; a.download = `De_${code}.pdf`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         showToast('📄 Tải đề thành công!');
-      } else { showToast('Đề này không có file PDF.', true); }
+      } else { showToast('Đề này không có PDF.', true); }
     }
 
     async function promptDeleteExam() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
       if (!code) { showToast('Nhập mã đề!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật quản lý!', true); return; }
-      
-      if (confirm(`Xóa vĩnh viễn đề thi [${code}]?`)) {
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu!', true); return; }
+      if (confirm(`Xóa vĩnh viễn đề [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `exams/${code}`));
         await window.dbRemove(window.ref(window.db, `leaderboard/${code}`));
         await window.dbRemove(window.ref(window.db, `liverooms/${code}`));
-        showToast('🗑️ Xóa đề thành công!');
-        closeAdvancedModal();
+        showToast('🗑️ Đã xóa!'); closeAdvancedModal();
       }
     }
 
     async function connectLiveRoomDashboard() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
-
-      if (!code) { showToast('Vui lòng nhập mã đề kiểm tra!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
-
+      if (!code) { showToast('Nhập mã đề!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu!', true); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy đề thi này!', true); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy!', true); return; }
       let exam = snapshot.val();
-      if (!exam.isLiveRoom) { showToast('Đề thi này không bật tính năng Phòng thi chuyên dụng!', true); return; }
-
+      if (!exam.isLiveRoom) { showToast('Đề này không bật Phòng Live!', true); return; }
       managedLiveCodeGlobal = code;
       document.getElementById('liveRoomDashboard').style.display = 'block';
-      showToast('📡 Kết nối phòng live thành công!');
-
+      showToast('📡 Kết nối phòng live!');
       if (liveRoomDashboardListener) liveRoomDashboardListener();
-
       let roomRef = window.ref(window.db, `liverooms/${code}`);
       liveRoomDashboardListener = window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
@@ -1703,41 +1606,27 @@
         tbody.innerHTML = '';
         let keys = Object.keys(students);
         document.getElementById('liveRoomCount').innerText = keys.length;
-
-        if (keys.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6">Chưa có học sinh trong phòng.</td></tr>';
-          return;
-        }
-
+        if (keys.length === 0) { tbody.innerHTML = '<tr><td colspan="6">Chưa có HS.</td></tr>'; return; }
         keys.forEach((id, idx) => {
           let s = students[id];
           let warningCount = s.cheatWarnings || 0;
           let leaveTimeSec = Math.round((s.totalLeaveTime || 0) / 1000);
-          tbody.innerHTML += `
-            <tr>
-              <td><b>#${idx + 1}</b></td>
-              <td>${s.name}</td>
-              <td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm bài' : 'Đang chờ'}</td>
-              <td><b style="color:${warningCount > 0 ? 'red' : 'green'};">${warningCount} lần</b></td>
-              <td><b>${leaveTimeSec} giây</b></td>
-              <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickLiveStudent('${code}', '${id}')">Kick</button></td>
-            </tr>
-          `;
+          tbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${s.name}</td><td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm' : 'Đang chờ'}</td><td><b style="color:${warningCount > 0 ? 'red' : 'green'};">${warningCount}</b></td><td><b>${leaveTimeSec}s</b></td><td><button class="btn btn-danger" style="padding:2px 6px; font-size:10px; width:auto;" onclick="kickLiveStudent('${code}', '${id}')">Kick</button></td></tr>`;
         });
       });
     }
 
     async function kickLiveStudent(code, studentId) {
-      if (confirm('Bạn có chắc muốn kick học sinh này khỏi phòng?')) {
+      if (confirm('Kick học sinh này?')) {
         await window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentId}`));
-        showToast('Đã kick học sinh khỏi phòng!');
+        showToast('Đã kick!');
       }
     }
 
     async function updateLiveRoomStatus(status) {
-      if (!managedLiveCodeGlobal) { showToast('Chưa kết nối phòng live!', true); return; }
-      await window.dbUpdate(window.ref(window.db, `liverooms/${managedLiveCodeGlobal}`), { status: status });
-      showToast(`Đã cập nhật trạng thái phòng live thành: ${status}`);
+      if (!managedLiveCodeGlobal) { showToast('Chưa kết nối!', true); return; }
+      await window.dbUpdate(window.ref(window.db, `liverooms/${managedLiveCodeGlobal}`), { status });
+      showToast(`Đã cập nhật: ${status}`);
     }
 
     function addQpQuestionItem() {
@@ -1745,45 +1634,7 @@
       let idx = container.children.length + 1;
       let div = document.createElement('div');
       div.className = 'q-build-item';
-      div.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-          <strong>Câu ${idx}</strong>
-          <div style="display:flex; gap:5px;">
-            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
-            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove()">Xóa</button>
-          </div>
-        </div>
-        <label>Nội dung câu hỏi:</label>
-        <textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi..."></textarea>
-        
-        <div class="form-grid-2">
-          <div>
-            <label>Hình ảnh câu hỏi (tùy chọn):</label>
-            <input type="file" class="qp-q-img" accept="image/*">
-          </div>
-          <div>
-            <label>Số lượng đáp án (2 - 4):</label>
-            <select class="qp-ans-count" onchange="updateQpAnswers(this)">
-              <option value="2">2 Đáp án (A, B)</option>
-              <option value="3">3 Đáp án (A, B, C)</option>
-              <option value="4" selected>4 Đáp án (A, B, C, D)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="qp-answers-wrapper"></div>
-
-        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
-          <div style="margin-bottom:6px;">
-            <label style="font-size:11px;">Điểm số câu hỏi:</label>
-            <input type="number" class="qp-q-score" value="0.25" step="0.05" style="padding:4px; margin:0;">
-          </div>
-          <label style="font-size: 11px;">Chú thích / Lời giải chi tiết:</label>
-          <textarea class="qp-q-exp" rows="2" placeholder="Nhập giải thích..." style="margin-bottom:6px;"></textarea>
-          <label style="font-size: 11px;">Hình ảnh giải thích (tùy chọn):</label>
-          <input type="file" class="qp-exp-img" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
-        </div>
-      `;
+      div.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;"><strong style="font-size:12px;">Câu ${idx}</strong><div style="display:flex; gap:4px;"><button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 10px;" onclick="toggleAdvancedQSettings(this)">⚙️</button><button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 10px;" onclick="this.parentElement.parentElement.parentElement.remove()">Xóa</button></div></div><label style="font-size:12px;">Nội dung:</label><textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi..." style="padding:6px;"></textarea><div class="form-grid-2"><div><label style="font-size:11px;">Ảnh (tùy chọn):</label><input type="file" class="qp-q-img" accept="image/*" style="padding:4px;"></div><div><label style="font-size:11px;">Số đáp án:</label><select class="qp-ans-count" onchange="updateQpAnswers(this)" style="padding:6px;"><option value="2">2 (A, B)</option><option value="3">3 (A, B, C)</option><option value="4" selected>4 (A, B, C, D)</option></select></div></div><div class="qp-answers-wrapper"></div><div class="advanced-q-panel" style="display:none; margin-top:6px; background:#fff; border:1px dashed #ccc; padding:6px; border-radius:4px;"><div style="margin-bottom:4px;"><label style="font-size:10px;">Điểm:</label><input type="number" class="qp-q-score" value="0.25" step="0.05" style="padding:4px; margin:0;"></div><label style="font-size:10px;">Chú thích:</label><textarea class="qp-q-exp" rows="2" placeholder="Nhập giải thích..." style="margin-bottom:4px; font-size:11px; padding:4px;"></textarea><label style="font-size:10px;">Ảnh giải thích:</label><input type="file" class="qp-exp-img" accept="image/*" style="font-size:10px; padding:2px; margin:0;"></div>`;
       container.appendChild(div);
       updateQpAnswers(div.querySelector('.qp-ans-count'));
     }
@@ -1792,30 +1643,18 @@
       let wrapper = select.parentElement.parentElement.parentElement.querySelector('.qp-answers-wrapper');
       let count = parseInt(select.value);
       let letters = ['A', 'B', 'C', 'D'];
-      let html = '<div style="display:flex; flex-direction:column; gap:6px; margin:8px 0;">';
+      let html = '<div style="display:flex; flex-direction:column; gap:4px; margin:6px 0;">';
       for (let i = 0; i < count; i++) {
-        html += `
-          <div style="display:flex; gap:8px; align-items:center;">
-            <span style="font-weight:bold; width:25px;">${letters[i]}.</span>
-            <input type="text" class="qp-opt-text-${i}" placeholder="Đáp án ${letters[i]}..." style="margin:0; flex:1;">
-          </div>
-        `;
+        html += `<div style="display:flex; gap:6px; align-items:center;"><span style="font-weight:bold; width:20px; font-size:12px;">${letters[i]}.</span><input type="text" class="qp-opt-text-${i}" placeholder="Đáp án ${letters[i]}..." style="margin:0; flex:1; padding:6px;"></div>`;
       }
-      html += `</div>
-        <div style="display:flex; gap:10px; align-items:center; margin-top:5px;">
-          <label style="margin:0;">Đáp án đúng:</label>
-          <select class="qp-correct-opt" style="width:100px; margin:0;">
-            ${letters.slice(0, count).map(l => `<option value="${l}">${l}</option>`).join('')}
-          </select>
-        </div>
-      `;
+      html += `</div><div style="display:flex; gap:8px; align-items:center; margin-top:4px;"><label style="margin:0; font-size:12px;">ĐA đúng:</label><select class="qp-correct-opt" style="width:80px; margin:0; padding:6px;">${letters.slice(0, count).map(l => `<option value="${l}">${l}</option>`).join('')}</select></div>`;
       wrapper.innerHTML = html;
     }
 
     function promptSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      if (!code || !title) { showToast('Vui lòng nhập Mã bài luyện và Tên bài luyện!', true); return; }
+      if (!code || !title) { showToast('Nhập Mã và Tên!', true); return; }
       pendingActionType = 'save_qp';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -1824,88 +1663,52 @@
     async function executeSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      
       const enableAdv = document.getElementById('qpEnableAdvanced').checked;
       const password = enableAdv ? document.getElementById('qpPassword').value.trim() : '';
       const isAdvancedMode = enableAdv ? document.getElementById('qpIsAdvancedMode').checked : false;
       const limit = parseInt(document.getElementById('qpLimit').value) || 50;
-
       const enableTimer = enableAdv ? document.getElementById('qpEnableTimer').checked : true;
       const durationMinutes = enableTimer ? (parseInt(document.getElementById('qpDurationMinutes').value) || 15) : 0;
-
       const enableAntiCheat = enableAdv ? document.getElementById('qpEnableAntiCheat').checked : true;
       const antiCheatType = enableAntiCheat ? document.getElementById('qpAntiCheatType').value : 'none';
       const maxWarnings = antiCheatType === 'limited' ? (parseInt(document.getElementById('qpMaxWarnings').value) || 5) : 99999;
-
       const useLayoutV2 = enableAdv ? document.getElementById('qpUseLayoutV2').checked : true;
-
       let items = document.querySelectorAll('#qpQuestionsContainer .q-build-item');
-      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
-
+      if (items.length === 0) { showToast('Tạo ít nhất 1 câu hỏi!', true); return; }
       let questions = [];
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qText = item.querySelector('.qp-q-text').value.trim();
         let qImgInput = item.querySelector('.qp-q-img');
         let qImgB64 = qImgInput && qImgInput.files.length > 0 ? await fileToBase64(qImgInput.files[0]) : '';
-        
         let ansCount = parseInt(item.querySelector('.qp-ans-count').value);
-        let options = [];
-        let letters = ['A', 'B', 'C', 'D'];
-        for (let i = 0; i < ansCount; i++) {
-          options.push({
-            label: letters[i],
-            text: item.querySelector(`.qp-opt-text-${i}`).value.trim()
-          });
-        }
+        let options = []; let letters = ['A', 'B', 'C', 'D'];
+        for (let i = 0; i < ansCount; i++) options.push({ label: letters[i], text: item.querySelector(`.qp-opt-text-${i}`).value.trim() });
         let correctOpt = item.querySelector('.qp-correct-opt').value;
         let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || 0.25;
         let expText = item.querySelector('.qp-q-exp').value.trim();
         let expImgInput = item.querySelector('.qp-exp-img');
         let expImgB64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
-
-        questions.push({
-          id: idx + 1, question: qText, image: qImgB64,
-          options: options, correct: correctOpt, score: scoreVal,
-          explanation: expText, expImage: expImgB64
-        });
+        questions.push({ id: idx + 1, question: qText, image: qImgB64, options, correct: correctOpt, score: scoreVal, explanation: expText, expImage: expImgB64 });
       }
-
-      let qpObj = { 
-        code: code, 
-        title: title, 
-        password: password, 
-        isAdvancedMode: isAdvancedMode, 
-        limit: limit, 
-        durationMinutes: durationMinutes,
-        enableTimer: enableTimer,
-        enableAntiCheat: enableAntiCheat,
-        antiCheatType: antiCheatType,
-        maxWarnings: maxWarnings,
-        useLayoutV2: useLayoutV2,
-        questions: questions 
-      };
-
+      let qpObj = { code, title, password, isAdvancedMode, limit, durationMinutes, enableTimer, enableAntiCheat, antiCheatType, maxWarnings, useLayoutV2, questions };
       try {
         await window.dbSet(window.ref(window.db, 'quick_practices/' + code), qpObj);
         await window.dbSet(window.ref(window.db, 'qp_rooms/' + code), { status: isAdvancedMode ? 'waiting' : 'started' });
-        showToast(`🎉 Tạo bài luyện nhanh [${code}] thành công!`);
+        showToast(`🎉 Tạo bài luyện [${code}] thành công!`);
       } catch (err) { showToast('Lỗi: ' + err.message, true); }
     }
 
     async function openQpManagementRoom() {
       const code = document.getElementById('manageQpCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageQpPass').value.trim();
-      if (!code || !pass) { showToast('Nhập mã bài luyện và mật khẩu bảo mật!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
-
+      if (!code || !pass) { showToast('Nhập mã và mật khẩu!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu!', true); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', true); return; }
-
+      if (!snapshot.exists()) { showToast('Không tìm thấy!', true); return; }
       managedQpCodeGlobal = code;
       document.getElementById('qpManagementDashboard').style.display = 'block';
-      showToast('📡 Kết nối quản lý thành công!');
-
+      showToast('📡 Kết nối quản lý!');
       let roomRef = window.ref(window.db, `qp_rooms/${code}`);
       window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
@@ -1914,33 +1717,17 @@
         tbody.innerHTML = '';
         let keys = Object.keys(students);
         document.getElementById('qpManageCount').innerText = keys.length;
-
-        if (keys.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4">Chưa có học sinh tham gia.</td></tr>';
-          return;
-        }
-
+        if (keys.length === 0) { tbody.innerHTML = '<tr><td colspan="4">Chưa có HS.</td></tr>'; return; }
         keys.forEach((id, idx) => {
           let s = students[id];
-          tbody.innerHTML += `
-            <tr>
-              <td><b>#${idx + 1}</b></td>
-              <td>${s.name}</td>
-              <td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm' : 'Đang chờ'}</td>
-              <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickQpStudent('${code}', '${id}')">Kick</button></td>
-            </tr>
-          `;
+          tbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${s.name}</td><td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm' : 'Đang chờ'}</td><td><button class="btn btn-danger" style="padding:2px 6px; font-size:10px; width:auto;" onclick="kickQpStudent('${code}', '${id}')">Kick</button></td></tr>`;
         });
       });
-
       let lbRef = window.ref(window.db, `qp_leaderboard/${code}`);
       window.onValue(lbRef, (snapshot) => {
         let lbTbody = document.getElementById('qpManageResultsBody');
         lbTbody.innerHTML = '';
-        if (!snapshot.exists()) {
-          lbTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả.</td></tr>';
-          return;
-        }
+        if (!snapshot.exists()) { lbTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả.</td></tr>'; return; }
         let history = Object.values(snapshot.val());
         history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
         history.forEach((row, idx) => {
@@ -1953,14 +1740,14 @@
     async function kickQpStudent(code, studentId) {
       if (confirm('Kick học sinh này?')) {
         await window.dbRemove(window.ref(window.db, `qp_rooms/${code}/students/${studentId}`));
-        showToast('Đã kick học sinh!');
+        showToast('Đã kick!');
       }
     }
 
     async function updateQpStatus(status) {
       if (!managedQpCodeGlobal) return;
-      await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status: status });
-      showToast(`Đã cập nhật trạng thái: ${status}`);
+      await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status });
+      showToast(`Đã cập nhật: ${status}`);
     }
 
     async function deleteQpExam() {
@@ -1969,7 +1756,7 @@
         await window.dbRemove(window.ref(window.db, `quick_practices/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_leaderboard/${managedQpCodeGlobal}`));
-        showToast('🗑️ Xóa đề thành công!');
+        showToast('🗑️ Đã xóa!');
         document.getElementById('qpManagementDashboard').style.display = 'none';
       }
     }
@@ -1979,92 +1766,59 @@
       const name = document.getElementById('studentName').value.trim();
       const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('studentExtraPass').value.trim();
-
-      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', true); return; }
-
+      if (!name || !code) { showToast('Nhập đầy đủ tên và mã!', true); return; }
       showLoadingSequence(async () => {
         if (mode === 'practice') {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', true); return; }
           let qpData = snapshot.val();
-          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', true); return; }
-
+          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu!', true); return; }
           currentQpData = qpData;
           studentNameGlobal = name;
-
           let studentKey = 'qp_s_' + Date.now();
           let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
-          await window.dbSet(roomRef, { name: name, status: 'waiting' });
-
+          await window.dbSet(roomRef, { name, status: 'waiting' });
           if (!qpData.isAdvancedMode) {
             await window.dbUpdate(roomRef, { status: 'testing' });
             launchQpPracticeInterface();
             return;
           }
-
           document.getElementById('qpWaitTitle').innerText = qpData.title;
           document.getElementById('qpWaitStudentName').innerText = name;
           document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
           switchView('qpWaitingRoomView');
-
           let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
           activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
             let data = snapshot.val() || {};
             let students = data.students || {};
             document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
-
-            if (!students[studentKey]) {
-              showToast('Bạn đã bị giáo viên kick!', true);
-              if (activeQpRoomListener) activeQpRoomListener();
-              switchView('studentLoginView');
-              return;
-            }
-
-            if (data.status === 'started') {
-              if (activeQpRoomListener) activeQpRoomListener();
-              window.dbUpdate(roomRef, { status: 'testing' });
-              launchQpPracticeInterface();
-            } else if (data.status === 'ended' && isQpActive) {
-              if (activeQpRoomListener) activeQpRoomListener();
-              showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
-              submitQpPractice(true);
-            }
+            if (!students[studentKey]) { showToast('Bạn đã bị kick!', true); if (activeQpRoomListener) activeQpRoomListener(); switchView('studentLoginView'); return; }
+            if (data.status === 'started') { if (activeQpRoomListener) activeQpRoomListener(); window.dbUpdate(roomRef, { status: 'testing' }); launchQpPracticeInterface(); }
+            else if (data.status === 'ended' && isQpActive) { if (activeQpRoomListener) activeQpRoomListener(); showToast('GV đã kết thúc!', true); submitQpPractice(true); }
           });
-
         } else {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy đề!', true); return; }
           currentExamData = snapshot.val();
           studentNameGlobal = name;
-
           if (mode === 'live') {
-            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', true); return; }
-            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
-
+            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật Phòng Live!', true); return; }
+            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng!', true); return; }
             studentSessionKeyGlobal = 's_' + Date.now();
             let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`);
-            await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
-
+            await window.dbSet(roomRef, { name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
             document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
             document.getElementById('waitStudentName').innerText = name;
-            document.getElementById('waitDuration').innerText = currentExamData.duration;
+            document.getElementById('waitDuration').innerText = currentExamData.timerEnabled === false ? 'Không giới hạn' : currentExamData.duration;
             switchView('studentWaitingRoomView');
-
             let roomMainRef = window.ref(window.db, `liverooms/${code}`);
             activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
               let data = snapshot.val() || {};
               let students = data.students || {};
               document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
-
-              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', true); switchView('studentLoginView'); return; }
-              if (data.status === 'started') {
-                if (activeStudentRoomListener) activeStudentRoomListener();
-                window.dbUpdate(roomRef, { status: 'testing' });
-                launchOfficialExamInterface();
-              } else if (data.status === 'ended') {
-                if (activeStudentRoomListener) activeStudentRoomListener();
-                showToast('Kì thi đã kết thúc!'); switchView('studentLoginView');
-              }
+              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị kick!', true); switchView('studentLoginView'); return; }
+              if (data.status === 'started') { if (activeStudentRoomListener) activeStudentRoomListener(); window.dbUpdate(roomRef, { status: 'testing' }); launchOfficialExamInterface(); }
+              else if (data.status === 'ended') { if (activeStudentRoomListener) activeStudentRoomListener(); showToast('Kì thi đã kết thúc!'); switchView('studentLoginView'); }
             });
           } else {
             studentSessionKeyGlobal = 's_free_' + Date.now();
@@ -2074,27 +1828,33 @@
       });
     }
 
-    function leaveQpWaitingRoom() {
-      if (activeQpRoomListener) activeQpRoomListener();
-      switchView('studentLoginView');
-    }
+    function leaveQpWaitingRoom() { if (activeQpRoomListener) activeQpRoomListener(); switchView('studentLoginView'); }
 
     async function launchOfficialExamInterface() {
       document.getElementById('displayExamTitle').innerText = currentExamData.title;
       document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${studentNameGlobal}`;
 
+      // Cập nhật cài đặt chống gian lận
+      currentAntiCheatEnabled = currentExamData.antiCheatEnabled !== false;
+      currentCheatThreshold = (currentExamData.cheatThreshold || 7) * 1000;
+      currentCheatLimitType = currentExamData.cheatLimitType || 'unlimited';
+      currentMaxWarnings = currentExamData.maxWarnings || 5;
+      currentTimerEnabled = currentExamData.timerEnabled !== false;
+
+      const cheatThresholdDisplay = document.getElementById('cheatThresholdDisplay');
+      if (cheatThresholdDisplay) cheatThresholdDisplay.innerText = currentExamData.cheatThreshold || 7;
+
       const mediaContainer = document.getElementById('examMediaContainer');
       mediaContainer.innerHTML = '';
-
       if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
         let pdf = await pdfjsLib.getDocument(currentExamData.media.files[0]).promise;
         for (let i = 1; i <= pdf.numPages; i++) {
           let page = await pdf.getPage(i);
-          let viewport = page.getViewport({ scale: 1.1 });
+          let viewport = page.getViewport({ scale: 1.0 });
           let canvas = document.createElement('canvas');
           canvas.className = 'pdf-canvas';
           canvas.height = viewport.height; canvas.width = viewport.width;
-          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
           mediaContainer.appendChild(canvas);
         }
       } else if (currentExamData.media.type === 'image') {
@@ -2107,104 +1867,92 @@
 
       const sheet = document.getElementById('studentAnswerSheet');
       sheet.innerHTML = '';
-
       currentExamData.questions.forEach(q => {
         let item = document.createElement('div');
         item.style.marginBottom = '12px'; item.style.paddingBottom = '8px'; item.style.borderBottom = '1px solid #eee';
-
         let inputHtml = '';
         if (q.type === 'mc') {
-          inputHtml = `<div class="opt-group" data-qid="${q.id}">
-            <div class="opt-btn" onclick="selectOpt(this, 'A')">A</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'B')">B</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'C')">C</div>
-            <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
-          </div>`;
+          inputHtml = `<div class="opt-group" data-qid="${q.id}"><div class="opt-btn" onclick="selectOpt(this, 'A')">A</div><div class="opt-btn" onclick="selectOpt(this, 'B')">B</div><div class="opt-btn" onclick="selectOpt(this, 'C')">C</div><div class="opt-btn" onclick="selectOpt(this, 'D')">D</div></div>`;
         } else if (q.type === 'tf') {
           let count = q.correctAnswer.split(',').length;
           let letters = ['a', 'b', 'c', 'd'];
           for(let i=0; i<count; i++) {
-            inputHtml += `<div class="tf-branch-row">
-              <span style="font-size:13px;">Nhánh ${letters[i]}:</span>
-              <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
-                <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
-                <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
-              </div>
-            </div>`;
+            inputHtml += `<div class="tf-branch-row"><span style="font-size:12px;">Nhánh ${letters[i]}:</span><div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}"><div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div><div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div></div></div>`;
           }
         } else {
-          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
+          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời..." style="padding:8px;">`;
         }
-
         item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
         sheet.appendChild(item);
       });
 
-      timeLeft = currentExamData.duration * 60;
-      clearInterval(examTimer);
-      examTimer = setInterval(() => {
-        timeLeft--;
-        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-        if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
-      }, 1000);
+      const timerDisplay = document.getElementById('timerDisplay');
+      if (currentTimerEnabled) {
+        timeLeft = currentExamData.duration * 60;
+        clearInterval(examTimer);
+        examTimer = setInterval(() => {
+          timeLeft--;
+          let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+          timerDisplay.innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+          if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
+        }, 1000);
+      } else {
+        timerDisplay.innerText = '∞';
+        clearInterval(examTimer);
+        timeLeft = 0;
+      }
 
-      cheatWarnings = 0;
-      totalTabLeaveTime = 0;
+      cheatWarnings = 0; totalTabLeaveTime = 0;
       document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
       isExamActive = true;
       switchView('studentExamView');
     }
 
     async function handleTabLeaveEvent(durationAway) {
-      if (durationAway > CHEAT_TIME_THRESHOLD) {
+      if (!currentAntiCheatEnabled) return;
+      if (durationAway > currentCheatThreshold) {
         cheatWarnings++;
         totalTabLeaveTime += durationAway;
-
         document.getElementById('cheatModalCount').innerText = cheatWarnings;
         document.getElementById('cheatModalTime').innerText = (totalTabLeaveTime / 1000).toFixed(1) + ' giây';
         document.getElementById('cheatAlertModal').style.display = 'flex';
-        
         document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
         let qpBadge = document.getElementById('qpCheatWarningBadge');
         if (qpBadge) qpBadge.innerText = `Cảnh báo: ${cheatWarnings}`;
 
         if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
           await window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
-            cheatWarnings: cheatWarnings,
-            totalLeaveTime: totalTabLeaveTime
+            cheatWarnings, totalLeaveTime: totalTabLeaveTime
           });
         }
 
+        // Xử lý giới hạn cảnh báo cho đề chính thức
+        if (currentExamData && currentCheatLimitType === 'limited' && cheatWarnings >= currentMaxWarnings) {
+          showToast(`🚨 Đã đạt giới hạn ${currentMaxWarnings} lần. Cưỡng chế nộp bài!`, true);
+          dismissCheatAlert();
+          submitStudentExam(true);
+          return;
+        }
+
+        // Xử lý cho bài luyện nhanh (giữ nguyên logic cũ)
         if (currentQpData && currentQpData.enableAntiCheat) {
           if (currentQpData.antiCheatType === 'limited') {
             let maxW = currentQpData.maxWarnings || 5;
             if (cheatWarnings >= maxW) {
-              showToast(`🚨 Đã đạt giới hạn ${maxW} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, true);
-              dismissCheatAlert();
-              submitQpPractice(true);
-              return;
+              showToast(`🚨 Đạt giới hạn ${maxW} lần. Cưỡng chế nộp!`, true);
+              dismissCheatAlert(); submitQpPractice(true); return;
             }
           }
-        }
-
-        if (currentExamData && currentExamData.isLiveRoom && cheatWarnings > 10) {
-          showToast('🚨 Bạn đã vi phạm quá 10 lần. Hệ thống tự động nộp bài!', true);
-          dismissCheatAlert();
-          submitStudentExam(true);
         }
       }
     }
 
-    function dismissCheatAlert() {
-      document.getElementById('cheatAlertModal').style.display = 'none';
-    }
+    function dismissCheatAlert() { document.getElementById('cheatAlertModal').style.display = 'none'; }
 
     document.addEventListener('visibilitychange', () => {
       if (!isExamActive && !isQpActive) return;
-      if (document.hidden) {
-        tabLeaveStartTime = Date.now();
-      } else {
+      if (document.hidden) { tabLeaveStartTime = Date.now(); }
+      else {
         if (tabLeaveStartTime) {
           let durationAway = Date.now() - tabLeaveStartTime;
           handleTabLeaveEvent(durationAway);
@@ -2213,11 +1961,7 @@
       }
     });
 
-    window.addEventListener('blur', () => {
-      if (!isExamActive && !isQpActive) return;
-      tabLeaveStartTime = Date.now();
-    });
-
+    window.addEventListener('blur', () => { if (!isExamActive && !isQpActive) return; tabLeaveStartTime = Date.now(); });
     window.addEventListener('focus', () => {
       if ((!isExamActive && !isQpActive) || !tabLeaveStartTime) return;
       let durationAway = Date.now() - tabLeaveStartTime;
@@ -2240,10 +1984,8 @@
       if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
       isExamActive = false;
-
       let totalEarnedScore = 0;
       let reviewHtml = '';
-
       currentExamData.questions.forEach(q => {
         let studentAns = '', isCorrect = false, qEarned = 0;
         if (q.type === 'mc') {
@@ -2253,8 +1995,7 @@
           if (isCorrect) qEarned = q.score;
         } else if (q.type === 'tf') {
           let correctArr = q.correctAnswer.split(',');
-          let studentArr = [];
-          let subEarned = 0;
+          let studentArr = []; let subEarned = 0;
           let branchScores = q.branchScores || [0.1, 0.15, 0.25, 0.5];
           correctArr.forEach((ansCorrect, i) => {
             let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
@@ -2271,44 +2012,21 @@
           isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
           if (isCorrect) qEarned = q.score;
         }
-
         totalEarnedScore += qEarned;
-
         let hasExp = q.explanation || q.expImage;
         let expContent = '';
         if (q.explanation) expContent += `<p>${q.explanation}</p>`;
         if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
-
-        reviewHtml += `
-          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
-            <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span>
-            <div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>
-            ${!isCorrect ? `<div>- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}
-            
-            ${hasExp ? `
-              <div style="margin-top: 6px;">
-                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
-                <div class="explanation-box">${expContent}</div>
-              </div>
-            ` : ''}
-          </div>
-        `;
+        reviewHtml += `<div style="border:1px solid #ddd; padding:8px; border-radius:6px; margin-bottom:6px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 12px;"><strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span><div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>${!isCorrect ? `<div>- ĐA đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}${hasExp ? `<div style="margin-top: 4px;"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>` : ''}</div>`;
       });
-
       let finalScore = Math.round(totalEarnedScore * 100) / 100;
-      let timeSpentSeconds = (currentExamData.duration * 60) - timeLeft;
-
+      let timeSpentSeconds = currentTimerEnabled ? ((currentExamData.duration * 60) - timeLeft) : 0;
       document.getElementById('resultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('resultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
+      document.getElementById('resultDetailText').innerText = currentTimerEnabled ? `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s` : 'Không giới hạn thời gian';
       document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
-
       await window.dbPush(window.ref(window.db, 'leaderboard/' + currentExamData.code), {
-        name: studentNameGlobal, 
-        score: finalScore, 
-        timeSpent: timeSpentSeconds, 
-        cheatWarnings: cheatWarnings,
-        totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
-        timestamp: Date.now()
+        name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds,
+        cheatWarnings, totalLeaveTime: Math.round(totalTabLeaveTime / 1000), timestamp: Date.now()
       });
       showToast('📤 Nộp bài thành công!');
       switchView('studentResultView');
@@ -2321,21 +2039,15 @@
       currentQpV2Index = 0;
       qpStudentAnswers = {};
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
-
       if (currentQpData.enableAntiCheat) {
         document.getElementById('qpCheatWarningBanner').style.display = 'flex';
-        cheatWarnings = 0;
-        totalTabLeaveTime = 0;
+        cheatWarnings = 0; totalTabLeaveTime = 0;
         document.getElementById('qpCheatWarningBadge').innerText = `Cảnh báo: 0`;
       } else {
         document.getElementById('qpCheatWarningBanner').style.display = 'none';
       }
-
-      if (currentQpData.useLayoutV2) {
-        renderQpQuestionV2Item();
-      } else {
-        renderQpLayoutV1();
-      }
+      if (currentQpData.useLayoutV2) renderQpQuestionV2Item();
+      else renderQpLayoutV1();
 
       if (currentQpData.enableTimer) {
         qpTimeLeft = (currentQpData.durationMinutes || 15) * 60;
@@ -2345,11 +2057,7 @@
           qpTimeLeft--;
           let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
           document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-          if (qpTimeLeft <= 0) {
-            clearInterval(qpTimer);
-            showToast('⌛ Đã hết thời gian làm bài!', true);
-            submitQpPractice(true);
-          }
+          if (qpTimeLeft <= 0) { clearInterval(qpTimer); showToast('⌛ Hết giờ!', true); submitQpPractice(true); }
         }, 1000);
       } else {
         qpTimeLeft = 0;
@@ -2357,17 +2065,14 @@
         clearInterval(qpTimer);
         qpTimer = setInterval(() => { qpTimeLeft++; }, 1000);
       }
-
       switchView('qpPracticingView');
-
       if (currentQpData.isAdvancedMode) {
         let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
         activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
           let data = snapshot.val() || {};
           if (data.status === 'ended' && isQpActive) {
             if (activeQpRoomListener) activeQpRoomListener();
-            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
-            submitQpPractice(true);
+            showToast('🛑 GV đã kết thúc!', true); submitQpPractice(true);
           }
         });
       }
@@ -2379,35 +2084,11 @@
       document.getElementById('qpPrevBtn').style.display = 'none';
       document.getElementById('qpNextBtn').style.display = 'none';
       document.getElementById('qpSubmitBtn').style.display = 'block';
-
       currentQpData.questions.forEach((q, idx) => {
         let optHtml = '';
-        q.options.forEach(opt => {
-          optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
-        });
-
+        q.options.forEach(opt => { optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`; });
         let hasExp = q.explanation || q.expImage;
-
-        container.innerHTML += `
-          <div class="card" style="background: #fdfdfd; border: 1px solid #ddd; margin-bottom: 12px;">
-            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
-            ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-            <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
-              ${optHtml}
-            </div>
-            <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
-            
-            ${hasExp ? `
-              <div style="margin-top: 6px;">
-                <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
-                <div id="qp-exp-${q.id}" class="explanation-box">
-                  ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        `;
+        container.innerHTML += `<div class="card" style="background: #fdfdfd; border: 1px solid #ddd; margin-bottom: 10px;"><p style="font-weight: bold; margin-bottom: 6px; font-size: 13px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>${q.image ? `<img src="${q.image}" class="img-preview">` : ''}<div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size: 12px; font-weight: bold; margin-top: 6px;"></div>${hasExp ? `<div style="margin-top: 4px;"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation ? `<p>${q.explanation}</p>` : ''}${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}</div></div>` : ''}</div>`;
       });
     }
 
@@ -2415,14 +2096,11 @@
       let container = document.getElementById('qpPlayQuestionsContainer');
       let q = currentQpData.questions[currentQpV2Index];
       let totalQ = currentQpData.questions.length;
-
       let isAnswered = qpStudentAnswers.hasOwnProperty(q.id);
       let savedVal = isAnswered ? qpStudentAnswers[q.id] : '';
-
       document.getElementById('qpPrevBtn').style.display = currentQpV2Index > 0 ? 'block' : 'none';
       let nextBtn = document.getElementById('qpNextBtn');
       let submitBtn = document.getElementById('qpSubmitBtn');
-
       if (currentQpV2Index < totalQ - 1) {
         nextBtn.style.display = 'block';
         nextBtn.innerText = isAnswered ? 'Tiếp Tục ➡️' : 'Xác Nhận & Tiếp Tục ➡️';
@@ -2430,203 +2108,106 @@
       } else {
         nextBtn.style.display = 'none';
         submitBtn.style.display = 'block';
-        submitBtn.innerText = isAnswered ? '📤 Nộp Bài Luyện Nhanh' : 'Xác Nhận & Nộp Bài';
+        submitBtn.innerText = isAnswered ? '📤 Nộp Bài' : 'Xác Nhận & Nộp Bài';
       }
-
       let optHtml = '';
       q.options.forEach(opt => {
         let isSel = (savedVal === opt.label);
         let bgStyle = '';
-        
         if (isAnswered) {
-          if (opt.label === savedVal) {
-             bgStyle = (savedVal === q.correct) ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;';
-          } else if (opt.label === q.correct) {
-             bgStyle = 'background: #198754; color: white;';
-          }
+          if (opt.label === savedVal) bgStyle = (savedVal === q.correct) ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;';
+          else if (opt.label === q.correct) bgStyle = 'background: #198754; color: white;';
         } else {
-           let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-           if (group && group.dataset.val === opt.label) {
-               isSel = true;
-               bgStyle = 'background: #1877f2; color: white;';
-           }
+          let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+          if (group && group.dataset.val === opt.label) { isSel = true; bgStyle = 'background: #1877f2; color: white;'; }
         }
-
         let clickEvent = isAnswered ? '' : `onclick="selectQpOpt(this, ${q.id}, '${opt.label}')"`;
         let cursorStyle = isAnswered ? 'cursor: not-allowed; opacity: 0.8;' : 'cursor: pointer;';
-
         optHtml += `<div class="opt-btn ${isSel ? 'selected' : ''}" ${clickEvent} style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px; ${bgStyle} ${cursorStyle}">${opt.label}. ${opt.text}</div>`;
       });
-
       let hasExp = q.explanation || q.expImage;
       let feedbackHtml = '';
       if (isAnswered) {
-          if (savedVal === q.correct) {
-              feedbackHtml = `<span style="color: #198754;">✓ Chính xác! Đáp án đúng là ${q.correct}</span>`;
-          } else {
-              feedbackHtml = `<span style="color: #dc3545;">✗ Sai rồi! Đáp án đúng là ${q.correct}</span>`;
-          }
+        if (savedVal === q.correct) feedbackHtml = `<span style="color: #198754;">✓ Chính xác! ĐA đúng là ${q.correct}</span>`;
+        else feedbackHtml = `<span style="color: #dc3545;">✗ Sai rồi! ĐA đúng là ${q.correct}</span>`;
       }
-
-      container.innerHTML = `
-        <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-weight: bold; color: #1877f2;">Câu ${currentQpV2Index + 1} / ${totalQ} ${isAnswered ? '<span style="color:red;font-size:12px;">(Đã khóa)</span>' : ''}</span>
-            <span style="font-size: 12px; color: #666;">Điểm: ${q.score || 0.25}đ</span>
-          </div>
-          <p style="font-weight: bold; margin-bottom: 8px;">${q.question}</p>
-          ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
-          <div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction: column; gap: 6px;">
-            ${optHtml}
-          </div>
-          <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;">${feedbackHtml}</div>
-          
-          ${(hasExp && isAnswered) ? `
-            <div style="margin-top: 6px;">
-              <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
-              <div id="qp-exp-${q.id}" class="explanation-box">
-                ${q.explanation ? `<p>${q.explanation}</p>` : ''}
-                ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-      `;
+      container.innerHTML = `<div class="card" style="background: #fdfdfd; border: 1px solid #ddd;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;"><span style="font-weight: bold; color: #1877f2; font-size: 13px;">Câu ${currentQpV2Index + 1} / ${totalQ} ${isAnswered ? '<span style="color:red;font-size:11px;">(Đã khóa)</span>' : ''}</span><span style="font-size: 11px; color: #666;">Điểm: ${q.score || 0.25}đ</span></div><p style="font-weight: bold; margin-bottom: 8px; font-size: 13px;">${q.question}</p>${q.image ? `<img src="${q.image}" class="img-preview">` : ''}<div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction: column; gap: 6px;">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size: 12px; font-weight: bold; margin-top: 6px;">${feedbackHtml}</div>${(hasExp && isAnswered) ? `<div style="margin-top: 4px;"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation ? `<p>${q.explanation}</p>` : ''}${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}</div></div>` : ''}</div>`;
     }
 
     function nextQpQuestionV2() {
       let q = currentQpData.questions[currentQpV2Index];
-      
       if (!qpStudentAnswers.hasOwnProperty(q.id)) {
         let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
         let selectedVal = group ? group.dataset.val : '';
-        
-        if (!selectedVal) {
-          showToast('Vui lòng chọn 1 đáp án để xác nhận làm tiếp!', true);
-          return;
-        }
+        if (!selectedVal) { showToast('Vui lòng chọn 1 đáp án!', true); return; }
         qpStudentAnswers[q.id] = selectedVal; 
       }
-
       if (currentQpV2Index < currentQpData.questions.length - 1) {
         currentQpV2Index++;
         renderQpQuestionV2Item();
       }
     }
 
-    function prevQpQuestionV2() {
-      if (currentQpV2Index > 0) {
-        currentQpV2Index--;
-        renderQpQuestionV2Item();
-      }
-    }
+    function prevQpQuestionV2() { if (currentQpV2Index > 0) { currentQpV2Index--; renderQpQuestionV2Item(); } }
 
     function selectQpOpt(btn, qid, label) {
       if (!isQpActive) return; 
       let group = btn.parentElement;
-      group.querySelectorAll('.opt-btn').forEach(b => {
-        b.classList.remove('selected');
-        b.style.background = 'white';
-        b.style.color = '#333';
-      });
-      btn.classList.add('selected'); 
-      btn.style.background = '#1877f2'; 
-      btn.style.color = 'white';
+      group.querySelectorAll('.opt-btn').forEach(b => { b.classList.remove('selected'); b.style.background = 'white'; b.style.color = '#333'; });
+      btn.classList.add('selected'); btn.style.background = '#1877f2'; btn.style.color = 'white';
       group.dataset.val = label;
     }
 
     function toggleQpExp(qid) {
       let box = document.getElementById(`qp-exp-${qid}`);
       let btn = box.previousElementSibling;
-      if (box.style.display === 'block') {
-        box.style.display = 'none';
-        btn.innerText = '>';
-      } else {
-        box.style.display = 'block';
-        btn.innerText = 'v';
-      }
+      if (box.style.display === 'block') { box.style.display = 'none'; btn.innerText = '>'; }
+      else { box.style.display = 'block'; btn.innerText = 'v'; }
     }
 
     async function submitQpPractice(forced = false) {
-      if (!forced && !confirm('Xác nhận nộp bài luyện nhanh?')) return;
+      if (!forced && !confirm('Xác nhận nộp bài?')) return;
       if (!isQpActive && !forced) return;
       isQpActive = false;
       clearInterval(qpTimer);
       if (activeQpRoomListener) activeQpRoomListener();
-
-      let totalEarned = 0;
-      let totalMax = 0;
-      let reviewHtml = '';
-
+      let totalEarned = 0, totalMax = 0, reviewHtml = '';
       currentQpData.questions.forEach(q => {
-        let qScore = q.score || 0.25;
-        totalMax += qScore;
-        
+        let qScore = q.score || 0.25; totalMax += qScore;
         let val = '';
         if (currentQpData.useLayoutV2) {
-            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-            if (group && group.dataset.val && !qpStudentAnswers.hasOwnProperty(q.id)) {
-                qpStudentAnswers[q.id] = group.dataset.val;
-            }
-            val = qpStudentAnswers[q.id] || '';
+          let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+          if (group && group.dataset.val && !qpStudentAnswers.hasOwnProperty(q.id)) qpStudentAnswers[q.id] = group.dataset.val;
+          val = qpStudentAnswers[q.id] || '';
         } else {
-            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
-            val = group ? (group.dataset.val || '') : '';
+          let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+          val = group ? (group.dataset.val || '') : '';
         }
-        
         let isCorrect = (val && val === q.correct);
         let isUnanswered = !val;
-
         if (isCorrect) totalEarned += qScore;
-
         let statusColor = isUnanswered ? '#1877f2' : (isCorrect ? '#52c41a' : '#ff4d4f');
         let statusText = isUnanswered ? 'Chưa làm' : (isCorrect ? '✓ Đúng' : '✗ Sai');
-
         let hasExp = q.explanation || q.expImage;
         let expContent = '';
         if (q.explanation) expContent += `<p>${q.explanation}</p>`;
         if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
-
-        reviewHtml += `
-          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isUnanswered ? '#e7f3ff' : (isCorrect ? '#f6ffed' : '#fff2f0')}; font-size: 13px;">
-            <strong>Câu ${q.id}:</strong> <span style="color:${statusColor}; font-weight:bold;">${statusText} (+${qScore}đ)</span>
-            <div style="margin-top:4px;">
-              - Bạn chọn: <b style="color:${statusColor};">${val || 'Không làm'}</b><br>
-              ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
-            </div>
-            ${hasExp ? `
-              <div style="margin-top:5px;">
-                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
-                <div class="explanation-box">${expContent}</div>
-              </div>
-            ` : ''}
-          </div>
-        `;
+        reviewHtml += `<div style="border:1px solid #ddd; padding:8px; border-radius:6px; margin-bottom:6px; background:${isUnanswered ? '#e7f3ff' : (isCorrect ? '#f6ffed' : '#fff2f0')}; font-size: 12px;"><strong>Câu ${q.id}:</strong> <span style="color:${statusColor}; font-weight:bold;">${statusText} (+${qScore}đ)</span><div style="margin-top:4px;">- Bạn chọn: <b style="color:${statusColor};">${val || 'Không làm'}</b><br>${!isCorrect ? `- ĐA đúng: <b style="color:green;">${q.correct}</b>` : ''}</div>${hasExp ? `<div style="margin-top:4px;"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>` : ''}</div>`;
       });
-
       let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
       let timeSpentSeconds = currentQpData.enableTimer ? ((currentQpData.durationMinutes || 15) * 60) - qpTimeLeft : qpTimeLeft;
-
       document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
+      document.getElementById('qpResultDetailText').innerText = `Thời gian: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
       document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
-
-      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
-        name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, timestamp: Date.now()
-      });
-      showToast('📤 Nộp bài luyện thành công!');
+      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), { name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, timestamp: Date.now() });
+      showToast('📤 Nộp bài thành công!');
       switchView('qpResultView');
     }
 
     function toggleResultExp(btn) {
       let box = btn.nextElementSibling;
-      if (box.style.display === 'block') {
-        box.style.display = 'none';
-        btn.innerText = '>';
-      } else {
-        box.style.display = 'block';
-        btn.innerText = 'v';
-      }
+      if (box.style.display === 'block') { box.style.display = 'none'; btn.innerText = '>'; }
+      else { box.style.display = 'block'; btn.innerText = 'v'; }
     }
 
     async function loadLeaderboard() {
@@ -2634,52 +2215,26 @@
       const tbody = document.getElementById('lbTableBody');
       tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
       if (!code) { showToast('Nhập mã bài!', true); return; }
-
       let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
-      if (!snapshot.exists()) {
-        snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
-      }
-
+      if (!snapshot.exists()) snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
       if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
-
       let history = Object.values(snapshot.val());
       history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-
       tbody.innerHTML = '';
       history.forEach((row, idx) => {
         let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
-        let warnings = row.cheatWarnings || 0;
-        let leaveSec = row.totalLeaveTime || 0;
+        let warnings = row.cheatWarnings || 0, leaveSec = row.totalLeaveTime || 0;
         let rowId = `lb_detail_${idx}`;
-
-        tbody.innerHTML += `
-          <tr>
-            <td><b>#${idx + 1}</b></td>
-            <td>${row.name}</td>
-            <td><b style="color:#198754;">${row.score}</b></td>
-            <td>${m}p ${s}s</td>
-            <td>
-              <button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button>
-              <div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">
-                - Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>
-                - Thời gian rời phòng thi: <b>${leaveSec} giây</b>
-              </div>
-            </td>
-          </tr>`;
+        tbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${row.name}</td><td><b style="color:#198754;">${row.score}</b></td><td>${m}p ${s}s</td><td><button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button><div id="${rowId}" style="display:none; text-align:left; font-size:11px; margin-top:4px; background:#f8f9fa; padding:4px; border-radius:4px;">- Cảnh cáo: <b style="color:red;">${warnings} lần</b><br>- Rời tab: <b>${leaveSec}s</b></div></td></tr>`;
       });
-      showToast('📊 Tải bảng xếp hạng thành công!');
+      showToast('📊 Tải BXH thành công!');
     }
 
     function toggleLbDetail(rowId) {
       let el = document.getElementById(rowId);
       let btn = el.previousElementSibling;
-      if (el.style.display === 'block') {
-        el.style.display = 'none';
-        btn.innerText = '>';
-      } else {
-        el.style.display = 'block';
-        btn.innerText = 'v';
-      }
+      if (el.style.display === 'block') { el.style.display = 'none'; btn.innerText = '>'; }
+      else { el.style.display = 'block'; btn.innerText = 'v'; }
     }
 
     addQuestionV2('mc');
