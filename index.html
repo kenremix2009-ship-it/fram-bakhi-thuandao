@@ -1122,7 +1122,7 @@
       reader.onerror = error => reject(error);
     });
 
-    // --- TÍNH NĂNG MỚI: QUẢN LÝ PLAYLIST VÀ THÊM FILE NHẠC TỪ TỆP TẢI XUỐNG ---
+    // --- SỬA LỖI: QUẢN LÝ PLAYLIST VÀ THÊM FILE NHẠC TỪ TỆP TẢI XUỐNG ---
     async function addLocalAudioToList() {
       let fileInput = document.getElementById('localAudioFileInput');
       let nameInput = document.getElementById('localAudioNameInput');
@@ -1834,14 +1834,21 @@
         let lbTbody = document.getElementById('qpManageResultsBody');
         lbTbody.innerHTML = '';
         if (!snapshot.exists()) {
-          lbTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả.</td></tr>';
+          lbTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả</td></tr>';
           return;
         }
-        let history = Object.values(snapshot.val());
-        history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-        history.forEach((row, idx) => {
-          let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
-          lbTbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${row.name}</td><td><b style="color:#198754;">${row.score}</b></td><td>${m}p ${s}s</td></tr>`;
+        let results = [];
+        snapshot.forEach(childSnap => { results.push(childSnap.val()); });
+        results.sort((a, b) => b.score - a.score || a.timeSpent - b.timeSpent);
+        results.forEach((r, idx) => {
+          lbTbody.innerHTML += `
+            <tr>
+              <td><b>#${idx + 1}</b></td>
+              <td>${r.name}</td>
+              <td style="color:green; font-weight:bold;">${r.score}</td>
+              <td>${Math.floor(r.timeSpent / 60)}p ${r.timeSpent % 60}s</td>
+            </tr>
+          `;
         });
       });
     }
@@ -1849,14 +1856,14 @@
     async function kickQpStudent(code, studentId) {
       if (confirm('Kick học sinh này?')) {
         await window.dbRemove(window.ref(window.db, `qp_rooms/${code}/students/${studentId}`));
-        showToast('Đã kick học sinh!');
+        showToast('Đã kick thành công!');
       }
     }
 
     async function updateQpStatus(status) {
       if (!managedQpCodeGlobal) return;
       await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status: status });
-      showToast(`Đã cập nhật trạng thái: ${status}`);
+      showToast(`Đã chuyển trạng thái bài luyện thành: ${status}`);
     }
 
     async function deleteQpExam() {
@@ -1865,125 +1872,105 @@
         await window.dbRemove(window.ref(window.db, `quick_practices/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_leaderboard/${managedQpCodeGlobal}`));
-        showToast('🗑️ Xóa đề thành công!');
+        showToast('🗑️ Đã xóa bài luyện!');
         document.getElementById('qpManagementDashboard').style.display = 'none';
       }
     }
 
+    // --- HỌC SINH THAM GIA ---
     async function startStudentParticipation() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
       const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
-      const pass = document.getElementById('studentExtraPass').value.trim();
+      const extraPass = document.getElementById('studentExtraPass').value.trim();
 
-      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', true); return; }
+      if (!name || !code) { showToast('Vui lòng nhập Họ Tên và Mã bài!', true); return; }
+      studentNameGlobal = name;
 
-      showLoadingSequence(async () => {
-        if (mode === 'practice') {
-          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
-          let qpData = snapshot.val();
-          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', true); return; }
+      if (mode === 'normal' || mode === 'live') {
+        const snap = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+        if (!snap.exists()) { showToast('Không tìm thấy đề thi chính thức!', true); return; }
+        currentExamData = snap.val();
 
-          currentQpData = qpData;
-          studentNameGlobal = name;
+        if (currentExamData.isLiveRoom) {
+          if (extraPass !== currentExamData.livePassword) { showToast('❌ Mật khẩu phòng thi không đúng!', true); return; }
+          
+          let studentKey = 's_' + Date.now();
+          studentSessionKeyGlobal = studentKey;
 
-          let studentKey = 'qp_s_' + Date.now();
-          let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
-          await window.dbSet(roomRef, { name: name, status: 'waiting' });
-
-          if (!qpData.isAdvancedMode) {
-            await window.dbUpdate(roomRef, { status: 'testing' });
-            launchQpPracticeInterface();
-            return;
-          }
-
-          document.getElementById('qpWaitTitle').innerText = qpData.title;
-          document.getElementById('qpWaitStudentName').innerText = name;
-          document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
-          switchView('qpWaitingRoomView');
-
-          let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
-          activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
-            let data = snapshot.val() || {};
-            let students = data.students || {};
-            document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
-
-            if (!students[studentKey]) {
-              alert('Bạn đã bị giáo viên kick khỏi phòng!');
-              leaveQpWaitingRoom();
-              return;
-            }
-
-            if (data.status === 'started') {
-              if (activeQpRoomListener) activeQpRoomListener();
-              window.dbUpdate(roomRef, { status: 'testing' });
-              launchQpPracticeInterface();
-            } else if (data.status === 'ended') {
-              alert('Phòng luyện đã kết thúc!');
-              leaveQpWaitingRoom();
-            }
-          });
-
-        } else if (mode === 'live') {
-          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
-          let exam = snapshot.val();
-          if (!exam.isLiveRoom) { showToast('Đề thi này không phải là phòng thi chuyên dụng!', true); return; }
-          if (exam.livePassword && exam.livePassword !== pass) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
-
-          currentExamData = exam;
-          studentNameGlobal = name;
-          studentSessionKey = 'live_s_' + Date.now();
-          studentSessionKeyGlobal = studentSessionKey;
-
-          let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKey}`);
+          let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentKey}`);
           await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
 
-          document.getElementById('waitingRoomExamTitle').innerText = exam.title;
+          document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
           document.getElementById('waitStudentName').innerText = name;
-          document.getElementById('waitDuration').innerText = exam.duration;
+          document.getElementById('waitDuration').innerText = currentExamData.duration;
           switchView('studentWaitingRoomView');
 
-          let roomMainRef = window.ref(window.db, `liverooms/${code}`);
-          activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          if (activeStudentRoomListener) activeStudentRoomListener();
+          activeStudentRoomListener = window.onValue(window.ref(window.db, `liverooms/${code}`), (snapshot) => {
             let data = snapshot.val() || {};
             let students = data.students || {};
-            document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
-
-            if (!students[studentSessionKey]) {
-              alert('Bạn đã bị giáo viên kick khỏi phòng!');
-              leaveWaitingRoom();
-              return;
-            }
+            let keys = Object.keys(students);
+            document.getElementById('waitStudentCount').innerText = keys.length;
 
             if (data.status === 'started') {
               if (activeStudentRoomListener) activeStudentRoomListener();
-              window.dbUpdate(roomRef, { status: 'testing' });
-              startOfficialExamSession();
+              showLoadingSequence(() => launchStudentExamSession(currentExamData));
             } else if (data.status === 'ended') {
-              alert('Phòng thi đã kết thúc!');
-              leaveWaitingRoom();
+              if (activeStudentRoomListener) activeStudentRoomListener();
+              showToast('Kì thi đã kết thúc bởi giáo viên!', true);
+              switchView('studentLoginView');
             }
           });
-
         } else {
-          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
-          currentExamData = snapshot.val();
-          if (currentExamData.isLiveRoom) { showToast('Đề thi này yêu cầu vào qua Phòng thi chuyên dụng (Live Exam)!', true); return; }
-          studentNameGlobal = name;
-          studentSessionKeyGlobal = 'free_' + Date.now();
-          startOfficialExamSession();
+          showLoadingSequence(() => launchStudentExamSession(currentExamData));
         }
-      });
+      } else if (mode === 'practice') {
+        const snap = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
+        if (!snap.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
+        currentQpData = snap.val();
+
+        if (currentQpData.password && extraPass !== currentQpData.password) {
+          showToast('❌ Mật khẩu bài luyện không đúng!', true); return;
+        }
+
+        if (currentQpData.isAdvancedMode) {
+          let studentKey = 'qp_' + Date.now();
+          studentSessionKeyGlobal = studentKey;
+
+          await window.dbSet(window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`), { name: name, status: 'waiting' });
+
+          document.getElementById('qpWaitTitle').innerText = currentQpData.title;
+          document.getElementById('qpWaitStudentName').innerText = name;
+          document.getElementById('qpWaitQCount').innerText = currentQpData.questions.length;
+          switchView('qpWaitingRoomView');
+
+          if (activeQpRoomListener) activeQpRoomListener();
+          activeQpRoomListener = window.onValue(window.ref(window.db, `qp_rooms/${code}`), (snapshot) => {
+            let data = snapshot.val() || {};
+            let students = data.students || {};
+            let keys = Object.keys(students);
+            document.getElementById('qpWaitStudentCount').innerText = keys.length;
+
+            if (data.status === 'started') {
+              if (activeQpRoomListener) activeQpRoomListener();
+              showLoadingSequence(() => launchQpPracticeSession(currentQpData));
+            } else if (data.status === 'ended') {
+              if (activeQpRoomListener) activeQpRoomListener();
+              showToast('Bài luyện đã kết thúc!', true);
+              switchView('studentLoginView');
+            }
+          });
+        } else {
+          showLoadingSequence(() => launchQpPracticeSession(currentQpData));
+        }
+      }
     }
 
     function leaveWaitingRoom() {
       if (activeStudentRoomListener) activeStudentRoomListener();
-      if (studentSessionKeyGlobal && document.getElementById('studentExamCode').value) {
-        let code = document.getElementById('studentExamCode').value.trim().toUpperCase();
-        window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`));
+      if (currentExamData && studentSessionKeyGlobal) {
+        window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));
       }
       switchView('studentLoginView');
       showToast('Đã rời phòng chờ.');
@@ -1991,152 +1978,430 @@
 
     function leaveQpWaitingRoom() {
       if (activeQpRoomListener) activeQpRoomListener();
+      if (currentQpData && studentSessionKeyGlobal) {
+        window.dbRemove(window.ref(window.db, `qp_rooms/${currentQpData.code}/students/${studentSessionKeyGlobal}`));
+      }
       switchView('studentLoginView');
       showToast('Đã rời phòng chờ bài luyện.');
     }
 
-    function startOfficialExamSession() {
-      switchView('studentExamView');
-      document.getElementById('displayExamTitle').innerText = currentExamData.title;
+    async function launchStudentExamSession(exam) {
+      if (exam.isLiveRoom && studentSessionKeyGlobal) {
+        await window.dbUpdate(window.ref(window.db, `liverooms/${exam.code}/students/${studentSessionKeyGlobal}`), { status: 'testing' });
+      }
+
+      document.getElementById('displayExamTitle').innerText = exam.title;
       document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${studentNameGlobal}`;
+      switchView('studentExamView');
 
-      timeLeft = currentExamData.duration * 60;
-      updateTimerDisplay();
-      if (examTimer) clearInterval(examTimer);
-      examTimer = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(examTimer);
-          submitStudentExam(true);
-        }
-      }, 1000);
-
-      renderExamMediaAndAnswers();
-      initAntiCheatSystem();
-    }
-
-    function updateTimerDisplay() {
-      let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-      document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-
-    async function renderExamMediaAndAnswers() {
       let mediaContainer = document.getElementById('examMediaContainer');
       mediaContainer.innerHTML = '';
-      let media = currentExamData.media;
-
-      if (media && media.files && media.files.length > 0) {
-        if (media.type === 'pdf') {
-          let loadingTask = pdfjsLib.getDocument(media.files[0]);
-          let pdfDoc = await loadingTask.promise;
-          for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-            let page = await pdfDoc.getPage(pageNum);
-            let viewport = page.getViewport({ scale: 1.5 });
-            let canvas = document.createElement('canvas');
-            canvas.className = 'pdf-canvas';
-            let context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            await page.render({ canvasContext: context, viewport: viewport }).promise;
-            mediaContainer.appendChild(canvas);
-          }
-        } else {
-          media.files.forEach(imgBase64 => {
-            let img = document.createElement('img');
-            img.src = imgBase64;
-            img.className = 'img-preview';
-            mediaContainer.appendChild(img);
+      if (exam.media) {
+        if (exam.media.type === 'pdf' && exam.media.files.length > 0) {
+          renderPdfToContainer(exam.media.files[0], mediaContainer);
+        } else if (exam.media.type === 'image') {
+          exam.media.files.forEach(img => {
+            mediaContainer.innerHTML += `<img src="${img}" class="img-preview" alt="Đề thi">`;
           });
         }
       }
 
       let sheet = document.getElementById('studentAnswerSheet');
       sheet.innerHTML = '';
-      currentExamData.questions.forEach((q, idx) => {
-        let qDiv = document.createElement('div');
-        qDiv.style.marginBottom = '15px';
-        qDiv.style.padding = '10px';
-        qDiv.style.background = '#f8f9fa';
-        qDiv.style.borderRadius = '6px';
-        qDiv.dataset.qid = q.id;
-        qDiv.dataset.qtype = q.type;
-
-        let inner = `<p style="font-weight:bold; font-size:13px; margin-bottom:8px;">Câu ${q.id} (${q.score}đ):</p>`;
+      exam.questions.forEach((q, idx) => {
+        let qHtml = `<div style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+          <p style="font-weight: bold; font-size: 13px; margin-bottom: 6px;">Câu ${q.id} (${q.score}đ):</p>`;
 
         if (q.type === 'mc') {
-          inner += `<div class="opt-group">`;
+          qHtml += `<div class="opt-group" data-qid="${q.id}">`;
           ['A', 'B', 'C', 'D'].forEach(opt => {
-            inner += `<div class="opt-btn" onclick="selectMcOpt(this, '${opt}')">${opt}</div>`;
+            qHtml += `<div class="opt-btn" onclick="selectMcOption(this, ${q.id}, '${opt}')">${opt}</div>`;
           });
-          inner += `</div>`;
+          qHtml += `</div>`;
         } else if (q.type === 'tf') {
-          let branches = q.correctAnswer.split(',');
-          inner += `<div style="display:flex; flex-direction:column; gap:5px;">`;
-          branches.forEach((_, bIdx) => {
-            let l = ['a', 'b', 'c', 'd'][bIdx];
-            inner += `
-              <div class="tf-branch-row" data-branch="${bIdx}">
-                <span style="font-size:12px; font-weight:bold;">Ý ${l})</span>
-                <div class="tf-branch-opts">
-                  <div class="tf-sub-btn" onclick="selectTfOpt(this, 'Đ')">Đ</div>
-                  <div class="tf-sub-btn" onclick="selectTfOpt(this, 'S')">S</div>
+          let branchLetters = ['a', 'b', 'c', 'd'];
+          qHtml += `<div style="display:flex; flex-direction:column; gap:5px;">`;
+          branchLetters.forEach((l, bIdx) => {
+            qHtml += `
+              <div class="tf-branch-row">
+                <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
+                <div class="tf-branch-opts" data-qid="${q.id}" data-bidx="${bIdx}">
+                  <div class="tf-sub-btn" onclick="selectTfOption(this, ${q.id}, ${bIdx}, 'Đ')">Đ</div>
+                  <div class="tf-sub-btn" onclick="selectTfOption(this, ${q.id}, ${bIdx}, 'S')">S</div>
                 </div>
               </div>
             `;
           });
-          inner += `</div>`;
+          qHtml += `</div>`;
         } else if (q.type === 'sa') {
-          inner += `<input type="text" class="student-sa-input" placeholder="Nhập câu trả lời ngắn..." style="margin:0; font-size:13px;">`;
+          qHtml += `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời ngắn..." style="margin:0; padding:6px;">`;
         }
 
-        qDiv.innerHTML = inner;
-        sheet.appendChild(qDiv);
+        qHtml += `</div>`;
+        sheet.innerHTML += qHtml;
       });
-    }
 
-    function selectMcOpt(btn, opt) {
-      let group = btn.parentElement;
-      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      btn.dataset.selected = opt;
-    }
-
-    function selectTfOpt(btn, val) {
-      let row = btn.parentElement;
-      row.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      btn.dataset.selected = val;
-    }
-
-    function initAntiCheatSystem() {
+      timeLeft = exam.duration * 60;
+      isExamActive = true;
       cheatWarnings = 0;
       totalTabLeaveTime = 0;
       document.getElementById('cheatWarningBadge').innerText = 'Cảnh báo: 0';
 
-      document.addEventListener('visibilitychange', handleVisibilityChange);
+      if (examTimer) clearInterval(examTimer);
+      examTimer = setInterval(() => {
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        if (timeLeft <= 0) {
+          clearInterval(examTimer);
+          isExamActive = false;
+          submitStudentExam(true);
+        }
+      }, 1000);
     }
 
-    function handleVisibilityChange() {
-      if (!isExamActive) return;
-      if (document.hidden) {
-        tabLeaveStartTime = Date.now();
-      } else {
-        if (tabLeaveStartTime) {
-          let leaveDuration = Date.now() - tabLeaveStartTime;
-          totalTabLeaveTime += leaveDuration;
-          tabLeaveStartTime = null;
+    async function renderPdfToContainer(base64Pdf, container) {
+      try {
+        let pdfData = atob(base64Pdf.split(',')[1]);
+        let loadingTask = pdfjsLib.getDocument({ data: pdfData });
+        let pdfDoc = await loadingTask.promise;
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          let page = await pdfDoc.getPage(i);
+          let viewport = page.getViewport({ scale: 1.5 });
+          let canvas = document.createElement('canvas');
+          canvas.className = 'pdf-canvas';
+          let context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          container.appendChild(canvas);
+        }
+      } catch (err) {
+        console.error('Lỗi render PDF:', err);
+        container.innerHTML = '<p style="color:white;">Lỗi hiển thị PDF đề thi.</p>';
+      }
+    }
 
-          if (leaveDuration >= CHEAT_TIME_THRESHOLD) {
+    function selectMcOption(el, qId, opt) {
+      let group = el.parentElement;
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function selectTfOption(el, qId, bIdx, val) {
+      let row = el.parentElement;
+      row.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    async function submitStudentExam(isAuto = false) {
+      if (!isExamActive && !isAuto) return;
+      if (!isAuto && !confirm('Bạn có chắc muốn nộp bài thi?')) return;
+
+      isExamActive = false;
+      if (examTimer) clearInterval(examTimer);
+
+      let exam = currentExamData;
+      let totalScore = 0;
+      let maxScore = 0;
+      let reviewDetails = [];
+
+      exam.questions.forEach(q => {
+        maxScore += (q.score || (q.type === 'mc' ? 0.25 : (q.type === 'tf' ? 1.0 : 0.5)));
+        let qScore = q.score || (q.type === 'mc' ? 0.25 : (q.type === 'tf' ? 1.0 : 0.5));
+
+        if (q.type === 'mc') {
+          let selected = document.querySelector(`.opt-group[data-qid="${q.id}"] .opt-btn.selected`);
+          let studentAns = selected ? selected.innerText : '';
+          let isCorrect = studentAns === q.correctAnswer;
+          if (isCorrect) totalScore += qScore;
+          reviewDetails.push({ id: q.id, type: 'mc', studentAns, correctAns: q.correctAnswer, isCorrect, scoreEarned: isCorrect ? qScore : 0, maxScore: qScore, explanation: q.explanation, expImage: q.expImage });
+        } else if (q.type === 'tf') {
+          let branchOpts = document.querySelectorAll(`.tf-branch-opts[data-qid="${q.id}"]`);
+          let studentBranches = [];
+          branchOpts.forEach(bo => {
+            let sel = bo.querySelector('.tf-sub-btn.selected');
+            studentBranches.push(sel ? sel.innerText : '');
+          });
+          let correctBranches = q.correctAnswer.split(',');
+          let branchScores = q.branchScores || [0.25, 0.25, 0.25, 0.25];
+          let qEarned = 0;
+          studentBranches.forEach((sb, bIdx) => {
+            if (sb === correctBranches[bIdx]) qEarned += (branchScores[bIdx] || 0.25);
+          });
+          totalScore += qEarned;
+          reviewDetails.push({ id: q.id, type: 'tf', studentAns: studentBranches.join(','), correctAns: q.correctAnswer, isCorrect: qEarned === qScore, scoreEarned: qEarned, maxScore: qScore, explanation: q.explanation, expImage: q.expImage });
+        } else if (q.type === 'sa') {
+          let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
+          let studentAns = input ? input.value.trim() : '';
+          let isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+          if (isCorrect) totalScore += qScore;
+          reviewDetails.push({ id: q.id, type: 'sa', studentAns, correctAns: q.correctAnswer, isCorrect, scoreEarned: isCorrect ? qScore : 0, maxScore: qScore, explanation: q.explanation, expImage: q.expImage });
+        }
+      });
+
+      totalScore = parseFloat(totalScore.toFixed(2));
+      let finalScore10 = parseFloat(((totalScore / maxScore) * 10).toFixed(2));
+
+      document.getElementById('resultScore').innerText = `${finalScore10} / 10 Điểm`;
+      document.getElementById('resultDetailText').innerText = `Đạt được ${totalScore} điểm trên tổng số ${maxScore} điểm.`;
+
+      let reviewContainer = document.getElementById('resultReviewContainer');
+      reviewContainer.innerHTML = '';
+      reviewDetails.forEach(r => {
+        reviewContainer.innerHTML += `
+          <div style="background:#f8f9fa; border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px;">
+            <b>Câu ${r.id}:</b> Bạn chọn: <b style="color:${r.isCorrect?'green':'red'};">${r.studentAns || 'Chưa chọn'}</b> | Đáp án chuẩn: <b style="color:green;">${r.correctAns}</b> (${r.scoreEarned}/${r.maxScore}đ)
+            ${r.explanation ? `<div style="margin-top:6px; font-size:12px; color:#333; background:#e7f3ff; padding:6px; border-radius:4px;">💡 <b>Lời giải:</b> ${r.explanation}</div>` : ''}
+          </div>
+        `;
+      });
+
+      let timeSpent = (exam.duration * 60) - timeLeft;
+      let recordObj = {
+        name: studentNameGlobal,
+        score: finalScore10,
+        timeSpent: timeSpent,
+        cheatWarnings: cheatWarnings,
+        totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
+        timestamp: Date.now()
+      };
+
+      await window.dbSet(window.ref(window.db, `leaderboard/${exam.code}/${Date.now()}`), recordObj);
+
+      if (exam.isLiveRoom && studentSessionKeyGlobal) {
+        await window.dbUpdate(window.ref(window.db, `liverooms/${exam.code}/students/${studentSessionKeyGlobal}`), { status: 'submitted' });
+      }
+
+      switchView('studentResultView');
+      showToast('📤 Nộp bài thi thành công!');
+    }
+
+    // --- BÀI LUYỆN NHANH HỌC SINH ---
+    async function launchQpPracticeSession(qp) {
+      if (qp.isAdvancedMode && studentSessionKeyGlobal) {
+        await window.dbUpdate(window.ref(window.db, `qp_rooms/${qp.code}/students/${studentSessionKeyGlobal}`), { status: 'testing' });
+      }
+
+      currentQpV2Index = 0;
+      qpStudentAnswers = {};
+      isQpActive = true;
+
+      document.getElementById('qpPlayTitle').innerText = qp.title;
+      switchView('qpPracticingView');
+
+      if (qp.useLayoutV2) {
+        document.getElementById('qpPrevBtn').style.display = 'inline-block';
+        document.getElementById('qpNextBtn').style.display = 'inline-block';
+        document.getElementById('qpSubmitBtn').style.display = 'none';
+        renderQpV2Question(0);
+      } else {
+        document.getElementById('qpPrevBtn').style.display = 'none';
+        document.getElementById('qpNextBtn').style.display = 'none';
+        document.getElementById('qpSubmitBtn').style.display = 'block';
+
+        let container = document.getElementById('qpPlayQuestionsContainer');
+        container.innerHTML = '';
+        qp.questions.forEach((q, idx) => {
+          let html = `<div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">
+            <p style="font-weight:bold; font-size:14px; margin-bottom:6px;">Câu ${idx + 1}: ${q.question}</p>`;
+          if (q.image) html += `<img src="${q.image}" class="img-preview">`;
+          
+          html += `<div class="opt-group" data-qidx="${idx}">`;
+          q.options.forEach(opt => {
+            html += `<div class="opt-btn" onclick="selectQpOption(this, ${idx}, '${opt.label}')">${opt.label}</div>`;
+          });
+          html += `</div></div>`;
+          container.innerHTML += html;
+        });
+      }
+
+      if (qp.enableTimer && qp.durationMinutes > 0) {
+        qpTimeLeft = qp.durationMinutes * 60;
+        document.getElementById('qpPlayTimer').style.display = 'inline';
+        if (qpTimer) clearInterval(qpTimer);
+        qpTimer = setInterval(() => {
+          qpTimeLeft--;
+          let m = Math.floor(qpTimeLeft / 60);
+          let s = qpTimeLeft % 60;
+          document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+          if (qpTimeLeft <= 0) {
+            clearInterval(qpTimer);
+            isQpActive = false;
+            submitQpPractice(true);
+          }
+        }, 1000);
+      } else {
+        document.getElementById('qpPlayTimer').style.display = 'none';
+      }
+    }
+
+    function renderQpV2Question(index) {
+      let qp = currentQpData;
+      let q = qp.questions[index];
+      let container = document.getElementById('qpPlayQuestionsContainer');
+
+      let html = `<div style="margin-bottom:15px;">
+        <p style="font-weight:bold; font-size:15px; margin-bottom:8px;">Câu ${index + 1} / ${qp.questions.length}: ${q.question}</p>`;
+      if (q.image) html += `<img src="${q.image}" class="img-preview">`;
+
+      let currentAns = qpStudentAnswers[index] || '';
+      html += `<div class="opt-group" data-qidx="${index}">`;
+      q.options.forEach(opt => {
+        let isSel = currentAns === opt.label ? 'selected' : '';
+        html += `<div class="opt-btn ${isSel}" onclick="selectQpOption(this, ${index}, '${opt.label}')">${opt.label}</div>`;
+      });
+      html += `</div></div>`;
+      container.innerHTML = html;
+
+      document.getElementById('qpPrevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+      if (index < qp.questions.length - 1) {
+        document.getElementById('qpNextBtn').style.display = 'inline-block';
+        document.getElementById('qpSubmitBtn').style.display = 'none';
+        document.getElementById('qpNextBtn').innerText = 'Tiếp Tục ➡️';
+      } else {
+        document.getElementById('qpNextBtn').style.display = 'none';
+        document.getElementById('qpSubmitBtn').style.display = 'block';
+      }
+    }
+
+    function selectQpOption(el, qIndex, label) {
+      let group = el.parentElement;
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      qpStudentAnswers[qIndex] = label;
+    }
+
+    function prevQpQuestionV2() {
+      if (currentQpV2Index > 0) {
+        currentQpV2Index--;
+        renderQpV2Question(currentQpV2Index);
+      }
+    }
+
+    function nextQpQuestionV2() {
+      if (currentQpV2Index < currentQpData.questions.length - 1) {
+        currentQpV2Index++;
+        renderQpV2Question(currentQpV2Index);
+      }
+    }
+
+    async function submitQpPractice(isAuto = false) {
+      if (!isQpActive && !isAuto) return;
+      if (!isAuto && !confirm('Nộp bài luyện nhanh?')) return;
+
+      isQpActive = false;
+      if (qpTimer) clearInterval(qpTimer);
+
+      let qp = currentQpData;
+      let totalScore = 0;
+      let maxScore = 0;
+      let reviewDetails = [];
+
+      qp.questions.forEach((q, idx) => {
+        maxScore += (q.score || 0.25);
+        let studentAns = qpStudentAnswers[idx] || '';
+        if (!qp.useLayoutV2) {
+          let sel = document.querySelector(`.opt-group[data-qidx="${idx}"] .opt-btn.selected`);
+          studentAns = sel ? sel.innerText : '';
+          qpStudentAnswers[idx] = studentAns;
+        }
+
+        let isCorrect = studentAns === q.correct;
+        if (isCorrect) totalScore += (q.score || 0.25);
+
+        reviewDetails.push({
+          id: q.id, question: q.question, studentAns, correctAns: q.correct,
+          isCorrect, scoreEarned: isCorrect ? (q.score || 0.25) : 0, maxScore: q.score || 0.25,
+          explanation: q.explanation, expImage: q.expImage
+        });
+      });
+
+      totalScore = parseFloat(totalScore.toFixed(2));
+      let finalScore10 = parseFloat(((totalScore / maxScore) * 10).toFixed(2));
+
+      document.getElementById('qpResultScore').innerText = `${finalScore10} / 10 Điểm`;
+      document.getElementById('qpResultDetailText').innerText = `Đạt được ${totalScore} điểm trên tổng số ${maxScore} điểm.`;
+
+      let reviewContainer = document.getElementById('qpResultReviewContainer');
+      reviewContainer.innerHTML = '';
+      reviewDetails.forEach(r => {
+        reviewContainer.innerHTML += `
+          <div style="background:#f8f9fa; border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px;">
+            <b>Câu ${r.id}:</b> ${r.question}<br>
+            - Bạn chọn: <b style="color:${r.isCorrect?'green':'red'};">${r.studentAns || 'Chưa chọn'}</b> | Đáp án chuẩn: <b style="color:green;">${r.correctAns}</b> (${r.scoreEarned}/${r.maxScore}đ)
+            ${r.explanation ? `<div style="margin-top:6px; font-size:12px; color:#333; background:#e7f3ff; padding:6px; border-radius:4px;">💡 <b>Lời giải:</b> ${r.explanation}</div>` : ''}
+          </div>
+        `;
+      });
+
+      let timeSpent = qp.durationMinutes > 0 ? (qp.durationMinutes * 60) - qpTimeLeft : 0;
+      let recordObj = {
+        name: studentNameGlobal,
+        score: finalScore10,
+        timeSpent: timeSpent,
+        timestamp: Date.now()
+      };
+
+      await window.dbSet(window.ref(window.db, `qp_leaderboard/${qp.code}/${Date.now()}`), recordObj);
+      switchView('qpResultView');
+      showToast('📤 Nộp bài luyện nhanh thành công!');
+    }
+
+    // --- BẢNG XẾP HẠNG ---
+    async function loadLeaderboard() {
+      let code = document.getElementById('searchLbCode').value.trim().toUpperCase();
+      if (!code) { showToast('Vui lòng nhập mã bài!', true); return; }
+
+      let snap = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      let tbody = document.getElementById('lbTableBody');
+      tbody.innerHTML = '';
+
+      if (!snap.exists()) {
+        tbody.innerHTML = '<tr><td colspan="5">Chưa có kết quả nào cho mã này.</td></tr>';
+        return;
+      }
+
+      let results = [];
+      snap.forEach(childSnap => { results.push(childSnap.val()); });
+      results.sort((a, b) => b.score - a.score || a.timeSpent - b.timeSpent);
+
+      results.forEach((r, idx) => {
+        let leaveSec = r.totalLeaveTime || 0;
+        tbody.innerHTML += `
+          <tr>
+            <td><b>#${idx + 1}</b></td>
+            <td>${r.name}</td>
+            <td style="color:green; font-weight:bold;">${r.score}</td>
+            <td>${Math.floor(r.timeSpent / 60)}p ${r.timeSpent % 60}s</td>
+            <td>Cảnh cáo: ${r.cheatWarnings || 0} lần (${leaveSec}s)</td>
+          </tr>
+        `;
+      });
+    }
+
+    // --- CHỐNG GIAN LÂN ---
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (isExamActive) {
+          tabLeaveStartTime = Date.now();
+        }
+      } else {
+        if (isExamActive && tabLeaveStartTime) {
+          let duration = Date.now() - tabLeaveStartTime;
+          tabLeaveStartTime = null;
+          totalTabLeaveTime += duration;
+
+          if (duration >= CHEAT_TIME_THRESHOLD) {
             cheatWarnings++;
             document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
             document.getElementById('cheatModalCount').innerText = cheatWarnings;
-            document.getElementById('cheatModalTime').innerText = Math.round(totalTabLeaveTime / 1000) + 's';
+            document.getElementById('cheatModalTime').innerText = `${Math.round(duration / 1000)}s`;
             document.getElementById('cheatAlertModal').style.display = 'flex';
 
-            if (studentSessionKeyGlobal && document.getElementById('studentExamCode').value) {
-              let code = document.getElementById('studentExamCode').value.trim().toUpperCase();
-              window.dbUpdate(window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`), {
+            if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
+              window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
                 cheatWarnings: cheatWarnings,
                 totalLeaveTime: totalTabLeaveTime
               });
@@ -2144,307 +2409,10 @@
           }
         }
       }
-    }
+    });
 
     function dismissCheatAlert() {
       document.getElementById('cheatAlertModal').style.display = 'none';
-    }
-
-    async function submitStudentExam(isAuto = false) {
-      if (!isAuto && !confirm('Bạn có chắc muốn nộp bài thi?')) return;
-      isExamActive = false;
-      if (examTimer) clearInterval(examTimer);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-
-      let totalScore = 0;
-      let maxPossibleScore = 0;
-      let reviewDetails = [];
-
-      let qDivs = document.querySelectorAll('#studentAnswerSheet > div');
-      qDivs.forEach((qDiv, idx) => {
-        let q = currentExamData.questions[idx];
-        maxPossibleScore += q.score;
-
-        let studentAns = '';
-        let isCorrect = false;
-
-        if (q.type === 'mc') {
-          let sel = qDiv.querySelector('.opt-btn.selected');
-          studentAns = sel ? sel.dataset.selected : '';
-          if (studentAns === q.correctAnswer) {
-            totalScore += q.score;
-            isCorrect = true;
-          }
-        } else if (q.type === 'tf') {
-          let rows = qDiv.querySelectorAll('.tf-branch-row');
-          let subAnswers = [];
-          let correctBranches = q.correctAnswer.split(',');
-          let branchScores = q.branchScores || [0.25, 0.25, 0.25, 0.25];
-          let qEarned = 0;
-
-          rows.forEach((row, bIdx) => {
-            let sel = row.querySelector('.tf-sub-btn.selected');
-            let val = sel ? sel.dataset.selected : '';
-            subAnswers.push(val || '_');
-            if (val === correctBranches[bIdx]) {
-              qEarned += branchScores[bIdx];
-            }
-          });
-          studentAns = subAnswers.join(',');
-          totalScore += qEarned;
-          if (qEarned === q.score) isCorrect = true;
-        } else if (q.type === 'sa') {
-          let input = qDiv.querySelector('.student-sa-input');
-          studentAns = input ? input.value.trim() : '';
-          if (studentAns.toLowerCase() === q.correctAnswer.toLowerCase()) {
-            totalScore += q.score;
-            isCorrect = true;
-          }
-        }
-
-        reviewDetails.push({
-          id: q.id, type: q.type, studentAns: studentAns,
-          correctAns: q.correctAnswer, isCorrect: isCorrect,
-          score: q.score, explanation: q.explanation, expImage: q.expImage
-        });
-      });
-
-      totalScore = Math.round(totalScore * 100) / 100;
-      let examCode = document.getElementById('studentExamCode').value.trim().toUpperCase();
-
-      let record = {
-        name: studentNameGlobal,
-        score: totalScore,
-        maxScore: maxPossibleScore,
-        timeSpent: (currentExamData.duration * 60) - timeLeft,
-        cheatWarnings: cheatWarnings,
-        totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
-        timestamp: Date.now()
-      };
-
-      await window.dbPush(window.ref(window.db, `leaderboard/${examCode}`), record);
-
-      if (studentSessionKeyGlobal && currentExamData.isLiveRoom) {
-        await window.dbRemove(window.ref(window.db, `liverooms/${examCode}/students/${studentSessionKeyGlobal}`));
-      }
-
-      switchView('studentResultView');
-      document.getElementById('resultScore').innerText = `${totalScore} / ${maxPossibleScore}`;
-      document.getElementById('resultDetailText').innerText = `Họ tên: ${studentNameGlobal} | Số lần cảnh cáo: ${cheatWarnings}`;
-
-      let revContainer = document.getElementById('resultReviewContainer');
-      revContainer.innerHTML = '';
-      reviewDetails.forEach(rd => {
-        revContainer.innerHTML += `
-          <div style="background:#f8f9fa; border:1px solid ${rd.isCorrect?'#198754':'#dc3545'}; padding:10px; border-radius:6px; margin-bottom:8px;">
-            <b>Câu ${rd.id}:</b> Bạn chọn: <b>${rd.studentAns || 'Không làm'}</b> | Đáp án chuẩn: <b style="color:green;">${rd.correctAns}</b>
-            ${rd.explanation ? `<div style="margin-top:6px; font-size:12px; color:#333;">💡 <b>Lời giải:</b> ${rd.explanation}</div>` : ''}
-            ${rd.expImage ? `<img src="${rd.expImage}" style="max-width:100%; margin-top:6px; border-radius:4px;">` : ''}
-          </div>
-        `;
-      });
-    }
-
-    async function loadLeaderboard() {
-      let code = document.getElementById('searchLbCode').value.trim().toUpperCase();
-      if (!code) { showToast('Vui lòng nhập mã bài thi!', true); return; }
-
-      let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
-      let tbody = document.getElementById('lbTableBody');
-      tbody.innerHTML = '';
-
-      if (!snapshot.exists()) {
-        tbody.innerHTML = '<tr><td colspan="5">Chưa có kết quả nào cho mã đề này.</td></tr>';
-        return;
-      }
-
-      let data = Object.values(snapshot.val());
-      data.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-
-      data.forEach((row, idx) => {
-        let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
-        tbody.innerHTML += `
-          <tr>
-            <td><b>#${idx + 1}</b></td>
-            <td>${row.name}</td>
-            <td><b style="color:#198754;">${row.score}</b></td>
-            <td>${m}p ${s}s</td>
-            <td style="color:${(row.cheatWarnings||0)>0?'red':'green'};">${row.cheatWarnings || 0} lần (${row.totalLeaveTime || 0}s)</td>
-          </tr>
-        `;
-      });
-    }
-
-    // --- PHẦN BÀI LUYỆN NHANH CỦA HỌC SINH ---
-    function launchQpPracticeInterface() {
-      switchView('qpPracticingView');
-      document.getElementById('qpPlayTitle').innerText = currentQpData.title;
-
-      isQpActive = true;
-      qpStudentAnswers = {};
-
-      if (currentQpData.enableTimer && currentQpData.durationMinutes > 0) {
-        qpTimeLeft = currentQpData.durationMinutes * 60;
-        document.getElementById('qpPlayTimer').style.display = 'block';
-        updateQpTimerDisplay();
-        if (qpTimer) clearInterval(qpTimer);
-        qpTimer = setInterval(() => {
-          qpTimeLeft--;
-          updateQpTimerDisplay();
-          if (qpTimeLeft <= 0) {
-            clearInterval(qpTimer);
-            submitQpPractice(true);
-          }
-        }, 1000);
-      } else {
-        document.getElementById('qpPlayTimer').style.display = 'none';
-      }
-
-      if (currentQpData.enableAntiCheat) {
-        document.getElementById('qpCheatWarningBanner').style.display = 'flex';
-      } else {
-        document.getElementById('qpCheatWarningBanner').style.display = 'none';
-      }
-
-      if (currentQpData.useLayoutV2) {
-        currentQpV2Index = 0;
-        document.getElementById('qpPrevBtn').style.display = 'inline-block';
-        document.getElementById('qpNextBtn').style.display = 'inline-block';
-        document.getElementById('qpSubmitBtn').style.display = 'none';
-        renderQpV2Question();
-      } else {
-        document.getElementById('qpPrevBtn').style.display = 'none';
-        document.getElementById('qpNextBtn').style.display = 'none';
-        document.getElementById('qpSubmitBtn').style.display = 'block';
-        renderQpV1Questions();
-      }
-    }
-
-    function updateQpTimerDisplay() {
-      let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
-      document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-
-    function renderQpV1Questions() {
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      container.innerHTML = '';
-      currentQpData.questions.forEach((q, idx) => {
-        let div = document.createElement('div');
-        div.className = 'card';
-        div.style.marginBottom = '12px';
-        let optsHtml = q.options.map(o => `
-          <label style="display:flex; align-items:center; gap:8px; margin:6px 0; cursor:pointer;">
-            <input type="radio" name="qp_v1_q_${idx}" value="${o.label}" onchange="qpStudentAnswers[${idx}]='${o.label}'" style="width:16px; height:16px;">
-            <b>${o.label}.</b> ${o.text}
-          </label>
-        `).join('');
-
-        div.innerHTML = `
-          <p style="font-weight:bold; margin-bottom:8px;">Câu ${q.id} (${q.score}đ): ${q.question}</p>
-          ${q.image ? `<img src="${q.image}" style="max-width:100%; border-radius:4px; margin-bottom:8px;">` : ''}
-          ${optsHtml}
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function renderQpV2Question() {
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      let q = currentQpData.questions[currentQpV2Index];
-      let total = currentQpData.questions.length;
-
-      let optsHtml = q.options.map(o => {
-        let isChecked = qpStudentAnswers[currentQpV2Index] === o.label ? 'checked' : '';
-        return `
-          <label style="display:flex; align-items:center; gap:8px; margin:8px 0; cursor:pointer; background:#f8f9fa; padding:8px; border-radius:6px; border:1px solid #ddd;">
-            <input type="radio" name="qp_v2_curr" value="${o.label}" ${isChecked} onchange="qpStudentAnswers[${currentQpV2Index}]='${o.label}'" style="width:18px; height:18px;">
-            <b>${o.label}.</b> ${o.text}
-          </label>
-        `;
-      }).join('');
-
-      container.innerHTML = `
-        <div style="font-size:12px; color:#666; margin-bottom:5px;">Câu ${currentQpV2Index + 1} / ${total}</div>
-        <p style="font-weight:bold; margin-bottom:10px;">${q.question}</p>
-        ${q.image ? `<img src="${q.image}" style="max-width:100%; border-radius:4px; margin-bottom:10px;">` : ''}
-        ${optsHtml}
-      `;
-
-      document.getElementById('qpPrevBtn').style.display = currentQpV2Index > 0 ? 'inline-block' : 'none';
-      if (currentQpV2Index === total - 1) {
-        document.getElementById('qpNextBtn').style.display = 'none';
-        document.getElementById('qpSubmitBtn').style.display = 'block';
-      } else {
-        document.getElementById('qpNextBtn').style.display = 'inline-block';
-        document.getElementById('qpSubmitBtn').style.display = 'none';
-      }
-    }
-
-    function prevQpQuestionV2() {
-      if (currentQpV2Index > 0) {
-        currentQpV2Index--;
-        renderQpV2Question();
-      }
-    }
-
-    function nextQpQuestionV2() {
-      if (currentQpV2Index < currentQpData.questions.length - 1) {
-        currentQpV2Index++;
-        renderQpV2Question();
-      }
-    }
-
-    async function submitQpPractice(isAuto = false) {
-      if (!isAuto && !confirm('Bạn có chắc muốn nộp bài luyện nhanh?')) return;
-      isQpActive = false;
-      if (qpTimer) clearInterval(qpTimer);
-
-      let totalScore = 0;
-      let maxScore = 0;
-      let review = [];
-
-      currentQpData.questions.forEach((q, idx) => {
-        maxScore += q.score;
-        let userAns = qpStudentAnswers[idx] || '';
-        let isCorrect = userAns === q.correct;
-        if (isCorrect) totalScore += q.score;
-
-        review.push({
-          id: q.id, question: q.question, userAns: userAns,
-          correct: q.correct, isCorrect: isCorrect,
-          explanation: q.explanation, expImage: q.expImage
-        });
-      });
-
-      totalScore = Math.round(totalScore * 100) / 100;
-      let timeSpent = (currentQpData.durationMinutes * 60) - qpTimeLeft;
-
-      let record = {
-        name: studentNameGlobal,
-        score: totalScore,
-        maxScore: maxScore,
-        timeSpent: timeSpent > 0 ? timeSpent : 0,
-        timestamp: Date.now()
-      };
-
-      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), record);
-
-      switchView('qpResultView');
-      document.getElementById('qpResultScore').innerText = `${totalScore} / ${maxScore}`;
-      document.getElementById('qpResultDetailText').innerText = `Học sinh: ${studentNameGlobal}`;
-
-      let revContainer = document.getElementById('qpResultReviewContainer');
-      revContainer.innerHTML = '';
-      review.forEach(r => {
-        revContainer.innerHTML += `
-          <div style="background:#f8f9fa; border:1px solid ${r.isCorrect?'#198754':'#dc3545'}; padding:10px; border-radius:6px; margin-bottom:8px;">
-            <b>Câu ${r.id}:</b> ${r.question}<br>
-            - Bạn chọn: <b>${r.userAns || 'Không làm'}</b> | Đáp án chuẩn: <b style="color:green;">${r.correct}</b>
-            ${r.explanation ? `<div style="margin-top:6px; font-size:12px;">💡 <b>Lời giải:</b> ${r.explanation}</div>` : ''}
-            ${r.expImage ? `<img src="${r.expImage}" style="max-width:100%; margin-top:6px; border-radius:4px;">` : ''}
-          </div>
-        `;
-      });
     }
   </script>
 </body>
