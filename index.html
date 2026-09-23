@@ -146,8 +146,10 @@
        ===== CHỈ ÁP DỤNG CHO ĐIỆN THOẠI (max-width: 768px) =====
        ============================================================ */
     @media (max-width: 768px) {
-      html, body { width: 100%; overflow: hidden; height: 100%; }
-      body { -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
+      html, body { width: 100%; }
+      body { -webkit-text-size-adjust: 100%; }
+      /* Chỉ khóa lướt khi đang thi (body có class exam-active) */
+      body.exam-active { overflow: hidden; height: 100vh; overscroll-behavior: none; }
 
       .navbar { padding: 8px; gap: 6px; }
       .logo { font-size: 15px; width: 100%; text-align: center; }
@@ -167,7 +169,7 @@
       .btn { font-size: 13px; padding: 10px 14px; touch-action: manipulation; }
 
       /* ============================================================
-         ===== LÀM BÀI TRÊN ĐIỆN THOẠI: ĐỀ VÀ ĐÁP ÁN CÓ THANH CUỘN RIÊNG =====
+         ===== LÀM BÀI TRÊN ĐIỆN THOẠI: ẨN THANH CHỐNG GIAN LẬN =====
          ============================================================ */
       #studentExamView.active {
         display: flex !important;
@@ -175,10 +177,9 @@
         height: 100vh;
         overflow: hidden;
       }
-      #studentExamView .card {
-        margin-bottom: 6px;
-        padding: 8px 10px;
-        flex-shrink: 0;
+      /* Ẩn thanh cảnh báo chống gian lận màu vàng trên mobile */
+      #studentExamView > .card:first-child {
+        display: none !important;
       }
       #studentExamView .exam-layout {
         display: flex !important;
@@ -188,10 +189,11 @@
         min-height: 0;
         overflow: hidden;
         height: auto;
+        padding-top: 4px;
       }
       #studentExamView .exam-left {
-        flex: 0 0 40vh !important;
-        max-height: 40vh !important;
+        flex: 0 0 45vh !important;
+        max-height: 45vh !important;
         min-height: 140px !important;
         width: 100% !important;
         overflow-y: auto !important;
@@ -322,7 +324,6 @@
           </div>
         </div>
 
-        <!-- ====== CHỨC NĂNG NÂNG CAO MỚI CHO TẠO ĐỀ ====== -->
         <div style="margin-top: 10px; background: #f0f8ff; border: 1px dashed #1877f2; padding: 10px; border-radius: 8px;">
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2; font-weight: bold; font-size: 13px; margin-bottom: 8px;">
             <input type="checkbox" id="advExamOptionsToggle" onchange="toggleAdvExamOptions()" style="width: 16px; height: 16px;">
@@ -520,7 +521,10 @@
             <div class="timer" id="timerDisplay">00:00</div>
           </div>
           <div style="flex: 1; overflow-y: auto;" id="studentAnswerSheet"></div>
-          <button class="btn btn-danger" style="margin-top: 10px;" onclick="submitStudentExam(false)">📤 Nộp Bài Thi</button>
+          <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button class="btn btn-secondary" style="flex: 1;" onclick="cancelStudentExam()">🚪 Thoát</button>
+            <button class="btn btn-danger" style="flex: 2;" onclick="submitStudentExam(false)">📤 Nộp Bài Thi</button>
+          </div>
         </div>
       </div>
     </div>
@@ -819,10 +823,13 @@
 
       <div id="qpPlayQuestionsContainer"></div>
 
-      <div id="qpActionFooter" style="margin-top: 15px; display: flex; justify-content: space-between; gap: 10px;">
+      <div id="qpActionFooter" style="margin-top: 15px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
         <button id="qpPrevBtn" class="btn btn-secondary" style="display: none; width: auto;" onclick="prevQpQuestionV2()">⬅️ Câu Trước</button>
         <button id="qpNextBtn" class="btn" style="display: none; width: auto; margin-left: auto;" onclick="nextQpQuestionV2()">Tiếp Tục ➡️</button>
         <button id="qpSubmitBtn" class="btn btn-success" style="padding: 12px; flex: 1;" onclick="submitQpPractice(false)">📤 Nộp Bài Luyện Nhanh</button>
+      </div>
+      <div style="margin-top: 10px;">
+        <button class="btn btn-secondary" style="padding: 8px; font-size: 13px;" onclick="cancelQpPractice()">🚪 Thoát bài luyện (không ghi nhận kết quả)</button>
       </div>
     </div>
   </div>
@@ -1105,12 +1112,22 @@
     }
 
     function switchView(viewId, btn = null) {
+      // Tự động gỡ khóa lướt nếu rời khỏi màn thi
+      if (viewId !== 'studentExamView' && viewId !== 'qpPracticingView') {
+        document.body.classList.remove('exam-active');
+      }
       document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
       if (btn) {
         document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
       }
+    }
+
+    // Bật / tắt khóa lướt toàn trang
+    function setExamActiveClass(active) {
+      if (active) document.body.classList.add('exam-active');
+      else document.body.classList.remove('exam-active');
     }
 
     function checkSupremeAccess() {
@@ -1888,6 +1905,7 @@
       cheatWarnings = 0; totalTabLeaveTime = 0;
       document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
       isExamActive = true;
+      setExamActiveClass(true);   // BẬT khóa lướt
       switchView('studentExamView');
     }
 
@@ -1963,6 +1981,7 @@
       if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
       isExamActive = false;
+      setExamActiveClass(false);   // TẮT khóa lướt
       let totalEarnedScore = 0;
       let reviewHtml = '';
       currentExamData.questions.forEach(q => {
@@ -2013,6 +2032,74 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
+    // ============ THOÁT BÀI THI (không ghi nhận kết quả) ============
+    async function cancelStudentExam() {
+      if (!confirm('Bạn có chắc muốn THOÁT bài thi?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!')) return;
+
+      clearInterval(examTimer);
+      isExamActive = false;
+      setExamActiveClass(false);
+
+      // Gỡ listener phòng live trước (tránh fire khi xóa student)
+      if (activeStudentRoomListener) {
+        try { activeStudentRoomListener(); } catch(e) {}
+        activeStudentRoomListener = null;
+      }
+
+      // Nếu đang trong phòng live → xóa khỏi danh sách phòng
+      if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
+        try {
+          await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));
+        } catch(e) { console.warn('Không thể xóa khỏi phòng live:', e); }
+      }
+
+      // Reset toàn bộ state
+      currentExamData = null;
+      studentNameGlobal = '';
+      studentSessionKeyGlobal = '';
+      cheatWarnings = 0;
+      totalTabLeaveTime = 0;
+      tabLeaveStartTime = null;
+
+      // Xóa nội dung đã render
+      const media = document.getElementById('examMediaContainer');
+      const sheet = document.getElementById('studentAnswerSheet');
+      if (media) media.innerHTML = '';
+      if (sheet) sheet.innerHTML = '';
+
+      showToast('🚪 Đã thoát bài thi. Kết quả không được ghi nhận.');
+      switchView('studentLoginView');
+    }
+
+    // ============ THOÁT BÀI LUYỆN NHANH (không ghi nhận kết quả) ============
+    function cancelQpPractice() {
+      if (!confirm('Bạn có chắc muốn THOÁT bài luyện?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!')) return;
+
+      clearInterval(qpTimer);
+      isQpActive = false;
+      setExamActiveClass(false);
+
+      if (activeQpRoomListener) {
+        try { activeQpRoomListener(); } catch(e) {}
+        activeQpRoomListener = null;
+      }
+
+      // Reset state
+      currentQpData = null;
+      studentNameGlobal = '';
+      qpStudentAnswers = {};
+      currentQpV2Index = 0;
+      cheatWarnings = 0;
+      totalTabLeaveTime = 0;
+      tabLeaveStartTime = null;
+
+      const container = document.getElementById('qpPlayQuestionsContainer');
+      if (container) container.innerHTML = '';
+
+      showToast('🚪 Đã thoát bài luyện. Kết quả không được ghi nhận.');
+      switchView('studentLoginView');
+    }
+
     function launchQpPracticeInterface() {
       isQpActive = true;
       currentQpV2Index = 0;
@@ -2043,6 +2130,7 @@
         clearInterval(qpTimer);
         qpTimer = setInterval(() => { qpTimeLeft++; }, 1000);
       }
+      setExamActiveClass(true);   // BẬT khóa lướt
       switchView('qpPracticingView');
       if (currentQpData.isAdvancedMode) {
         let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
@@ -2148,6 +2236,7 @@
       if (!isQpActive && !forced) return;
       isQpActive = false;
       clearInterval(qpTimer);
+      setExamActiveClass(false);   // TẮT khóa lướt
       if (activeQpRoomListener) activeQpRoomListener();
       let totalEarned = 0, totalMax = 0, reviewHtml = '';
       currentQpData.questions.forEach(q => {
