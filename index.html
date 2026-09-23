@@ -95,9 +95,18 @@
       opacity: 0;
       transform: translateY(-20px);
       border-left: 5px solid #fff;
+      max-width: 400px;
     }
     #systemToast.error { background: linear-gradient(135deg, #dc3545, #bb2d3b); box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); }
     #systemToast.show { opacity: 1; transform: translateY(0); }
+
+    /* ===== TOAST NÂNG CẤP THEO LOẠI ===== */
+    #systemToast.success { animation: toastBounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #systemToast.error   { animation: toastShakeIn 0.5s ease; }
+    #systemToast.info    { background: linear-gradient(135deg, #0d6efd, #0b5ed7) !important; box-shadow: 0 8px 24px rgba(13,110,253,0.3) !important; animation: toastBounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #systemToast.warn    { background: linear-gradient(135deg, #ffc107, #e0a800) !important; color: #000 !important; box-shadow: 0 8px 24px rgba(255,193,7,0.35) !important; animation: toastShakeIn 0.5s ease; }
+    @keyframes toastBounceIn { 0% { transform: translateY(-80px) scale(0.8); opacity: 0; } 60% { transform: translateY(8px) scale(1.03); opacity: 1; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+    @keyframes toastShakeIn { 0% { transform: translateX(120px) rotate(3deg); opacity: 0; } 30% { transform: translateX(-10px) rotate(-2deg); opacity: 1; } 60% { transform: translateX(6px) rotate(1deg); } 100% { transform: translateX(0) rotate(0deg); opacity: 1; } }
 
     #globalBroadcastBanner {
       position: fixed;
@@ -141,6 +150,25 @@
 
     .audio-list-item { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border: 1px solid #ddd; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
     .audio-list-item .audio-name { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ===== POPUP KẾT QUẢ ĐIỂM SỐ ===== */
+    #resultPopup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 99999998; padding: 20px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+    #resultPopup.show { display: flex; }
+    .result-popup-box { background: white; border-radius: 20px; padding: 30px 24px 24px 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); position: relative; overflow: hidden; animation: popupPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes popupPop { 0% { transform: scale(0.3) rotate(-8deg); opacity: 0; } 60% { transform: scale(1.08) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+    .result-popup-emoji { font-size: 78px; line-height: 1; margin-bottom: 14px; display: block; animation: emojiBounce 1.2s infinite ease-in-out; }
+    @keyframes emojiBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.1); } }
+    .result-popup-emoji.sad-anim { animation: emojiShake 0.6s infinite; }
+    @keyframes emojiShake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+    .result-popup-emoji.epic-anim { animation: emojiEpic 1.5s infinite; }
+    @keyframes emojiEpic { 0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0 gold); } 50% { transform: scale(1.2) rotate(10deg); filter: drop-shadow(0 0 20px gold); } }
+    .result-popup-score { font-size: 34px; font-weight: bold; margin: 8px 0 14px 0; color: #1877f2; animation: scoreGlow 1.5s infinite; }
+    @keyframes scoreGlow { 0%, 100% { text-shadow: 0 0 0 transparent; } 50% { text-shadow: 0 0 15px #1877f2; } }
+    .result-popup-msg { font-size: 16px; font-weight: 600; line-height: 1.5; color: #333; margin-bottom: 22px; padding: 12px; background: #f8f9fa; border-radius: 12px; }
+    .result-popup-btn { background: linear-gradient(135deg, #1877f2, #0d5fd6); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; width: 100%; box-shadow: 0 6px 18px rgba(24,119,242,0.4); transition: transform 0.15s; }
+    .result-popup-btn:active { transform: scale(0.96); }
+    .result-popup-confetti { position: absolute; top: -10px; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; animation: confettiFall 2.5s linear infinite; }
+    @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(450px) rotate(720deg); opacity: 0; } }
 
     /* ============================================================
        ===== CHỈ ÁP DỤNG CHO ĐIỆN THOẠI (max-width: 768px) =====
@@ -589,7 +617,7 @@
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn" style="width: auto;" onclick="switchSubModule('quickPracticeCreate')">⚡ Tạo Bài Luyện Nhanh</button>
           <button class="btn btn-secondary" style="width: auto;" onclick="switchSubModule('quickPracticeManage')">🛡️ Quản Lý Bài Luyện Nhanh</button>
-          <button class="btn btn-success" style="width: auto;" onclick="showToast('Tính năng Minigame đang phát triển!', true)">🎮 Minigame</button>
+          <button class="btn btn-success" style="width: auto;" onclick="showToast('Tính năng Minigame đang phát triển!', 'warn')">🎮 Minigame</button>
         </div>
       </div>
 
@@ -761,6 +789,26 @@
         </div>
         <div class="form-grid-2">
           <div>
+            <label>Phông chữ:</label>
+            <select id="supremeFontFamily">
+              <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (mặc định)</option>
+              <option value="Arial, Helvetica, sans-serif">Arial</option>
+              <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <option value="'Courier New', Courier, monospace">Courier New</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Verdana, Geneva, sans-serif">Verdana</option>
+              <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+              <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+              <option value="Impact, sans-serif">Impact</option>
+            </select>
+          </div>
+          <div>
+            <label>Kích cỡ chữ (px):</label>
+            <input type="number" id="supremeFontSize" value="16" min="10" max="72">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div>
             <label>Màu nền Banner:</label>
             <input type="color" id="supremeBgColor" value="#ff4d4f" style="width:100%; height:38px; padding:2px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
           </div>
@@ -834,6 +882,16 @@
       <div style="margin-top: 10px;">
         <button class="btn btn-secondary" style="padding: 8px; font-size: 13px;" onclick="cancelQpPractice()">🚪 Thoát bài luyện (không ghi nhận kết quả)</button>
       </div>
+    </div>
+  </div>
+
+  <!-- POPUP KẾT QUẢ ĐIỂM SỐ -->
+  <div id="resultPopup">
+    <div class="result-popup-box">
+      <span class="result-popup-emoji" id="resultPopupEmoji">🎉</span>
+      <div class="result-popup-score" id="resultPopupScore">0 / 10</div>
+      <div class="result-popup-msg" id="resultPopupMsg">Chúc mừng!</div>
+      <button class="result-popup-btn" onclick="closeResultPopup()">Đã hiểu & xem chi tiết →</button>
     </div>
   </div>
 
@@ -1009,6 +1067,8 @@
             banner.style.backgroundColor = data.bgColor || '#ff4d4f';
             banner.style.color = data.textColor || '#ffffff';
             banner.style.opacity = data.opacity || 0.95;
+            banner.style.fontFamily = data.fontFamily || "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            banner.style.fontSize = (data.fontSize || 16) + 'px';
             banner.classList.remove('pos-top', 'pos-middle', 'pos-bottom');
             let pos = data.position || 'top';
             if (pos === 'middle') banner.classList.add('pos-middle');
@@ -1102,20 +1162,99 @@
       document.addEventListener(evt, () => { if (pendingGlobalAudioPlay) tryPlayGlobalAudio(); }, { passive: true });
     });
 
-    function showToast(message, isError = false) {
+    // ===== TOAST NÂNG CẤP ĐA LOẠI =====
+    function showToast(message, type = 'success') {
+      if (type === true) type = 'error';
+      if (type === false || type === undefined || type === null) type = 'success';
       const toast = document.getElementById('systemToast');
       toast.innerText = message;
-      toast.className = isError ? 'error show' : 'show';
+      toast.className = type + ' show';
       toast.style.display = 'block';
+      toast.style.opacity = '1';
       setTimeout(() => {
-        toast.className = isError ? 'error' : '';
+        toast.className = type;
         toast.style.opacity = '0';
         setTimeout(() => { toast.style.display = 'none'; }, 400);
       }, 3500);
     }
 
+    // ===== POPUP KẾT QUẢ ĐIỂM SỐ =====
+    let resultPopupCallback = null;
+    let resultPopupConfettiTimer = null;
+
+    function showResultPopup(score, maxScore = 10, callback = null) {
+      const popup = document.getElementById('resultPopup');
+      const emojiEl = document.getElementById('resultPopupEmoji');
+      const scoreEl = document.getElementById('resultPopupScore');
+      const msgEl = document.getElementById('resultPopupMsg');
+      const box = popup.querySelector('.result-popup-box');
+
+      box.querySelectorAll('.result-popup-confetti').forEach(el => el.remove());
+      if (resultPopupConfettiTimer) { clearInterval(resultPopupConfettiTimer); resultPopupConfettiTimer = null; }
+      emojiEl.className = 'result-popup-emoji';
+
+      const percent = (score / maxScore) * 10;
+      let emojiSet = '', message = '', animClass = '', hasConfetti = false;
+
+      if (percent < 3) {
+        emojiSet = '😂💩';
+        message = 'Trời ơi, kiểu này thì đúp thật rồi! Học lại đi nha 😂💩';
+        animClass = 'sad-anim';
+      } else if (percent < 5) {
+        emojiSet = '😂😂';
+        message = 'Học kém quá, cố lên đi bạn ơi! 😂';
+        animClass = 'sad-anim';
+      } else if (percent < 7) {
+        emojiSet = '👍';
+        message = 'Khá đấy! Cố gắng thêm chút nữa là ngon 👍';
+      } else if (percent < 9) {
+        emojiSet = '💖';
+        message = 'Làm tốt lắm! Như này là đỗ Thanh Hóa, Bắc Ninh rồi 💖';
+        hasConfetti = true;
+      } else {
+        emojiSet = '💖✨';
+        message = 'XUẤT SẮC! Như này là đỗ Thanh Hóa, Bắc Ninh chắc chắn rồi 💖🎉';
+        animClass = 'epic-anim';
+        hasConfetti = true;
+      }
+
+      emojiEl.innerText = emojiSet;
+      if (animClass) emojiEl.classList.add(animClass);
+      scoreEl.innerText = `${score} / ${maxScore}`;
+      msgEl.innerText = message;
+
+      if (hasConfetti) {
+        const colors = ['#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#a55eea', '#ffdd59'];
+        const addConfetti = () => {
+          for (let i = 0; i < 6; i++) {
+            const c = document.createElement('div');
+            c.className = 'result-popup-confetti';
+            c.style.left = (10 + Math.random() * 80) + '%';
+            c.style.background = colors[Math.floor(Math.random() * colors.length)];
+            c.style.animationDelay = (Math.random() * 0.5) + 's';
+            c.style.animationDuration = (1.8 + Math.random() * 1.5) + 's';
+            box.appendChild(c);
+            setTimeout(() => c.remove(), 3800);
+          }
+        };
+        addConfetti();
+        resultPopupConfettiTimer = setInterval(addConfetti, 700);
+      }
+
+      resultPopupCallback = callback;
+      popup.classList.add('show');
+    }
+
+    function closeResultPopup() {
+      const popup = document.getElementById('resultPopup');
+      popup.classList.remove('show');
+      if (resultPopupConfettiTimer) { clearInterval(resultPopupConfettiTimer); resultPopupConfettiTimer = null; }
+      const cb = resultPopupCallback;
+      resultPopupCallback = null;
+      if (typeof cb === 'function') cb();
+    }
+
     function switchView(viewId, btn = null) {
-      // Tự động gỡ khóa lướt nếu rời khỏi màn thi
       if (viewId !== 'studentExamView' && viewId !== 'qpPracticingView') {
         document.body.classList.remove('exam-active');
       }
@@ -1127,7 +1266,6 @@
       }
     }
 
-    // Bật / tắt khóa lướt toàn trang
     function setExamActiveClass(active) {
       if (active) document.body.classList.add('exam-active');
       else document.body.classList.remove('exam-active');
@@ -1142,11 +1280,11 @@
       let pass = document.getElementById('supremePassInput').value.trim();
       if (pass === 'thuan281009@') {
         document.getElementById('supremePasswordModal').style.display = 'none';
-        showToast('👑 Chào mừng Nhà Phát Triển tối cao!');
+        showToast('👑 Chào mừng Nhà Phát Triển tối cao!', 'info');
         switchView('supremeView');
         loadAllSupremeExams();
         loadSupremeAudioList();
-      } else { showToast('❌ Sai mật khẩu vua!', true); }
+      } else { showToast('❌ Sai mật khẩu vua!', 'error'); }
     }
 
     async function loadAllSupremeExams() {
@@ -1176,7 +1314,7 @@
     async function supremeViewDetail(type, code) {
       let path = type === 'exam' ? `exams/${code}` : `quick_practices/${code}`;
       let snap = await window.dbGet(window.dbChild(window.dbRef, path));
-      if (!snap.exists()) { showToast('Không tìm thấy dữ liệu!', true); return; }
+      if (!snap.exists()) { showToast('Không tìm thấy dữ liệu!', 'error'); return; }
       let data = snap.val();
       document.getElementById('supremeModalTitle').innerText = `Chi Tiết [${code}] - ${data.title}`;
       let contentDiv = document.getElementById('supremeModalContent');
@@ -1206,7 +1344,7 @@
           await window.dbRemove(window.ref(window.db, `qp_rooms/${code}`));
           await window.dbRemove(window.ref(window.db, `qp_leaderboard/${code}`));
         }
-        showToast('🗑️ Đã xóa thành công!');
+        showToast(`🗑️ Đã xóa [${code}] khỏi hệ thống thành công!`, 'warn');
         loadAllSupremeExams();
       }
     }
@@ -1214,20 +1352,22 @@
     async function sendGlobalBroadcast() {
       let text = document.getElementById('supremeBroadcastText').value.trim();
       let position = document.getElementById('supremeBroadcastPosition').value;
+      let fontFamily = document.getElementById('supremeFontFamily').value;
+      let fontSize = parseInt(document.getElementById('supremeFontSize').value) || 16;
       let bgColor = document.getElementById('supremeBgColor').value;
       let textColor = document.getElementById('supremeTextColor').value;
       let durationSec = parseInt(document.getElementById('supremeDurationSec').value) || 10;
       let opacity = parseFloat(document.getElementById('supremeOpacity').value) || 0.95;
-      if (!text) { showToast('Vui lòng nhập nội dung thông báo!', true); return; }
-      let broadcastObj = { text, position, bgColor, textColor, durationSec, opacity, timestamp: Date.now() };
+      if (!text) { showToast('Vui lòng nhập nội dung thông báo!', 'error'); return; }
+      let broadcastObj = { text, position, fontFamily, fontSize, bgColor, textColor, durationSec, opacity, timestamp: Date.now() };
       await window.dbSet(window.ref(window.db, 'system/broadcast'), broadcastObj);
-      showToast('📢 Đã phát thông báo toàn hệ thống thành công!');
+      showToast('📢 Đã phát thông báo toàn hệ thống thành công!', 'success');
       document.getElementById('supremeBroadcastText').value = '';
     }
 
     async function clearGlobalBroadcast() {
       await window.dbRemove(window.ref(window.db, 'system/broadcast'));
-      showToast('🗑️ Đã xóa thông báo toàn cục!');
+      showToast('🗑️ Đã xóa thông báo toàn cục!', 'warn');
     }
 
     const fileToBase64 = file => new Promise((resolve, reject) => {
@@ -1264,10 +1404,10 @@
       if (!input.files || input.files.length === 0) return;
       let file = input.files[0];
       if (file.size > AUDIO_MAX_SIZE) {
-        showToast(`File quá lớn (${(file.size/1024/1024).toFixed(1)}MB). Tối đa ${AUDIO_MAX_SIZE/1024/1024}MB.`, true);
+        showToast(`File quá lớn (${(file.size/1024/1024).toFixed(1)}MB). Tối đa ${AUDIO_MAX_SIZE/1024/1024}MB.`, 'error');
         input.value = ''; return;
       }
-      showToast('⏳ Đang xử lý file nhạc...');
+      showToast('⏳ Đang xử lý file nhạc...', 'info');
       try {
         let base64Full = await fileToBase64(file);
         let parts = base64Full.split(',');
@@ -1275,18 +1415,18 @@
         let b64Data = parts[1];
         let chunkCount = Math.ceil(b64Data.length / AUDIO_CHUNK_SIZE);
         let audioKey = 'audio_' + Date.now();
-        showToast(`⏳ Đang lưu ${chunkCount} chunk lên Cloud...`);
+        showToast(`⏳ Đang lưu ${chunkCount} chunk lên Cloud...`, 'info');
         for (let i = 0; i < chunkCount; i++) {
           let chunkData = b64Data.slice(i * AUDIO_CHUNK_SIZE, (i + 1) * AUDIO_CHUNK_SIZE);
           let chunkUri = `data:${mime};base64,${chunkData}`;
           await window.dbSet(window.ref(window.db, `system/audio_chunks/${audioKey}/${i}`), chunkUri);
         }
         await window.dbSet(window.ref(window.db, `system/audio_list/${audioKey}`), { name: file.name, mime: mime, size: file.size, chunks: chunkCount, timestamp: Date.now() });
-        showToast(`✅ Đã thêm "${file.name}" vào danh sách nhạc!`);
+        showToast(`✅ Đã thêm "${file.name}" vào danh sách nhạc!`, 'success');
         input.value = '';
       } catch (err) {
         console.error('Lỗi upload nhạc:', err);
-        showToast('❌ Lỗi khi thêm nhạc: ' + (err.message || err), true);
+        showToast('❌ Lỗi khi thêm nhạc: ' + (err.message || err), 'error');
         input.value = '';
       }
     }
@@ -1294,13 +1434,13 @@
     async function playSupremeAudio(audioKey) {
       try {
         let listSnap = await window.dbGet(window.dbChild(window.dbRef, `system/audio_list/${audioKey}`));
-        if (!listSnap.exists()) { showToast('Không tìm thấy file nhạc!', true); return; }
-        showToast('⏳ Đang tải và phát nhạc...');
+        if (!listSnap.exists()) { showToast('Không tìm thấy file nhạc!', 'error'); return; }
+        showToast('⏳ Đang tải và phát nhạc...', 'info');
         await window.dbSet(window.ref(window.db, 'system/audio'), { audioKey: audioKey, isPlaying: true, timestamp: Date.now() });
-        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
+        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!', 'success');
       } catch (err) {
         console.error('Lỗi phát nhạc:', err);
-        showToast('❌ Lỗi khi phát nhạc: ' + (err.message || err), true);
+        showToast('❌ Lỗi khi phát nhạc: ' + (err.message || err), 'error');
       }
     }
 
@@ -1313,16 +1453,16 @@
       }
       await window.dbRemove(window.ref(window.db, `system/audio_list/${audioKey}`));
       await window.dbRemove(window.ref(window.db, `system/audio_chunks/${audioKey}`));
-      showToast('🗑️ Đã xóa file nhạc khỏi danh sách!');
+      showToast('🗑️ Đã xóa file nhạc khỏi danh sách!', 'warn');
     }
 
     async function stopGlobalAudio() {
       try {
         await window.dbSet(window.ref(window.db, 'system/audio'), { audioKey: '', isPlaying: false, timestamp: Date.now() });
-        showToast('🛑 Đã dừng phát nhạc.');
+        showToast('🛑 Đã dừng phát nhạc.', 'warn');
       } catch (err) {
         console.error('Lỗi khi dừng nhạc:', err);
-        showToast('❌ Lỗi khi dừng nhạc: ' + (err && err.message ? err.message : err), true);
+        showToast('❌ Lỗi khi dừng nhạc: ' + (err && err.message ? err.message : err), 'error');
       }
     }
 
@@ -1465,14 +1605,14 @@
       sampleTfAnswers.forEach(branches => addQuestionV2('tf', '', branches));
       const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
       sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
-      showToast('✨ Đã quét ảnh và tự động điền toàn bộ đáp án thành công!');
+      showToast('✨ Đã quét ảnh và tự động điền toàn bộ đáp án thành công!', 'success');
       input.value = '';
     }
 
     function promptSaveExam() {
       const code = document.getElementById('examCode').value.trim().toUpperCase();
       const title = document.getElementById('examTitle').value.trim();
-      if (!code || !title) { showToast('Vui lòng nhập Mã bài thi và Tên bài thi!', true); return; }
+      if (!code || !title) { showToast('Vui lòng nhập Mã bài thi và Tên bài thi!', 'error'); return; }
       pendingActionType = 'save';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -1482,7 +1622,7 @@
 
     async function confirmPasswordAction() {
       const pass = document.getElementById('teacherPasswordInput').value.trim();
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', 'error'); return; }
       closePasswordModal();
       if (pendingActionType === 'save') await executeSaveExam();
       else if (pendingActionType === 'save_qp') await executeSaveQuickPractice();
@@ -1509,7 +1649,7 @@
       const livePass = document.getElementById('liveRoomPass').value.trim();
       const liveLimit = parseInt(document.getElementById('liveRoomLimit').value) || 50;
       const items = document.querySelectorAll('#teacherView .q-build-item');
-      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
+      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', 'error'); return; }
       let questions = [];
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
@@ -1548,8 +1688,8 @@
       try {
         await window.dbSet(window.ref(window.db, 'exams/' + code), examObject);
         await window.dbSet(window.ref(window.db, 'liverooms/' + code), { status: 'waiting' });
-        showToast(`🎉 Lưu đề chính thức [${code}] thành công!`);
-      } catch (err) { showToast('Lỗi: ' + err.message, true); }
+        showToast(`🎉 Tạo đề thi [${code}] thành công! Sẵn sàng phát hành!`, 'success');
+      } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
     }
 
     function openAdvancedModal() { 
@@ -1565,42 +1705,43 @@
 
     async function downloadExamPDF() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-      if (!code) { showToast('Nhập mã đề!', true); return; }
+      if (!code) { showToast('Nhập mã đề!', 'error'); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy đề!', true); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy đề!', 'error'); return; }
       const exam = snapshot.val();
       if (exam.media && exam.media.type === 'pdf' && exam.media.files.length > 0) {
         let a = document.createElement('a'); a.href = exam.media.files[0]; a.download = `De_${code}.pdf`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        showToast('📄 Tải đề thành công!');
-      } else { showToast('Đề này không có file PDF.', true); }
+        showToast('📄 Tải đề thành công!', 'success');
+      } else { showToast('Đề này không có file PDF.', 'error'); }
     }
 
     async function promptDeleteExam() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
-      if (!code) { showToast('Nhập mã đề!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật quản lý!', true); return; }
+      if (!code) { showToast('Nhập mã đề!', 'error'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật quản lý!', 'error'); return; }
       if (confirm(`Xóa vĩnh viễn đề thi [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `exams/${code}`));
         await window.dbRemove(window.ref(window.db, `leaderboard/${code}`));
         await window.dbRemove(window.ref(window.db, `liverooms/${code}`));
-        showToast('🗑️ Xóa đề thành công!'); closeAdvancedModal();
+        showToast(`🗑️ Đã xóa đề [${code}] thành công!`, 'warn');
+        closeAdvancedModal();
       }
     }
 
     async function connectLiveRoomDashboard() {
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
-      if (!code) { showToast('Vui lòng nhập mã đề kiểm tra!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
+      if (!code) { showToast('Vui lòng nhập mã đề kiểm tra!', 'error'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', 'error'); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy đề thi này!', true); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy đề thi này!', 'error'); return; }
       let exam = snapshot.val();
-      if (!exam.isLiveRoom) { showToast('Đề thi này không bật tính năng Phòng thi chuyên dụng!', true); return; }
+      if (!exam.isLiveRoom) { showToast('Đề thi này không bật tính năng Phòng thi chuyên dụng!', 'error'); return; }
       managedLiveCodeGlobal = code;
       document.getElementById('liveRoomDashboard').style.display = 'block';
-      showToast('📡 Kết nối phòng live thành công!');
+      showToast('📡 Kết nối phòng live thành công!', 'info');
       if (liveRoomDashboardListener) liveRoomDashboardListener();
       let roomRef = window.ref(window.db, `liverooms/${code}`);
       liveRoomDashboardListener = window.onValue(roomRef, (snapshot) => {
@@ -1623,14 +1764,14 @@
     async function kickLiveStudent(code, studentId) {
       if (confirm('Bạn có chắc muốn kick học sinh này khỏi phòng?')) {
         await window.dbRemove(window.ref(window.db, `liverooms/${code}/students/${studentId}`));
-        showToast('Đã kick học sinh khỏi phòng!');
+        showToast('Đã kick học sinh khỏi phòng!', 'warn');
       }
     }
 
     async function updateLiveRoomStatus(status) {
-      if (!managedLiveCodeGlobal) { showToast('Chưa kết nối phòng live!', true); return; }
+      if (!managedLiveCodeGlobal) { showToast('Chưa kết nối phòng live!', 'error'); return; }
       await window.dbUpdate(window.ref(window.db, `liverooms/${managedLiveCodeGlobal}`), { status: status });
-      showToast(`Đã cập nhật trạng thái phòng live thành: ${status}`);
+      showToast(`Đã cập nhật trạng thái phòng live thành: ${status}`, 'info');
     }
 
     function addQpQuestionItem() {
@@ -1658,7 +1799,7 @@
     function promptSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      if (!code || !title) { showToast('Vui lòng nhập Mã bài luyện và Tên bài luyện!', true); return; }
+      if (!code || !title) { showToast('Vui lòng nhập Mã bài luyện và Tên bài luyện!', 'error'); return; }
       pendingActionType = 'save_qp';
       document.getElementById('teacherPasswordInput').value = '';
       document.getElementById('passwordModal').style.display = 'flex';
@@ -1678,7 +1819,7 @@
       const maxWarnings = antiCheatType === 'limited' ? (parseInt(document.getElementById('qpMaxWarnings').value) || 5) : 99999;
       const useLayoutV2 = enableAdv ? document.getElementById('qpUseLayoutV2').checked : true;
       let items = document.querySelectorAll('#qpQuestionsContainer .q-build-item');
-      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
+      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', 'error'); return; }
       let questions = [];
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
@@ -1699,20 +1840,20 @@
       try {
         await window.dbSet(window.ref(window.db, 'quick_practices/' + code), qpObj);
         await window.dbSet(window.ref(window.db, 'qp_rooms/' + code), { status: isAdvancedMode ? 'waiting' : 'started' });
-        showToast(`🎉 Tạo bài luyện nhanh [${code}] thành công!`);
-      } catch (err) { showToast('Lỗi: ' + err.message, true); }
+        showToast(`⚡ Đã tạo bài luyện nhanh [${code}] thành công!`, 'success');
+      } catch (err) { showToast('Lỗi: ' + err.message, 'error'); }
     }
 
     async function openQpManagementRoom() {
       const code = document.getElementById('manageQpCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageQpPass').value.trim();
-      if (!code || !pass) { showToast('Nhập mã bài luyện và mật khẩu bảo mật!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
+      if (!code || !pass) { showToast('Nhập mã bài luyện và mật khẩu bảo mật!', 'error'); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', 'error'); return; }
       const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-      if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', true); return; }
+      if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', 'error'); return; }
       managedQpCodeGlobal = code;
       document.getElementById('qpManagementDashboard').style.display = 'block';
-      showToast('📡 Kết nối quản lý thành công!');
+      showToast('📡 Kết nối quản lý thành công!', 'info');
       let roomRef = window.ref(window.db, `qp_rooms/${code}`);
       window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
@@ -1744,14 +1885,14 @@
     async function kickQpStudent(code, studentId) {
       if (confirm('Kick học sinh này?')) {
         await window.dbRemove(window.ref(window.db, `qp_rooms/${code}/students/${studentId}`));
-        showToast('Đã kick học sinh!');
+        showToast('Đã kick học sinh!', 'warn');
       }
     }
 
     async function updateQpStatus(status) {
       if (!managedQpCodeGlobal) return;
       await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status: status });
-      showToast(`Đã cập nhật trạng thái: ${status}`);
+      showToast(`Đã cập nhật trạng thái: ${status}`, 'info');
     }
 
     async function deleteQpExam() {
@@ -1760,7 +1901,7 @@
         await window.dbRemove(window.ref(window.db, `quick_practices/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_leaderboard/${managedQpCodeGlobal}`));
-        showToast('🗑️ Xóa đề thành công!');
+        showToast(`🗑️ Đã xóa bài luyện [${managedQpCodeGlobal}] thành công!`, 'warn');
         document.getElementById('qpManagementDashboard').style.display = 'none';
       }
     }
@@ -1770,13 +1911,13 @@
       const name = document.getElementById('studentName').value.trim();
       const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('studentExtraPass').value.trim();
-      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', true); return; }
+      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', 'error'); return; }
       showLoadingSequence(async () => {
         if (mode === 'practice') {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', 'error'); return; }
           let qpData = snapshot.val();
-          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', true); return; }
+          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', 'error'); return; }
           currentQpData = qpData;
           studentNameGlobal = name;
           let studentKey = 'qp_s_' + Date.now();
@@ -1796,18 +1937,18 @@
             let data = snapshot.val() || {};
             let students = data.students || {};
             document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
-            if (!students[studentKey]) { showToast('Bạn đã bị giáo viên kick!', true); if (activeQpRoomListener) activeQpRoomListener(); switchView('studentLoginView'); return; }
+            if (!students[studentKey]) { showToast('Bạn đã bị giáo viên kick!', 'error'); if (activeQpRoomListener) activeQpRoomListener(); switchView('studentLoginView'); return; }
             if (data.status === 'started') { if (activeQpRoomListener) activeQpRoomListener(); window.dbUpdate(roomRef, { status: 'testing' }); launchQpPracticeInterface(); }
-            else if (data.status === 'ended' && isQpActive) { if (activeQpRoomListener) activeQpRoomListener(); showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true); submitQpPractice(true); }
+            else if (data.status === 'ended' && isQpActive) { if (activeQpRoomListener) activeQpRoomListener(); showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', 'error'); submitQpPractice(true); }
           });
         } else {
           const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
+          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', 'error'); return; }
           currentExamData = snapshot.val();
           studentNameGlobal = name;
           if (mode === 'live') {
-            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', true); return; }
-            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
+            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', 'error'); return; }
+            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', 'error'); return; }
             studentSessionKeyGlobal = 's_' + Date.now();
             let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`);
             await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
@@ -1820,9 +1961,9 @@
               let data = snapshot.val() || {};
               let students = data.students || {};
               document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
-              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', true); switchView('studentLoginView'); return; }
+              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', 'error'); switchView('studentLoginView'); return; }
               if (data.status === 'started') { if (activeStudentRoomListener) activeStudentRoomListener(); window.dbUpdate(roomRef, { status: 'testing' }); launchOfficialExamInterface(); }
-              else if (data.status === 'ended') { if (activeStudentRoomListener) activeStudentRoomListener(); showToast('Kì thi đã kết thúc!'); switchView('studentLoginView'); }
+              else if (data.status === 'ended') { if (activeStudentRoomListener) activeStudentRoomListener(); showToast('Kì thi đã kết thúc!', 'info'); switchView('studentLoginView'); }
             });
           } else {
             studentSessionKeyGlobal = 's_free_' + Date.now();
@@ -1897,7 +2038,7 @@
           timeLeft--;
           let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
           timerDisplay.innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-          if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
+          if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', 'error'); submitStudentExam(true); }
         }, 1000);
       } else {
         timerDisplay.innerText = '∞';
@@ -1908,7 +2049,7 @@
       cheatWarnings = 0; totalTabLeaveTime = 0;
       document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
       isExamActive = true;
-      setExamActiveClass(true);   // BẬT khóa lướt
+      setExamActiveClass(true);   // BẬT khóa lướt (chỉ cho thi tự do và live)
       switchView('studentExamView');
     }
 
@@ -1931,7 +2072,7 @@
         }
 
         if (currentExamData && currentCheatLimitType === 'limited' && cheatWarnings >= currentMaxWarnings) {
-          showToast(`🚨 Đã đạt giới hạn ${currentMaxWarnings} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, true);
+          showToast(`🚨 Đã đạt giới hạn ${currentMaxWarnings} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, 'error');
           dismissCheatAlert(); submitStudentExam(true); return;
         }
 
@@ -1939,7 +2080,7 @@
           if (currentQpData.antiCheatType === 'limited') {
             let maxW = currentQpData.maxWarnings || 5;
             if (cheatWarnings >= maxW) {
-              showToast(`🚨 Đã đạt giới hạn ${maxW} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, true);
+              showToast(`🚨 Đã đạt giới hạn ${maxW} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, 'error');
               dismissCheatAlert(); submitQpPractice(true); return;
             }
           }
@@ -1984,7 +2125,7 @@
       if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
       isExamActive = false;
-      setExamActiveClass(false);   // TẮT khóa lướt
+      setExamActiveClass(false);
       let totalEarnedScore = 0;
       let reviewHtml = '';
       currentExamData.questions.forEach(q => {
@@ -2029,77 +2170,41 @@
         name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds,
         cheatWarnings: cheatWarnings, totalLeaveTime: Math.round(totalTabLeaveTime / 1000), timestamp: Date.now()
       });
-      showToast('📤 Nộp bài thành công!');
-      switchView('studentResultView');
+      showToast('📤 Nộp bài thành công!', 'success');
+      showResultPopup(finalScore, 10, () => { switchView('studentResultView'); });
     }
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // ============ THOÁT BÀI THI (không ghi nhận kết quả) ============
     async function cancelStudentExam() {
       if (!confirm('Bạn có chắc muốn THOÁT bài thi?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!')) return;
-
       clearInterval(examTimer);
       isExamActive = false;
       setExamActiveClass(false);
-
-      // Gỡ listener phòng live trước (tránh fire khi xóa student)
-      if (activeStudentRoomListener) {
-        try { activeStudentRoomListener(); } catch(e) {}
-        activeStudentRoomListener = null;
-      }
-
-      // Nếu đang trong phòng live → xóa khỏi danh sách phòng
+      if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch(e) {} activeStudentRoomListener = null; }
       if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
-        try {
-          await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));
-        } catch(e) { console.warn('Không thể xóa khỏi phòng live:', e); }
+        try { await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`)); } catch(e) {}
       }
-
-      // Reset toàn bộ state
-      currentExamData = null;
-      studentNameGlobal = '';
-      studentSessionKeyGlobal = '';
-      cheatWarnings = 0;
-      totalTabLeaveTime = 0;
-      tabLeaveStartTime = null;
-
-      // Xóa nội dung đã render
+      currentExamData = null; studentNameGlobal = ''; studentSessionKeyGlobal = '';
+      cheatWarnings = 0; totalTabLeaveTime = 0; tabLeaveStartTime = null;
       const media = document.getElementById('examMediaContainer');
       const sheet = document.getElementById('studentAnswerSheet');
       if (media) media.innerHTML = '';
       if (sheet) sheet.innerHTML = '';
-
-      showToast('🚪 Đã thoát bài thi. Kết quả không được ghi nhận.');
+      showToast('🚪 Đã thoát bài thi. Kết quả không được ghi nhận.', 'warn');
       switchView('studentLoginView');
     }
 
-    // ============ THOÁT BÀI LUYỆN NHANH (không ghi nhận kết quả) ============
     function cancelQpPractice() {
       if (!confirm('Bạn có chắc muốn THOÁT bài luyện?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!')) return;
-
       clearInterval(qpTimer);
       isQpActive = false;
-      setExamActiveClass(false);
-
-      if (activeQpRoomListener) {
-        try { activeQpRoomListener(); } catch(e) {}
-        activeQpRoomListener = null;
-      }
-
-      // Reset state
-      currentQpData = null;
-      studentNameGlobal = '';
-      qpStudentAnswers = {};
-      currentQpV2Index = 0;
-      cheatWarnings = 0;
-      totalTabLeaveTime = 0;
-      tabLeaveStartTime = null;
-
+      if (activeQpRoomListener) { try { activeQpRoomListener(); } catch(e) {} activeQpRoomListener = null; }
+      currentQpData = null; studentNameGlobal = ''; qpStudentAnswers = {}; currentQpV2Index = 0;
+      cheatWarnings = 0; totalTabLeaveTime = 0; tabLeaveStartTime = null;
       const container = document.getElementById('qpPlayQuestionsContainer');
       if (container) container.innerHTML = '';
-
-      showToast('🚪 Đã thoát bài luyện. Kết quả không được ghi nhận.');
+      showToast('🚪 Đã thoát bài luyện. Kết quả không được ghi nhận.', 'warn');
       switchView('studentLoginView');
     }
 
@@ -2125,7 +2230,7 @@
           qpTimeLeft--;
           let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
           document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-          if (qpTimeLeft <= 0) { clearInterval(qpTimer); showToast('⌛ Đã hết thời gian làm bài!', true); submitQpPractice(true); }
+          if (qpTimeLeft <= 0) { clearInterval(qpTimer); showToast('⌛ Đã hết thời gian làm bài!', 'error'); submitQpPractice(true); }
         }, 1000);
       } else {
         qpTimeLeft = 0;
@@ -2133,7 +2238,7 @@
         clearInterval(qpTimer);
         qpTimer = setInterval(() => { qpTimeLeft++; }, 1000);
       }
-      setExamActiveClass(true);   // BẬT khóa lướt
+      // KHÔNG khóa lướt cho bài luyện nhanh
       switchView('qpPracticingView');
       if (currentQpData.isAdvancedMode) {
         let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
@@ -2141,7 +2246,8 @@
           let data = snapshot.val() || {};
           if (data.status === 'ended' && isQpActive) {
             if (activeQpRoomListener) activeQpRoomListener();
-            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true); submitQpPractice(true);
+            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', 'error');
+            submitQpPractice(true);
           }
         });
       }
@@ -2208,7 +2314,7 @@
       if (!qpStudentAnswers.hasOwnProperty(q.id)) {
         let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
         let selectedVal = group ? group.dataset.val : '';
-        if (!selectedVal) { showToast('Vui lòng chọn 1 đáp án để xác nhận làm tiếp!', true); return; }
+        if (!selectedVal) { showToast('Vui lòng chọn 1 đáp án để xác nhận làm tiếp!', 'error'); return; }
         qpStudentAnswers[q.id] = selectedVal; 
       }
       if (currentQpV2Index < currentQpData.questions.length - 1) {
@@ -2239,7 +2345,6 @@
       if (!isQpActive && !forced) return;
       isQpActive = false;
       clearInterval(qpTimer);
-      setExamActiveClass(false);   // TẮT khóa lướt
       if (activeQpRoomListener) activeQpRoomListener();
       let totalEarned = 0, totalMax = 0, reviewHtml = '';
       currentQpData.questions.forEach(q => {
@@ -2270,8 +2375,8 @@
       document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
       document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
       await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), { name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, timestamp: Date.now() });
-      showToast('📤 Nộp bài luyện thành công!');
-      switchView('qpResultView');
+      showToast('📤 Nộp bài luyện thành công!', 'success');
+      showResultPopup(finalScore, 10, () => { switchView('qpResultView'); });
     }
 
     function toggleResultExp(btn) {
@@ -2284,7 +2389,7 @@
       const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
       const tbody = document.getElementById('lbTableBody');
       tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
-      if (!code) { showToast('Nhập mã bài!', true); return; }
+      if (!code) { showToast('Nhập mã bài!', 'error'); return; }
       let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
       if (!snapshot.exists()) snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
       if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
@@ -2297,7 +2402,7 @@
         let rowId = `lb_detail_${idx}`;
         tbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${row.name}</td><td><b style="color:#198754;">${row.score}</b></td><td>${m}p ${s}s</td><td><button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button><div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">- Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>- Thời gian rời phòng thi: <b>${leaveSec} giây</b></div></td></tr>`;
       });
-      showToast('📊 Tải bảng xếp hạng thành công!');
+      showToast('📊 Tải bảng xếp hạng thành công!', 'success');
     }
 
     function toggleLbDetail(rowId) {
