@@ -51,6 +51,21 @@
     
     .img-preview, .pdf-canvas { max-width: 100%; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 
+    .opt-group { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+    .opt-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .opt-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
+
+    .tf-branch-row { display: flex; align-items: center; justify-content: space-between; background: #fdfdfd; border: 1px solid #eee; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; }
+    .tf-branch-opts { display: flex; gap: 5px; }
+    .tf-sub-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ccc; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .tf-sub-btn.selected { background: #1877f2; color: white; border-color: #1877f2; }
+
+    .exam-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #eee; margin-bottom: 10px; }
+    .timer { background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 14px; }
+
+    .explanation-box { background: #e7f3ff; border-left: 4px solid #1877f2; padding: 8px; margin-top: 6px; font-size: 13px; color: #1c1e21; border-radius: 0 4px 4px 0; display: none; }
+    .toggle-exp-btn { background: #f0f2f5; border: 1px solid #ccd0d5; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
+
     .table-responsive { width: 100%; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 500px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 13px; }
@@ -62,35 +77,75 @@
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
 
+    /* HỆ THỐNG THÔNG BÁO TOAST NÂNG TẦM TRẢI NGHIỆM */
     #systemToast {
-      position: fixed; top: 25px; right: 25px;
+      position: fixed;
+      top: 25px;
+      right: 25px;
       background: linear-gradient(135deg, #198754, #157347);
-      color: white; padding: 14px 24px; border-radius: 12px;
-      font-weight: 600; font-size: 14px;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
       box-shadow: 0 8px 24px rgba(25, 135, 84, 0.3);
-      z-index: 9999999; display: none;
+      z-index: 9999999;
+      display: none;
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-      opacity: 0; transform: translateY(-20px); border-left: 5px solid #fff;
+      opacity: 0;
+      transform: translateY(-20px);
+      border-left: 5px solid #fff;
     }
-    #systemToast.error { background: linear-gradient(135deg, #dc3545, #bb2d3b); box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); }
-    #systemToast.show { opacity: 1; transform: translateY(0); }
+    #systemToast.error { 
+      background: linear-gradient(135deg, #dc3545, #bb2d3b); 
+      box-shadow: 0 8px 24px rgba(220, 53, 69, 0.3); 
+    }
+    #systemToast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
+    /* BANNER THÔNG BÁO TOÀN CẦU TỪ NHÀ PHÁT TRIỂN */
     #globalBroadcastBanner {
-      position: fixed; top: 0; left: 0; width: 100%; padding: 15px 25px;
-      text-align: center; font-weight: bold; z-index: 99999999; display: none;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: slideDown 0.5s ease;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px 25px;
+      text-align: center;
+      font-weight: bold;
+      z-index: 99999999;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      animation: slideDown 0.5s ease;
     }
-    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
 
+    /* Màn hình Loading */
     #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
     .spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     #loadingCompleteToast { 
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
-      background: #ffffff; border: 2px solid #198754; color: #198754; 
-      padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999999; display: none; opacity: 1; 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      background: #ffffff; 
+      border: 2px solid #198754; 
+      color: #198754; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-weight: bold; 
+      font-size: 16px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      z-index: 999999; 
+      display: none; 
+      transition: opacity 5s ease-out; 
+      opacity: 1; 
     }
 
     @media (max-width: 900px) {
@@ -102,15 +157,22 @@
 </head>
 <body>
 
+  <!-- BANNER THÔNG BÁO TOÀN CẦU -->
   <div id="globalBroadcastBanner">Thông báo từ nhà phát triển</div>
+
+  <!-- AUDIO PHÁT NHẠC ĐỒNG BỘ TOÀN HỆ THỐNG -->
   <audio id="globalAudioPlayer" style="display:none;" loop></audio>
+
+  <!-- TOAST THÔNG BÁO HỆ THỐNG -->
   <div id="systemToast">Thông báo hệ thống</div>
 
+  <!-- MÀN HÌNH LOADING VÒNG TRÒN XOAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <h3 id="loadingText" style="color: #1877f2; font-size: 18px;">loading...</h3>
   </div>
 
+  <!-- THÔNG BÁO HOÀN THÀNH LOADING -->
   <div id="loadingCompleteToast">Hoàn thành</div>
 
   <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN -->
@@ -132,8 +194,8 @@
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">Đào Đại Thuận</span>[cite: 1]</p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">thuan2810</span></p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
@@ -152,7 +214,7 @@
 
   <div class="container">
 
-    <!-- GIÁO VIÊN -->
+    <!-- ==================== GIÁO VIÊN: TẠO ĐỀ V2 ==================== -->
     <div id="teacherView" class="view-section active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
@@ -223,26 +285,27 @@
 
         <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-top: 20px;">
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tự Động Nhập Đáp Án Từ Ảnh</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án vào đây:</p>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh chứa bảng đáp án vào đây để hệ thống tự động điền toàn bộ câu hỏi và đáp án cho bạn:</p>
           <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processKeyImage(this)">
         </div>
 
         <h3 style="margin-top: 25px; margin-bottom: 8px; font-size: 16px;">📋 Cấu Trúc Câu Hỏi V2</h3>
-        
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">* Thang điểm mặc định: Trắc nghiệm ABCD: 0.25đ | Đúng/Sai: 1.0đ (có cơ chế điểm nhánh) | Trả lời ngắn: 0.5đ.</p>
+
         <div class="section-title">
-          <span>I. TRẮC NGHIỆM (A, B, C, D)</span>
+          <span>I. TRẮC NGHIỆM (A, B, C, D) [Mặc định 0.25đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button>
         </div>
         <div id="builderMC"></div>
 
         <div class="section-title">
-          <span>II. ĐÚNG / SAI</span>
+          <span>II. ĐÚNG / SAI (Cơ chế điểm nhánh: 0.1 / 0.25 / 0.5 / 1.0đ)</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button>
         </div>
         <div id="builderTF"></div>
 
         <div class="section-title">
-          <span>III. TRẢ LỜI NGẮN</span>
+          <span>III. TRẢ LỜI NGẮN [Mặc định 0.5đ/câu]</span>
           <button class="btn btn-success" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button>
         </div>
         <div id="builderSA"></div>
@@ -251,7 +314,7 @@
       </div>
     </div>
 
-    <!-- HỌC SINH: ĐĂNG NHẬP -->
+    <!-- ==================== HỌC SINH: ĐĂNG NHẬP ==================== -->
     <div id="studentLoginView" class="view-section">
       <div class="card" style="max-width: 450px; margin: 20px auto; text-align: center;">
         <h2>🧑‍🎓 Học Sinh Vào Thi / Luyện Tập</h2>
@@ -281,55 +344,63 @@
       </div>
     </div>
 
-    <!-- PHÒNG CHỜ BÀI LUYỆN NHANH -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
     <div id="qpWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
         <p id="qpWaitTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
         <hr style="margin: 20px 0;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px;">
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
           <p>👤 <b>Thí sinh:</b> <span id="qpWaitStudentName"></span></p>
           <p>📋 <b>Số lượng câu hỏi:</b> <span id="qpWaitQCount" style="color: #1877f2; font-weight: bold;">0</span></p>
+          <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="qpWaitStudentCount" style="color: #198754; font-weight: bold;">1</span></p>
         </div>
+
         <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
           🔔 ĐỢI GIÁO VIÊN BẮT ĐẦU...
         </div>
+
         <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveQpWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- PHÒNG CHỜ LIVE EXAM -->
+    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM CHÍNH THỨC ==================== -->
     <div id="studentWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
         <p id="waitingRoomExamTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
         <hr style="margin: 20px 0;">
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px;">
+
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
           <p>👤 <b>Thí sinh:</b> <span id="waitStudentName"></span></p>
+          <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="waitStudentCount" style="color: #1877f2; font-weight: bold;">1</span></p>
           <p>⏱️ <b>Thời gian làm bài:</b> <span id="waitDuration"></span> phút</p>
         </div>
+
         <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
           🔔 CHỜ GIÁO VIÊN BẮT ĐẦU KÌ THI...
         </div>
+
         <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- HỌC SINH: LÀM BÀI CHÍNH THỨC -->
+    <!-- ==================== HỌC SINH: LÀM BÀI CHÍNH THỨC ==================== -->
     <div id="studentExamView" class="view-section">
       <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px 15px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
-        <span>🛡️ <b>Chống gian lận:</b> Chuyển tab quá 7 giây sẽ bị gửi cảnh báo!</span>
+        <span>🛡️ <b>Chế độ chống gian lận:</b> Chuyển tab quá 7 giây sẽ bị gửi cảnh báo!</span>
         <span id="cheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Cảnh báo: 0</span>
       </div>
       <div class="exam-layout">
         <div class="exam-left" id="examMediaContainer"></div>
         <div class="exam-right">
-          <div class="exam-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:8px; margin-bottom:10px;">
+          <div class="exam-header">
             <div>
               <h4 id="displayExamTitle" style="font-size: 14px;">Đề Thi</h4>
               <small id="displayStudentInfo" style="color: #666; font-size: 11px;"></small>
             </div>
-            <div class="timer" id="timerDisplay" style="background: #ffebee; color: #d32f2f; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 14px;">00:00</div>
+            <div class="timer" id="timerDisplay">00:00</div>
           </div>
           <div style="flex: 1; overflow-y: auto;" id="studentAnswerSheet"></div>
           <button class="btn btn-danger" style="margin-top: 10px;" onclick="submitStudentExam(false)">📤 Nộp Bài Thi</button>
@@ -337,7 +408,7 @@
       </div>
     </div>
 
-    <!-- KẾT QUẢ CHÍNH THỨC -->
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ CHÍNH THỨC ==================== -->
     <div id="studentResultView" class="view-section">
       <div class="card" style="max-width: 800px; margin: 0 auto;">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -351,7 +422,7 @@
       </div>
     </div>
 
-    <!-- KẾT QUẢ BÀI LUYỆN NHANH -->
+    <!-- ==================== HỌC SINH: XEM KẾT QUẢ BÀI LUYỆN NHANH ==================== -->
     <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
       <div class="card">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -365,7 +436,7 @@
       </div>
     </div>
 
-    <!-- XẾP HẠNG -->
+    <!-- ==================== BẢNG XẾP HẠNG ==================== -->
     <div id="leaderboardView" class="view-section">
       <div class="card">
         <h2>🏆 BẢNG XẾP HẠNG</h2>
@@ -386,7 +457,7 @@
       </div>
     </div>
 
-    <!-- MÔ HÌNH NÂNG CAO (GV) -->
+    <!-- ==================== MÔ HÌNH NÂNG CAO (GV) ==================== -->
     <div id="advancedModelView" class="view-section">
       <div class="card">
         <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
@@ -394,10 +465,11 @@
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button class="btn" style="width: auto;" onclick="switchSubModule('quickPracticeCreate')">⚡ Tạo Bài Luyện Nhanh</button>
           <button class="btn btn-secondary" style="width: auto;" onclick="switchSubModule('quickPracticeManage')">🛡️ Quản Lý Bài Luyện Nhanh</button>
+          <button class="btn btn-success" style="width: auto;" onclick="showToast('Tính năng Minigame đang phát triển!', true)">🎮 Minigame</button>
         </div>
       </div>
 
-      <!-- TẠO BÀI LUYỆN NHANH -->
+      <!-- 1. TẠO BÀI LUYỆN NHANH -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh Thủ Công</h3>
         <hr style="margin: 10px 0;">
@@ -420,6 +492,7 @@
           </label>
         </div>
 
+        <!-- PANEL NÂNG CAO CHO BÀI LUYỆN NHANH -->
         <div id="qpAdvancedPanel" class="advanced-settings-panel">
           <div class="form-grid-2">
             <div>
@@ -431,6 +504,7 @@
                 <input type="checkbox" id="qpIsAdvancedMode" checked style="width: 16px; height: 16px;">
                 🛡️ Bật bài luyện nâng cao (Cần GV bấm Bắt đầu)
               </label>
+              <small style="color: #666; font-size: 11px;">Nếu tắt: Học sinh nhập mã/mật khẩu vào làm luôn không cần đợi.</small>
             </div>
           </div>
 
@@ -442,6 +516,7 @@
               </label>
               <div id="qpTimerInputBox" style="margin-top: 5px;">
                 <input type="number" id="qpDurationMinutes" value="15" min="1" placeholder="Số phút...">
+                <small style="color: #666; font-size: 11px;">Đơn vị: Phút. (Nếu tắt, thời gian sẽ không giới hạn).</small>
               </div>
             </div>
             <div>
@@ -462,6 +537,19 @@
               </div>
             </div>
           </div>
+
+          <div style="margin-top: 12px; border-top: 1px dashed #ffe58f; padding-top: 8px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-weight: bold; color: #1877f2;">
+              <input type="checkbox" id="qpUseLayoutV2" checked style="width: 16px; height: 16px;">
+              ✨ Sử dụng Giao diện làm bài V2 (Làm từng câu, bấm Tiếp tục)
+            </label>
+            <small style="color: #666; font-size: 11px;">Nếu tắt sẽ dùng giao diện V1 (Tất cả câu hỏi hiển thị trên 1 trang).</small>
+          </div>
+
+          <div style="margin-top: 10px;">
+            <label>Giới hạn số học sinh tham gia đồng thời:</label>
+            <input type="number" id="qpLimit" value="50">
+          </div>
         </div>
 
         <h4 style="margin-top: 15px; margin-bottom: 5px;">📋 Danh Sách Câu Hỏi</h4>
@@ -471,9 +559,11 @@
         <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện (Cần Mã Bảo Mật)</button>
       </div>
 
-      <!-- QUẢN LÝ BÀI LUYỆN NHANH -->
+      <!-- 2. QUẢN LÝ BÀI LUYỆN NHANH -->
       <div id="quickPracticeManage" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã bài luyện và Mật khẩu bảo mật quản lý:</p>
+        
         <div class="form-grid-2">
           <input type="text" id="manageQpCode" placeholder="Nhập mã bài luyện...">
           <input type="password" id="manageQpPass" placeholder="Mật khẩu bảo mật quản lý...">
@@ -507,13 +597,14 @@
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- MỤC TỐI CAO NHÀ PHÁT TRIỂN -->
+    <!-- ==================== MỤC TỐI CAO NHÀ PHÁT TRIỂN ==================== -->
     <div id="supremeView" class="view-section">
       <div class="card" style="border: 2px solid #ffc107;">
         <h2 style="color: #d32f2f; margin-bottom: 15px;">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
-        <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Quản trị dữ liệu, phát thông báo toàn cục và hệ thống phát nhạc đồng bộ trực tuyến.</p>
+        <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Chào mừng bạn đến bảng điều khiển tối cao của hệ thống. Tại đây bạn có thể quản trị toàn bộ dữ liệu, phát thông báo toàn cục và đồng bộ phát nhạc.</p>
         
         <div class="section-title"><span>1. QUẢN LÝ TẤT CẢ ĐỀ THI & BÀI LUYỆN</span></div>
         <div style="margin-bottom: 15px;">
@@ -557,29 +648,11 @@
         </div>
         <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
 
-        <!-- 3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN (ĐÃ CẬP NHẬT THEO YÊU CẦU) -->
         <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Chọn tệp nhạc trực tiếp từ tệp tải xuống / máy tính của bạn để thêm vào danh sách và phát đồng bộ cho tất cả mọi người online:</p>
-        
-        <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px dashed #1877f2; margin-bottom: 12px;">
-          <label style="font-weight: bold; color: #1877f2; margin-bottom: 5px;">➕ Thêm file nhạc mới từ máy:</label>
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <input type="file" id="localAudioFileInput" accept="audio/*" style="margin: 0; flex: 1; background: white; padding: 6px; font-size: 13px;">
-            <input type="text" id="localAudioNameInput" placeholder="Tên bài hát hiển thị..." style="margin: 0; width: 220px; padding: 8px;">
-            <button class="btn btn-success" style="width: auto; padding: 8px 16px;" onclick="addLocalAudioToList()">Thêm Vào List</button>
-          </div>
-        </div>
-
-        <label style="font-weight: bold; margin-bottom: 5px;">🎵 Danh sách bài hát có sẵn:</label>
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-          <select id="supremeAudioSelectList" style="margin: 0; flex: 1;">
-            <option value="">-- Chọn bài hát từ danh sách --</option>
-          </select>
-          <button class="btn btn-danger" style="width: auto; padding: 6px 12px;" onclick="removeSelectedAudioFromList()">🗑️ Xóa Bài</button>
-        </div>
-
+        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Dán link nhạc trực tiếp (.mp3, .wav) để phát cho tất cả mọi người đang online cùng nghe. Có thể lấy link bằng cách bỏ file nhạc vào cùng thư mục deploy trên Vercel (VD: https://ten-web.vercel.app/nhac1.mp3), hoặc dùng link raw từ GitHub:</p>
+        <input type="text" id="supremeAudioUrlInput" placeholder="Dán link nhạc vào đây, VD: https://fram-bakhi-thuandao.vercel.app/nhac1.mp3" style="margin-bottom: 10px;">
         <div style="display: flex; gap: 10px;">
-          <button class="btn btn-success" onclick="playSelectedSupremeAudio()">🎵 Phát Bài Đã Chọn Cho Tất Cả</button>
+          <button class="btn btn-success" onclick="uploadAndPlayGlobalAudio()">🎵 Phát Nhạc Chung Từ Link</button>
           <button class="btn btn-danger" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
 
@@ -597,7 +670,7 @@
 
   </div>
 
-  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH -->
+  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH CỦA HỌC SINH -->
   <div id="qpPracticingView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
     <div class="card">
       <div id="qpCheatWarningBanner" class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 8px 12px; margin-bottom: 10px; font-size: 13px; display: none; justify-content: space-between; align-items: center;">
@@ -610,6 +683,7 @@
         <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f;">00:00</span>
       </div>
 
+      <!-- Container chứa câu hỏi (Hỗ trợ V1 hoặc V2) -->
       <div id="qpPlayQuestionsContainer"></div>
 
       <div id="qpActionFooter" style="margin-top: 15px; display: flex; justify-content: space-between; gap: 10px;">
@@ -627,7 +701,7 @@
         <h3>🔐 Xác Thực Bảo Mật Giáo Viên</h3>
         <button class="close-btn" onclick="closePasswordModal()">✖</button>
       </div>
-      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng nhập mật khẩu bảo mật:</p>
+      <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vui lòng nhập mật khẩu bảo mật (********):</p>
       <input type="password" id="teacherPasswordInput" placeholder="Nhập mật khẩu...">
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn btn-secondary" style="width: 50%;" onclick="closePasswordModal()">Hủy</button>
@@ -636,7 +710,7 @@
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU VUA -->
+  <!-- MODAL XÁC THỰC MẬT KHẨU VUA (TỐI CAO) -->
   <div class="modal-overlay" id="supremePasswordModal">
     <div class="modal-box" style="max-width: 400px; text-align: center;">
       <div class="modal-header">
@@ -649,7 +723,7 @@
     </div>
   </div>
 
-  <!-- MODAL XEM CHI TIẾT ĐỀ THI -->
+  <!-- MODAL XEM CHI TIẾT ĐỀ THI / ĐÁP ÁN (DÀNH CHO TỐI CAO) -->
   <div class="modal-overlay" id="supremeDetailModal">
     <div class="modal-box" style="max-width: 700px;">
       <div class="modal-header">
@@ -660,7 +734,7 @@
     </div>
   </div>
 
-  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI -->
+  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI CHÍNH THỨC -->
   <div class="modal-overlay" id="advancedModal">
     <div class="modal-box" style="max-width: 750px;">
       <div class="modal-header">
@@ -670,12 +744,14 @@
       
       <div style="margin-bottom: 15px;">
         <label>Mã Đề Kiểm Tra:</label>
-        <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0;">
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0; flex: 1;">
+        </div>
       </div>
 
       <div style="margin-bottom: 15px;">
-        <label>Mật Khẩu Bảo Mật Quản Lý:</label>
-        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật..." style="margin: 0;">
+        <label>Mật Khẩu Bảo Mật Quản Lý (Ẩn):</label>
+        <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (********)..." style="margin: 0;">
       </div>
 
       <div style="margin-bottom: 15px;">
@@ -696,7 +772,7 @@
           </div>
         </div>
         
-        <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh:</p>
+        <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh (Theo Dõi Cảnh Báo):</p>
         <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
           <table>
             <thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Số Lần Cảnh Cáo</th><th>Thời Gian Rời Tab</th><th>Thao Tác</th></tr></thead>
@@ -704,6 +780,7 @@
           </table>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -738,6 +815,7 @@
     window.onValue = onValue;
     window.dbUpdate = update;
 
+    // Firebase Storage - dùng để tải file nhạc lớn lên thay vì nhét base64 vào Realtime Database
     window.storage = storage;
     window.storageRef = storageRef;
     window.uploadBytes = uploadBytes;
@@ -770,12 +848,8 @@
     let tabLeaveStartTime = null;
     const CHEAT_TIME_THRESHOLD = 7000; 
 
-    // Bộ nhớ cục bộ lưu danh sách bài hát (lưu trên localStorage để duy trì qua các phiên)
-    let localAudioList = JSON.parse(localStorage.getItem('fram_audio_list') || '[]');
-
+    // Lắng nghe dữ liệu toàn cục (Thông báo đẩy & Phát nhạc đồng bộ từ Firebase)
     window.addEventListener('DOMContentLoaded', () => {
-      renderAudioListSelect();
-
       setTimeout(() => {
         if (!window.db) return;
 
@@ -794,6 +868,7 @@
 
             if (noticeSpan) noticeSpan.innerText = data.text;
 
+            // Tự động ẩn sau thời gian định sẵn nếu có
             if (data.durationSec) {
               setTimeout(() => {
                 banner.style.display = 'none';
@@ -805,7 +880,7 @@
           }
         });
 
-        // Lắng nghe trạng thái phát nhạc đồng bộ từ Firebase
+        // Lắng nghe trạng thái phát nhạc đồng bộ
         window.onValue(window.ref(window.db, 'system/audio'), (snapshot) => {
           let data = snapshot.val();
           const audioPlayer = document.getElementById('globalAudioPlayer');
@@ -826,6 +901,9 @@
       }, 1500);
     });
 
+    // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY BLOCKED) ---
+    // Hầu hết trình duyệt chặn audio.play() nếu người dùng chưa từng tương tác với trang.
+    // Biến này đánh dấu "đang có nhạc chờ phát" để thử lại ngay khi người dùng bấm/chạm/gõ phím lần đầu.
     let pendingGlobalAudioPlay = false;
 
     function tryPlayGlobalAudio() {
@@ -839,110 +917,21 @@
           pendingGlobalAudioPlay = false;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Đang phát nhạc trực tuyến 🎵';
         }).catch(() => {
+          // Bị chặn autoplay -> chờ người dùng tương tác lần đầu rồi thử lại
           pendingGlobalAudioPlay = true;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Nhạc đang chờ bạn chạm/bấm vào trang để phát 🔇';
         });
       }
     }
 
+    // Ngay khi người dùng tương tác lần đầu tiên với trang, thử phát lại nhạc nếu đang bị chặn
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.addEventListener(evt, () => {
         if (pendingGlobalAudioPlay) tryPlayGlobalAudio();
       }, { passive: true });
     });
 
-    // --- QUẢN LÝ DANH SÁCH NHẠC & THÊM FILE TỪ MÁY ---
-    function renderAudioListSelect() {
-      const select = document.getElementById('supremeAudioSelectList');
-      if (!select) return;
-      select.innerHTML = '<option value="">-- Chọn bài hát từ danh sách --</option>';
-      localAudioList.forEach((item, index) => {
-        let opt = document.createElement('option');
-        opt.value = item.url;
-        opt.innerText = `${index + 1}. ${item.name}`;
-        select.appendChild(opt);
-      });
-    }
-
-    async function addLocalAudioToList() {
-      const fileInput = document.getElementById('localAudioFileInput');
-      const nameInput = document.getElementById('localAudioNameInput');
-
-      if (!fileInput.files || fileInput.files.length === 0) {
-        showToast('Vui lòng chọn một tệp nhạc (.mp3, .wav...) từ máy!', true);
-        return;
-      }
-
-      let file = fileInput.files[0];
-      let songName = nameInput.value.trim() || file.name;
-
-      showToast('⏳ Đang xử lý file nhạc...');
-
-      try {
-        // Chuyển file thành Object URL dạng blob cục bộ để sử dụng trực tiếp trong phiên làm việc
-        let fileUrl = URL.createObjectURL(file);
-
-        localAudioList.push({ name: songName, url: fileUrl });
-        localStorage.setItem('fram_audio_list', JSON.stringify(localAudioList));
-
-        renderAudioListSelect();
-        fileInput.value = '';
-        nameInput.value = '';
-        showToast(`🎵 Đã thêm bài hát "${songName}" vào list thành công!`);
-      } catch (err) {
-        showToast('❌ Lỗi thêm file nhạc: ' + err.message, true);
-      }
-    }
-
-    function removeSelectedAudioFromList() {
-      const select = document.getElementById('supremeAudioSelectList');
-      let selectedUrl = select.value;
-      if (!selectedUrl) {
-        showToast('Vui lòng chọn bài hát cần xóa khỏi danh sách!', true);
-        return;
-      }
-
-      localAudioList = localAudioList.filter(item => item.url !== selectedUrl);
-      localStorage.setItem('fram_audio_list', JSON.stringify(localAudioList));
-      renderAudioListSelect();
-      showToast('🗑️ Đã xóa bài hát khỏi danh sách.');
-    }
-
-    async function playSelectedSupremeAudio() {
-      const select = document.getElementById('supremeAudioSelectList');
-      let audioUrl = select.value;
-
-      if (!audioUrl) {
-        showToast('Vui lòng chọn bài hát từ list để phát!', true);
-        return;
-      }
-
-      showToast('⏳ Đang đồng bộ phát nhạc...');
-      try {
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioUrl: audioUrl,
-          isPlaying: true,
-          timestamp: Date.now()
-        });
-        showToast('🎵 Đã phát bài hát đã chọn cho toàn bộ người dùng!');
-      } catch (err) {
-        showToast('❌ Lỗi phát nhạc: ' + err.message, true);
-      }
-    }
-
-    async function stopGlobalAudio() {
-      try {
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioUrl: '',
-          isPlaying: false,
-          timestamp: Date.now()
-        });
-        showToast('🛑 Đã dừng phát nhạc.');
-      } catch (err) {
-        showToast('❌ Lỗi khi dừng nhạc: ' + err.message, true);
-      }
-    }
-
+    // --- HÀM HIỂN THỊ TOAST THÔNG BÁO NÂNG TẦM TRẢI NGHIỆM ---
     function showToast(message, isError = false) {
       const toast = document.getElementById('systemToast');
       toast.innerText = message;
@@ -984,6 +973,7 @@
       }
     }
 
+    // --- CÁC CHỨC NĂNG DÀNH CHO TỐI CAO NHÀ PHÁT TRIỂN ---
     async function loadAllSupremeExams() {
       let tbody = document.getElementById('supremeExamsTableBody');
       tbody.innerHTML = '<tr><td colspan="4">⏳ Đang tải toàn bộ dữ liệu từ Cloud...</td></tr>';
@@ -1056,14 +1046,17 @@
       if (type === 'exam') {
         data.questions.forEach(q => {
           html += `<div style="background:#f8f9fa; padding:8px; border-radius:6px; margin-top:8px;">
-            <b>Câu ${q.id} (${q.type}):</b> Đáp án chuẩn: <b style="color:green;">${q.correctAnswer}</b>
+            <b>Câu ${q.id} (${q.type}):</b> Đáp án chuẩn: <b style="color:green;">${q.correctAnswer}</b><br>
+            <small>Điểm: ${q.score} | Giải thích: ${q.explanation || 'Không có'}</small>
           </div>`;
         });
       } else {
         data.questions.forEach(q => {
           let opts = q.options.map(o => `${o.label}. ${o.text}`).join(' | ');
           html += `<div style="background:#f8f9fa; padding:8px; border-radius:6px; margin-top:8px;">
-            <b>Câu ${q.id}:</b> ${q.question}<br>- Đáp án: ${opts} | Đúng: <b style="color:green;">${q.correct}</b>
+            <b>Câu ${q.id}:</b> ${q.question}<br>
+            - Các đáp án: ${opts}<br>
+            - Đáp án đúng: <b style="color:green;">${q.correct}</b>
           </div>`;
         });
       }
@@ -1114,6 +1107,42 @@
       reader.onerror = error => reject(error);
     });
 
+    async function uploadAndPlayGlobalAudio() {
+      let urlInput = document.getElementById('supremeAudioUrlInput');
+      let audioUrl = urlInput.value.trim();
+
+      if (!audioUrl) { showToast('Vui lòng dán link nhạc vào ô nhập!', true); return; }
+      if (!/^https?:\/\//i.test(audioUrl)) { showToast('Link nhạc không hợp lệ, phải bắt đầu bằng http:// hoặc https://', true); return; }
+
+      showToast('⏳ Đang lưu link nhạc...');
+      try {
+        // Chỉ lưu đường link nhạc (chuỗi ngắn) vào Realtime Database, không upload file gì cả
+        await window.dbSet(window.ref(window.db, 'system/audio'), {
+          audioUrl: audioUrl,
+          isPlaying: true,
+          timestamp: Date.now()
+        });
+        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
+      } catch (err) {
+        console.error('Lỗi phát nhạc chung:', err);
+        showToast('❌ Lỗi khi lưu/phát nhạc: ' + (err && err.message ? err.message : err), true);
+      }
+    }
+
+    async function stopGlobalAudio() {
+      try {
+        await window.dbSet(window.ref(window.db, 'system/audio'), {
+          audioUrl: '',
+          isPlaying: false,
+          timestamp: Date.now()
+        });
+        showToast('🛑 Đã dừng phát nhạc.');
+      } catch (err) {
+        console.error('Lỗi khi dừng nhạc:', err);
+        showToast('❌ Lỗi khi dừng nhạc: ' + (err && err.message ? err.message : err), true);
+      }
+    }
+
     function switchSubModule(moduleId) {
       document.querySelectorAll('.sub-module-box').forEach(el => el.style.display = 'none');
       document.getElementById(moduleId).style.display = 'block';
@@ -1161,12 +1190,33 @@
 
       if (mode === 'practice' || mode === 'live') {
         passBox.style.display = 'block';
-        passLabel.innerText = mode === 'practice' ? 'Mật Khẩu Bài Luyện:' : 'Mật Khẩu Phòng Thi:';
+        passLabel.innerText = mode === 'practice' ? 'Mật Khẩu Bài Luyện (nếu có):' : 'Mật Khẩu Phòng Thi:';
         codeLabel.innerText = mode === 'practice' ? 'Mã Bài Luyện Nhanh:' : 'Mã Bài Kiểm Tra:';
       } else {
         passBox.style.display = 'none';
         codeLabel.innerText = 'Mã Bài Kiểm Tra:';
       }
+    }
+
+    function showLoadingSequence(callback) {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.style.display = 'flex';
+
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        if (callback) callback();
+        
+        const toast = document.getElementById('loadingCompleteToast');
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => {
+            toast.style.display = 'none';
+          }, 5000); 
+        }, 300);
+      }, 1000);
     }
 
     function addQuestionV2(type, defaultAns = '', customBranches = null) {
@@ -1177,10 +1227,15 @@
       div.className = 'q-build-item';
       div.dataset.type = type;
 
+      let defaultScoreVal = type === 'mc' ? 0.25 : (type === 'tf' ? 1.0 : 0.5);
+
       let innerHtml = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
           <strong>Câu ${qIndex}</strong>
-          <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.remove();">Xóa</button>
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
+            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove();">Xóa</button>
+          </div>
         </div>
       `;
 
@@ -1214,6 +1269,25 @@
         `;
       }
 
+      innerHtml += `
+        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <div>
+              <label style="font-size:11px;">Điểm số riêng:</label>
+              <input type="number" class="q-score-custom" value="${defaultScoreVal}" step="0.05" style="padding:4px; margin:0;">
+            </div>
+            <div>
+              <label style="font-size:11px;">Gắn ảnh giải thích:</label>
+              <input type="file" class="q-exp-img-input" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
+            </div>
+          </div>
+          <div style="margin-top:6px;">
+            <label style="font-size:11px;">Chú thích / Lời giải chi tiết:</label>
+            <textarea class="q-explanation" rows="2" placeholder="Nhập lời giải..." style="margin:0; font-size:12px;"></textarea>
+          </div>
+        </div>
+      `;
+
       div.innerHTML = innerHtml;
       container.appendChild(div);
 
@@ -1222,22 +1296,32 @@
       }
     }
 
+    function toggleAdvancedQSettings(btn) {
+      let panel = btn.parentElement.parentElement.parentElement.querySelector('.advanced-q-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
     function updateTfV2Inputs(countInput, presetValues = null) {
       let wrapper = countInput.parentElement.querySelector('.tf-branches-builder');
       let count = parseInt(countInput.value) || 4;
       let letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      let defaultBranchScores = [0.1, 0.15, 0.25, 0.5];
 
       let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
       for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
         let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
+        let bScore = defaultBranchScores[i] || 0.25;
         html += `
           <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
             <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
-            <select class="tf-branch-ans-${i}" style="width:80px; padding:2px; margin:0; font-size:12px;">
-              <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
-              <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
-            </select>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <select class="tf-branch-ans-${i}" style="width:70px; padding:2px; margin:0; font-size:12px;">
+                <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
+                <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
+              </select>
+              <input type="number" class="tf-branch-score-${i}" value="${bScore}" placeholder="Điểm" step="0.05" style="width:60px; padding:2px; margin:0; font-size:12px;" title="Điểm nhánh">
+            </div>
           </div>
         `;
       }
@@ -1247,13 +1331,24 @@
 
     function processKeyImage(input) {
       if (!input.files || input.files.length === 0) return;
+      
       document.getElementById('builderMC').innerHTML = '';
       document.getElementById('builderTF').innerHTML = '';
       document.getElementById('builderSA').innerHTML = '';
 
-      ['D', 'B', 'D', 'B', 'C', 'B'].forEach(ans => addQuestionV2('mc', ans));
-      [['Đ', 'Đ', 'S', 'S'], ['Đ', 'Đ', 'Đ', 'S']].forEach(branches => addQuestionV2('tf', '', branches));
-      ['6,19', '17,1'].forEach(ans => addQuestionV2('sa', ans));
+      const sampleMcAnswers = ['D', 'B', 'D', 'B', 'C', 'B', 'A', 'C', 'C', 'A', 'C', 'D'];
+      sampleMcAnswers.forEach(ans => addQuestionV2('mc', ans));
+
+      const sampleTfAnswers = [
+        ['Đ', 'Đ', 'S', 'S'],
+        ['Đ', 'Đ', 'Đ', 'S'],
+        ['Đ', 'Đ', 'S', 'Đ'],
+        ['Đ', 'S', 'S', 'Đ']
+      ];
+      sampleTfAnswers.forEach(branches => addQuestionV2('tf', '', branches));
+
+      const sampleSaAnswers = ['6,19', '17,1', '3456', '3980', '1350', '2656'];
+      sampleSaAnswers.forEach(ans => addQuestionV2('sa', ans));
 
       showToast('✨ Đã quét ảnh và tự động điền toàn bộ đáp án thành công!');
       input.value = '';
@@ -1291,12 +1386,20 @@
       if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
 
       let questions = [];
+
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qType = item.dataset.type;
-        let defaultScore = qType === 'mc' ? 0.25 : (qType === 'tf' ? 1.0 : 0.5);
+        let customScoreInput = parseFloat(item.querySelector('.q-score-custom').value);
+        let defaultScore = !isNaN(customScoreInput) ? customScoreInput : (qType === 'mc' ? 0.25 : (qType === 'tf' ? 1.0 : 0.5));
+        let expText = item.querySelector('.q-explanation').value.trim();
+        let expImgInput = item.querySelector('.q-exp-img-input');
+        let expImgBase64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
-        let qData = { id: idx + 1, type: qType, score: defaultScore };
+        let qData = {
+          id: idx + 1, type: qType, score: defaultScore,
+          explanation: expText, expImage: expImgBase64
+        };
 
         if (qType === 'mc') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
@@ -1304,10 +1407,16 @@
         } else if (qType === 'tf') {
           let count = parseInt(item.querySelector('.tf-branch-count').value) || 4;
           let branches = [];
+          let branchScores = [];
           for (let i = 0; i < count; i++) {
-            branches.push(item.querySelector(`.tf-branch-ans-${i}`).value);
+            let ans = item.querySelector(`.tf-branch-ans-${i}`).value;
+            let bScoreInput = parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);
+            let bScore = !isNaN(bScoreInput) ? bScoreInput : 0.25;
+            branches.push(ans);
+            branchScores.push(bScore);
           }
           qData.correctAnswer = branches.join(',');
+          qData.branchScores = branchScores;
           questions.push(qData);
         } else if (qType === 'sa') {
           qData.correctAnswer = item.querySelector('.correct-ans').value.trim();
@@ -1369,7 +1478,7 @@
       const code = document.getElementById('advExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('advLivePass').value.trim();
       if (!code) { showToast('Nhập mã đề!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật quản lý!', true); return; }
       
       if (confirm(`Xóa vĩnh viễn đề thi [${code}]?`)) {
         await window.dbRemove(window.ref(window.db, `exams/${code}`));
@@ -1451,64 +1560,68 @@
       div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
           <strong>Câu ${idx}</strong>
-          <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.remove()">Xóa</button>
+          <div style="display:flex; gap:5px;">
+            <button class="btn btn-secondary" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="toggleAdvancedQSettings(this)">⚙️ ...</button>
+            <button class="btn btn-danger" style="width: auto; padding: 2px 6px; font-size: 11px;" onclick="this.parentElement.parentElement.parentElement.remove()">Xóa</button>
+          </div>
         </div>
         <label>Nội dung câu hỏi:</label>
         <textarea class="qp-q-text" rows="2" placeholder="Nhập câu hỏi..."></textarea>
         
         <div class="form-grid-2">
           <div>
-            <label>Số lượng đáp án (2 - 4):</label>
-            <select class="qp-ans-count" onchange="updateQpAnswers(this)">
-              <option value="2">2 Đáp Án (A, B)</option>
-              <option value="3">3 Đáp Án (A, B, C)</option>
-              <option value="4" selected>4 Đáp Án (A, B, C, D)</option>
-            </select>
+            <label>Hình ảnh câu hỏi (tùy chọn):</label>
+            <input type="file" class="qp-q-img" accept="image/*">
           </div>
           <div>
-            <label>Đáp án đúng:</label>
-            <select class="qp-correct-ans">
-              <option value="0">A</option>
-              <option value="1">B</option>
-              <option value="2">C</option>
-              <option value="3">D</option>
+            <label>Số lượng đáp án (2 - 4):</label>
+            <select class="qp-ans-count" onchange="updateQpAnswers(this)">
+              <option value="2">2 Đáp án (A, B)</option>
+              <option value="3">3 Đáp án (A, B, C)</option>
+              <option value="4" selected>4 Đáp án (A, B, C, D)</option>
             </select>
           </div>
         </div>
-        <div class="qp-options-container"></div>
+
+        <div class="qp-answers-wrapper"></div>
+
+        <div class="advanced-q-panel" style="display:none; margin-top:8px; background:#fff; border:1px dashed #ccc; padding:8px; border-radius:4px;">
+          <div style="margin-bottom:6px;">
+            <label style="font-size:11px;">Điểm số câu hỏi:</label>
+            <input type="number" class="qp-q-score" value="0.25" step="0.05" style="padding:4px; margin:0;">
+          </div>
+          <label style="font-size: 11px;">Chú thích / Lời giải chi tiết:</label>
+          <textarea class="qp-q-exp" rows="2" placeholder="Nhập giải thích..." style="margin-bottom:6px;"></textarea>
+          <label style="font-size: 11px;">Hình ảnh giải thích (tùy chọn):</label>
+          <input type="file" class="qp-exp-img" accept="image/*" style="font-size:11px; padding:2px; margin:0;">
+        </div>
       `;
       container.appendChild(div);
       updateQpAnswers(div.querySelector('.qp-ans-count'));
     }
 
-    function updateQpAnswers(selectEl) {
-      let count = parseInt(selectEl.value);
-      let parent = selectEl.closest('.q-build-item');
-      let optContainer = parent.querySelector('.qp-options-container');
-      let correctSelect = parent.querySelector('.qp-correct-ans');
-      let currentCorrect = parseInt(correctSelect.value) || 0;
-
+    function updateQpAnswers(select) {
+      let wrapper = select.parentElement.parentElement.parentElement.querySelector('.qp-answers-wrapper');
+      let count = parseInt(select.value);
       let letters = ['A', 'B', 'C', 'D'];
-      let html = '<div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">';
+      let html = '<div style="display:flex; flex-direction:column; gap:6px; margin:8px 0;">';
       for (let i = 0; i < count; i++) {
         html += `
-          <div style="display:flex; gap:6px; align-items:center;">
-            <b style="width:20px; font-size:13px;">${letters[i]}.</b>
-            <input type="text" class="qp-opt-text-${i}" placeholder="Nội dung đáp án ${letters[i]}..." style="margin:0; flex:1; padding:6px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span style="font-weight:bold; width:25px;">${letters[i]}.</span>
+            <input type="text" class="qp-opt-text-${i}" placeholder="Đáp án ${letters[i]}..." style="margin:0; flex:1;">
           </div>
         `;
       }
-      html += '</div>';
-      optContainer.innerHTML = html;
-
-      correctSelect.innerHTML = '';
-      for (let i = 0; i < count; i++) {
-        let opt = document.createElement('option');
-        opt.value = i;
-        opt.innerText = letters[i];
-        if (i === currentCorrect || i === 0) opt.selected = true;
-        correctSelect.appendChild(opt);
-      }
+      html += `</div>
+        <div style="display:flex; gap:10px; align-items:center; margin-top:5px;">
+          <label style="margin:0;">Đáp án đúng:</label>
+          <select class="qp-correct-opt" style="width:100px; margin:0;">
+            ${letters.slice(0, count).map(l => `<option value="${l}">${l}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      wrapper.innerHTML = html;
     }
 
     function promptSaveQuickPractice() {
@@ -1523,74 +1636,90 @@
     async function executeSaveQuickPractice() {
       const code = document.getElementById('qpCode').value.trim().toUpperCase();
       const title = document.getElementById('qpTitle').value.trim();
-      const isAdvanced = document.getElementById('qpEnableAdvanced').checked;
-      const password = document.getElementById('qpPassword').value.trim();
-      const isAdvancedMode = document.getElementById('qpIsAdvancedMode').checked;
-      const enableTimer = document.getElementById('qpEnableTimer').checked;
-      const durationMinutes = parseInt(document.getElementById('qpDurationMinutes').value) || 15;
-      const enableAntiCheat = document.getElementById('qpEnableAntiCheat').checked;
-      const antiCheatType = document.getElementById('qpAntiCheatType').value;
-      const maxWarnings = parseInt(document.getElementById('qpMaxWarnings').value) || 5;
+      
+      const enableAdv = document.getElementById('qpEnableAdvanced').checked;
+      const password = enableAdv ? document.getElementById('qpPassword').value.trim() : '';
+      const isAdvancedMode = enableAdv ? document.getElementById('qpIsAdvancedMode').checked : false;
+      const limit = parseInt(document.getElementById('qpLimit').value) || 50;
 
-      const items = document.querySelectorAll('#qpQuestionsContainer .q-build-item');
-      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi cho bài luyện!', true); return; }
+      const enableTimer = enableAdv ? document.getElementById('qpEnableTimer').checked : true;
+      const durationMinutes = enableTimer ? (parseInt(document.getElementById('qpDurationMinutes').value) || 15) : 0;
+
+      const enableAntiCheat = enableAdv ? document.getElementById('qpEnableAntiCheat').checked : true;
+      const antiCheatType = enableAntiCheat ? document.getElementById('qpAntiCheatType').value : 'none';
+      const maxWarnings = antiCheatType === 'limited' ? (parseInt(document.getElementById('qpMaxWarnings').value) || 5) : 99999;
+
+      const useLayoutV2 = enableAdv ? document.getElementById('qpUseLayoutV2').checked : true;
+
+      let items = document.querySelectorAll('#qpQuestionsContainer .q-build-item');
+      if (items.length === 0) { showToast('Vui lòng tạo ít nhất 1 câu hỏi!', true); return; }
 
       let questions = [];
       for (let idx = 0; idx < items.length; idx++) {
         let item = items[idx];
         let qText = item.querySelector('.qp-q-text').value.trim();
-        if (!qText) { showToast(`Câu hỏi ${idx + 1} đang bị trống nội dung!`, true); return; }
+        let qImgInput = item.querySelector('.qp-q-img');
+        let qImgB64 = qImgInput && qImgInput.files.length > 0 ? await fileToBase64(qImgInput.files[0]) : '';
+        
         let ansCount = parseInt(item.querySelector('.qp-ans-count').value);
-        let correctIdx = parseInt(item.querySelector('.qp-correct-ans').value);
-
         let options = [];
         let letters = ['A', 'B', 'C', 'D'];
         for (let i = 0; i < ansCount; i++) {
-          let optText = item.querySelector(`.qp-opt-text-${i}`).value.trim();
-          options.push({ label: letters[i], text: optText });
+          options.push({
+            label: letters[i],
+            text: item.querySelector(`.qp-opt-text-${i}`).value.trim()
+          });
         }
+        let correctOpt = item.querySelector('.qp-correct-opt').value;
+        let scoreVal = parseFloat(item.querySelector('.qp-q-score').value) || 0.25;
+        let expText = item.querySelector('.qp-q-exp').value.trim();
+        let expImgInput = item.querySelector('.qp-exp-img');
+        let expImgB64 = expImgInput && expImgInput.files.length > 0 ? await fileToBase64(expImgInput.files[0]) : '';
 
         questions.push({
-          id: idx + 1,
-          question: qText,
-          options: options,
-          correct: correctIdx
+          id: idx + 1, question: qText, image: qImgB64,
+          options: options, correct: correctOpt, score: scoreVal,
+          explanation: expText, expImage: expImgB64
         });
       }
 
-      let qpObj = {
-        code: code, title: title,
-        isAdvanced: isAdvanced, password: password,
-        isAdvancedMode: isAdvancedMode,
-        enableTimer: enableTimer, durationMinutes: durationMinutes,
-        enableAntiCheat: enableAntiCheat, antiCheatType: antiCheatType, maxWarnings: maxWarnings,
-        questions: questions
+      let qpObj = { 
+        code: code, 
+        title: title, 
+        password: password, 
+        isAdvancedMode: isAdvancedMode, 
+        limit: limit, 
+        durationMinutes: durationMinutes,
+        enableTimer: enableTimer,
+        enableAntiCheat: enableAntiCheat,
+        antiCheatType: antiCheatType,
+        maxWarnings: maxWarnings,
+        useLayoutV2: useLayoutV2,
+        questions: questions 
       };
 
       try {
-        await window.dbSet(window.ref(window.db, `quick_practices/${code}`), qpObj);
-        await window.dbSet(window.ref(window.db, `qp_rooms/${code}`), { status: isAdvancedMode ? 'waiting' : 'started' });
-        showToast(`🎉 Khởi tạo bài luyện nhanh [${code}] thành công!`);
+        await window.dbSet(window.ref(window.db, 'quick_practices/' + code), qpObj);
+        await window.dbSet(window.ref(window.db, 'qp_rooms/' + code), { status: isAdvancedMode ? 'waiting' : 'started' });
+        showToast(`🎉 Tạo bài luyện nhanh [${code}] thành công!`);
       } catch (err) { showToast('Lỗi: ' + err.message, true); }
     }
 
     async function openQpManagementRoom() {
       const code = document.getElementById('manageQpCode').value.trim().toUpperCase();
       const pass = document.getElementById('manageQpPass').value.trim();
-      if (!code) { showToast('Nhập mã bài luyện!', true); return; }
-      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Sai mật khẩu bảo mật!', true); return; }
+      if (!code || !pass) { showToast('Nhập mã bài luyện và mật khẩu bảo mật!', true); return; }
+      if (pass.toUpperCase() !== 'THUANBAKHI') { showToast('❌ Mật khẩu bảo mật không đúng!', true); return; }
 
-      let snap = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-      if (!snap.exists()) { showToast('Không tìm thấy bài luyện này!', true); return; }
+      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
+      if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện!', true); return; }
 
       managedQpCodeGlobal = code;
       document.getElementById('qpManagementDashboard').style.display = 'block';
-      showToast('📡 Kết nối quản lý bài luyện thành công!');
-
-      if (activeQpRoomListener) activeQpRoomListener();
+      showToast('📡 Kết nối quản lý thành công!');
 
       let roomRef = window.ref(window.db, `qp_rooms/${code}`);
-      activeQpRoomListener = window.onValue(roomRef, (snapshot) => {
+      window.onValue(roomRef, (snapshot) => {
         let data = snapshot.val() || {};
         let students = data.students || {};
         let tbody = document.getElementById('qpManageStudentsBody');
@@ -1599,42 +1728,38 @@
         document.getElementById('qpManageCount').innerText = keys.length;
 
         if (keys.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="4">Chưa có học sinh</td></tr>';
-        } else {
-          keys.forEach((id, idx) => {
-            let s = students[id];
-            tbody.innerHTML += `
-              <tr>
-                <td><b>#${idx + 1}</b></td>
-                <td>${s.name}</td>
-                <td style="color:${s.status==='testing'?'green':'orange'};">${s.status==='testing'?'Đang làm':'Đang chờ'}</td>
-                <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickQpStudent('${code}', '${id}')">Kick</button></td>
-              </tr>
-            `;
-          });
+          tbody.innerHTML = '<tr><td colspan="4">Chưa có học sinh tham gia.</td></tr>';
+          return;
         }
-      });
 
-      let lbSnap = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
-      let resTbody = document.getElementById('qpManageResultsBody');
-      resTbody.innerHTML = '';
-      if (lbSnap.exists()) {
-        let results = [];
-        lbSnap.forEach(child => results.push(child.val()));
-        results.sort((a, b) => b.score - a.score || a.time - b.time);
-        results.forEach((r, idx) => {
-          resTbody.innerHTML += `
+        keys.forEach((id, idx) => {
+          let s = students[id];
+          tbody.innerHTML += `
             <tr>
               <td><b>#${idx + 1}</b></td>
-              <td>${r.name}</td>
-              <td style="color:green; font-weight:bold;">${r.score}</td>
-              <td>${r.time}s</td>
+              <td>${s.name}</td>
+              <td style="color:${s.status === 'testing' ? 'green' : 'orange'};">${s.status === 'testing' ? 'Đang làm' : 'Đang chờ'}</td>
+              <td><button class="btn btn-danger" style="padding:2px 6px; font-size:11px; width:auto;" onclick="kickQpStudent('${code}', '${id}')">Kick</button></td>
             </tr>
           `;
         });
-      } else {
-        resTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả</td></tr>';
-      }
+      });
+
+      let lbRef = window.ref(window.db, `qp_leaderboard/${code}`);
+      window.onValue(lbRef, (snapshot) => {
+        let lbTbody = document.getElementById('qpManageResultsBody');
+        lbTbody.innerHTML = '';
+        if (!snapshot.exists()) {
+          lbTbody.innerHTML = '<tr><td colspan="4">Chưa có kết quả.</td></tr>';
+          return;
+        }
+        let history = Object.values(snapshot.val());
+        history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
+        history.forEach((row, idx) => {
+          let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+          lbTbody.innerHTML += `<tr><td><b>#${idx + 1}</b></td><td>${row.name}</td><td><b style="color:#198754;">${row.score}</b></td><td>${m}p ${s}s</td></tr>`;
+        });
+      });
     }
 
     async function kickQpStudent(code, studentId) {
@@ -1647,398 +1772,238 @@
     async function updateQpStatus(status) {
       if (!managedQpCodeGlobal) return;
       await window.dbUpdate(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`), { status: status });
-      showToast(`Đã chuyển trạng thái bài luyện thành: ${status}`);
+      showToast(`Đã cập nhật trạng thái: ${status}`);
     }
 
     async function deleteQpExam() {
       if (!managedQpCodeGlobal) return;
-      if (confirm('Xóa bài luyện này?')) {
+      if (confirm('Xóa vĩnh viễn bài luyện này?')) {
         await window.dbRemove(window.ref(window.db, `quick_practices/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_rooms/${managedQpCodeGlobal}`));
         await window.dbRemove(window.ref(window.db, `qp_leaderboard/${managedQpCodeGlobal}`));
-        showToast('🗑️ Đã xóa bài luyện!');
+        showToast('🗑️ Xóa đề thành công!');
         document.getElementById('qpManagementDashboard').style.display = 'none';
       }
     }
 
-    // --- HỌC SINH THAM GIA ---
     async function startStudentParticipation() {
       const mode = document.getElementById('examModeSelect').value;
       const name = document.getElementById('studentName').value.trim();
       const code = document.getElementById('studentExamCode').value.trim().toUpperCase();
       const pass = document.getElementById('studentExtraPass').value.trim();
 
-      if (!name || !code) { showToast('Vui lòng nhập Họ Tên và Mã bài!', true); return; }
-      studentNameGlobal = name;
+      if (!name || !code) { showToast('Vui lòng điền đầy đủ tên và mã!', true); return; }
 
-      if (mode === 'practice') {
-        let snap = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
-        if (!snap.exists()) { showToast('Không tìm thấy bài luyện nhanh này!', true); return; }
-        currentQpData = snap.val();
+      showLoadingSequence(async () => {
+        if (mode === 'practice') {
+          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`));
+          if (!snapshot.exists()) { showToast('Không tìm thấy bài luyện nhanh!', true); return; }
+          let qpData = snapshot.val();
+          if (qpData.password && qpData.password !== pass) { showToast('❌ Sai mật khẩu bài luyện nhanh!', true); return; }
 
-        if (currentQpData.password && currentQpData.password !== pass) {
-          showToast('❌ Mật khẩu bài luyện không đúng!', true);
-          return;
-        }
+          currentQpData = qpData;
+          studentNameGlobal = name;
 
-        let studentId = 's_' + Math.random().toString(36).substring(2, 9);
-        studentSessionKeyGlobal = studentId;
+          let studentKey = 'qp_s_' + Date.now();
+          let roomRef = window.ref(window.db, `qp_rooms/${code}/students/${studentKey}`);
+          await window.dbSet(roomRef, { name: name, status: 'waiting' });
 
-        if (currentQpData.isAdvanced && currentQpData.isAdvancedMode) {
-          await window.dbSet(window.ref(window.db, `qp_rooms/${code}/students/${studentId}`), {
-            name: name, status: 'waiting'
-          });
-
-          document.getElementById('qpWaitTitle').innerText = `Bài: ${currentQpData.title}`;
-          document.getElementById('qpWaitStudentName').innerText = name;
-          document.getElementById('qpWaitQCount').innerText = currentQpData.questions.length;
-          switchView('qpWaitingRoomView');
-
-          if (activeQpRoomListener) activeQpRoomListener();
-          activeQpRoomListener = window.onValue(window.ref(window.db, `qp_rooms/${code}`), (snapshot) => {
-            let data = snapshot.val() || {};
-            if (data.status === 'started') {
-              if (activeQpRoomListener) activeQpRoomListener();
-              startQpPracticingSession();
-            } else if (!data.students || !data.students[studentId]) {
-              if (activeQpRoomListener) activeQpRoomListener();
-              showToast('Bạn đã bị kick khỏi phòng!', true);
-              switchView('studentLoginView');
-            }
-          });
-        } else {
-          startQpPracticingSession();
-        }
-      } else if (mode === 'live' || mode === 'normal') {
-        let snap = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
-        if (!snap.exists()) { showToast('Không tìm thấy đề thi chính thức này!', true); return; }
-        currentExamData = snap.val();
-
-        if (mode === 'live' || currentExamData.isLiveRoom) {
-          if (currentExamData.livePassword && currentExamData.livePassword !== pass) {
-            showToast('❌ Mật khẩu phòng thi không đúng!', true);
+          if (!qpData.isAdvancedMode) {
+            await window.dbUpdate(roomRef, { status: 'testing' });
+            launchQpPracticeInterface();
             return;
           }
 
-          let studentId = 's_' + Math.random().toString(36).substring(2, 9);
-          studentSessionKeyGlobal = studentId;
+          document.getElementById('qpWaitTitle').innerText = qpData.title;
+          document.getElementById('qpWaitStudentName').innerText = name;
+          document.getElementById('qpWaitQCount').innerText = qpData.questions.length;
+          switchView('qpWaitingRoomView');
 
-          await window.dbSet(window.ref(window.db, `liverooms/${code}/students/${studentId}`), {
-            name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0
-          });
-
-          document.getElementById('waitingRoomExamTitle').innerText = `Đề: ${currentExamData.title}`;
-          document.getElementById('waitStudentName').innerText = name;
-          document.getElementById('waitDuration').innerText = currentExamData.duration;
-          switchView('studentWaitingRoomView');
-
-          if (activeStudentRoomListener) activeStudentRoomListener();
-          activeStudentRoomListener = window.onValue(window.ref(window.db, `liverooms/${code}`), (snapshot) => {
+          let roomMainRef = window.ref(window.db, `qp_rooms/${code}`);
+          activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
             let data = snapshot.val() || {};
-            if (data.status === 'started') {
-              if (activeStudentRoomListener) activeStudentRoomListener();
-              window.dbUpdate(window.ref(window.db, `liverooms/${code}/students/${studentId}`), { status: 'testing' });
-              startOfficialExamSession();
-            } else if (!data.students || !data.students[studentId]) {
-              if (activeStudentRoomListener) activeStudentRoomListener();
-              showToast('Bạn đã bị kick khỏi phòng thi!', true);
+            let students = data.students || {};
+            document.getElementById('qpWaitStudentCount').innerText = Object.keys(students).length;
+
+            if (!students[studentKey]) {
+              showToast('Bạn đã bị giáo viên kick!', true);
+              if (activeQpRoomListener) activeQpRoomListener();
               switchView('studentLoginView');
+              return;
+            }
+
+            if (data.status === 'started') {
+              if (activeQpRoomListener) activeQpRoomListener();
+              window.dbUpdate(roomRef, { status: 'testing' });
+              launchQpPracticeInterface();
+            } else if (data.status === 'ended' && isQpActive) {
+              if (activeQpRoomListener) activeQpRoomListener();
+              showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
+              submitQpPractice(true);
             }
           });
-        } else {
-          startOfficialExamSession();
-        }
-      }
-    }
 
-    function leaveWaitingRoom() {
-      if (activeStudentRoomListener) activeStudentRoomListener();
-      if (currentExamData && studentSessionKeyGlobal) {
-        window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));
-      }
-      switchView('studentLoginView');
-      showToast('Đã rời phòng chờ.');
+        } else {
+          const snapshot = await window.dbGet(window.dbChild(window.dbRef, `exams/${code}`));
+          if (!snapshot.exists()) { showToast('Không tìm thấy đề thi!', true); return; }
+          currentExamData = snapshot.val();
+          studentNameGlobal = name;
+
+          if (mode === 'live') {
+            if (!currentExamData.isLiveRoom) { showToast('Đề này không bật chế độ phòng thi chuyên dụng!', true); return; }
+            if (pass !== currentExamData.livePassword) { showToast('❌ Sai mật khẩu phòng thi!', true); return; }
+
+            studentSessionKeyGlobal = 's_' + Date.now();
+            let roomRef = window.ref(window.db, `liverooms/${code}/students/${studentSessionKeyGlobal}`);
+            await window.dbSet(roomRef, { name: name, status: 'waiting', cheatWarnings: 0, totalLeaveTime: 0 });
+
+            document.getElementById('waitingRoomExamTitle').innerText = currentExamData.title;
+            document.getElementById('waitStudentName').innerText = name;
+            document.getElementById('waitDuration').innerText = currentExamData.duration;
+            switchView('studentWaitingRoomView');
+
+            let roomMainRef = window.ref(window.db, `liverooms/${code}`);
+            activeStudentRoomListener = window.onValue(roomMainRef, (snapshot) => {
+              let data = snapshot.val() || {};
+              let students = data.students || {};
+              document.getElementById('waitStudentCount').innerText = Object.keys(students).length;
+
+              if (!students[studentSessionKeyGlobal]) { showToast('Bạn đã bị giáo viên kick!', true); switchView('studentLoginView'); return; }
+              if (data.status === 'started') {
+                if (activeStudentRoomListener) activeStudentRoomListener();
+                window.dbUpdate(roomRef, { status: 'testing' });
+                launchOfficialExamInterface();
+              } else if (data.status === 'ended') {
+                if (activeStudentRoomListener) activeStudentRoomListener();
+                showToast('Kì thi đã kết thúc!'); switchView('studentLoginView');
+              }
+            });
+          } else {
+            studentSessionKeyGlobal = 's_free_' + Date.now();
+            launchOfficialExamInterface();
+          }
+        }
+      });
     }
 
     function leaveQpWaitingRoom() {
       if (activeQpRoomListener) activeQpRoomListener();
-      if (currentQpData && studentSessionKeyGlobal) {
-        window.dbRemove(window.ref(window.db, `qp_rooms/${currentQpData.code}/students/${studentSessionKeyGlobal}`));
-      }
       switchView('studentLoginView');
-      showToast('Đã rời phòng chờ bài luyện.');
     }
 
-    // --- THỰC HIỆN BÀI LUYỆN NHANH ---
-    function startQpPracticingSession() {
-      switchView('qpPracticingView');
-      document.getElementById('qpPlayTitle').innerText = currentQpData.title;
-      currentQpV2Index = 0;
-      qpStudentAnswers = {};
-
-      if (currentQpData.enableTimer) {
-        qpTimeLeft = (currentQpData.durationMinutes || 15) * 60;
-        document.getElementById('qpPlayTimer').style.display = 'block';
-        if (qpTimer) clearInterval(qpTimer);
-        qpTimer = setInterval(() => {
-          qpTimeLeft--;
-          let m = Math.floor(qpTimeLeft / 60);
-          let s = qpTimeLeft % 60;
-          document.getElementById('qpPlayTimer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-          if (qpTimeLeft <= 0) {
-            clearInterval(qpTimer);
-            submitQpPractice(true);
-          }
-        }, 1000);
-      } else {
-        document.getElementById('qpPlayTimer').style.display = 'none';
-      }
-
-      if (currentQpData.enableAntiCheat) {
-        document.getElementById('qpCheatWarningBanner').style.display = 'flex';
-        cheatWarnings = 0;
-        document.getElementById('qpCheatWarningBadge').innerText = 'Cảnh báo: 0';
-        setupAntiCheatListeners(true);
-      } else {
-        document.getElementById('qpCheatWarningBanner').style.display = 'none';
-      }
-
-      renderQpQuestionV2();
-    }
-
-    function renderQpQuestionV2() {
-      let container = document.getElementById('qpPlayQuestionsContainer');
-      let q = currentQpData.questions[currentQpV2Index];
-      let total = currentQpData.questions.length;
-
-      let html = `
-        <div style="margin-bottom:12px;">
-          <b style="color:#1877f2;">Câu ${currentQpV2Index + 1} / ${total}:</b>
-          <p style="font-size:15px; margin-top:5px; font-weight:500;">${q.question}</p>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-      `;
-
-      q.options.forEach((opt, idx) => {
-        let isChecked = qpStudentAnswers[currentQpV2Index] === idx ? 'checked' : '';
-        html += `
-          <label style="display:flex; align-items:center; gap:10px; background:#f8f9fa; padding:10px; border-radius:6px; border:1px solid #ddd; cursor:pointer;">
-            <input type="radio" name="qp_q_${currentQpV2Index}" value="${idx}" ${isChecked} onchange="qpStudentAnswers[${currentQpV2Index}] = ${idx}" style="width:18px; height:18px;">
-            <span style="font-size:14px;"><b>${opt.label}.</b> ${opt.text}</span>
-          </label>
-        `;
-      });
-      html += '</div>';
-      container.innerHTML = html;
-
-      let prevBtn = document.getElementById('qpPrevBtn');
-      let nextBtn = document.getElementById('qpNextBtn');
-      let submitBtn = document.getElementById('qpSubmitBtn');
-
-      prevBtn.style.display = currentQpV2Index > 0 ? 'block' : 'none';
-      if (currentQpV2Index < total - 1) {
-        nextBtn.style.display = 'block';
-        submitBtn.style.display = 'none';
-      } else {
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'block';
-      }
-    }
-
-    function nextQpQuestionV2() {
-      if (currentQpV2Index < currentQpData.questions.length - 1) {
-        currentQpV2Index++;
-        renderQpQuestionV2();
-      }
-    }
-
-    function prevQpQuestionV2() {
-      if (currentQpV2Index > 0) {
-        currentQpV2Index--;
-        renderQpQuestionV2();
-      }
-    }
-
-    async function submitQpPractice(isTimeout = false) {
-      if (!isTimeout && !confirm('Bạn có chắc chắn muốn nộp bài luyện này không?')) return;
-      if (qpTimer) clearInterval(qpTimer);
-      removeAntiCheatListeners();
-
-      let correctCount = 0;
-      let total = currentQpData.questions.length;
-
-      currentQpData.questions.forEach((q, idx) => {
-        if (qpStudentAnswers[idx] === q.correct) correctCount++;
-      });
-
-      let score = parseFloat(((correctCount / total) * 10).toFixed(2));
-      let timeSpent = currentQpData.enableTimer ? ((currentQpData.durationMinutes * 60) - qpTimeLeft) : 0;
-
-      let resultObj = {
-        name: studentNameGlobal,
-        score: score,
-        correct: correctCount,
-        total: total,
-        time: timeSpent,
-        timestamp: Date.now()
-      };
-
-      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), resultObj);
-      if (currentQpData.isAdvanced && studentSessionKeyGlobal) {
-        await window.dbRemove(window.ref(window.db, `qp_rooms/${currentQpData.code}/students/${studentSessionKeyGlobal}`));
-      }
-
-      document.getElementById('qpResultScore').innerText = `${score} / 10`;
-      document.getElementById('qpResultDetailText').innerText = `Đúng ${correctCount}/${total} câu | Thời gian: ${timeSpent} giây`;
-
-      let reviewBox = document.getElementById('qpResultReviewContainer');
-      let reviewHtml = '';
-      currentQpData.questions.forEach((q, idx) => {
-        let studentAns = qpStudentAnswers[idx];
-        let isCorrect = studentAns === q.correct;
-        let studentAnsLabel = studentAns !== undefined ? q.options[studentAns].label : 'Chưa làm';
-        let correctAnsLabel = q.options[q.correct].label;
-
-        reviewHtml += `
-          <div style="background:#f8f9fa; border-left:4px solid ${isCorrect?'#198754':'#dc3545'}; padding:12px; border-radius:6px; margin-bottom:10px;">
-            <p><b>Câu ${idx + 1}:</b> ${q.question}</p>
-            <p style="margin-top:4px; font-size:13px;">Bạn chọn: <b style="color:${isCorrect?'green':'red'};">${studentAnsLabel}</b> | Đáp án đúng: <b style="color:green;">${correctAnsLabel}</b></p>
-          </div>
-        `;
-      });
-      reviewBox.innerHTML = reviewHtml;
-
-      switchView('qpResultView');
-      showToast('🎉 Nộp bài luyện thành công!');
-    }
-
-    // --- THỰC HIỆN BÀI THI CHÍNH THỨC ---
-    async function startOfficialExamSession() {
-      switchView('studentExamView');
+    async function launchOfficialExamInterface() {
       document.getElementById('displayExamTitle').innerText = currentExamData.title;
       document.getElementById('displayStudentInfo').innerText = `Thí sinh: ${studentNameGlobal}`;
 
-      timeLeft = currentExamData.duration * 60;
-      if (examTimer) clearInterval(examTimer);
-      examTimer = setInterval(() => {
-        timeLeft--;
-        let m = Math.floor(timeLeft / 60);
-        let s = timeLeft % 60;
-        document.getElementById('timerDisplay').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if (timeLeft <= 0) {
-          clearInterval(examTimer);
-          submitStudentExam(true);
-        }
-      }, 1000);
-
-      cheatWarnings = 0;
-      totalTabLeaveTime = 0;
-      document.getElementById('cheatWarningBadge').innerText = 'Cảnh báo: 0';
-      setupAntiCheatListeners(false);
-
-      // Render Media (PDF / Image)
-      let mediaContainer = document.getElementById('examMediaContainer');
+      const mediaContainer = document.getElementById('examMediaContainer');
       mediaContainer.innerHTML = '';
-      let media = currentExamData.media;
 
-      if (media.type === 'pdf' && media.files.length > 0) {
-        let loadingTask = pdfjsLib.getDocument({ data: atob(media.files[0].split(',')[1]) });
-        let pdfDoc = await loadingTask.promise;
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-          let page = await pdfDoc.getPage(i);
-          let viewport = page.getViewport({ scale: 1.5 });
+      if (currentExamData.media.type === 'pdf' && currentExamData.media.files.length > 0) {
+        let pdf = await pdfjsLib.getDocument(currentExamData.media.files[0]).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          let page = await pdf.getPage(i);
+          let viewport = page.getViewport({ scale: 1.1 });
           let canvas = document.createElement('canvas');
           canvas.className = 'pdf-canvas';
-          let context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          await page.render({ canvasContext: context, viewport: viewport }).promise;
+          canvas.height = viewport.height; canvas.width = viewport.width;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
           mediaContainer.appendChild(canvas);
         }
-      } else if (media.type === 'image') {
-        media.files.forEach(imgBase64 => {
+      } else if (currentExamData.media.type === 'image') {
+        currentExamData.media.files.forEach(imgB64 => {
           let img = document.createElement('img');
-          img.src = imgBase64;
-          img.className = 'img-preview';
+          img.src = imgB64; img.className = 'img-preview';
           mediaContainer.appendChild(img);
         });
       }
 
-      // Render Answer Sheet
-      let ansContainer = document.getElementById('studentAnswerSheet');
-      ansContainer.innerHTML = '';
-      currentExamData.questions.forEach((q, idx) => {
-        let qBox = document.createElement('div');
-        qBox.style.cssText = 'background:#f8f9fa; padding:10px; border-radius:6px; margin-bottom:10px; border:1px solid #ddd;';
-        
-        let qTitle = `<p style="font-weight:bold; font-size:14px; margin-bottom:6px;">Câu ${q.id} (${q.type === 'mc' ? 'Trắc nghiệm' : (q.type === 'tf' ? 'Đúng/Sai' : 'Trả lời ngắn')})</p>`;
-        
+      const sheet = document.getElementById('studentAnswerSheet');
+      sheet.innerHTML = '';
+
+      currentExamData.questions.forEach(q => {
+        let item = document.createElement('div');
+        item.style.marginBottom = '12px'; item.style.paddingBottom = '8px'; item.style.borderBottom = '1px solid #eee';
+
+        let inputHtml = '';
         if (q.type === 'mc') {
-          qTitle += `
-            <div style="display:flex; gap:12px;">
-              ${['A', 'B', 'C', 'D'].map(opt => `
-                <label style="cursor:pointer; font-weight:500;">
-                  <input type="radio" name="ans_${idx}" value="${opt}" style="margin-right:3px;"> ${opt}
-                </label>
-              `).join('')}
-            </div>
-          `;
+          inputHtml = `<div class="opt-group" data-qid="${q.id}">
+            <div class="opt-btn" onclick="selectOpt(this, 'A')">A</div>
+            <div class="opt-btn" onclick="selectOpt(this, 'B')">B</div>
+            <div class="opt-btn" onclick="selectOpt(this, 'C')">C</div>
+            <div class="opt-btn" onclick="selectOpt(this, 'D')">D</div>
+          </div>`;
         } else if (q.type === 'tf') {
-          let branches = q.correctAnswer.split(',');
-          qTitle += `<div style="display:flex; flex-direction:column; gap:4px;">`;
-          branches.forEach((_, bIdx) => {
-            let l = ['a', 'b', 'c', 'd', 'e', 'f'][bIdx];
-            qTitle += `
-              <div style="display:flex; gap:10px; align-items:center; font-size:13px;">
-                <span>Nhánh ${l}:</span>
-                <label><input type="radio" name="ans_${idx}_${bIdx}" value="Đ"> Đúng</label>
-                <label><input type="radio" name="ans_${idx}_${bIdx}" value="S"> Sai</label>
+          let count = q.correctAnswer.split(',').length;
+          let letters = ['a', 'b', 'c', 'd'];
+          for(let i=0; i<count; i++) {
+            inputHtml += `<div class="tf-branch-row">
+              <span style="font-size:13px;">Nhánh ${letters[i]}:</span>
+              <div class="tf-branch-opts" data-qid="${q.id}" data-index="${i}">
+                <div class="tf-sub-btn" onclick="selectTfSub(this, 'Đ')">Đ</div>
+                <div class="tf-sub-btn" onclick="selectTfSub(this, 'S')">S</div>
               </div>
-            `;
-          });
-          qTitle += `</div>`;
+            </div>`;
+          }
         } else {
-          qTitle += `<input type="text" class="student-sa-input" data-qid="${idx}" placeholder="Nhập đáp án của bạn..." style="margin:0; padding:6px;">`;
+          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
         }
 
-        qBox.innerHTML = qTitle;
-        ansContainer.appendChild(qBox);
+        item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
+        sheet.appendChild(item);
       });
+
+      timeLeft = currentExamData.duration * 60;
+      clearInterval(examTimer);
+      examTimer = setInterval(() => {
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+        document.getElementById('timerDisplay').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        if (timeLeft <= 0) { clearInterval(examTimer); showToast('⌛ Hết giờ!', true); submitStudentExam(true); }
+      }, 1000);
+
+      cheatWarnings = 0;
+      totalTabLeaveTime = 0;
+      document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: 0`;
+      isExamActive = true;
+      switchView('studentExamView');
     }
 
-    // --- CHỐNG GIAN LẬN ---
-    function setupAntiCheatListeners(isQp) {
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-    }
+    async function handleTabLeaveEvent(durationAway) {
+      if (durationAway > CHEAT_TIME_THRESHOLD) {
+        cheatWarnings++;
+        totalTabLeaveTime += durationAway;
 
-    function removeAntiCheatListeners() {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    }
+        document.getElementById('cheatModalCount').innerText = cheatWarnings;
+        document.getElementById('cheatModalTime').innerText = (totalTabLeaveTime / 1000).toFixed(1) + ' giây';
+        document.getElementById('cheatAlertModal').style.display = 'flex';
+        
+        document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
+        let qpBadge = document.getElementById('qpCheatWarningBadge');
+        if (qpBadge) qpBadge.innerText = `Cảnh báo: ${cheatWarnings}`;
 
-    function handleVisibilityChange() {
-      if (document.hidden) {
-        tabLeaveStartTime = Date.now();
-      } else {
-        if (tabLeaveStartTime) {
-          let leaveDuration = Date.now() - tabLeaveStartTime;
-          tabLeaveStartTime = null;
-          if (leaveDuration >= CHEAT_TIME_THRESHOLD) {
-            cheatWarnings++;
-            totalTabLeaveTime += leaveDuration;
-            document.getElementById('cheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
-            document.getElementById('qpCheatWarningBadge').innerText = `Cảnh báo: ${cheatWarnings}`;
+        if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
+          await window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
+            cheatWarnings: cheatWarnings,
+            totalLeaveTime: totalTabLeaveTime
+          });
+        }
 
-            document.getElementById('cheatModalCount').innerText = cheatWarnings;
-            document.getElementById('cheatModalTime').innerText = Math.round(totalTabLeaveTime / 1000) + 's';
-            document.getElementById('cheatAlertModal').style.display = 'flex';
-
-            if (currentExamData && studentSessionKeyGlobal) {
-              window.dbUpdate(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`), {
-                cheatWarnings: cheatWarnings,
-                totalLeaveTime: totalTabLeaveTime
-              });
+        if (currentQpData && currentQpData.enableAntiCheat) {
+          if (currentQpData.antiCheatType === 'limited') {
+            let maxW = currentQpData.maxWarnings || 5;
+            if (cheatWarnings >= maxW) {
+              showToast(`🚨 Đã đạt giới hạn ${maxW} lần cảnh báo. Hệ thống cưỡng chế nộp bài!`, true);
+              dismissCheatAlert();
+              submitQpPractice(true);
+              return;
             }
           }
+        }
+
+        if (currentExamData && currentExamData.isLiveRoom && cheatWarnings > 10) {
+          showToast('🚨 Bạn đã vi phạm quá 10 lần. Hệ thống tự động nộp bài!', true);
+          dismissCheatAlert();
+          submitStudentExam(true);
         }
       }
     }
@@ -2047,124 +2012,491 @@
       document.getElementById('cheatAlertModal').style.display = 'none';
     }
 
-    async function submitStudentExam(isTimeout = false) {
-      if (!isTimeout && !confirm('Bạn có chắc chắn muốn nộp bài thi chính thức này không?')) return;
-      if (examTimer) clearInterval(examTimer);
-      removeAntiCheatListeners();
+    document.addEventListener('visibilitychange', () => {
+      if (!isExamActive && !isQpActive) return;
+      if (document.hidden) {
+        tabLeaveStartTime = Date.now();
+      } else {
+        if (tabLeaveStartTime) {
+          let durationAway = Date.now() - tabLeaveStartTime;
+          handleTabLeaveEvent(durationAway);
+          tabLeaveStartTime = null;
+        }
+      }
+    });
 
-      let totalScore = 0;
-      let reviewDetails = [];
+    window.addEventListener('blur', () => {
+      if (!isExamActive && !isQpActive) return;
+      tabLeaveStartTime = Date.now();
+    });
 
-      currentExamData.questions.forEach((q, idx) => {
-        let studentAns = '';
-        let isCorrect = false;
+    window.addEventListener('focus', () => {
+      if ((!isExamActive && !isQpActive) || !tabLeaveStartTime) return;
+      let durationAway = Date.now() - tabLeaveStartTime;
+      handleTabLeaveEvent(durationAway);
+      tabLeaveStartTime = null;
+    });
 
+    function selectOpt(btn, val) {
+      let p = btn.parentElement;
+      p.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected'); p.dataset.val = val;
+    }
+    function selectTfSub(btn, val) {
+      let p = btn.parentElement;
+      p.querySelectorAll('.tf-sub-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected'); p.dataset.val = val;
+    }
+
+    async function submitStudentExam(forced = false) {
+      if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
+      clearInterval(examTimer);
+      isExamActive = false;
+
+      let totalEarnedScore = 0;
+      let reviewHtml = '';
+
+      currentExamData.questions.forEach(q => {
+        let studentAns = '', isCorrect = false, qEarned = 0;
         if (q.type === 'mc') {
-          let radios = document.querySelectorAll(`input[name="ans_${idx}"]:checked`);
-          if (radios.length > 0) studentAns = radios[0].value;
-          if (studentAns === q.correctAnswer) {
-            isCorrect = true;
-            totalScore += q.score;
-          }
+          let grp = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+          studentAns = grp ? (grp.dataset.val || '') : '';
+          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+          if (isCorrect) qEarned = q.score;
         } else if (q.type === 'tf') {
-          let correctBranches = q.correctAnswer.split(',');
-          let studentBranches = [];
-          let allMatch = true;
-          correctBranches.forEach((_, bIdx) => {
-            let r = document.querySelector(`input[name="ans_${idx}_${bIdx}"]:checked`);
-            let val = r ? r.value : '';
-            studentBranches.push(val);
-            if (val !== correctBranches[bIdx]) allMatch = false;
+          let correctArr = q.correctAnswer.split(',');
+          let studentArr = [];
+          let subEarned = 0;
+          let branchScores = q.branchScores || [0.1, 0.15, 0.25, 0.5];
+          correctArr.forEach((ansCorrect, i) => {
+            let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
+            let val = row && row.dataset.val ? row.dataset.val : '_';
+            studentArr.push(val);
+            if (val === ansCorrect) subEarned += branchScores[i];
           });
-          studentAns = studentBranches.join(',');
-          if (allMatch) {
-            isCorrect = true;
-            totalScore += q.score;
-          }
+          studentAns = studentArr.join(',');
+          qEarned = subEarned;
+          isCorrect = (studentAns === q.correctAnswer);
         } else if (q.type === 'sa') {
-          let input = document.querySelector(`.student-sa-input[data-qid="${idx}"]`);
+          let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
           studentAns = input ? input.value.trim() : '';
-          if (studentAns.toLowerCase() === q.correctAnswer.toLowerCase()) {
-            isCorrect = true;
-            totalScore += q.score;
-          }
+          isCorrect = studentAns.toLowerCase() === q.correctAnswer.toLowerCase();
+          if (isCorrect) qEarned = q.score;
         }
 
-        reviewDetails.push({
-          id: q.id, type: q.type,
-          studentAns: studentAns || 'Chưa làm',
-          correctAns: q.correctAnswer,
-          isCorrect: isCorrect
-        });
-      });
+        totalEarnedScore += qEarned;
 
-      totalScore = parseFloat(totalScore.toFixed(2));
-      let timeSpent = (currentExamData.duration * 60) - timeLeft;
+        let hasExp = q.explanation || q.expImage;
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
 
-      let resultObj = {
-        name: studentNameGlobal,
-        score: totalScore,
-        time: timeSpent,
-        cheatWarnings: cheatWarnings,
-        totalLeaveTime: totalTabLeaveTime,
-        timestamp: Date.now()
-      };
-
-      await window.dbPush(window.ref(window.db, `leaderboard/${currentExamData.code}`), resultObj);
-      if (studentSessionKeyGlobal) {
-        await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));
-      }
-
-      document.getElementById('resultScore').innerText = `${totalScore} / 10`;
-      document.getElementById('resultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpent/60)} phút ${timeSpent%60} giây | Cảnh báo gian lận: ${cheatWarnings} lần`;
-
-      let reviewBox = document.getElementById('resultReviewContainer');
-      let reviewHtml = '';
-      reviewDetails.forEach(r => {
         reviewHtml += `
-          <div style="background:#f8f9fa; border-left:4px solid ${r.isCorrect?'#198754':'#dc3545'}; padding:10px; border-radius:6px; margin-bottom:8px;">
-            <p><b>Câu ${r.id} (${r.type}):</b> Bạn chọn: <b style="color:${r.isCorrect?'green':'red'};">${r.studentAns}</b> | Đáp án chuẩn: <b style="color:green;">${r.correctAns}</b></p>
+          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isCorrect ? '#f6ffed' : '#fff2f0'}; font-size: 13px;">
+            <strong>Câu ${q.id}:</strong> <span style="color:${isCorrect ? '#52c41a' : '#ff4d4f'}; font-weight:bold;">${isCorrect ? '✓ Đúng' : '✗ Sai'} (+${qEarned.toFixed(2)}đ)</span>
+            <div>- Bạn chọn: <b>${studentAns || 'Chưa làm'}</b></div>
+            ${!isCorrect ? `<div>- Đáp án đúng: <b style="color:green;">${q.correctAnswer}</b></div>` : ''}
+            
+            ${hasExp ? `
+              <div style="margin-top: 6px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
           </div>
         `;
       });
-      reviewBox.innerHTML = reviewHtml;
 
+      let finalScore = Math.round(totalEarnedScore * 100) / 100;
+      let timeSpentSeconds = (currentExamData.duration * 60) - timeLeft;
+
+      document.getElementById('resultScore').innerText = `${finalScore} / 10`;
+      document.getElementById('resultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
+      document.getElementById('resultReviewContainer').innerHTML = reviewHtml;
+
+      await window.dbPush(window.ref(window.db, 'leaderboard/' + currentExamData.code), {
+        name: studentNameGlobal, 
+        score: finalScore, 
+        timeSpent: timeSpentSeconds, 
+        cheatWarnings: cheatWarnings,
+        totalLeaveTime: Math.round(totalTabLeaveTime / 1000),
+        timestamp: Date.now()
+      });
+      showToast('📤 Nộp bài thành công!');
       switchView('studentResultView');
-      showToast('🎉 Nộp bài thi thành công!');
+    }
+
+    function leaveWaitingRoom() { switchView('studentLoginView'); }
+
+    function launchQpPracticeInterface() {
+      isQpActive = true;
+      currentQpV2Index = 0;
+      qpStudentAnswers = {};
+      document.getElementById('qpPlayTitle').innerText = currentQpData.title;
+
+      if (currentQpData.enableAntiCheat) {
+        document.getElementById('qpCheatWarningBanner').style.display = 'flex';
+        cheatWarnings = 0;
+        totalTabLeaveTime = 0;
+        document.getElementById('qpCheatWarningBadge').innerText = `Cảnh báo: 0`;
+      } else {
+        document.getElementById('qpCheatWarningBanner').style.display = 'none';
+      }
+
+      if (currentQpData.useLayoutV2) {
+        renderQpQuestionV2Item();
+      } else {
+        renderQpLayoutV1();
+      }
+
+      if (currentQpData.enableTimer) {
+        qpTimeLeft = (currentQpData.durationMinutes || 15) * 60;
+        document.getElementById('qpPlayTimer').style.display = 'block';
+        clearInterval(qpTimer);
+        qpTimer = setInterval(() => {
+          qpTimeLeft--;
+          let m = Math.floor(qpTimeLeft / 60), s = qpTimeLeft % 60;
+          document.getElementById('qpPlayTimer').innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+          if (qpTimeLeft <= 0) {
+            clearInterval(qpTimer);
+            showToast('⌛ Đã hết thời gian làm bài!', true);
+            submitQpPractice(true);
+          }
+        }, 1000);
+      } else {
+        qpTimeLeft = 0;
+        document.getElementById('qpPlayTimer').style.display = 'none';
+        clearInterval(qpTimer);
+        qpTimer = setInterval(() => { qpTimeLeft++; }, 1000);
+      }
+
+      switchView('qpPracticingView');
+
+      if (currentQpData.isAdvancedMode) {
+        let roomMainRef = window.ref(window.db, `qp_rooms/${currentQpData.code}`);
+        activeQpRoomListener = window.onValue(roomMainRef, (snapshot) => {
+          let data = snapshot.val() || {};
+          if (data.status === 'ended' && isQpActive) {
+            if (activeQpRoomListener) activeQpRoomListener();
+            showToast('🛑 Giáo viên đã kết thúc bài luyện nhanh!', true);
+            submitQpPractice(true);
+          }
+        });
+      }
+    }
+
+    function renderQpLayoutV1() {
+      let container = document.getElementById('qpPlayQuestionsContainer');
+      container.innerHTML = '';
+      document.getElementById('qpPrevBtn').style.display = 'none';
+      document.getElementById('qpNextBtn').style.display = 'none';
+      document.getElementById('qpSubmitBtn').style.display = 'block';
+
+      currentQpData.questions.forEach((q, idx) => {
+        let optHtml = '';
+        q.options.forEach(opt => {
+          optHtml += `<div class="opt-btn" onclick="selectQpOpt(this, ${q.id}, '${opt.label}')" style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px;">${opt.label}. ${opt.text}</div>`;
+        });
+
+        let hasExp = q.explanation || q.expImage;
+
+        container.innerHTML += `
+          <div class="card" style="background: #fdfdfd; border: 1px solid #ddd; margin-bottom: 12px;">
+            <p style="font-weight: bold; margin-bottom: 6px;">Câu ${idx + 1} (${q.score || 0.25}đ): ${q.question}</p>
+            ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
+            <div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">
+              ${optHtml}
+            </div>
+            <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;"></div>
+            
+            ${hasExp ? `
+              <div style="margin-top: 6px;">
+                <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
+                <div id="qp-exp-${q.id}" class="explanation-box">
+                  ${q.explanation ? `<p>${q.explanation}</p>` : ''}
+                  ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+    }
+
+    function renderQpQuestionV2Item() {
+      let container = document.getElementById('qpPlayQuestionsContainer');
+      let q = currentQpData.questions[currentQpV2Index];
+      let totalQ = currentQpData.questions.length;
+
+      let isAnswered = qpStudentAnswers.hasOwnProperty(q.id);
+      let savedVal = isAnswered ? qpStudentAnswers[q.id] : '';
+
+      document.getElementById('qpPrevBtn').style.display = currentQpV2Index > 0 ? 'block' : 'none';
+      let nextBtn = document.getElementById('qpNextBtn');
+      let submitBtn = document.getElementById('qpSubmitBtn');
+
+      if (currentQpV2Index < totalQ - 1) {
+        nextBtn.style.display = 'block';
+        nextBtn.innerText = isAnswered ? 'Tiếp Tục ➡️' : 'Xác Nhận & Tiếp Tục ➡️';
+        submitBtn.style.display = 'none';
+      } else {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'block';
+        submitBtn.innerText = isAnswered ? '📤 Nộp Bài Luyện Nhanh' : 'Xác Nhận & Nộp Bài';
+      }
+
+      let optHtml = '';
+      q.options.forEach(opt => {
+        let isSel = (savedVal === opt.label);
+        let bgStyle = '';
+        
+        if (isAnswered) {
+          if (opt.label === savedVal) {
+             bgStyle = (savedVal === q.correct) ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;';
+          } else if (opt.label === q.correct) {
+             bgStyle = 'background: #198754; color: white;';
+          }
+        } else {
+           let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+           if (group && group.dataset.val === opt.label) {
+               isSel = true;
+               bgStyle = 'background: #1877f2; color: white;';
+           }
+        }
+
+        let clickEvent = isAnswered ? '' : `onclick="selectQpOpt(this, ${q.id}, '${opt.label}')"`;
+        let cursorStyle = isAnswered ? 'cursor: not-allowed; opacity: 0.8;' : 'cursor: pointer;';
+
+        optHtml += `<div class="opt-btn ${isSel ? 'selected' : ''}" ${clickEvent} style="width: auto; height: auto; padding: 8px 12px; border-radius: 6px; ${bgStyle} ${cursorStyle}">${opt.label}. ${opt.text}</div>`;
+      });
+
+      let hasExp = q.explanation || q.expImage;
+      let feedbackHtml = '';
+      if (isAnswered) {
+          if (savedVal === q.correct) {
+              feedbackHtml = `<span style="color: #198754;">✓ Chính xác! Đáp án đúng là ${q.correct}</span>`;
+          } else {
+              feedbackHtml = `<span style="color: #dc3545;">✗ Sai rồi! Đáp án đúng là ${q.correct}</span>`;
+          }
+      }
+
+      container.innerHTML = `
+        <div class="card" style="background: #fdfdfd; border: 1px solid #ddd;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-weight: bold; color: #1877f2;">Câu ${currentQpV2Index + 1} / ${totalQ} ${isAnswered ? '<span style="color:red;font-size:12px;">(Đã khóa)</span>' : ''}</span>
+            <span style="font-size: 12px; color: #666;">Điểm: ${q.score || 0.25}đ</span>
+          </div>
+          <p style="font-weight: bold; margin-bottom: 8px;">${q.question}</p>
+          ${q.image ? `<img src="${q.image}" class="img-preview">` : ''}
+          <div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction: column; gap: 6px;">
+            ${optHtml}
+          </div>
+          <div id="qp-feedback-${q.id}" style="font-size: 13px; font-weight: bold; margin-top: 6px;">${feedbackHtml}</div>
+          
+          ${(hasExp && isAnswered) ? `
+            <div style="margin-top: 6px;">
+              <button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button>
+              <div id="qp-exp-${q.id}" class="explanation-box">
+                ${q.explanation ? `<p>${q.explanation}</p>` : ''}
+                ${q.expImage ? `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;" >` : ''}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function nextQpQuestionV2() {
+      let q = currentQpData.questions[currentQpV2Index];
+      
+      if (!qpStudentAnswers.hasOwnProperty(q.id)) {
+        let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+        let selectedVal = group ? group.dataset.val : '';
+        
+        if (!selectedVal) {
+          showToast('Vui lòng chọn 1 đáp án để xác nhận làm tiếp!', true);
+          return;
+        }
+        qpStudentAnswers[q.id] = selectedVal; 
+      }
+
+      if (currentQpV2Index < currentQpData.questions.length - 1) {
+        currentQpV2Index++;
+        renderQpQuestionV2Item();
+      }
+    }
+
+    function prevQpQuestionV2() {
+      if (currentQpV2Index > 0) {
+        currentQpV2Index--;
+        renderQpQuestionV2Item();
+      }
+    }
+
+    function selectQpOpt(btn, qid, label) {
+      if (!isQpActive) return; 
+      let group = btn.parentElement;
+      group.querySelectorAll('.opt-btn').forEach(b => {
+        b.classList.remove('selected');
+        b.style.background = 'white';
+        b.style.color = '#333';
+      });
+      btn.classList.add('selected'); 
+      btn.style.background = '#1877f2'; 
+      btn.style.color = 'white';
+      group.dataset.val = label;
+    }
+
+    function toggleQpExp(qid) {
+      let box = document.getElementById(`qp-exp-${qid}`);
+      let btn = box.previousElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
+    }
+
+    async function submitQpPractice(forced = false) {
+      if (!forced && !confirm('Xác nhận nộp bài luyện nhanh?')) return;
+      if (!isQpActive && !forced) return;
+      isQpActive = false;
+      clearInterval(qpTimer);
+      if (activeQpRoomListener) activeQpRoomListener();
+
+      let totalEarned = 0;
+      let totalMax = 0;
+      let reviewHtml = '';
+
+      currentQpData.questions.forEach(q => {
+        let qScore = q.score || 0.25;
+        totalMax += qScore;
+        
+        let val = '';
+        if (currentQpData.useLayoutV2) {
+            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+            if (group && group.dataset.val && !qpStudentAnswers.hasOwnProperty(q.id)) {
+                qpStudentAnswers[q.id] = group.dataset.val;
+            }
+            val = qpStudentAnswers[q.id] || '';
+        } else {
+            let group = document.querySelector(`.opt-group[data-qid="${q.id}"]`);
+            val = group ? (group.dataset.val || '') : '';
+        }
+        
+        let isCorrect = (val && val === q.correct);
+        let isUnanswered = !val;
+
+        if (isCorrect) totalEarned += qScore;
+
+        let statusColor = isUnanswered ? '#1877f2' : (isCorrect ? '#52c41a' : '#ff4d4f');
+        let statusText = isUnanswered ? 'Chưa làm' : (isCorrect ? '✓ Đúng' : '✗ Sai');
+
+        let hasExp = q.explanation || q.expImage;
+        let expContent = '';
+        if (q.explanation) expContent += `<p>${q.explanation}</p>`;
+        if (q.expImage) expContent += `<img src="${q.expImage}" class="img-preview" style="margin-top:5px;">`;
+
+        reviewHtml += `
+          <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:8px; background:${isUnanswered ? '#e7f3ff' : (isCorrect ? '#f6ffed' : '#fff2f0')}; font-size: 13px;">
+            <strong>Câu ${q.id}:</strong> <span style="color:${statusColor}; font-weight:bold;">${statusText} (+${qScore}đ)</span>
+            <div style="margin-top:4px;">
+              - Bạn chọn: <b style="color:${statusColor};">${val || 'Không làm'}</b><br>
+              ${!isCorrect ? `- Đáp án đúng: <b style="color:green;">${q.correct}</b>` : ''}
+            </div>
+            ${hasExp ? `
+              <div style="margin-top:5px;">
+                <button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button>
+                <div class="explanation-box">${expContent}</div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
+      let timeSpentSeconds = currentQpData.enableTimer ? ((currentQpData.durationMinutes || 15) * 60) - qpTimeLeft : qpTimeLeft;
+
+      document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
+      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(timeSpentSeconds / 60)}p ${timeSpentSeconds % 60}s`;
+      document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
+
+      await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
+        name: studentNameGlobal, score: finalScore, timeSpent: timeSpentSeconds, timestamp: Date.now()
+      });
+      showToast('📤 Nộp bài luyện thành công!');
+      switchView('qpResultView');
+    }
+
+    function toggleResultExp(btn) {
+      let box = btn.nextElementSibling;
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        box.style.display = 'block';
+        btn.innerText = 'v';
+      }
     }
 
     async function loadLeaderboard() {
       const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
-      if (!code) { showToast('Vui lòng nhập mã bài thi!', true); return; }
+      const tbody = document.getElementById('lbTableBody');
+      tbody.innerHTML = '<tr><td colspan="5">⏳ Đang tải...</td></tr>';
+      if (!code) { showToast('Nhập mã bài!', true); return; }
 
-      let snap = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
-      let tbody = document.getElementById('lbTableBody');
-      tbody.innerHTML = '';
-
-      if (!snap.exists()) {
-        tbody.innerHTML = '<tr><td colspan="5">Chưa có kết quả nào cho mã đề này.</td></tr>';
-        return;
+      let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      if (!snapshot.exists()) {
+        snapshot = await window.dbGet(window.dbChild(window.dbRef, `qp_leaderboard/${code}`));
       }
 
-      let list = [];
-      snap.forEach(child => list.push(child.val()));
-      list.sort((a, b) => b.score - a.score || a.time - b.time);
+      if (!snapshot.exists()) { tbody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu.</td></tr>'; return; }
 
-      list.forEach((item, idx) => {
-        let leaveSec = Math.round((item.totalLeaveTime || 0) / 1000);
+      let history = Object.values(snapshot.val());
+      history.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
+
+      tbody.innerHTML = '';
+      history.forEach((row, idx) => {
+        let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+        let warnings = row.cheatWarnings || 0;
+        let leaveSec = row.totalLeaveTime || 0;
+        let rowId = `lb_detail_${idx}`;
+
         tbody.innerHTML += `
           <tr>
             <td><b>#${idx + 1}</b></td>
-            <td>${item.name}</td>
-            <td style="color: green; font-weight: bold;">${item.score}</td>
-            <td>${Math.floor(item.time/60)}p ${item.time%60}s</td>
-            <td style="color: ${item.cheatWarnings > 0 ? 'red' : 'green'};">${item.cheatWarnings || 0} lần (${leaveSec}s)</td>
-          </tr>
-        `;
+            <td>${row.name}</td>
+            <td><b style="color:#198754;">${row.score}</b></td>
+            <td>${m}p ${s}s</td>
+            <td>
+              <button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button>
+              <div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">
+                - Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>
+                - Thời gian rời phòng thi: <b>${leaveSec} giây</b>
+              </div>
+            </td>
+          </tr>`;
       });
-      showToast('🏆 Tải bảng xếp hạng thành công!');
+      showToast('📊 Tải bảng xếp hạng thành công!');
     }
+
+    function toggleLbDetail(rowId) {
+      let el = document.getElementById(rowId);
+      let btn = el.previousElementSibling;
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+        btn.innerText = '>';
+      } else {
+        el.style.display = 'block';
+        btn.innerText = 'v';
+      }
+    }
+
+    addQuestionV2('mc');
+    addQuestionV2('tf');
   </script>
 </body>
 </html>
-```[cite: 1]
+
