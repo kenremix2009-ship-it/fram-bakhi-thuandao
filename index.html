@@ -146,8 +146,8 @@
        ===== CHỈ ÁP DỤNG CHO ĐIỆN THOẠI (max-width: 768px) =====
        ============================================================ */
     @media (max-width: 768px) {
-      html, body { width: 100%; overflow-x: hidden; }
-      body { -webkit-text-size-adjust: 100%; overscroll-behavior: contain; }
+      html, body { width: 100%; overflow: hidden; height: 100%; }
+      body { -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
 
       .navbar { padding: 8px; gap: 6px; }
       .logo { font-size: 15px; width: 100%; text-align: center; }
@@ -166,28 +166,56 @@
       .modal-header h3 { font-size: 14px; }
       .btn { font-size: 13px; padding: 10px 14px; touch-action: manipulation; }
 
-      /* ===== LÀM BÀI TRÊN ĐIỆN THOẠI: ĐỀ TRÊN, ĐÁP ÁN DƯỚI ===== */
+      /* ============================================================
+         ===== LÀM BÀI TRÊN ĐIỆN THOẠI: ĐỀ VÀ ĐÁP ÁN CÓ THANH CUỘN RIÊNG =====
+         ============================================================ */
+      #studentExamView.active {
+        display: flex !important;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+      #studentExamView .card {
+        margin-bottom: 6px;
+        padding: 8px 10px;
+        flex-shrink: 0;
+      }
       #studentExamView .exam-layout {
         display: flex !important;
         flex-direction: column !important;
-        gap: 8px !important;
-        height: auto !important;
+        gap: 6px !important;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        height: auto;
       }
       #studentExamView .exam-left {
-        flex: none !important;
-        max-height: 50vh !important;
-        min-height: 200px !important;
+        flex: 0 0 40vh !important;
+        max-height: 40vh !important;
+        min-height: 140px !important;
         width: 100% !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch;
         padding: 6px !important;
+        border-radius: 6px;
+        overscroll-behavior: contain;
       }
       #studentExamView .exam-right {
-        flex: none !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
         width: 100% !important;
-        max-height: none !important;
-        overflow-y: visible !important;
-        padding: 10px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding: 8px !important;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        overscroll-behavior: contain;
+      }
+      #studentExamView #studentAnswerSheet {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       #studentExamView .exam-header { flex-wrap: wrap; gap: 6px; }
       #studentExamView .timer { font-size: 12px; padding: 3px 8px; }
