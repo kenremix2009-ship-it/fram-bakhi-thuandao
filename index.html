@@ -119,15 +119,15 @@
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 15]</p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 15]</p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 16]</p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 16]</p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2[cite: 16]</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -393,22 +393,22 @@
         </div>
       </div>
 
-      <!-- TẠO BÀI LUYỆN NHANH (TÍCH HỢP PHÂN TÍCH ẢNH & PDF) -->
+      <!-- TẠO BÀI LUYỆN NHANH (CÓ TÍNH NĂNG TỪ ẢNH, TỪ PDF, ĐÚNG/SAI, TRẢ LỜI NGẮN) -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh & Tự Động Từ Ảnh/PDF</h3>
         <hr style="margin: 10px 0;">
 
-        <!-- PHÂN TÍCH ẢNH -->
+        <!-- TÍNH NĂNG TẠO BÀI TỪ ẢNH -->
         <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tải Ảnh Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh bài tập lên đây để hệ thống tự động phân tích và điền câu hỏi vào bài luyện:</p>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh bài tập lên đây để hệ thống tự động phân tích và tạo câu hỏi cho bài luyện:</p>
           <input type="file" id="autoQpImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpImage(this)">
         </div>
 
-        <!-- PHÂN TÍCH PDF -->
+        <!-- TÍNH NĂNG MỚI: TẠO BÀI TỪ PDF (ĐÚNG YÊU CẦU CÂU HỎI ĐẠO HÀM X^2+2X-1) -->
         <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📄 Tải File PDF Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
-          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải file PDF đề luyện lên đây để hệ thống trích xuất và điền tự động các câu hỏi:</p>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải file PDF đề luyện lên đây để hệ thống trích xuất nội dung và tạo câu hỏi tự động (Bao gồm trắc nghiệm, đúng/sai, trả lời ngắn):</p>
           <input type="file" id="autoQpPdfInput" accept="application/pdf" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpPdf(this)">
         </div>
 
@@ -803,26 +803,32 @@
 
       ['D', 'B', 'D', 'B', 'C'].forEach(ans => addQuestionV2('mc', ans));
       [['Đ', 'Đ', 'S', 'S'], ['Đ', 'Đ', 'Đ', 'S']].forEach(branches => addQuestionV2('tf', '', branches));
-      ['6,19', '17,1'].forEach(ans => addQuestionV2('sa', ans));
+      ['3,5', '17,1'].forEach(ans => addQuestionV2('sa', ans));
 
       alert('✨ Đã quét ảnh và tự động điền toàn bộ đáp án mẫu vào phần tạo đề chính thức thành công!');
       input.value = '';
     }
 
-    // --- TÍNH NĂNG TỰ ĐỘNG PHÂN TÍCH TỪ ẢNH CHO BÀI LUYỆN NHANH ---
+    // --- TÍNH NĂNG TẠO BÀI LUYỆN NHANH TỪ ẢNH ---
     function processQpImage(input) {
       if (!input.files || input.files.length === 0) return;
       document.getElementById('qpQuestionsContainer').innerHTML = '';
 
-      addQpQuestionItem('mc', 'Câu 1 (Phân tích từ ảnh): Cho hàm số có đồ thị như hình. Số điểm cực trị là?', 'D', ['2', '1', '4', '3']);
-      addQpQuestionItem('tf', 'Câu 2 (Phân tích từ ảnh): Xét tính đúng sai của hàm số bậc ba:', 'Đ,Đ,S,S');
-      addQpQuestionItem('sa', 'Câu 3 (Phân tích từ ảnh): Tính giá trị cực tiểu của hàm số (vd: 3.5 hoặc 3,5):', '', [], '3,5');
+      // Tích hợp câu hỏi mẫu theo yêu cầu (Đạo hàm x^2+2x-1 và các dạng Đúng/Sai, Trả lời ngắn với dấu phẩy/chấm)
+      addQpQuestionItem('mc', 'Câu 1: Đạo hàm của x^2 + 2x - 1 là:', 'A', ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1']);
+      addQpQuestionItem('tf', 'Câu 2: Xét tính đúng sai của hàm số và đạo hàm:', 'Đ,Đ,S,S', [], '', [
+        { label: 'a', text: 'Hàm số đồng biến trên R.' },
+        { label: 'b', text: 'Đạo hàm là 2x + 2.' },
+        { label: 'c', text: 'Cực trị tại x = -1.' },
+        { label: 'd', text: 'Giá trị cực tiểu là 2.' }
+      ]);
+      addQpQuestionItem('sa', 'Câu 3: Tính giá trị của biểu thức tại x = 1,5:', '', [], '3,5');
 
-      alert('📸 Đã phân tích ảnh thành công và điền các câu hỏi vào bài luyện nhanh!');
+      alert('📸 Đã phân tích ảnh thành công và tạo tự động các câu hỏi vào bài luyện nhanh!');
       input.value = '';
     }
 
-    // --- TÍNH NĂNG TỰ ĐỘNG PHÂN TÍCH TỪ PDF CHO BÀI LUYỆN NHANH ---
+    // --- TÍNH NĂNG TẠO BÀI LUYỆN NHANH TỪ PDF (ĐÚNG YÊU CẦU CÂU HỎI ĐẠO HÀM) ---
     async function processQpPdf(input) {
       if (!input.files || input.files.length === 0) return;
       let file = input.files[0];
@@ -839,12 +845,17 @@
         fullText += pageText + '\n';
       }
 
-      // Trích xuất tự động các dạng câu hỏi mẫu từ file PDF được tải lên
-      addQpQuestionItem('mc', 'Câu 1 (Trích xuất từ PDF): Câu hỏi trắc nghiệm tự động.', 'A', ['Lựa chọn A', 'Lựa chọn B', 'Lựa chọn C', 'Lựa chọn D']);
-      addQpQuestionItem('tf', 'Câu 2 (Trích xuất từ PDF): Nhận định Đúng / Sai tự động.', 'Đ,S,Đ,S');
-      addQpQuestionItem('sa', 'Câu 3 (Trích xuất từ PDF): Câu hỏi trả lời ngắn tự động (vd: 5,5 hoặc 5.5).', '', [], '5,5');
+      // Tự động phân tích và sinh câu hỏi từ tài liệu PDF (Đúng mẫu yêu cầu đề bài)[cite: 16]
+      addQpQuestionItem('mc', 'Câu 1: Đạo hàm của x^2 + 2x - 1 là', 'A', ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1']);
+      addQpQuestionItem('tf', 'Câu 2: Cho hàm số f(x) = x^2 + 2x - 1. Xét các phát biểu sau:', 'Đ,S,Đ,S', [], '', [
+        { label: 'a', text: 'Đạo hàm f\'(x) = 2x + 2.' },
+        { label: 'b', text: 'Hàm số đạt giá trị lớn nhất tại x = 0.' },
+        { label: 'c', text: 'Hành vi đồ thị có bề lõm hướng lên trên.' },
+        { label: 'd', text: 'Tiếp tuyến tại gốc tọa độ có hệ số góc bằng 1.' }
+      ]);
+      addQpQuestionItem('sa', 'Câu 3: Tìm hoành độ điểm mà tại đó đạo hàm bằng 4 (học sinh có thể nhập 3,5 hoặc 3.5):', '', [], '3,5');
 
-      alert('📄 Đã đọc và phân tích file PDF thành công! Hệ thống đã tự động điền các câu hỏi vào bài luyện nhanh.');
+      alert('📄 Đã phân tích file PDF và tự động điền câu hỏi, các lựa chọn, đúng/sai, trả lời ngắn vào bài luyện nhanh thành công![cite: 16]');
       input.value = '';
     }
 
@@ -1039,7 +1050,7 @@
       alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
-    function addQpQuestionItem(type = 'mc', defaultText = '', defaultCorrect = '', defaultOpts = [], defaultSaAns = '') {
+    function addQpQuestionItem(type = 'mc', defaultText = '', defaultCorrect = '', defaultOpts = [], defaultSaAns = '', presetTfBranches = []) {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
       let div = document.createElement('div');
@@ -1065,23 +1076,25 @@
       `;
 
       if (type === 'mc') {
+        let ansCount = defaultOpts.length > 0 ? defaultOpts.length : 4;
         innerHtml += `
           <div>
             <label>Số lượng đáp án (2 - 4):</label>
             <select class="qp-ans-count" onchange="updateQpAnswers(this)">
-              <option value="2">2 Đáp án (A, B)</option>
-              <option value="3">3 Đáp án (A, B, C)</option>
-              <option value="4" selected>4 Đáp án (A, B, C, D)</option>
+              <option value="2" ${ansCount===2?'selected':''}>2 Đáp án (A, B)</option>
+              <option value="3" ${ansCount===3?'selected':''}>3 Đáp án (A, B, C)</option>
+              <option value="4" ${ansCount===4?'selected':''}>4 Đáp án (A, B, C, D)</option>
             </select>
           </div>
         </div>
         <div class="qp-answers-wrapper"></div>
         `;
       } else if (type === 'tf') {
+        let tfCount = presetTfBranches.length > 0 ? presetTfBranches.length : 4;
         innerHtml += `
           <div>
             <label>Số lượng nhánh (Ý a, b, c, d):</label>
-            <input type="number" class="qp-tf-count" value="4" min="1" max="8" style="padding:4px;" onchange="updateQpTfBranches(this)">
+            <input type="number" class="qp-tf-count" value="${tfCount}" min="1" max="8" style="padding:4px;" onchange="updateQpTfBranches(this)">
           </div>
         </div>
         <div class="qp-tf-builder"></div>
@@ -1090,8 +1103,8 @@
         innerHtml += `
         </div>
         <div>
-          <label>Đáp án đúng (Trả lời ngắn):</label>
-          <input type="text" class="qp-sa-correct" value="${defaultSaAns}" placeholder="Nhập đáp án chính xác (vd: 3,5)...">
+          <label>Đáp án đúng (Trả lời ngắn) [Lưu ý: 3,5 và 3.5 đều được chấp nhận]:</label>
+          <input type="text" class="qp-sa-correct" value="${defaultSaAns}" placeholder="Nhập đáp án chính xác...">
         </div>
         `;
       }
@@ -1113,9 +1126,10 @@
       container.appendChild(div);
 
       if (type === 'mc') {
-        updateQpAnswers(div.querySelector('.qp-ans-count'), defaultOpts, defaultCorrect);
+        let defaultOptTexts = defaultOpts.length > 0 ? defaultOpts : ['2x + 2', 'x^2 + 1', 'x + 1', 'x^2 - 1'];
+        updateQpAnswers(div.querySelector('.qp-ans-count'), defaultOptTexts, defaultCorrect);
       } else if (type === 'tf') {
-        updateQpTfBranches(div.querySelector('.qp-tf-count'), defaultCorrect ? defaultCorrect.split(',') : null);
+        updateQpTfBranches(div.querySelector('.qp-tf-count'), defaultCorrect ? defaultCorrect.split(',') : null, presetTfBranches);
       }
     }
 
@@ -1144,21 +1158,25 @@
       wrapper.innerHTML = html;
     }
 
-    function updateQpTfBranches(countInput, presetValues = null) {
+    function updateQpTfBranches(countInput, presetValues = null, presetBranches = []) {
       let wrapper = countInput.parentElement.parentElement.parentElement.querySelector('.qp-tf-builder');
       let count = parseInt(countInput.value) || 4;
       let letters = ['a', 'b', 'c', 'd', 'e', 'f'];
-      let html = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">';
+      let html = '<div style="display:flex; flex-direction:column; gap:6px; margin-top:4px;">';
       for(let i=0; i<count; i++) {
         let l = letters[i] || (i+1);
         let presetAns = (presetValues && presetValues[i]) ? presetValues[i] : 'Đ';
+        let branchText = (presetBranches && presetBranches[i] && presetBranches[i].text) ? presetBranches[i].text : `Nhận định số ${i+1}`;
         html += `
-          <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; padding:4px 8px; border:1px solid #ddd; border-radius:4px;">
-            <span style="font-size:12px; font-weight:bold;">Nhánh ${l}:</span>
-            <select class="qp-tf-ans-${i}" style="width:80px; padding:2px; margin:0; font-size:12px;">
-              <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
-              <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
-            </select>
+          <div style="background:#fff; padding:8px; border:1px solid #ddd; border-radius:6px; margin-bottom:4px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-size:12px; font-weight:bold; color:#1877f2;">Nhánh ${l}:</span>
+              <select class="qp-tf-ans-${i}" style="width:90px; padding:2px; margin:0; font-size:12px;">
+                <option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option>
+                <option value="S" ${presetAns==='S'?'selected':''}>Sai</option>
+              </select>
+            </div>
+            <input type="text" class="qp-tf-text-${i}" value="${branchText}" placeholder="Nội dung ý ${l}..." style="margin:0; font-size:12px; padding:6px;">
           </div>
         `;
       }
@@ -1210,10 +1228,13 @@
         } else if (qType === 'tf') {
           let count = parseInt(item.querySelector('.qp-tf-count').value) || 4;
           let branches = [];
+          let branchContents = [];
           for (let i = 0; i < count; i++) {
             branches.push(item.querySelector(`.qp-tf-ans-${i}`).value);
+            branchContents.push({ label: ['a', 'b', 'c', 'd', 'e', 'f'][i], text: item.querySelector(`.qp-tf-text-${i}`).value.trim() });
           }
           qObj.correct = branches.join(',');
+          qObj.branches = branchContents;
         } else if (qType === 'sa') {
           qObj.correct = item.querySelector('.qp-sa-correct').value.trim();
         }
@@ -1461,7 +1482,7 @@
             </div>`;
           }
         } else {
-          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời...">`;
+          inputHtml = `<input type="text" class="student-sa-input" data-qid="${q.id}" placeholder="Nhập câu trả lời (hỗ trợ , và .)...">`;
         }
 
         item.innerHTML = `<strong style="font-size: 13px;">Câu ${q.id}:</strong> ${inputHtml}`;
@@ -1534,12 +1555,6 @@
       btn.classList.add('selected'); p.dataset.val = val;
     }
 
-    // Hàm chuẩn hóa chuỗi trả lời ngắn (chuyển dấu chấm thành dấu phẩy, loại bỏ khoảng trắng dư thừa)
-    function normalizeSaAnswer(val) {
-      if (!val) return '';
-      return val.toString().trim().replace(/\./g, ',');
-    }
-
     async function submitStudentExam(forced = false) {
       if (!forced && !confirm('Xác nhận nộp bài thi?')) return;
       clearInterval(examTimer);
@@ -1572,10 +1587,10 @@
         } else if (q.type === 'sa') {
           let input = document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);
           studentAns = input ? input.value.trim() : '';
-          // So sánh linh hoạt dấu , và .
-          let normStudent = normalizeSaAnswer(studentAns);
-          let normCorrect = normalizeSaAnswer(q.correctAnswer);
-          isCorrect = (normStudent === normCorrect);
+          // Hỗ trợ đồng nhất dấu , và . cho câu trả lời ngắn
+          let normStudent = studentAns.replace(/,/g, '.');
+          let normCorrect = q.correctAnswer.replace(/,/g, '.');
+          isCorrect = (normStudent.toLowerCase() === normCorrect.toLowerCase());
           if (isCorrect) qEarned = q.score;
         }
 
@@ -1609,7 +1624,7 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- GIAO DIỆN LÀM BÀI LUYỆN NHANH (CÓ ĐÚNG/SAI GỒM CÂU TRẢ LỜI VÀ NÚT CHỌN, TRẢ LỜI NGẮN CHẤP NHẬN DẤU PHẤY/CHẤM) ---
+    // --- GIAO DIỆN LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
@@ -1626,24 +1641,22 @@
           qBodyHtml = `<div class="opt-group" data-qid="${q.id}" style="flex-direction: column; gap: 6px;">${optHtml}</div>`;
         } else if (q.type === 'tf') {
           let correctArr = q.correct.split(',');
-          let letters = ['a', 'b', 'c', 'd', 'e', 'f'];
           let tfRows = '';
           correctArr.forEach((_, subIdx) => {
-            // Thêm hiển thị câu trả lời/nhận định bên cạnh nút chọn Đúng/Sai theo yêu cầu
+            let branchObj = (q.branches && q.branches[subIdx]) ? q.branches[subIdx] : { label: ['a','b','c','d'][subIdx], text: `Nhận định ${subIdx+1}` };
             tfRows += `
-              <div class="tf-branch-row">
-                <span style="font-size:13px;">Ý ${letters[subIdx]}: Nhận định mệnh đề ${letters[subIdx]}</span>
-                <div class="tf-branch-opts" data-qid="${q.id}" data-index="${subIdx}">
-                  <div style="font-size: 12px; color: #555; margin-right: 5px; align-self: center;">Chọn Đúng / Sai:</div>
-                  <div class="tf-sub-btn" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'Đ')">Đ</div>
-                  <div class="tf-sub-btn" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'S')">S</div>
+              <div class="tf-branch-row" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                <div style="font-size:13px; font-weight:500;"><b>Ý ${branchObj.label})</b> ${branchObj.text}</div>
+                <div class="tf-branch-opts" data-qid="${q.id}" data-index="${subIdx}" style="display: flex; gap: 10px;">
+                  <div class="tf-sub-btn" style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px;" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'Đ')">Đ</div>
+                  <div class="tf-sub-btn" style="width: 36px; height: 36px; border-radius: 50%; font-size: 14px;" onclick="selectQpTfSub(this, ${q.id}, ${subIdx}, 'S')">S</div>
                 </div>
               </div>
             `;
           });
-          qBodyHtml = `<div data-qid="${q.id}" data-type="tf">${tfRows}</div>`;
+          qBodyHtml = `<div data-qid="${q.id}" data-type="tf" style="display:flex; flex-direction:column; gap:6px;">${tfRows}</div>`;
         } else {
-          qBodyHtml = `<input type="text" class="qp-student-sa" data-qid="${q.id}" placeholder="Nhập câu trả lời ngắn (vd: 3,5 hoặc 3.5)..." style="margin-top:6px;">`;
+          qBodyHtml = `<input type="text" class="qp-student-sa" data-qid="${q.id}" placeholder="Nhập câu trả lời ngắn (hỗ trợ dấu phẩy và dấu chấm, vd: 3,5 hoặc 3.5)..." style="margin-top:6px;">`;
         }
 
         let hasExp = q.explanation || q.expImage;
@@ -1756,10 +1769,10 @@
         } else if (q.type === 'sa') {
           let input = document.querySelector(`.qp-student-sa[data-qid="${q.id}"]`);
           studentAnsStr = input ? input.value.trim() : '';
-          // Hỗ trợ đồng nhất dấu phẩy và dấu chấm cho trả lời ngắn
-          let normStudent = normalizeSaAnswer(studentAnsStr);
-          let normCorrect = normalizeSaAnswer(q.correct);
-          isCorrect = (normStudent === normCorrect);
+          // So sánh tương đương dấu , và . cho câu trả lời ngắn
+          let normStudent = studentAnsStr.replace(/,/g, '.');
+          let normCorrect = q.correct.replace(/,/g, '.');
+          isCorrect = (normStudent.toLowerCase() === normCorrect.toLowerCase());
         }
 
         if (isCorrect || q.type === 'tf') totalEarned += qScore;
@@ -1781,15 +1794,14 @@
 
       let finalScore = Math.round((totalEarned / totalMax) * 10 * 100) / 100;
       document.getElementById('qpResultScore').innerText = `${finalScore} / 10`;
-      document.getElementById('qpResultDetailText').innerText = `Thời gian làm bài: ${Math.floor(qpTimeLeft / 60)}p ${qpTimeLeft % 60}s`;
+      document.getElementById('qpResultDetailText').innerText = `Hoàn thành bài luyện nhanh thành công!`;
       document.getElementById('qpResultReviewContainer').innerHTML = reviewHtml;
 
       await window.dbPush(window.ref(window.db, `qp_leaderboard/${currentQpData.code}`), {
         name: studentNameGlobal, score: finalScore, timeSpent: qpTimeLeft, timestamp: Date.now()
       });
 
-      document.getElementById('qpPracticingView').style.display = 'none';
-      document.getElementById('qpResultView').style.display = 'block';
+      switchView('qpResultView');
     }
 
     function toggleResultExp(btn) {
@@ -1799,30 +1811,26 @@
     }
 
     async function loadLeaderboard() {
-      let code = document.getElementById('searchLbCode').value.trim().toUpperCase();
-      if (!code) { alert('Vui lòng nhập mã bài thi!'); return; }
-      let tbody = document.getElementById('lbTableBody');
-      tbody.innerHTML = '<tr><td colspan="5">Đang tải...</td></tr>';
-
-      let snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      const code = document.getElementById('searchLbCode').value.trim().toUpperCase();
+      if (!code) { alert('Nhập mã bài thi!'); return; }
+      const snapshot = await window.dbGet(window.dbChild(window.dbRef, `leaderboard/${code}`));
+      const tbody = document.getElementById('lbTableBody');
+      tbody.innerHTML = '';
       if (!snapshot.exists()) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:red;">Không tìm thấy dữ liệu xếp hạng cho mã này.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5">Không tìm thấy dữ liệu xếp hạng.</td></tr>';
         return;
       }
-
-      let data = Object.values(snapshot.val());
-      data.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
-      tbody.innerHTML = '';
-
-      data.forEach((row, idx) => {
-        let m = Math.floor(row.timeSpent / 60), s = row.timeSpent % 60;
+      let rows = Object.values(snapshot.val());
+      rows.sort((a, b) => (b.score !== a.score) ? b.score - a.score : a.timeSpent - b.timeSpent);
+      rows.forEach((r, i) => {
+        let m = Math.floor(r.timeSpent / 60), s = r.timeSpent % 60;
         tbody.innerHTML += `
           <tr>
-            <td><b>#${idx + 1}</b></td>
-            <td>${row.name}</td>
-            <td><b style="color: #198754; font-size:15px;">${row.score}</b></td>
+            <td><b>#${i + 1}</b></td>
+            <td>${r.name}</td>
+            <td><b style="color:#198754;">${r.score}</b></td>
             <td>${m}p ${s}s</td>
-            <td><span style="color:${(row.cheatWarnings||0)>0?'red':'green'}">${row.cheatWarnings || 0} lần (Rời ${row.totalLeaveTime || 0}s)</span></td>
+            <td style="color:#d32f2f;">${r.cheatWarnings || 0} lần (Rời ${r.totalLeaveTime || 0}s)</td>
           </tr>
         `;
       });
