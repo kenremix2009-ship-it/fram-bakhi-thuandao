@@ -108,7 +108,6 @@
     /* BANNER THÔNG BÁO TOÀN CẦU TỪ NHÀ PHÁT TRIỂN */
     #globalBroadcastBanner {
       position: fixed;
-      top: 0;
       left: 0;
       width: 100%;
       padding: 15px 25px;
@@ -119,6 +118,9 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       animation: slideDown 0.5s ease;
     }
+    #globalBroadcastBanner.pos-top { top: 0; }
+    #globalBroadcastBanner.pos-middle { top: 50%; transform: translateY(-50%); }
+    #globalBroadcastBanner.pos-bottom { bottom: 0; }
     @keyframes slideDown {
       from { transform: translateY(-100%); }
       to { transform: translateY(0); }
@@ -646,25 +648,30 @@
           <label>Độ đậm nhạt (Opacity từ 0.1 đến 1.0):</label>
           <input type="number" id="supremeOpacity" value="0.95" step="0.05" min="0.1" max="1.0">
         </div>
+        <div style="margin-top: 10px;">
+          <label>Vị trí hiển thị thông báo:</label>
+          <select id="supremePosition" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
+            <option value="top">Trên</option>
+            <option value="middle">Giữa</option>
+            <option value="bottom">Dưới</option>
+          </select>
+        </div>
         <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
 
         <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Quản lý danh sách nhạc dùng chung. Bấm vào danh sách để mở, sau đó bấm "Thêm File Nhạc" để chọn nhạc trực tiếp từ tệp tải xuống trên máy — hệ thống sẽ tự động thêm vào danh sách. Bấm "Phát" ở bài nhạc bất kỳ để phát đồng bộ cho tất cả mọi người đang online cùng nghe.</p>
-
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="btn" style="width: auto; background: #6f42c1;" onclick="toggleMusicListPanel()">📋 Danh Sách Nhạc (<span id="musicLibCount">0</span>)</button>
-          <button class="btn btn-danger" style="width: auto;" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
+        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Danh sách nhạc đã tải lên. Bấm "Phát" để đồng bộ phát cho tất cả mọi người đang online.</p>
+        
+        <!-- Danh sách nhạc -->
+        <div id="supremeAudioList" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 8px; background: #fafafa;">
+          <p style="color: #888; font-size: 13px;">Chưa có bài nhạc nào.</p>
         </div>
 
-        <div id="musicListPanel" style="display:none; margin-top:12px; background:#f8f9fa; border:1px solid #e0e0e0; border-radius:8px; padding:12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-            <b style="font-size:14px; color:#1877f2;">🎶 Danh Sách Nhạc Dùng Chung</b>
-            <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:13px;" onclick="triggerAddMusicFile()">➕ Thêm File Nhạc</button>
-          </div>
-          <input type="file" id="addMusicFileInput" accept="audio/*" style="display:none;" onchange="handleAddMusicFile(event)">
-          <div id="musicLibraryList">
-            <p style="font-size:13px; color:#888; text-align:center; padding:10px;">Chưa có bài nhạc nào, bấm "Thêm File Nhạc" để tải lên.</p>
-          </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <label class="btn btn-secondary" style="width: auto; display: inline-flex; align-items: center; gap: 6px; margin: 0; cursor: pointer;">
+            📂 Thêm file nhạc
+            <input type="file" id="supremeAudioFileInput" accept="audio/*" style="display: none;" onchange="uploadSupremeAudio(this)">
+          </label>
+          <button class="btn btn-danger" style="width: auto;" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
 
         <div class="section-title" style="margin-top: 25px;"><span>4. QUẢN LÍ CHUNG TRẠNG THÁI (THÔNG BÁO & NHẠC)</span></div>
@@ -826,7 +833,7 @@
     window.onValue = onValue;
     window.dbUpdate = update;
 
-    // Firebase Storage - dùng để tải file nhạc lớn lên thay vì nhét base64 vào Realtime Database
+    // Firebase Storage
     window.storage = storage;
     window.storageRef = storageRef;
     window.uploadBytes = uploadBytes;
@@ -876,6 +883,12 @@
             banner.style.backgroundColor = data.bgColor || '#ff4d4f';
             banner.style.color = data.textColor || '#ffffff';
             banner.style.opacity = data.opacity || 0.95;
+            
+            // Xóa các class vị trí cũ và thêm class mới
+            banner.classList.remove('pos-top', 'pos-middle', 'pos-bottom');
+            let pos = data.position || 'top';
+            banner.classList.add('pos-' + pos);
+            
             banner.style.display = 'block';
 
             if (noticeSpan) noticeSpan.innerText = data.text;
@@ -911,16 +924,16 @@
           }
         });
 
-        // Lắng nghe danh sách nhạc dùng chung (mục tối cao nhà phát triển)
-        window.onValue(window.ref(window.db, 'system/musicLibrary'), (snapshot) => {
-          renderMusicLibraryList(snapshot.val());
+        // Lắng nghe danh sách nhạc để hiển thị
+        window.onValue(window.ref(window.db, 'system/audioList'), (snapshot) => {
+          let list = snapshot.val() || {};
+          renderSupremeAudioList(list);
         });
+
       }, 1500);
     });
 
     // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY BLOCKED) ---
-    // Hầu hết trình duyệt chặn audio.play() nếu người dùng chưa từng tương tác với trang.
-    // Biến này đánh dấu "đang có nhạc chờ phát" để thử lại ngay khi người dùng bấm/chạm/gõ phím lần đầu.
     let pendingGlobalAudioPlay = false;
 
     function tryPlayGlobalAudio() {
@@ -934,14 +947,12 @@
           pendingGlobalAudioPlay = false;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Đang phát nhạc trực tuyến 🎵';
         }).catch(() => {
-          // Bị chặn autoplay -> chờ người dùng tương tác lần đầu rồi thử lại
           pendingGlobalAudioPlay = true;
           if (audioStatusSpan) audioStatusSpan.innerText = 'Nhạc đang chờ bạn chạm/bấm vào trang để phát 🔇';
         });
       }
     }
 
-    // Ngay khi người dùng tương tác lần đầu tiên với trang, thử phát lại nhạc nếu đang bị chặn
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.addEventListener(evt, () => {
         if (pendingGlobalAudioPlay) tryPlayGlobalAudio();
@@ -985,6 +996,7 @@
         showToast('👑 Chào mừng Nhà Phát Triển tối cao!');
         switchView('supremeView');
         loadAllSupremeExams();
+        loadSupremeAudioList();
       } else {
         showToast('❌ Sai mật khẩu vua!', true);
       }
@@ -1097,16 +1109,18 @@
       }
     }
 
+    // ==== PHÁT THÔNG BÁO TOÀN CẦU (ĐÃ THÊM VỊ TRÍ) ====
     async function sendGlobalBroadcast() {
       let text = document.getElementById('supremeBroadcastText').value.trim();
       let bgColor = document.getElementById('supremeBgColor').value;
       let textColor = document.getElementById('supremeTextColor').value;
       let durationSec = parseInt(document.getElementById('supremeDurationSec').value) || 10;
       let opacity = parseFloat(document.getElementById('supremeOpacity').value) || 0.95;
+      let position = document.getElementById('supremePosition').value;
 
       if (!text) { showToast('Vui lòng nhập nội dung thông báo!', true); return; }
 
-      let broadcastObj = { text, bgColor, textColor, durationSec, opacity, timestamp: Date.now() };
+      let broadcastObj = { text, bgColor, textColor, durationSec, opacity, position, timestamp: Date.now() };
       await window.dbSet(window.ref(window.db, 'system/broadcast'), broadcastObj);
       showToast('📢 Đã phát thông báo toàn hệ thống thành công!');
       document.getElementById('supremeBroadcastText').value = '';
@@ -1124,115 +1138,120 @@
       reader.onerror = error => reject(error);
     });
 
-    // ============ DANH SÁCH NHẠC DÙNG CHUNG (MỤC TỐI CAO NHÀ PHÁT TRIỂN) ============
-    function toggleMusicListPanel() {
-      const panel = document.getElementById('musicListPanel');
-      if (!panel) return;
-      panel.style.display = (panel.style.display === 'none' || !panel.style.display) ? 'block' : 'none';
+    // ==== QUẢN LÝ DANH SÁCH NHẠC (MỚI) ====
+    async function loadSupremeAudioList() {
+      let snapshot = await window.dbGet(window.dbChild(window.dbRef, 'system/audioList'));
+      let list = snapshot.val() || {};
+      renderSupremeAudioList(list);
     }
 
-    function triggerAddMusicFile() {
-      const input = document.getElementById('addMusicFileInput');
-      if (input) input.click();
-    }
+    function renderSupremeAudioList(list) {
+      let container = document.getElementById('supremeAudioList');
+      if (!container) return;
 
-    async function handleAddMusicFile(event) {
-      const file = event.target.files[0];
-      event.target.value = ''; // reset để lần sau chọn lại cùng 1 file vẫn kích hoạt onchange
-      if (!file) return;
-
-      if (!file.type.startsWith('audio/')) {
-        showToast('Vui lòng chọn đúng định dạng file nhạc (mp3, wav, ...)', true);
+      let keys = Object.keys(list);
+      if (keys.length === 0) {
+        container.innerHTML = '<p style="color: #888; font-size: 13px;">Chưa có bài nhạc nào.</p>';
         return;
       }
 
-      showToast('⏳ Đang tải file nhạc lên, vui lòng chờ...');
-      try {
-        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-        const storagePath = `music_library/${Date.now()}_${safeName}`;
-        const fileRef = window.storageRef(window.storage, storagePath);
-        await window.uploadBytes(fileRef, file);
-        const downloadUrl = await window.getDownloadURL(fileRef);
-
-        await window.dbPush(window.ref(window.db, 'system/musicLibrary'), {
-          name: file.name,
-          url: downloadUrl,
-          storagePath: storagePath,
-          timestamp: Date.now()
-        });
-
-        showToast('✅ Đã thêm nhạc "' + file.name + '" vào danh sách!');
-      } catch (err) {
-        console.error('Lỗi khi thêm file nhạc:', err);
-        showToast('❌ Lỗi khi tải file nhạc lên: ' + (err && err.message ? err.message : err), true);
-      }
-    }
-
-    function renderMusicLibraryList(dataObj) {
-      const listEl = document.getElementById('musicLibraryList');
-      const countEl = document.getElementById('musicLibCount');
-      if (!listEl) return;
-
-      if (!dataObj) {
-        listEl.innerHTML = '<p style="font-size:13px; color:#888; text-align:center; padding:10px;">Chưa có bài nhạc nào, bấm "Thêm File Nhạc" để tải lên.</p>';
-        if (countEl) countEl.innerText = '0';
-        return;
-      }
-
-      const entries = Object.entries(dataObj).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
-      if (countEl) countEl.innerText = entries.length;
-
-      let html = '';
-      entries.forEach(([key, track]) => {
-        const trackName = (track.name || 'Không rõ tên').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const escUrl = (track.url || '').replace(/'/g, "\\'");
-        const escName = (track.name || '').replace(/'/g, "\\'");
-        const escKey = key.replace(/'/g, "\\'");
-        const escPath = (track.storagePath || '').replace(/'/g, "\\'");
+      let html = '<div style="display: flex; flex-direction: column; gap: 6px;">';
+      keys.forEach(key => {
+        let song = list[key];
         html += `
-          <div style="display:flex; justify-content:space-between; align-items:center; background:white; border:1px solid #eee; border-radius:6px; padding:8px 10px; margin-bottom:6px; gap:8px; flex-wrap:wrap;">
-            <span style="font-size:13px; word-break:break-all; flex:1;">🎵 ${trackName}</span>
-            <div style="display:flex; gap:6px; flex-shrink:0;">
-              <button class="btn btn-success" style="width:auto; padding:5px 10px; font-size:12px;" onclick="playLibraryTrack('${escUrl}', '${escName}')">▶ Phát</button>
-              <button class="btn btn-danger" style="width:auto; padding:5px 10px; font-size:12px;" onclick="deleteLibraryTrack('${escKey}', '${escPath}')">🗑️</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #eee; gap: 8px;">
+            <span style="font-size: 13px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🎵 ${song.name}</span>
+            <div style="display: flex; gap: 5px;">
+              <button class="btn btn-success" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="playSupremeAudio('${song.url}')">▶ Phát</button>
+              <button class="btn btn-danger" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="deleteSupremeAudio('${key}', '${song.storagePath || ''}')">✖ Xóa</button>
             </div>
           </div>
         `;
       });
-      listEl.innerHTML = html;
+      html += '</div>';
+      container.innerHTML = html;
     }
 
-    async function playLibraryTrack(audioUrl, name) {
-      if (!audioUrl) { showToast('Đường dẫn nhạc không hợp lệ!', true); return; }
+    async function uploadSupremeAudio(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      if (!file.type.startsWith('audio/')) {
+        showToast('Vui lòng chọn file nhạc (mp3, wav, ...)!', true);
+        input.value = '';
+        return;
+      }
+
+      showToast('⏳ Đang tải nhạc lên Cloud...');
+
       try {
-        await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioUrl: audioUrl,
-          isPlaying: true,
-          name: name || '',
+        // Tạo đường dẫn storage duy nhất
+        const storagePath = `audio/${Date.now()}_${file.name}`;
+        const fileRef = window.storageRef(window.storage, storagePath);
+
+        // Upload file lên Firebase Storage
+        await window.uploadBytes(fileRef, file);
+
+        // Lấy URL tải xuống
+        const downloadURL = await window.getDownloadURL(fileRef);
+
+        // Lưu vào danh sách trên Realtime Database
+        const newKey = 'audio_' + Date.now();
+        await window.dbSet(window.ref(window.db, `system/audioList/${newKey}`), {
+          name: file.name,
+          url: downloadURL,
+          storagePath: storagePath,
           timestamp: Date.now()
         });
-        showToast('🎵 Đang phát "' + (name || 'bài nhạc') + '" cho toàn bộ người dùng!');
+
+        showToast('✅ Đã thêm nhạc vào danh sách!');
+        input.value = '';
+
+        // Tự động tải lại danh sách
+        loadSupremeAudioList();
+
+      } catch (err) {
+        console.error('Lỗi upload nhạc:', err);
+        showToast('❌ Lỗi tải nhạc: ' + (err && err.message ? err.message : err), true);
+        input.value = '';
+      }
+    }
+
+    async function playSupremeAudio(url) {
+      if (!url) return;
+      try {
+        await window.dbSet(window.ref(window.db, 'system/audio'), {
+          audioUrl: url,
+          isPlaying: true,
+          timestamp: Date.now()
+        });
+        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
       } catch (err) {
         console.error('Lỗi phát nhạc chung:', err);
         showToast('❌ Lỗi khi phát nhạc: ' + (err && err.message ? err.message : err), true);
       }
     }
 
-    async function deleteLibraryTrack(key, storagePath) {
-      if (!confirm('Xóa bài nhạc này khỏi danh sách?')) return;
+    async function deleteSupremeAudio(key, storagePath) {
+      if (!confirm('Bạn có chắc muốn xóa bài nhạc này?')) return;
+
       try {
-        await window.dbRemove(window.ref(window.db, `system/musicLibrary/${key}`));
+        // Xóa file trên Storage nếu có
         if (storagePath) {
           try {
-            await window.deleteObject(window.storageRef(window.storage, storagePath));
-          } catch (storageErr) {
-            console.warn('Không thể xóa file nhạc khỏi Storage (có thể đã bị xóa trước đó):', storageErr);
+            const fileRef = window.storageRef(window.storage, storagePath);
+            await window.deleteObject(fileRef);
+          } catch (e) {
+            console.warn('Không thể xóa file trên Storage (có thể đã bị xóa trước đó):', e);
           }
         }
-        showToast('🗑️ Đã xóa bài nhạc khỏi danh sách!');
+
+        // Xóa khỏi danh sách trên Realtime Database
+        await window.dbRemove(window.ref(window.db, `system/audioList/${key}`));
+        showToast('🗑️ Đã xóa bài nhạc!');
+        loadSupremeAudioList();
       } catch (err) {
-        console.error('Lỗi khi xóa nhạc:', err);
-        showToast('❌ Lỗi khi xóa nhạc: ' + (err && err.message ? err.message : err), true);
+        console.error('Lỗi xóa nhạc:', err);
+        showToast('❌ Lỗi xóa nhạc: ' + (err && err.message ? err.message : err), true);
       }
     }
 
