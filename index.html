@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FRAM BÁ KHÍ V2 - Hệ Thống Kiểm Tra Trực Tuyến</title>
   
-  <!-- PDF.js library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -77,7 +76,6 @@
     .modal-header h3 { font-size: 16px; color: #1877f2; }
     .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
 
-    /* HỆ THỐNG THÔNG BÁO TOAST NÂNG TẦM TRẢI NGHIỆM */
     #systemToast {
       position: fixed;
       top: 25px;
@@ -95,6 +93,7 @@
       opacity: 0;
       transform: translateY(-20px);
       border-left: 5px solid #fff;
+      max-width: 380px;
     }
     #systemToast.error { 
       background: linear-gradient(135deg, #dc3545, #bb2d3b); 
@@ -105,7 +104,7 @@
       transform: translateY(0);
     }
 
-    /* BANNER THÔNG BÁO TOÀN CẦU TỪ NHÀ PHÁT TRIỂN */
+    /* BANNER THÔNG BÁO TOÀN CẦU - 3 VỊ TRÍ */
     #globalBroadcastBanner {
       position: fixed;
       left: 0;
@@ -116,38 +115,24 @@
       z-index: 99999999;
       display: none;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      animation: slideDown 0.5s ease;
     }
-    #globalBroadcastBanner.pos-top { top: 0; }
-    #globalBroadcastBanner.pos-middle { top: 50%; transform: translateY(-50%); }
-    #globalBroadcastBanner.pos-bottom { bottom: 0; }
-    @keyframes slideDown {
-      from { transform: translateY(-100%); }
-      to { transform: translateY(0); }
-    }
+    #globalBroadcastBanner.pos-top { top: 0; animation: slideDown 0.5s ease; }
+    #globalBroadcastBanner.pos-middle { top: 50%; transform: translateY(-50%); animation: fadeIn 0.4s ease; }
+    #globalBroadcastBanner.pos-bottom { bottom: 0; animation: slideUp 0.5s ease; }
+    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Màn hình Loading */
     #loadingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; }
     .spinner { width: 50px; height: 50px; border: 5px solid #e0e0e0; border-top: 5px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     #loadingCompleteToast { 
-      position: fixed; 
-      top: 20px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      background: #ffffff; 
-      border: 2px solid #198754; 
-      color: #198754; 
-      padding: 10px 20px; 
-      border-radius: 8px; 
-      font-weight: bold; 
-      font-size: 16px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-      z-index: 999999; 
-      display: none; 
-      transition: opacity 5s ease-out; 
-      opacity: 1; 
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
+      background: #ffffff; border: 2px solid #198754; color: #198754; 
+      padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 999999; 
+      display: none; transition: opacity 5s ease-out; opacity: 1; 
     }
 
     @media (max-width: 900px) {
@@ -159,25 +144,16 @@
 </head>
 <body>
 
-  <!-- BANNER THÔNG BÁO TOÀN CẦU -->
   <div id="globalBroadcastBanner">Thông báo từ nhà phát triển</div>
-
-  <!-- AUDIO PHÁT NHẠC ĐỒNG BỘ TOÀN HỆ THỐNG -->
   <audio id="globalAudioPlayer" style="display:none;" loop></audio>
-
-  <!-- TOAST THÔNG BÁO HỆ THỐNG -->
   <div id="systemToast">Thông báo hệ thống</div>
 
-  <!-- MÀN HÌNH LOADING VÒNG TRÒN XOAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
     <h3 id="loadingText" style="color: #1877f2; font-size: 18px;">loading...</h3>
   </div>
-
-  <!-- THÔNG BÁO HOÀN THÀNH LOADING -->
   <div id="loadingCompleteToast">Hoàn thành</div>
 
-  <!-- BẢNG THÔNG BÁO CẢNH BÁO GIAN LÂN -->
   <div class="modal-overlay" id="cheatAlertModal">
     <div class="modal-box" style="text-align: center; max-width: 400px; padding: 25px;">
       <div style="font-size: 40px; color: #dc3545; margin-bottom: 10px;">⚠️</div>
@@ -190,7 +166,6 @@
     </div>
   </div>
 
-  <!-- BẢNG THÔNG BÁO GIỚI THIỆU -->
   <div id="welcomeModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 999999; padding: 15px;">
     <div style="background: white; width: 100%; max-width: 380px; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center;">
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
@@ -216,7 +191,6 @@
 
   <div class="container">
 
-    <!-- ==================== GIÁO VIÊN: TẠO ĐỀ V2 ==================== -->
     <div id="teacherView" class="view-section active">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
@@ -316,12 +290,10 @@
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: ĐĂNG NHẬP ==================== -->
     <div id="studentLoginView" class="view-section">
       <div class="card" style="max-width: 450px; margin: 20px auto; text-align: center;">
         <h2>🧑‍🎓 Học Sinh Vào Thi / Luyện Tập</h2>
         <hr style="margin: 15px 0;">
-
         <div style="text-align: left;">
           <label>Hình thức tham gia:</label>
           <select id="examModeSelect" onchange="toggleStudentMode()">
@@ -329,66 +301,49 @@
             <option value="live">🛡️ Phòng Thi Chuyên Dụng (Live Exam)</option>
             <option value="practice">⚡ Bài Luyện Nhanh</option>
           </select>
-
           <label>Họ và Tên:</label>
           <input type="text" id="studentName" placeholder="Nhập tên của bạn...">
-
           <label id="lblCodeText">Mã Bài Kiểm Tra:</label>
           <input type="text" id="studentExamCode" placeholder="Nhập mã bài...">
-
           <div id="extraPassBox" style="display: none;">
             <label id="extraPassLabel">Mật Khẩu:</label>
             <input type="password" id="studentExtraPass" placeholder="Nhập mật khẩu (nếu có)...">
           </div>
         </div>
-
         <button class="btn btn-success" style="margin-top: 10px;" onclick="startStudentParticipation()">🚀 Bắt Đầu Ngay</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: PHÒNG CHỜ BÀI LUYỆN NHANH ==================== -->
     <div id="qpWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
         <p id="qpWaitTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
         <hr style="margin: 20px 0;">
-
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
           <p>👤 <b>Thí sinh:</b> <span id="qpWaitStudentName"></span></p>
           <p>📋 <b>Số lượng câu hỏi:</b> <span id="qpWaitQCount" style="color: #1877f2; font-weight: bold;">0</span></p>
           <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="qpWaitStudentCount" style="color: #198754; font-weight: bold;">1</span></p>
         </div>
-
-        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
-          🔔 ĐỢI GIÁO VIÊN BẮT ĐẦU...
-        </div>
-
+        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">🔔 ĐỢI GIÁO VIÊN BẮT ĐẦU...</div>
         <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveQpWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: PHÒNG CHỜ LIVE EXAM CHÍNH THỨC ==================== -->
     <div id="studentWaitingRoomView" class="view-section">
       <div class="card" style="max-width: 600px; margin: 40px auto; text-align: center; padding: 30px;">
         <h2 style="color: #1877f2; margin-bottom: 10px;">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
         <p id="waitingRoomExamTitle" style="font-weight: bold; font-size: 16px; color: #333;"></p>
         <hr style="margin: 20px 0;">
-
         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
           <p>👤 <b>Thí sinh:</b> <span id="waitStudentName"></span></p>
           <p>👥 <b>Số học sinh đang trong phòng:</b> <span id="waitStudentCount" style="color: #1877f2; font-weight: bold;">1</span></p>
           <p>⏱️ <b>Thời gian làm bài:</b> <span id="waitDuration"></span> phút</p>
         </div>
-
-        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">
-          🔔 CHỜ GIÁO VIÊN BẮT ĐẦU KÌ THI...
-        </div>
-
+        <div style="font-size: 18px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 15px; border-radius: 8px;">🔔 CHỜ GIÁO VIÊN BẮT ĐẦU KÌ THI...</div>
         <button class="btn btn-secondary" style="margin-top: 20px;" onclick="leaveWaitingRoom()">🚪 Rời Phòng Chờ</button>
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: LÀM BÀI CHÍNH THỨC ==================== -->
     <div id="studentExamView" class="view-section">
       <div class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 10px 15px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
         <span>🛡️ <b>Chế độ chống gian lận:</b> Chuyển tab quá 7 giây sẽ bị gửi cảnh báo!</span>
@@ -410,7 +365,6 @@
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: XEM KẾT QUẢ CHÍNH THỨC ==================== -->
     <div id="studentResultView" class="view-section">
       <div class="card" style="max-width: 800px; margin: 0 auto;">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -424,7 +378,6 @@
       </div>
     </div>
 
-    <!-- ==================== HỌC SINH: XEM KẾT QUẢ BÀI LUYỆN NHANH ==================== -->
     <div id="qpResultView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
       <div class="card">
         <div style="text-align: center; border-bottom: 1px solid #eee; padding-bottom: 12px;">
@@ -438,7 +391,6 @@
       </div>
     </div>
 
-    <!-- ==================== BẢNG XẾP HẠNG ==================== -->
     <div id="leaderboardView" class="view-section">
       <div class="card">
         <h2>🏆 BẢNG XẾP HẠNG</h2>
@@ -459,7 +411,6 @@
       </div>
     </div>
 
-    <!-- ==================== MÔ HÌNH NÂNG CAO (GV) ==================== -->
     <div id="advancedModelView" class="view-section">
       <div class="card">
         <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
@@ -471,30 +422,19 @@
         </div>
       </div>
 
-      <!-- 1. TẠO BÀI LUYỆN NHANH -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh Thủ Công</h3>
         <hr style="margin: 10px 0;">
-
         <div class="form-grid-2">
-          <div>
-            <label>Tên bài luyện:</label>
-            <input type="text" id="qpTitle" placeholder="Ví dụ: Luyện tập Hóa 11">
-          </div>
-          <div>
-            <label>Mã bài luyện:</label>
-            <input type="text" id="qpCode" placeholder="Ví dụ: LUYEN11">
-          </div>
+          <div><label>Tên bài luyện:</label><input type="text" id="qpTitle" placeholder="Ví dụ: Luyện tập Hóa 11"></div>
+          <div><label>Mã bài luyện:</label><input type="text" id="qpCode" placeholder="Ví dụ: LUYEN11"></div>
         </div>
-
         <div style="margin-bottom: 12px;">
           <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #1877f2;">
             <input type="checkbox" id="qpEnableAdvanced" onchange="toggleQpAdvancedPanel()" style="width: 16px; height: 16px;">
             ⚙️ Cài đặt nâng cao (Thời gian, Chống gian lận, Giao diện V2 & Phòng chờ)
           </label>
         </div>
-
-        <!-- PANEL NÂNG CAO CHO BÀI LUYỆN NHANH -->
         <div id="qpAdvancedPanel" class="advanced-settings-panel">
           <div class="form-grid-2">
             <div>
@@ -509,7 +449,6 @@
               <small style="color: #666; font-size: 11px;">Nếu tắt: Học sinh nhập mã/mật khẩu vào làm luôn không cần đợi.</small>
             </div>
           </div>
-
           <div class="form-grid-2" style="margin-top: 10px;">
             <div>
               <label style="display: flex; align-items: center; gap: 6px;">
@@ -518,7 +457,6 @@
               </label>
               <div id="qpTimerInputBox" style="margin-top: 5px;">
                 <input type="number" id="qpDurationMinutes" value="15" min="1" placeholder="Số phút...">
-                <small style="color: #666; font-size: 11px;">Đơn vị: Phút. (Nếu tắt, thời gian sẽ không giới hạn).</small>
               </div>
             </div>
             <div>
@@ -527,51 +465,41 @@
                 🛡️ Bật chống gian lận (Rời tab)
               </label>
               <div id="qpAntiCheatBox" style="margin-top: 5px;">
-                <label style="font-size: 12px; margin-bottom: 2px;">Kiểu cảnh cáo:</label>
                 <select id="qpAntiCheatType" onchange="toggleQpAntiCheatType()" style="margin-bottom: 5px; padding: 6px;">
                   <option value="limited">Cảnh cáo có hạn</option>
                   <option value="infinite">Cảnh cáo vô hạn</option>
                 </select>
                 <div id="qpMaxWarningBox">
-                  <label style="font-size: 12px; margin-bottom: 2px;">Số lần cảnh cáo tối đa:</label>
                   <input type="number" id="qpMaxWarnings" value="5" min="1" style="padding: 6px; margin-bottom: 0;">
                 </div>
               </div>
             </div>
           </div>
-
           <div style="margin-top: 12px; border-top: 1px dashed #ffe58f; padding-top: 8px;">
             <label style="display: flex; align-items: center; gap: 6px; font-weight: bold; color: #1877f2;">
               <input type="checkbox" id="qpUseLayoutV2" checked style="width: 16px; height: 16px;">
               ✨ Sử dụng Giao diện làm bài V2 (Làm từng câu, bấm Tiếp tục)
             </label>
-            <small style="color: #666; font-size: 11px;">Nếu tắt sẽ dùng giao diện V1 (Tất cả câu hỏi hiển thị trên 1 trang).</small>
           </div>
-
           <div style="margin-top: 10px;">
             <label>Giới hạn số học sinh tham gia đồng thời:</label>
             <input type="number" id="qpLimit" value="50">
           </div>
         </div>
-
         <h4 style="margin-top: 15px; margin-bottom: 5px;">📋 Danh Sách Câu Hỏi</h4>
         <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 12px; margin-bottom: 10px;" onclick="addQpQuestionItem()">+ Thêm Câu Hỏi</button>
         <div id="qpQuestionsContainer"></div>
-
         <button class="btn btn-success" style="margin-top: 15px; padding: 12px;" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện (Cần Mã Bảo Mật)</button>
       </div>
 
-      <!-- 2. QUẢN LÝ BÀI LUYỆN NHANH -->
       <div id="quickPracticeManage" class="card sub-module-box" style="display: none;">
         <h3 style="color: #1877f2; margin-bottom: 10px;">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Nhập Mã bài luyện và Mật khẩu bảo mật quản lý:</p>
-        
         <div class="form-grid-2">
           <input type="text" id="manageQpCode" placeholder="Nhập mã bài luyện...">
           <input type="password" id="manageQpPass" placeholder="Mật khẩu bảo mật quản lý...">
         </div>
         <button class="btn btn-success" style="margin-bottom: 15px;" onclick="openQpManagementRoom()">📡 Kết Nối Quản Lý</button>
-
         <div id="qpManagementDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
             <b>Trạng Thái (<span id="qpManageCount">0</span> học sinh)</b>
@@ -581,7 +509,6 @@
               <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="deleteQpExam()">🗑️ XÓA BÀI</button>
             </div>
           </div>
-          
           <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh:</p>
           <div class="table-responsive" style="max-height: 150px; overflow-y: auto; margin-bottom: 15px;">
             <table>
@@ -589,7 +516,6 @@
               <tbody id="qpManageStudentsBody"><tr><td colspan="4">Chưa có học sinh</td></tr></tbody>
             </table>
           </div>
-
           <p style="font-size: 12px; font-weight: bold; color: #198754;">📊 Bảng Kết Quả:</p>
           <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
             <table>
@@ -602,7 +528,6 @@
 
     </div>
 
-    <!-- ==================== MỤC TỐI CAO NHÀ PHÁT TRIỂN ==================== -->
     <div id="supremeView" class="view-section">
       <div class="card" style="border: 2px solid #ffc107;">
         <h2 style="color: #d32f2f; margin-bottom: 15px;">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
@@ -651,19 +576,18 @@
         <div style="margin-top: 10px;">
           <label>Vị trí hiển thị thông báo:</label>
           <select id="supremePosition" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; width: 100%;">
-            <option value="top">Trên</option>
-            <option value="middle">Giữa</option>
-            <option value="bottom">Dưới</option>
+            <option value="top">⬆️ Trên (đỉnh màn hình)</option>
+            <option value="middle">⏺️ Giữa (trung tâm màn hình)</option>
+            <option value="bottom">⬇️ Dưới (đáy màn hình)</option>
           </select>
         </div>
         <button class="btn btn-success" style="margin-top: 10px;" onclick="sendGlobalBroadcast()">📢 Phát Thông Báo Ngay Lập Tức</button>
 
         <div class="section-title" style="margin-top: 25px;"><span>3. HỆ THỐNG PHÁT NHẠC ĐỒNG BỘ TRỰC TUYẾN</span></div>
-        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Danh sách nhạc đã tải lên. Bấm "Phát" để đồng bộ phát cho tất cả mọi người đang online.</p>
+        <p style="font-size: 13px; color: #555; margin-bottom: 8px;">Danh sách nhạc đã tải lên. Bấm "▶ Phát" để đồng bộ phát cho tất cả mọi người đang online (file nhạc ≤ 5MB, lưu base64 trực tiếp trên Firebase Realtime Database).</p>
         
-        <!-- Danh sách nhạc -->
-        <div id="supremeAudioList" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 8px; background: #fafafa;">
-          <p style="color: #888; font-size: 13px;">Chưa có bài nhạc nào.</p>
+        <div id="supremeAudioList" style="margin-bottom: 15px; max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 8px; background: #fafafa;">
+          <p style="color: #888; font-size: 13px;">⏳ Đang tải danh sách nhạc...</p>
         </div>
 
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -673,6 +597,7 @@
           </label>
           <button class="btn btn-danger" style="width: auto;" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button>
         </div>
+        <p style="font-size: 11px; color: #888; margin-top: 6px;">💡 Khuyến nghị file ≤ 5MB để tải nhanh. Nhạc sẽ phát cho TẤT CẢ mọi người trên web ở mọi mục (Giáo viên, Học sinh, Xếp hạng, Tối cao...).</p>
 
         <div class="section-title" style="margin-top: 25px;"><span>4. QUẢN LÍ CHUNG TRẠNG THÁI (THÔNG BÁO & NHẠC)</span></div>
         <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 13px;">
@@ -688,22 +613,17 @@
 
   </div>
 
-  <!-- GIAO DIỆN LÀM BÀI LUYỆN NHANH CỦA HỌC SINH -->
   <div id="qpPracticingView" class="view-section" style="max-width: 800px; margin: 20px auto; padding: 0 10px;">
     <div class="card">
       <div id="qpCheatWarningBanner" class="card" style="background: #fff3cd; border: 1px solid #ffeeba; padding: 8px 12px; margin-bottom: 10px; font-size: 13px; display: none; justify-content: space-between; align-items: center;">
         <span>🛡️ <b>Chống gian lận:</b> Rời khỏi màn hình/tab sẽ bị tính cảnh báo!</span>
         <span id="qpCheatWarningBadge" style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold;">Cảnh báo: 0</span>
       </div>
-
       <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
         <h2 id="qpPlayTitle" style="color: #1877f2; font-size: 18px;">Bài Luyện Tập</h2>
         <span id="qpPlayTimer" style="font-weight: bold; color: #d32f2f;">00:00</span>
       </div>
-
-      <!-- Container chứa câu hỏi (Hỗ trợ V1 hoặc V2) -->
       <div id="qpPlayQuestionsContainer"></div>
-
       <div id="qpActionFooter" style="margin-top: 15px; display: flex; justify-content: space-between; gap: 10px;">
         <button id="qpPrevBtn" class="btn btn-secondary" style="display: none; width: auto;" onclick="prevQpQuestionV2()">⬅️ Câu Trước</button>
         <button id="qpNextBtn" class="btn" style="display: none; width: auto; margin-left: auto;" onclick="nextQpQuestionV2()">Tiếp Tục ➡️</button>
@@ -712,7 +632,6 @@
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU BẢO MẬT CHUNG -->
   <div class="modal-overlay" id="passwordModal">
     <div class="modal-box">
       <div class="modal-header">
@@ -728,7 +647,6 @@
     </div>
   </div>
 
-  <!-- MODAL XÁC THỰC MẬT KHẨU VUA (TỐI CAO) -->
   <div class="modal-overlay" id="supremePasswordModal">
     <div class="modal-box" style="max-width: 400px; text-align: center;">
       <div class="modal-header">
@@ -741,7 +659,6 @@
     </div>
   </div>
 
-  <!-- MODAL XEM CHI TIẾT ĐỀ THI / ĐÁP ÁN (DÀNH CHO TỐI CAO) -->
   <div class="modal-overlay" id="supremeDetailModal">
     <div class="modal-box" style="max-width: 700px;">
       <div class="modal-header">
@@ -752,35 +669,27 @@
     </div>
   </div>
 
-  <!-- MODAL NÂNG CAO & QUẢN LÝ PHÒNG THI CHÍNH THỨC -->
   <div class="modal-overlay" id="advancedModal">
     <div class="modal-box" style="max-width: 750px;">
       <div class="modal-header">
         <h3>⚙️ Quản Lý Đề Thi Chính Thức & Phòng Thi Live</h3>
         <button class="close-btn" onclick="closeAdvancedModal()">✖</button>
       </div>
-      
       <div style="margin-bottom: 15px;">
         <label>Mã Đề Kiểm Tra:</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0; flex: 1;">
-        </div>
+        <input type="text" id="advExamCode" placeholder="Ví dụ: TOAN12" style="margin: 0;">
       </div>
-
       <div style="margin-bottom: 15px;">
         <label>Mật Khẩu Bảo Mật Quản Lý (Ẩn):</label>
         <input type="password" id="advLivePass" placeholder="Nhập mật khẩu bảo mật (********)..." style="margin: 0;">
       </div>
-
       <div style="margin-bottom: 15px;">
         <button class="btn" style="background: #198754;" onclick="connectLiveRoomDashboard()">📡 Kết Nối Quản Lý Phòng Live</button>
       </div>
-      
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
         <button class="btn" style="background: #0d6efd;" onclick="downloadExamPDF()">📄 Tải Đề PDF Gốc</button>
         <button class="btn btn-danger" onclick="promptDeleteExam()">🗑️ Xóa Đề Trên Cloud</button>
       </div>
-
       <div id="liveRoomDashboard" style="display: none; background: #f8f9fa; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 5px;">
           <b>🛡️ Trạng Thái Phòng Live (<span id="liveRoomCount">0</span> học sinh)</b>
@@ -789,7 +698,6 @@
             <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="updateLiveRoomStatus('ended')">🛑 KẾT THÚC</button>
           </div>
         </div>
-        
         <p style="font-size: 12px; font-weight: bold; color: #1877f2;">👥 Danh Sách Học Sinh (Theo Dõi Cảnh Báo):</p>
         <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
           <table>
@@ -798,15 +706,12 @@
           </table>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- FIREBASE SDK v9 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC33ENu7xxo8Z9YXz_t3J8NZkfsShuuzKM",
@@ -820,7 +725,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const storage = getStorage(app);
 
     window.db = db;
     window.ref = ref;
@@ -832,13 +736,6 @@
     window.dbPush = push;
     window.onValue = onValue;
     window.dbUpdate = update;
-
-    // Firebase Storage
-    window.storage = storage;
-    window.storageRef = storageRef;
-    window.uploadBytes = uploadBytes;
-    window.getDownloadURL = getDownloadURL;
-    window.deleteObject = deleteObject;
   </script>
 
   <script>
@@ -867,10 +764,17 @@
     let tabLeaveStartTime = null;
     const CHEAT_TIME_THRESHOLD = 7000; 
 
-    // Lắng nghe dữ liệu toàn cục (Thông báo đẩy & Phát nhạc đồng bộ từ Firebase)
+    let supremeAudioListListener = null;
+    let pendingGlobalAudioPlay = false;
+
+    // ==================== LẮNG NGHE TOÀN CỤC TỪ FIREBASE ====================
+    // Chạy ngay khi tải trang -> mọi người ở mọi mục đều nghe nhạc + thấy thông báo
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-        if (!window.db) return;
+        if (!window.db) {
+          console.error('Firebase chưa sẵn sàng!');
+          return;
+        }
 
         // Lắng nghe thông báo toàn cục
         window.onValue(window.ref(window.db, 'system/broadcast'), (snapshot) => {
@@ -884,16 +788,14 @@
             banner.style.color = data.textColor || '#ffffff';
             banner.style.opacity = data.opacity || 0.95;
             
-            // Xóa các class vị trí cũ và thêm class mới
+            // Đổi vị trí hiển thị
             banner.classList.remove('pos-top', 'pos-middle', 'pos-bottom');
             let pos = data.position || 'top';
             banner.classList.add('pos-' + pos);
             
             banner.style.display = 'block';
-
             if (noticeSpan) noticeSpan.innerText = data.text;
 
-            // Tự động ẩn sau thời gian định sẵn nếu có
             if (data.durationSec) {
               setTimeout(() => {
                 banner.style.display = 'none';
@@ -905,7 +807,7 @@
           }
         });
 
-        // Lắng nghe trạng thái phát nhạc đồng bộ
+        // Lắng nghe trạng thái phát nhạc - CHẠY TOÀN CỤC
         window.onValue(window.ref(window.db, 'system/audio'), (snapshot) => {
           let data = snapshot.val();
           const audioPlayer = document.getElementById('globalAudioPlayer');
@@ -923,19 +825,10 @@
             if (audioStatusSpan) audioStatusSpan.innerText = 'Đang tắt';
           }
         });
-
-        // Lắng nghe danh sách nhạc để hiển thị
-        window.onValue(window.ref(window.db, 'system/audioList'), (snapshot) => {
-          let list = snapshot.val() || {};
-          renderSupremeAudioList(list);
-        });
-
-      }, 1500);
+      }, 1200);
     });
 
-    // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC (AUTOPLAY BLOCKED) ---
-    let pendingGlobalAudioPlay = false;
-
+    // --- KHẮC PHỤC LỖI TRÌNH DUYỆT CHẶN TỰ ĐỘNG PHÁT NHẠC ---
     function tryPlayGlobalAudio() {
       const audioPlayer = document.getElementById('globalAudioPlayer');
       const audioStatusSpan = document.getElementById('currentAudioStatus');
@@ -953,13 +846,13 @@
       }
     }
 
+    // Khi người dùng tương tác lần đầu -> thử phát lại nhạc
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.addEventListener(evt, () => {
         if (pendingGlobalAudioPlay) tryPlayGlobalAudio();
       }, { passive: true });
     });
 
-    // --- HÀM HIỂN THỊ TOAST THÔNG BÁO NÂNG TẦM TRẢI NGHIỆM ---
     function showToast(message, isError = false) {
       const toast = document.getElementById('systemToast');
       toast.innerText = message;
@@ -1002,7 +895,6 @@
       }
     }
 
-    // --- CÁC CHỨC NĂNG DÀNH CHO TỐI CAO NHÀ PHÁT TRIỂN ---
     async function loadAllSupremeExams() {
       let tbody = document.getElementById('supremeExamsTableBody');
       tbody.innerHTML = '<tr><td colspan="4">⏳ Đang tải toàn bộ dữ liệu từ Cloud...</td></tr>';
@@ -1109,7 +1001,7 @@
       }
     }
 
-    // ==== PHÁT THÔNG BÁO TOÀN CẦU (ĐÃ THÊM VỊ TRÍ) ====
+    // ============ THÔNG BÁO TOÀN CẦU (CÓ VỊ TRÍ) ============
     async function sendGlobalBroadcast() {
       let text = document.getElementById('supremeBroadcastText').value.trim();
       let bgColor = document.getElementById('supremeBgColor').value;
@@ -1138,11 +1030,13 @@
       reader.onerror = error => reject(error);
     });
 
-    // ==== QUẢN LÝ DANH SÁCH NHẠC (MỚI) ====
-    async function loadSupremeAudioList() {
-      let snapshot = await window.dbGet(window.dbChild(window.dbRef, 'system/audioList'));
-      let list = snapshot.val() || {};
-      renderSupremeAudioList(list);
+    // ============ QUẢN LÝ NHẠC BASE64 TRÊN REALTIME DATABASE ============
+    function loadSupremeAudioList() {
+      if (supremeAudioListListener) supremeAudioListListener();
+      supremeAudioListListener = window.onValue(window.ref(window.db, 'system/audioList'), (snapshot) => {
+        let list = snapshot.val() || {};
+        renderSupremeAudioList(list);
+      });
     }
 
     function renderSupremeAudioList(list) {
@@ -1151,19 +1045,23 @@
 
       let keys = Object.keys(list);
       if (keys.length === 0) {
-        container.innerHTML = '<p style="color: #888; font-size: 13px;">Chưa có bài nhạc nào.</p>';
+        container.innerHTML = '<p style="color: #888; font-size: 13px;">Chưa có bài nhạc nào. Bấm "📂 Thêm file nhạc" để tải lên.</p>';
         return;
       }
 
       let html = '<div style="display: flex; flex-direction: column; gap: 6px;">';
       keys.forEach(key => {
         let song = list[key];
+        let sizeKb = song.size ? (song.size / 1024).toFixed(1) + ' KB' : '';
         html += `
           <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid #eee; gap: 8px;">
-            <span style="font-size: 13px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🎵 ${song.name}</span>
+            <div style="flex: 1; overflow: hidden;">
+              <div style="font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🎵 ${song.name}</div>
+              <div style="font-size: 11px; color: #888;">${sizeKb ? 'Dung lượng: ' + sizeKb : ''}</div>
+            </div>
             <div style="display: flex; gap: 5px;">
-              <button class="btn btn-success" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="playSupremeAudio('${song.url}')">▶ Phát</button>
-              <button class="btn btn-danger" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="deleteSupremeAudio('${key}', '${song.storagePath || ''}')">✖ Xóa</button>
+              <button class="btn btn-success" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="playSupremeAudio('${key}')">▶ Phát</button>
+              <button class="btn btn-danger" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="deleteSupremeAudio('${key}')">✖ Xóa</button>
             </div>
           </div>
         `;
@@ -1175,40 +1073,35 @@
     async function uploadSupremeAudio(input) {
       if (!input.files || input.files.length === 0) return;
       const file = input.files[0];
+      
       if (!file.type.startsWith('audio/')) {
         showToast('Vui lòng chọn file nhạc (mp3, wav, ...)!', true);
         input.value = '';
         return;
       }
 
-      showToast('⏳ Đang tải nhạc lên Cloud...');
+      // Giới hạn 5MB để tránh quá tải Realtime Database
+      const MAX_SIZE = 5 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        showToast(`File quá lớn (${(file.size / 1024 / 1024).toFixed(2)}MB). Vui lòng chọn file dưới 5MB!`, true);
+        input.value = '';
+        return;
+      }
+
+      showToast('⏳ Đang tải nhạc lên Cloud (vui lòng chờ)...');
 
       try {
-        // Tạo đường dẫn storage duy nhất
-        const storagePath = `audio/${Date.now()}_${file.name}`;
-        const fileRef = window.storageRef(window.storage, storagePath);
-
-        // Upload file lên Firebase Storage
-        await window.uploadBytes(fileRef, file);
-
-        // Lấy URL tải xuống
-        const downloadURL = await window.getDownloadURL(fileRef);
-
-        // Lưu vào danh sách trên Realtime Database
+        const base64 = await fileToBase64(file);
         const newKey = 'audio_' + Date.now();
         await window.dbSet(window.ref(window.db, `system/audioList/${newKey}`), {
           name: file.name,
-          url: downloadURL,
-          storagePath: storagePath,
+          url: base64,
+          size: file.size,
           timestamp: Date.now()
         });
 
         showToast('✅ Đã thêm nhạc vào danh sách!');
         input.value = '';
-
-        // Tự động tải lại danh sách
-        loadSupremeAudioList();
-
       } catch (err) {
         console.error('Lỗi upload nhạc:', err);
         showToast('❌ Lỗi tải nhạc: ' + (err && err.message ? err.message : err), true);
@@ -1216,39 +1109,45 @@
       }
     }
 
-    async function playSupremeAudio(url) {
-      if (!url) return;
+    async function playSupremeAudio(key) {
       try {
+        const snap = await window.dbGet(window.dbChild(window.dbRef, `system/audioList/${key}`));
+        if (!snap.exists()) { showToast('Không tìm thấy bài nhạc!', true); return; }
+        let song = snap.val();
+        if (!song.url) { showToast('Bài nhạc không có dữ liệu!', true); return; }
+
         await window.dbSet(window.ref(window.db, 'system/audio'), {
-          audioUrl: url,
+          audioUrl: song.url,
           isPlaying: true,
+          currentSongName: song.name,
           timestamp: Date.now()
         });
-        showToast('🎵 Đã phát nhạc chung cho toàn bộ người dùng!');
+        showToast(`🎵 Đang phát "${song.name}" cho toàn hệ thống!`);
       } catch (err) {
-        console.error('Lỗi phát nhạc chung:', err);
+        console.error('Lỗi phát nhạc:', err);
         showToast('❌ Lỗi khi phát nhạc: ' + (err && err.message ? err.message : err), true);
       }
     }
 
-    async function deleteSupremeAudio(key, storagePath) {
+    async function deleteSupremeAudio(key) {
       if (!confirm('Bạn có chắc muốn xóa bài nhạc này?')) return;
 
       try {
-        // Xóa file trên Storage nếu có
-        if (storagePath) {
-          try {
-            const fileRef = window.storageRef(window.storage, storagePath);
-            await window.deleteObject(fileRef);
-          } catch (e) {
-            console.warn('Không thể xóa file trên Storage (có thể đã bị xóa trước đó):', e);
+        // Nếu bài nhạc đang phát -> dừng luôn
+        const audioSnap = await window.dbGet(window.dbChild(window.dbRef, 'system/audio'));
+        const songSnap = await window.dbGet(window.dbChild(window.dbRef, `system/audioList/${key}`));
+        if (audioSnap.exists() && songSnap.exists()) {
+          if (audioSnap.val().audioUrl === songSnap.val().url) {
+            await window.dbSet(window.ref(window.db, 'system/audio'), {
+              audioUrl: '',
+              isPlaying: false,
+              timestamp: Date.now()
+            });
           }
         }
 
-        // Xóa khỏi danh sách trên Realtime Database
         await window.dbRemove(window.ref(window.db, `system/audioList/${key}`));
         showToast('🗑️ Đã xóa bài nhạc!');
-        loadSupremeAudioList();
       } catch (err) {
         console.error('Lỗi xóa nhạc:', err);
         showToast('❌ Lỗi xóa nhạc: ' + (err && err.message ? err.message : err), true);
@@ -1262,13 +1161,14 @@
           isPlaying: false,
           timestamp: Date.now()
         });
-        showToast('🛑 Đã dừng phát nhạc.');
+        showToast('🛑 Đã dừng phát nhạc cho toàn hệ thống.');
       } catch (err) {
         console.error('Lỗi khi dừng nhạc:', err);
         showToast('❌ Lỗi khi dừng nhạc: ' + (err && err.message ? err.message : err), true);
       }
     }
 
+    // ==================== CÁC CHỨC NĂNG CÒN LẠI GIỮ NGUYÊN ====================
     function switchSubModule(moduleId) {
       document.querySelectorAll('.sub-module-box').forEach(el => el.style.display = 'none');
       document.getElementById(moduleId).style.display = 'block';
@@ -1810,18 +1710,10 @@
       }
 
       let qpObj = { 
-        code: code, 
-        title: title, 
-        password: password, 
-        isAdvancedMode: isAdvancedMode, 
-        limit: limit, 
-        durationMinutes: durationMinutes,
-        enableTimer: enableTimer,
-        enableAntiCheat: enableAntiCheat,
-        antiCheatType: antiCheatType,
-        maxWarnings: maxWarnings,
-        useLayoutV2: useLayoutV2,
-        questions: questions 
+        code: code, title: title, password: password, isAdvancedMode: isAdvancedMode, 
+        limit: limit, durationMinutes: durationMinutes, enableTimer: enableTimer,
+        enableAntiCheat: enableAntiCheat, antiCheatType: antiCheatType,
+        maxWarnings: maxWarnings, useLayoutV2: useLayoutV2, questions: questions 
       };
 
       try {
