@@ -214,10 +214,13 @@
         flex-direction: column;
         overscroll-behavior: contain;
       }
+      /* Trên mobile: bỏ scroll riêng của danh sách câu hỏi
+         → toàn bộ nội dung (câu hỏi + 2 nút) cuộn chung trong .exam-right
+         → lướt xuống cuối là thấy nút Nộp bài & Thoát */
       #studentExamView #studentAnswerSheet {
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        flex: 0 0 auto !important;
+        overflow: visible !important;
+        -webkit-overflow-scrolling: auto;
       }
       #studentExamView .exam-header { flex-wrap: wrap; gap: 6px; }
       #studentExamView .timer { font-size: 12px; padding: 3px 8px; }
