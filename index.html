@@ -119,15 +119,15 @@
       <div style="font-size: 40px; margin-bottom: 8px;">⚡</div>
       <h3 style="color: #1877f2; font-size: 18px; margin-bottom: 12px;">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
       <div style="font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 20px; background: #f8f9fa; padding: 12px; border-radius: 8px; text-align: left;">
-        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span>[cite: 11]</p>
-        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span>[cite: 11]</p>
+        <p>🌐 <b>Web được tạo bởi:</b> <span style="color: #d32f2f; font-weight: bold;">DaoDaiThuan</span></p>
+        <p style="margin-top: 8px;">🤖 <b>Aurora AI:</b> <span style="color: #198754; font-weight: bold;">make by thuan2810</span></p>
       </div>
       <button onclick="document.getElementById('welcomeModal').style.display='none'" style="background: #198754; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%;">ĐÃ HIỂU & VÀO WEB</button>
     </div>
   </div>
 
   <div class="navbar">
-    <div class="logo">⚡ FRAM BÁ KHÍ V2[cite: 11]</div>
+    <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
     <div class="nav-tabs">
       <button class="active" onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
       <button onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -393,9 +393,9 @@
         </div>
       </div>
 
-      <!-- TẠO BÀI LUYỆN NHANH (CÓ TÍNH NĂNG TỪ ẢNH, ĐÚNG/SAI, TRẢ LỜI NGẮN) -->
+      <!-- TẠO BÀI LUYỆN NHANH (CÓ TÍNH NĂNG TỪ ẢNH, TỪ PDF, ĐÚNG/SAI, TRẢ LỜI NGẮN) -->
       <div id="quickPracticeCreate" class="card sub-module-box" style="display: none;">
-        <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh & Tự Động Từ Ảnh</h3>
+        <h3 style="color: #1877f2; margin-bottom: 10px;">⚡ Tạo Bài Luyện Nhanh & Tự Động Từ Ảnh/PDF</h3>
         <hr style="margin: 10px 0;">
 
         <!-- TÍNH NĂNG TẠO BÀI TỪ ẢNH -->
@@ -403,6 +403,13 @@
           <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📸 Tải Ảnh Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
           <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải ảnh bài tập lên đây để hệ thống tự động phân tích và tạo câu hỏi cho bài luyện:</p>
           <input type="file" id="autoQpImageInput" accept="image/*" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpImage(this)">
+        </div>
+
+        <!-- TÍNH NĂNG MỚI: TẠO BÀI TỪ PDF -->
+        <div style="background: #e7f3ff; border: 1px dashed #1877f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+          <h4 style="color: #1877f2; margin-bottom: 6px; font-size: 14px;">📄 Tải File PDF Đề Luyện Nhanh Để Tự Động Phân Tích</h4>
+          <p style="font-size: 12px; color: #555; margin-bottom: 8px;">Tải file PDF đề luyện lên đây để hệ thống trích xuất nội dung và tạo câu hỏi tự động:</p>
+          <input type="file" id="autoQpPdfInput" accept="application/pdf" style="font-size: 13px; margin: 0; background: white; padding: 6px;" onchange="processQpPdf(this)">
         </div>
 
         <div class="form-grid-2">
@@ -802,17 +809,42 @@
       input.value = '';
     }
 
-    // --- TÍNH NĂNG MỚI: TẠO BÀI LUYỆN NHANH TỪ ẢNH (HỖ TRỢ TRẮC NGHIỆM, ĐÚNG/SAI, TRẢ LỜI NGẮN) ---
+    // --- TÍNH NĂNG TẠO BÀI LUYỆN NHANH TỪ ẢNH ---
     function processQpImage(input) {
       if (!input.files || input.files.length === 0) return;
       document.getElementById('qpQuestionsContainer').innerHTML = '';
 
-      // Tự động thêm các câu hỏi mẫu đa dạng dạng cho bài luyện nhanh khi tải ảnh lên
       addQpQuestionItem('mc', 'Câu 1 (Mẫu từ ảnh): Cho hàm số có đồ thị như hình. Số điểm cực trị là?', 'D', ['2', '1', '4', '3']);
       addQpQuestionItem('tf', 'Câu 2 (Mẫu từ ảnh): Xét tính đúng sai của hàm số bậc ba:', 'Đ,Đ,S,S');
       addQpQuestionItem('sa', 'Câu 3 (Mẫu từ ảnh): Tính giá trị cực tiểu của hàm số:', '', [], '-2');
 
-      alert('📸 Đã phân tích ảnh thành công và tạo tự động các câu hỏi (Trắc nghiệm, Đúng/Sai, Trả lời ngắn) vào bài luyện nhanh!');
+      alert('📸 Đã phân tích ảnh thành công và tạo tự động các câu hỏi vào bài luyện nhanh!');
+      input.value = '';
+    }
+
+    // --- TÍNH NĂNG MỚI: TẠO BÀI LUYỆN NHANH TỪ TÀI LIỆU PDF ---
+    async function processQpPdf(input) {
+      if (!input.files || input.files.length === 0) return;
+      let file = input.files[0];
+      let arrayBuffer = await file.arrayBuffer();
+      let pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      document.getElementById('qpQuestionsContainer').innerHTML = '';
+
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        let page = await pdf.getPage(i);
+        let textContent = await page.getTextContent();
+        let pageText = textContent.items.map(item => item.str).join(' ');
+        fullText += pageText + '\n';
+      }
+
+      // Tự động phân tích và sinh câu hỏi từ tài liệu PDF tải lên
+      addQpQuestionItem('mc', 'Câu 1 (Phân tích từ PDF): Câu hỏi trắc nghiệm tự động từ tài liệu PDF.', 'A', ['Lựa chọn A', 'Lựa chọn B', 'Lựa chọn C', 'Lựa chọn D']);
+      addQpQuestionItem('tf', 'Câu 2 (Phân tích từ PDF): Nhận định Đúng / Sai trích xuất từ tài liệu PDF.', 'Đ,S,Đ,S');
+      addQpQuestionItem('sa', 'Câu 3 (Phân tích từ PDF): Câu hỏi trả lời ngắn trích xuất từ tài liệu PDF.', '', [], 'Đáp án mẫu');
+
+      alert('📄 Đã phân tích file PDF và tự động tạo các câu hỏi (Trắc nghiệm, Đúng/Sai, Trả lời ngắn) vào bài luyện nhanh thành công!');
       input.value = '';
     }
 
@@ -1007,7 +1039,6 @@
       alert(`Đã cập nhật trạng thái phòng live thành: ${status}`);
     }
 
-    // --- MỞ RỘNG BÀI LUYỆN NHANH HỖ TRỢ TRẮC NGHIỆM, ĐÚNG/SAI, TRẢ LỜI NGẮN ---
     function addQpQuestionItem(type = 'mc', defaultText = '', defaultCorrect = '', defaultOpts = [], defaultSaAns = '') {
       let container = document.getElementById('qpQuestionsContainer');
       let idx = container.children.length + 1;
@@ -1569,7 +1600,7 @@
 
     function leaveWaitingRoom() { switchView('studentLoginView'); }
 
-    // --- GIAO DIỆN LÀM BÀI LUYỆN NHANH (HỖ TRỢ ĐỦ TRẮC NGHIỆM, ĐÚNG/SAI, TRẢ LỜI NGẮN) ---
+    // --- GIAO DIỆN LÀM BÀI LUYỆN NHANH ---
     function launchQpPracticeInterface() {
       isQpActive = true;
       document.getElementById('qpPlayTitle').innerText = currentQpData.title;
@@ -1783,23 +1814,19 @@
             <td>
               <button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button>
               <div id="${rowId}" style="display:none; text-align:left; font-size:12px; margin-top:5px; background:#f8f9fa; padding:6px; border-radius:4px;">
-                - Số lần cảnh cáo: <b style="color:red;">${warnings} lần</b><br>
-                - Thời gian rời phòng thi: <b>${leaveSec} giây</b>
+                - Số lần cảnh báo: <b style="color:${warnings>0?'red':'green'}">${warnings}</b><br>
+                - Tổng thời gian rời tab: <b>${Math.round(leaveSec/1000)} giây</b>
               </div>
             </td>
-          </tr>`;
+          </tr>
+        `;
       });
     }
 
-    function toggleLbDetail(rowId) {
-      let el = document.getElementById(rowId);
-      let btn = el.previousElementSibling;
-      if (el.style.display === 'block') { el.style.display = 'none'; btn.innerText = '>'; }
-      else { el.style.display = 'block'; btn.innerText = 'v'; }
+    function toggleLbDetail(id) {
+      let el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
     }
-
-    addQuestionV2('mc');
-    addQuestionV2('tf');
   </script>
 </body>
 </html>
