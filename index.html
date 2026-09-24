@@ -142,6 +142,72 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 .forced-submit-btn{background:linear-gradient(135deg,#dc3545,#bb2d3b);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(220,53,69,.4);transition:transform .15s}
 .forced-submit-btn:active{transform:scale(.96)}
 
+/* ===== PERF MODE MODAL ===== */
+#perfModeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;z-index:99999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#perfModeModal .perf-box{background:#fff;width:100%;max-width:480px;padding:28px 22px 22px 22px;border-radius:20px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);position:relative;animation:welcomePop .6s cubic-bezier(.34,1.56,.64,1)}
+#perfModeModal h3{font-size:20px;color:#1877f2;margin-bottom:8px;font-weight:900}
+#perfModeModal .perf-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:20px}
+.perf-option{display:flex;align-items:flex-start;gap:14px;padding:16px 14px;border:2px solid #e0e0e0;border-radius:14px;cursor:pointer;margin-bottom:12px;transition:all .3s cubic-bezier(.34,1.56,.64,1);text-align:left;background:#fff;position:relative;overflow:hidden}
+.perf-option:hover{border-color:#1877f2;transform:translateY(-3px);box-shadow:0 10px 25px rgba(24,119,242,.2)}
+.perf-option.opt-recommend{border-color:#ffc107;background:linear-gradient(135deg,#fffbe6,#fff)}
+.perf-option.opt-recommend:hover{border-color:#198754;box-shadow:0 10px 25px rgba(25,135,84,.25)}
+.perf-icon{font-size:40px;line-height:1;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+.perf-text{flex:1}
+.perf-title{font-size:16px;font-weight:900;color:#1877f2;margin-bottom:4px}
+.perf-option.opt-recommend .perf-title{color:#198754}
+.perf-sub{font-size:12px;color:#666;line-height:1.5}
+.perf-badge{display:inline-block;background:linear-gradient(135deg,#ffc107,#e0a800);color:#000;font-size:10px;font-weight:900;padding:3px 8px;border-radius:20px;margin-left:6px;animation:badgePulse 1.5s infinite}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.perf-count{position:absolute;top:-10px;right:14px;background:#ff4d4f;color:#fff;font-size:10px;font-weight:bold;padding:2px 8px;border-radius:10px}
+
+/* ===== OPTIMIZED MODE (máy yếu) ===== */
+body.optimized-mode *,
+body.optimized-mode *::before,
+body.optimized-mode *::after{
+  animation-duration: .001s !important;
+  animation-delay: 0s !important;
+  transition-duration: .05s !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+body.optimized-mode #studentLoginView::before,
+body.optimized-mode #studentLoginView .floating-shape,
+body.optimized-mode #welcomeCrown,
+body.optimized-mode .result-popup-emoji,
+body.optimized-mode .result-popup-score,
+body.optimized-mode #studentLoginView .student-card h2,
+body.optimized-mode #studentLoginView .student-card .btn-success::after,
+body.optimized-mode .mode-dropdown-toggle::before,
+body.optimized-mode .mode-card .mode-icon,
+body.optimized-mode .perf-badge{
+  animation: none !important;
+}
+body.optimized-mode #studentLoginView::before{background:#e7f3ff !important;background-image:none !important}
+body.optimized-mode #studentLoginView .floating-shape{display:none !important}
+body.optimized-mode .student-card h2{background:none !important;-webkit-text-fill-color:#1877f2 !important;color:#1877f2 !important}
+body.optimized-mode #welcomeModalBox,
+body.optimized-mode .result-popup-box,
+body.optimized-mode .forced-submit-box{box-shadow:0 10px 30px rgba(0,0,0,.35) !important}
+body.optimized-mode .card,
+body.optimized-mode .navbar{box-shadow:none !important;border:1px solid #e8e8e8}
+body.optimized-mode .btn:hover,
+body.optimized-mode .mode-card:hover,
+body.optimized-mode .guide-step:hover,
+body.optimized-mode .guide-tab:hover,
+body.optimized-mode .perf-option:hover{transform:none !important;box-shadow:none !important}
+body.optimized-mode .mode-dropdown-toggle:hover,
+body.optimized-mode .mode-dropdown-toggle.open{transform:none !important;box-shadow:none !important}
+body.optimized-mode .opt-btn,
+body.optimized-mode .tf-sub-btn{transition:none !important}
+body.optimized-mode .mode-dropdown-menu,
+body.optimized-mode .mode-dropdown-item,
+body.optimized-mode #welcomeModalBox{transition:none !important}
+body.optimized-mode #welcomeModal,
+body.optimized-mode #resultPopup,
+body.optimized-mode #forcedSubmitModal{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(0,0,0,.88) !important}
+body.optimized-mode #welcomeFxLayer{display:none !important}
+body.optimized-mode .explanation-box{transition:none !important}
+
 /* ===== DROPDOWN CHỌN HÌNH THỨC ===== */
 .mode-dropdown { position: relative; margin-bottom: 15px; }
 .mode-dropdown-toggle { width: 100%; background: linear-gradient(135deg,#fff,#eef6ff); border: 2px solid #d0e0f0; border-radius: 14px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 700; color: #333; transition: all .35s cubic-bezier(.34,1.56,.64,1); position: relative; overflow: hidden; text-align: left; }
@@ -262,29 +328,11 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
 .guide-panel.supreme .guide-section-title { color: #dc3545; border-bottom-color: #f8d7da; }
 
 /* ===== BẢO VỆ SOURCE CODE (CSS) ===== */
-body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-input, textarea, [contenteditable="true"] {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-img {
-  -webkit-user-drag: none;
-  user-drag: none;
-}
-#devtoolsWarnOverlay {
-  animation: devWarnIn .35s ease;
-}
-@keyframes devWarnIn {
-  from { opacity: 0; transform: scale(.95); }
-  to { opacity: 1; transform: scale(1); }
-}
+body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+input, textarea, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+img { -webkit-user-drag: none; user-drag: none; }
+#devtoolsWarnOverlay { animation: devWarnIn .35s ease; }
+@keyframes devWarnIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
 
 @media (max-width: 768px) {
   html,body{width:100%}
@@ -307,8 +355,11 @@ img {
   #studentExamView>.card:first-child{display:none!important}
   #studentExamView .exam-layout{display:flex!important;flex-direction:column!important;gap:6px!important;flex:1;min-height:0;overflow:hidden;height:auto;padding-top:4px}
   #studentExamView .exam-left{flex:0 0 40vh!important;max-height:40vh!important;min-height:140px!important;width:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:6px!important;border-radius:6px;overscroll-behavior:contain}
-  #studentExamView .exam-right{flex:1 1 auto!important;min-height:0!important;width:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;padding-bottom:80px!important;border-radius:6px;display:flex;flex-direction:column;overscroll-behavior:contain}
-  #studentExamView #studentAnswerSheet{flex:0 0 auto!important;overflow:visible!important;-webkit-overflow-scrolling:auto}
+  #studentExamView .exam-right{flex:1 1 auto!important;min-height:0!important;width:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;padding-bottom:calc(160px + env(safe-area-inset-bottom, 20px))!important;border-radius:6px;display:flex;flex-direction:column;overscroll-behavior:contain;overflow-anchor:none;scroll-padding-bottom:160px}
+  #studentExamView #studentAnswerSheet{flex:0 0 auto!important;overflow:visible!important;-webkit-overflow-scrolling:auto;padding-bottom:30px!important}
+  #studentExamView .student-sa-input,
+  #studentExamView .opt-group,
+  #studentExamView .tf-branch-row{scroll-margin-bottom:170px}
   #studentExamView .exam-right > div:last-child{position:fixed!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;background:#fff!important;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) 12px!important;margin:0!important;border-top:2px solid #e0e0e0!important;z-index:9999!important;box-shadow:0 -6px 16px rgba(0,0,0,.12)!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:space-between!important}
   #studentExamView .exam-right > div:last-child .btn{padding:14px 12px!important;font-size:15px!important;font-weight:bold!important;min-height:52px!important;border-radius:10px!important;touch-action:manipulation!important}
   #studentExamView .exam-header{flex-wrap:wrap;gap:6px}
@@ -336,6 +387,12 @@ img {
   .guide-step-content { font-size: 12px; }
   .guide-section-title { font-size: 15px; }
   .guide-section-title .icon { font-size: 20px; }
+  #perfModeModal .perf-box{padding:22px 16px 16px 16px}
+  #perfModeModal h3{font-size:17px}
+  .perf-option{padding:13px 11px;gap:11px}
+  .perf-icon{font-size:34px}
+  .perf-title{font-size:14px}
+  .perf-sub{font-size:11px}
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -346,13 +403,40 @@ img {
 </head>
 <body>
 
+<!-- ===== MODAL CHỌN CHẾ ĐỘ ===== -->
+<div id="perfModeModal" style="display:none">
+  <div class="perf-box">
+    <div style="font-size:56px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 4px 12px rgba(24,119,242,.4))">⚙️</div>
+    <h3>CHỌN CHẾ ĐỘ HIỂN THỊ</h3>
+    <p class="perf-desc">Chọn chế độ phù hợp với thiết bị của bạn.<br>Có thể đổi lại sau ở mục <b>📖 HƯỚNG DẪN</b>.</p>
+
+    <div class="perf-option" onclick="choosePerfMode('full')">
+      <span class="perf-icon">✨</span>
+      <div class="perf-text">
+        <div class="perf-title">1. Đầy đủ</div>
+        <div class="perf-sub">Bật tất cả hiệu ứng đẹp mắt — Galaxy, Lightning, Shield, pháo hoa, v.v. Phù hợp máy khỏe, PC, laptop.</div>
+      </div>
+    </div>
+
+    <div class="perf-option opt-recommend" id="perfOptRecommend" onclick="choosePerfMode('optimized')">
+      <span class="perf-icon">⚡</span>
+      <div class="perf-text">
+        <div class="perf-title">2. Tối ưu <span class="perf-badge" id="perfRecommendBadge">💡 Máy yếu khuyên dùng</span></div>
+        <div class="perf-sub">Tắt hiệu ứng nặng, giảm animation, không lag — giúp thiết bị yếu mượt mà hơn.</div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:#999;font-style:italic;margin-top:14px">Bạn có thể đổi lại bất kỳ lúc nào trong mục Hướng Dẫn.</p>
+  </div>
+</div>
+
 <div id="globalBroadcastBanner" class="pos-top">Thông báo từ nhà phát triển</div>
 <audio id="globalAudioPlayer" style="display:none" loop></audio>
 <div id="systemToast">Thông báo hệ thống</div>
 <div id="loadingOverlay"><div class="spinner"></div><h3 id="loadingText" style="color:#1877f2;font-size:18px">loading...</h3></div>
 <div id="loadingCompleteToast">Hoàn thành</div>
 
-<div id="welcomeModal">
+<div id="welcomeModal" style="display:none">
   <div id="welcomeFxLayer"><canvas id="welcomeFxCanvas"></canvas></div>
   <div id="welcomeModalBox">
     <div id="welcomeCrown">👑</div>
@@ -423,24 +507,15 @@ img {
         <div class="mode-dropdown-menu" id="modeDropdownMenu">
           <div class="mode-dropdown-item active" data-mode="normal" onclick="selectExamMode('normal', this)">
             <span class="mode-dd-item-icon">♾️</span>
-            <div class="mode-dd-item-text">
-              <div class="mode-dd-item-title">Thi Tự Do</div>
-              <div class="mode-dd-item-desc">Vào thi ngay, không cần chờ</div>
-            </div>
+            <div class="mode-dd-item-text"><div class="mode-dd-item-title">Thi Tự Do</div><div class="mode-dd-item-desc">Vào thi ngay, không cần chờ</div></div>
           </div>
           <div class="mode-dropdown-item" data-mode="live" onclick="selectExamMode('live', this)">
             <span class="mode-dd-item-icon">🛡️</span>
-            <div class="mode-dd-item-text">
-              <div class="mode-dd-item-title">Phòng Thi Chuyên Dụng</div>
-              <div class="mode-dd-item-desc">Cần mật khẩu – GV kiểm soát</div>
-            </div>
+            <div class="mode-dd-item-text"><div class="mode-dd-item-title">Phòng Thi Chuyên Dụng</div><div class="mode-dd-item-desc">Cần mật khẩu – GV kiểm soát</div></div>
           </div>
           <div class="mode-dropdown-item" data-mode="practice" onclick="selectExamMode('practice', this)">
             <span class="mode-dd-item-icon">⚡</span>
-            <div class="mode-dd-item-text">
-              <div class="mode-dd-item-title">Bài Luyện Nhanh</div>
-              <div class="mode-dd-item-desc">Luyện tập, phản hồi tức thì</div>
-            </div>
+            <div class="mode-dd-item-text"><div class="mode-dd-item-title">Bài Luyện Nhanh</div><div class="mode-dd-item-desc">Luyện tập, phản hồi tức thì</div></div>
           </div>
         </div>
       </div>
@@ -470,10 +545,7 @@ img {
       <div><label>Tên bài kiểm tra:</label><input type="text" id="examTitle" placeholder="Ví dụ: Kiểm Tra 45 Phút"></div>
     </div>
     <div class="form-grid-2">
-      <div>
-        <label>Hình thức tải đề:</label>
-        <select id="examType" onchange="toggleExamCreationType()"><option value="pdf">Tải file PDF đề thi</option><option value="image">Tải Ảnh Đề Thi</option></select>
-      </div>
+      <div><label>Hình thức tải đề:</label><select id="examType" onchange="toggleExamCreationType()"><option value="pdf">Tải file PDF đề thi</option><option value="image">Tải Ảnh Đề Thi</option></select></div>
     </div>
     <div style="margin-top:10px;background:#f0f8ff;border:1px dashed #1877f2;padding:10px;border-radius:8px">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#1877f2;font-weight:bold;font-size:13px;margin-bottom:8px">
@@ -519,10 +591,10 @@ img {
       <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size:13px;margin:0;background:#fff;padding:6px" onchange="processKeyImage(this)">
     </div>
     <h3 style="margin-top:25px;margin-bottom:8px;font-size:16px">📋 Cấu Trúc Câu Hỏi V2</h3>
-    <p style="font-size:12px;color:#666;margin-bottom:10px">* Thang điểm: Trắc nghiệm 0.25đ | Đúng/Sai 1.0đ | Trả lời ngắn 0.5đ. Hệ thống sẽ tự động phân bố lại nếu tổng điểm lệch khỏi thang 10.</p>
+    <p style="font-size:12px;color:#666;margin-bottom:10px">* Thang điểm: Trắc nghiệm 0.25đ | Đúng/Sai 1.0đ | Trả lời ngắn 0.5đ.</p>
     <div class="section-title"><span>I. TRẮC NGHIỆM (A, B, C, D)</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button></div>
     <div id="builderMC"></div>
-    <div class="section-title"><span>II. ĐÚNG / SAI (Điểm chia đều các nhánh)</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button></div>
+    <div class="section-title"><span>II. ĐÚNG / SAI</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button></div>
     <div id="builderTF"></div>
     <div class="section-title"><span>III. TRẢ LỜI NGẮN</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button></div>
     <div id="builderSA"></div>
@@ -626,58 +698,48 @@ img {
     </div>
 
     <div class="guide-tabs">
-      <div class="guide-tab tab-teacher active" data-guide="teacher" onclick="switchGuideTab('teacher', this)">
-        <span style="font-size:18px">👨‍🏫</span> Giáo Viên
-      </div>
-      <div class="guide-tab tab-student" data-guide="student" onclick="switchGuideTab('student', this)">
-        <span style="font-size:18px">🧑‍🎓</span> Học Sinh
-      </div>
-      <div class="guide-tab tab-leaderboard" data-guide="leaderboard" onclick="switchGuideTab('leaderboard', this)">
-        <span style="font-size:18px">🏆</span> Xếp Hạng
-      </div>
-      <div class="guide-tab tab-supreme" data-guide="supreme" onclick="switchGuideTab('supreme', this)">
-        <span style="font-size:18px">👑</span> Tối Cao
+      <div class="guide-tab tab-teacher active" data-guide="teacher" onclick="switchGuideTab('teacher', this)"><span style="font-size:18px">👨‍🏫</span> Giáo Viên</div>
+      <div class="guide-tab tab-student" data-guide="student" onclick="switchGuideTab('student', this)"><span style="font-size:18px">🧑‍🎓</span> Học Sinh</div>
+      <div class="guide-tab tab-leaderboard" data-guide="leaderboard" onclick="switchGuideTab('leaderboard', this)"><span style="font-size:18px">🏆</span> Xếp Hạng</div>
+      <div class="guide-tab tab-supreme" data-guide="supreme" onclick="switchGuideTab('supreme', this)"><span style="font-size:18px">👑</span> Tối Cao</div>
+    </div>
+
+    <div style="background:#f0f8ff;border:1px dashed #1877f2;padding:14px 16px;border-radius:10px;margin-bottom:20px">
+      <h3 style="font-size:15px;color:#1877f2;margin-bottom:10px">⚙️ Chế độ hiển thị hiện tại</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:10px">Chế độ hiện tại: <b id="currentPerfModeText" style="color:#198754">Đầy đủ</b></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-success" style="width:auto;padding:8px 14px;font-size:13px" onclick="openPerfModeModal()">🎨 Đổi chế độ</button>
       </div>
     </div>
 
     <div class="guide-panel teacher active" id="guide-teacher">
       <div class="guide-section-title"><span class="icon">🛠️</span> Tạo Đề Kiểm Tra Chính Thức</div>
-      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>👨‍🏫 GIÁO VIÊN</b> trên thanh điều hướng. Nhập <b>Mã bài kiểm tra</b> (VD: <code>TOAN12</code>) và <b>Tên bài</b>. Mã nên viết HOA, không dấu, không khoảng trắng.</div></div>
-      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Chọn <b>Hình thức tải đề</b>: PDF (1 file) hoặc Ảnh (nhiều ảnh). Sau đó bấm <b>Chọn File Đề Thi</b> để tải lên.</div></div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>👨‍🏫 GIÁO VIÊN</b>. Nhập <b>Mã bài kiểm tra</b> (VD: <code>TOAN12</code>) và <b>Tên bài</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Chọn <b>Hình thức tải đề</b>: PDF (1 file) hoặc Ảnh (nhiều ảnh). Bấm <b>Chọn File Đề Thi</b> để tải lên.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">(Tùy chọn) Mở <b>⚙️ Cài đặt nâng cao</b> để bật: đếm ngược thời gian, chống gian lận rời tab, hoặc bật <b>Phòng Thi Chuyên Dụng (Live)</b>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Thêm câu hỏi theo 3 loại: <span class="guide-badge mc">Trắc nghiệm 0.25đ</span><span class="guide-badge tf">Đúng/Sai 1.0đ</span><span class="guide-badge sa">Trả lời ngắn 0.5đ</span>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-content">Nhấn <b>💾 Lưu & Phát Hành</b>. Nhập <b>mật khẩu bảo mật giáo viên</b> do nhà trường/tổ bộ môn cung cấp.</div></div>
-      <div class="guide-warning">⚠️ <b>Lưu ý:</b> Mật khẩu bảo mật giáo viên được cấp bởi <b>Nhà Phát Triển</b>. Nếu chưa có hoặc quên, hãy liên hệ quản trị viên hệ thống để được cấp lại.</div>
-
-      <div class="guide-section-title" style="margin-top:30px"><span class="icon">📸</span> Nhập Nhanh Đáp Án Từ Ảnh</div>
-      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Trong tab <b>GIÁO VIÊN</b>, kéo xuống mục <b>📸 Tự Động Nhập Đáp Án Từ Ảnh</b>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Tải ảnh → hệ thống tự tạo mẫu 12 câu TN + 4 câu Đ/S + 6 câu TL ngắn. Sau đó bạn chỉ cần sửa lại.</div></div>
-
+      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Thêm câu hỏi theo 3 loại: <span class="guide-badge mc">Trắc nghiệm</span><span class="guide-badge tf">Đúng/Sai</span><span class="guide-badge sa">Trả lời ngắn</span>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-content">Nhấn <b>💾 Lưu & Phát Hành</b>. Nhập <b>mật khẩu bảo mật giáo viên</b> do nhà trường cung cấp.</div></div>
+      <div class="guide-warning">⚠️ <b>Lưu ý:</b> Mật khẩu bảo mật giáo viên được cấp bởi <b>Nhà Phát Triển</b>. Nếu chưa có hoặc quên, liên hệ quản trị viên.</div>
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚙️</span> Quản Lý Phòng Live & Đề Thi</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bấm nút <b>⚙️ Nâng Cao & Quản Lý Phòng</b> ở góc phải trên cùng.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã đề</b> + <b>Mật khẩu bảo mật</b> → bấm <b>📡 Kết Nối Quản Lý Phòng Live</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nút <b>📄 Tải Đề PDF</b> và <b>🗑️ Xóa Đề</b> để quản lý file.</div></div>
-
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚡</span> Tạo Bài Luyện Nhanh</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào <b>⚙️ MÔ HÌNH NÂNG CAO (GV)</b> → bấm <b>⚡ Tạo Bài Luyện Nhanh</b>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập Mã + Tên bài luyện, cấu hình như mong muốn.</div></div>
-      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Thêm câu hỏi → bấm <b>💾 Khởi Tạo Bài Luyện</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập Mã + Tên bài luyện, cấu hình → thêm câu hỏi → bấm <b>💾 Khởi Tạo Bài Luyện</b>.</div></div>
     </div>
 
     <div class="guide-panel student" id="guide-student">
       <div class="guide-section-title" style="color:#198754;border-bottom-color:#d1e7dd"><span class="icon">🧑‍🎓</span> Bắt Đầu Làm Bài</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>🧑‍🎓 HỌC SINH</b>. Nhập <b>Họ và Tên</b> đầy đủ.</div></div>
-      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Bấm vào <b>Hình thức tham gia</b> để chọn 1 trong 3 chế độ: <b>♾️ Thi Tự Do</b> / <b>🛡️ Phòng Thi Chuyên Dụng</b> / <b>⚡ Bài Luyện Nhanh</b>. Mỗi lần chọn có hiệu ứng đặc sắc.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Bấm vào <b>Hình thức tham gia</b> để chọn 1 trong 3 chế độ: <b>♾️ Thi Tự Do</b> / <b>🛡️ Phòng Thi Chuyên Dụng</b> / <b>⚡ Bài Luyện Nhanh</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nhập <b>Mã bài</b> do giáo viên cung cấp. Nếu chọn Live hoặc Luyện thì nhập thêm <b>Mật Khẩu</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Bấm <b>🚀 Bắt Đầu Ngay</b>.</div></div>
-
       <div class="guide-section-title" style="color:#198754;border-bottom-color:#d1e7dd;margin-top:30px"><span class="icon">📝</span> Trong Khi Làm Bài</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bên <b>trái</b> là đề thi, bên <b>phải</b> là phiếu trả lời, trên cùng là <b>đồng hồ đếm ngược</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Trả lời: <span class="guide-badge mc">Trắc nghiệm</span> Bấm A/B/C/D • <span class="guide-badge tf">Đúng/Sai</span> Bấm Đ/S từng nhánh • <span class="guide-badge sa">Trả lời ngắn</span> Gõ đáp án.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Khi xong, bấm <b>📤 Nộp Bài Thi</b> và xác nhận.</div></div>
-
-      <div class="guide-warning">⚠️ <b>Cảnh báo gian lận:</b> Nếu rời tab / ẩn màn hình quá <b>7 giây</b>, hệ thống sẽ ghi cảnh cáo. Vượt giới hạn sẽ bị <b>cưỡng chế nộp bài</b>.</div>
-      <div class="guide-tip">💡 <b>Mẹo:</b> Nếu đáp án bị khóa (Bài Luyện V2), nghĩa là đã xác nhận và không thể sửa.</div>
+      <div class="guide-warning">⚠️ <b>Cảnh báo gian lận:</b> Nếu rời tab / ẩn màn hình quá <b>7 giây</b>, hệ thống sẽ ghi cảnh cáo.</div>
     </div>
 
     <div class="guide-panel leaderboard" id="guide-leaderboard">
@@ -686,22 +748,18 @@ img {
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã bài thi</b> hoặc <b>Mã bài luyện</b> rồi bấm <b>Xem</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Bấm mũi tên <b>&gt;</b> ở cột cuối để xem <b>chi tiết vi phạm</b>.</div></div>
       <div class="guide-tip">💡 <b>Xếp hạng:</b> Điểm cao trước, nếu trùng điểm ai làm nhanh hơn xếp trên.</div>
-      <div class="guide-warning">⚠️ Bảng chỉ hiển thị <b>dữ liệu đã nộp bài</b>. Nếu thoát giữa chừng, kết quả KHÔNG được ghi nhận.</div>
     </div>
 
     <div class="guide-panel supreme" id="guide-supreme">
       <div class="guide-section-title"><span class="icon">👑</span> Khu Vực Tối Cao</div>
       <div class="guide-warning">🔒 <b>Khu vực giới hạn:</b> Chỉ dành riêng cho <b>Nhà Phát Triển</b> hệ thống. Yêu cầu xác thực mật khẩu cấp cao trước khi truy cập.</div>
-
-      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content"><b>Sửa tên Website:</b> Nhập tên mới (VD: <code>✨ AURORA</code>) → bấm <b>💾 Lưu Tên</b>. Tên sẽ đổi ngay trên navbar và tiêu đề tab.</div></div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content"><b>Sửa tên Website:</b> Nhập tên mới → bấm <b>💾 Lưu Tên</b>. Tên sẽ đổi ngay trên navbar và tiêu đề tab.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content"><b>Quản Lý Tất Cả Đề:</b> Xem/xóa mọi đề thi và bài luyện.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content"><b>Phát Thông Báo Toàn Cầu:</b> Hiện banner ngay cho tất cả mọi người online.</div></div>
       <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content"><b>Hệ Thống Phát Nhạc:</b> Tối đa 12MB, tự chia chunk, phát đồng bộ.</div></div>
       <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-content"><b>Quản Lý Mật Khẩu Bảo Mật:</b> Thêm nhiều mật khẩu cho từng tổ/nhóm.</div></div>
-      <div class="guide-step"><div class="guide-step-num">6</div><div class="guide-step-content"><b>Tùy Chỉnh Welcome:</b> Bật/tắt popup chào mừng, chọn <b>hiệu ứng nền lộng lẫy</b> (Lửa / Vòng xoáy / Pháo hoa / Halloween / Giáng Sinh / Tết / Galaxy / Matrix / Sakura / Confetti / Stars). Hiệu ứng tự tắt sau 5 giây.</div></div>
-      <div class="guide-step"><div class="guide-step-num">7</div><div class="guide-step-content"><b>Trạng Thái Hệ Thống:</b> Xem thông báo hiện tại và nhạc nền đang phát.</div></div>
+      <div class="guide-step"><div class="guide-step-num">6</div><div class="guide-step-content"><b>Tùy Chỉnh Welcome:</b> Bật/tắt popup chào mừng, chọn <b>hiệu ứng nền</b> (Lửa / Vòng xoáy / Pháo hoa / Halloween / Giáng Sinh / Tết / Galaxy / Matrix / Sakura / Confetti / Stars).</div></div>
     </div>
-
   </div>
 </div>
 
@@ -727,9 +785,7 @@ img {
     <div id="qpAdvancedPanel" class="advanced-settings-panel">
       <div class="form-grid-2">
         <div><label>Mật khẩu phòng thi (để trống = không có):</label><input type="password" id="qpPassword" placeholder="Nhập mật khẩu học sinh..."></div>
-        <div>
-          <label style="display:flex;align-items:center;gap:6px;margin-top:5px"><input type="checkbox" id="qpIsAdvancedMode" checked style="width:16px;height:16px"> 🛡️ Bật bài luyện nâng cao (Cần GV bấm Bắt đầu)</label>
-        </div>
+        <div><label style="display:flex;align-items:center;gap:6px;margin-top:5px"><input type="checkbox" id="qpIsAdvancedMode" checked style="width:16px;height:16px"> 🛡️ Bật bài luyện nâng cao</label></div>
       </div>
       <div class="form-grid-2" style="margin-top:10px">
         <div>
@@ -737,7 +793,7 @@ img {
           <div id="qpTimerInputBox" style="margin-top:5px"><input type="number" id="qpDurationMinutes" value="15" min="1" placeholder="Số phút..."></div>
         </div>
         <div>
-          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="qpEnableAntiCheat" checked onchange="toggleQpAntiCheatConfig()" style="width:16px;height:16px"> 🛡️ Bật chống gian lận (Rời tab)</label>
+          <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="qpEnableAntiCheat" checked onchange="toggleQpAntiCheatConfig()" style="width:16px;height:16px"> 🛡️ Bật chống gian lận</label>
           <div id="qpAntiCheatBox" style="margin-top:5px">
             <select id="qpAntiCheatType" onchange="toggleQpAntiCheatType()" style="margin-bottom:5px;padding:6px"><option value="limited">Cảnh cáo có hạn</option><option value="infinite">Cảnh cáo vô hạn</option></select>
             <div id="qpMaxWarningBox"><input type="number" id="qpMaxWarnings" value="5" min="1" style="padding:6px;margin-bottom:0"></div>
@@ -752,7 +808,7 @@ img {
     <h4 style="margin-top:15px;margin-bottom:5px">📋 Danh Sách Câu Hỏi</h4>
     <button class="btn btn-secondary" style="width:auto;padding:4px 10px;font-size:12px;margin-bottom:10px" onclick="addQpQuestionItem()">+ Thêm Câu Hỏi</button>
     <div id="qpQuestionsContainer"></div>
-    <button class="btn btn-success" style="margin-top:15px;padding:12px" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện (Cần Mã Bảo Mật)</button>
+    <button class="btn btn-success" style="margin-top:15px;padding:12px" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện</button>
   </div>
   <div id="quickPracticeManage" class="card sub-module-box" style="display:none">
     <h3 style="color:#1877f2;margin-bottom:10px">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
@@ -789,7 +845,6 @@ img {
         <button class="btn btn-success" style="width:auto;padding:8px 16px" onclick="saveWebName()">💾 Lưu Tên Website</button>
         <button class="btn btn-secondary" style="width:auto;padding:8px 16px" onclick="resetWebName()">🔄 Reset Về Mặc Định</button>
       </div>
-      <p style="font-size:12px;color:#666;margin-top:8px;font-style:italic">Tên sẽ hiển thị trên thanh navbar và tiêu đề tab của trình duyệt.</p>
     </div>
 
     <div class="section-title"><span>1. QUẢN LÝ TẤT CẢ ĐỀ THI & BÀI LUYỆN</span></div>
@@ -852,7 +907,7 @@ img {
         <div><label>Màu chữ:</label><input type="color" id="welcomeTextColor" value="#333333" style="width:100%;height:38px;padding:2px;border-radius:6px;border:1px solid #ccc;cursor:pointer"></div>
       </div>
       <div class="form-grid-2">
-        <div><label>Màu aura (viền sáng):</label><input type="color" id="welcomeAuraColor" value="#ffc107" style="width:100%;height:38px;padding:2px;border-radius:6px;border:1px solid #ccc;cursor:pointer"></div>
+        <div><label>Màu aura:</label><input type="color" id="welcomeAuraColor" value="#ffc107" style="width:100%;height:38px;padding:2px;border-radius:6px;border:1px solid #ccc;cursor:pointer"></div>
         <div><label>Cường độ aura (px):</label><input type="number" id="welcomeAuraIntensity" value="25" min="0" max="80"></div>
       </div>
       <div class="form-grid-2">
@@ -861,9 +916,7 @@ img {
       </div>
       <div class="form-grid-2">
         <div><label>Hiệu ứng chữ:</label><select id="welcomeTextEffect"><option value="none">Không</option><option value="neon">Neon</option><option value="glow">Phát sáng</option><option value="3d">3D</option><option value="gradient">Chuyển màu</option><option value="shadow">Đổ bóng</option></select></div>
-        <div>
-          <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="welcomeCrownEnabled" checked style="width:16px;height:16px"> 👑 Hiển thị vương miện</label>
-        </div>
+        <div><label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="welcomeCrownEnabled" checked style="width:16px;height:16px"> 👑 Hiển thị vương miện</label></div>
       </div>
       <div class="form-grid-2">
         <div>
@@ -885,11 +938,7 @@ img {
         </div>
         <div>
           <label>Cường độ hiệu ứng:</label>
-          <select id="welcomeEffectIntensity">
-            <option value="low">Nhẹ nhàng</option>
-            <option value="medium" selected>Vừa phải</option>
-            <option value="high">Mạnh mẽ</option>
-          </select>
+          <select id="welcomeEffectIntensity"><option value="low">Nhẹ nhàng</option><option value="medium" selected>Vừa phải</option><option value="high">Mạnh mẽ</option></select>
         </div>
       </div>
       <p style="font-size:12px;color:#666;font-style:italic;margin-bottom:8px">💡 Hiệu ứng chỉ chạy ~5 giây sau khi mở web để không làm phiền.</p>
@@ -1018,12 +1067,65 @@ let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 let webConfigListener=null;
-
-let examEndedByTeacher = false;
-let examEndedForQp = false;
 let forcedSubmitContext = null;
+let perfMode = 'full';
 
 const DEFAULT_WEB_NAME = '✨ AURORA';
+
+/* ========== PERFORMANCE MODE ========== */
+function detectLowEndDevice(){
+  try {
+    const mem = navigator.deviceMemory || navigator.deviceMemory === 0 ? navigator.deviceMemory : 8;
+    const cpu = navigator.hardwareConcurrency || 8;
+    const ua = navigator.userAgent || '';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|CriOS|FxiOS/i.test(ua)
+      || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1)
+      || window.matchMedia('(pointer: coarse)').matches
+      || window.innerWidth < 1024;
+    return (mem <= 4) || (cpu <= 4) || isMobile;
+  } catch(e){ return false; }
+}
+
+function applyPerfMode(mode){
+  perfMode = mode === 'optimized' ? 'optimized' : 'full';
+  if(perfMode === 'optimized'){
+    document.body.classList.add('optimized-mode');
+  } else {
+    document.body.classList.remove('optimized-mode');
+  }
+  const txt = document.getElementById('currentPerfModeText');
+  if(txt){
+    txt.innerText = perfMode === 'optimized' ? '⚡ Tối ưu (máy yếu)' : '✨ Đầy đủ';
+    txt.style.color = perfMode === 'optimized' ? '#e0a800' : '#198754';
+  }
+}
+
+function choosePerfMode(mode){
+  applyPerfMode(mode);
+  try { localStorage.setItem('aurora_perf_mode', mode); } catch(e){}
+  document.getElementById('perfModeModal').style.display = 'none';
+  showToast(mode === 'optimized' ? '⚡ Đã bật chế độ Tối ưu — mượt hơn!' : '✨ Đã bật chế độ Đầy đủ — đẹp mắt!', 'success');
+}
+
+function openPerfModeModal(){
+  const modal = document.getElementById('perfModeModal');
+  modal.style.display = 'flex';
+}
+
+function initPerfMode(){
+  let saved = null;
+  try { saved = localStorage.getItem('aurora_perf_mode'); } catch(e){}
+  const rec = document.getElementById('perfOptRecommendBadge');
+  if(rec){
+    rec.style.display = detectLowEndDevice() ? 'inline-block' : 'none';
+  }
+  if(saved === 'optimized' || saved === 'full'){
+    applyPerfMode(saved);
+    document.getElementById('perfModeModal').style.display = 'none';
+  } else {
+    document.getElementById('perfModeModal').style.display = 'flex';
+  }
+}
 
 /* ========== SỬA TÊN WEB ========== */
 async function saveWebName(){
@@ -1034,7 +1136,6 @@ async function saveWebName(){
     showToast('✅ Đã lưu tên website!', 'success');
   } catch(e){ showToast('❌ Lỗi: ' + e.message, 'error'); }
 }
-
 async function resetWebName(){
   if(!confirm('Bạn có chắc muốn reset tên về mặc định "' + DEFAULT_WEB_NAME + '"?')) return;
   try {
@@ -1042,14 +1143,12 @@ async function resetWebName(){
     showToast('🔄 Đã reset tên website!', 'warn');
   } catch(e){ showToast('❌ Lỗi: ' + e.message, 'error'); }
 }
-
 function applyWebName(name){
   const finalName = name || DEFAULT_WEB_NAME;
   const logo = document.getElementById('webLogo');
   if(logo) logo.innerText = finalName;
   document.title = finalName + ' - Hệ Thống Kiểm Tra Trực Tuyến';
 }
-
 function loadWebConfig(){
   if(webConfigListener) webConfigListener();
   webConfigListener = window.onValue(window.ref(window.db, 'system/web_config'), (snap) => {
@@ -1062,10 +1161,7 @@ function loadWebConfig(){
 }
 
 /* ========== DROPDOWN CHỌN HÌNH THỨC ========== */
-function getExamMode() {
-  return document.getElementById('examModeSelect').value || 'normal';
-}
-
+function getExamMode() { return document.getElementById('examModeSelect').value || 'normal'; }
 function toggleModeDropdown(e) {
   e.stopPropagation();
   const menu = document.getElementById('modeDropdownMenu');
@@ -1083,24 +1179,21 @@ document.addEventListener('click', (e) => {
     if (toggle) toggle.classList.remove('open');
   }
 });
-
 function selectExamMode(mode, itemEl) {
   document.querySelectorAll('.mode-dropdown-item').forEach(i => i.classList.remove('active'));
   itemEl.classList.add('active');
   document.getElementById('examModeSelect').value = mode;
-
   const icons  = { normal:'♾️', live:'🛡️', practice:'⚡' };
   const labels = { normal:'Thi Tự Do', live:'Phòng Thi Chuyên Dụng', practice:'Bài Luyện Nhanh' };
   document.querySelector('.mode-dd-icon').innerText  = icons[mode];
   document.querySelector('.mode-dd-label').innerText = labels[mode];
-
   document.getElementById('modeDropdownMenu').classList.remove('open');
   document.querySelector('.mode-dropdown-toggle').classList.remove('open');
-
-  if (mode === 'normal')        playGalaxyEffect();
-  else if (mode === 'practice') playLightningEffect(itemEl);
-  else if (mode === 'live')     playShieldEffect();
-
+  if (perfMode !== 'optimized') {
+    if (mode === 'normal')        playGalaxyEffect();
+    else if (mode === 'practice') playLightningEffect(itemEl);
+    else if (mode === 'live')     playShieldEffect();
+  }
   const passBox   = document.getElementById('extraPassBox');
   const passLabel = document.getElementById('extraPassLabel');
   const codeLabel = document.getElementById('lblCodeText');
@@ -1114,8 +1207,13 @@ function selectExamMode(mode, itemEl) {
   }
 }
 
+/* ========== FX HELPERS ========== */
+function fxAllowed(){ return perfMode !== 'optimized'; }
+function fxMul(){ return perfMode === 'optimized' ? 0 : (perfMode === 'light' ? 0.5 : 1); }
+
 /* ========== GALAXY ========== */
 function playGalaxyEffect() {
+  if(!fxAllowed()) return;
   const c = document.getElementById('fxContainer');
   const overlay = document.createElement('div');
   overlay.className = 'galaxy-overlay';
@@ -1148,6 +1246,7 @@ function playGalaxyEffect() {
 
 /* ========== LIGHTNING ========== */
 function playLightningEffect(cardEl) {
+  if(!fxAllowed()) return;
   const c = document.getElementById('fxContainer');
   const rect = cardEl ? cardEl.getBoundingClientRect() : { left: window.innerWidth/2 - 40, top: window.innerHeight/2 - 40, width: 80, height: 80 };
   const cx = rect.left + rect.width / 2;
@@ -1200,6 +1299,7 @@ function playLightningEffect(cardEl) {
 
 /* ========== SHIELD ========== */
 function playShieldEffect() {
+  if(!fxAllowed()) return;
   const c = document.getElementById('fxContainer');
   const shield = document.createElement('div');
   shield.className = 'shield-burst play';
@@ -1249,7 +1349,6 @@ function redistributeScores(questions, targetTotal = 10) {
   }
   return questions;
 }
-
 function redistributeTfBranchScores(questions) {
   if (!questions) return questions;
   questions.forEach(q => {
@@ -1286,16 +1385,13 @@ function showForcedSubmitModal(reason, detailText, emoji) {
   detailEl.innerText = cfg.detail;
   modal.classList.add('show');
 }
-
 async function acknowledgeForcedSubmit() {
   document.getElementById('forcedSubmitModal').classList.remove('show');
   const ctx = forcedSubmitContext;
   forcedSubmitContext = null;
   if (ctx === 'qp') {
     if (isQpActive) {
-      isQpActive = false;
-      clearInterval(qpTimer);
-      stopQpWaitingPoll();
+      isQpActive = false; clearInterval(qpTimer); stopQpWaitingPoll();
       if (activeQpRoomListener) { try { activeQpRoomListener(); } catch (e) {} activeQpRoomListener = null; }
       try { await submitQpPractice('already'); } catch (e) { console.error(e); }
     } else { switchView('studentLoginView'); }
@@ -1303,9 +1399,7 @@ async function acknowledgeForcedSubmit() {
     await cancelStudentExamSilently();
   } else if (ctx === 'timeout' || ctx === 'violation' || ctx === 'teacher') {
     if (isExamActive) {
-      isExamActive = false;
-      clearInterval(examTimer);
-      stopLiveWaitingPoll();
+      isExamActive = false; clearInterval(examTimer); stopLiveWaitingPoll();
       if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
       try { await submitStudentExam('already'); } catch (e) { console.error(e); }
     } else { switchView('studentLoginView'); }
@@ -1362,19 +1456,11 @@ function loadSecurityPassList(){
 /* ========== WELCOME CONFIG ========== */
 function defaultWelcomeConfig(){
   return {
-    enabled: true,
-    title: 'CHÀO MỪNG ĐẾN VỚI AURORA',
+    enabled: true, title: 'CHÀO MỪNG ĐẾN VỚI AURORA',
     content: '🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',
-    bgColor: '#ffffff',
-    textColor: '#333333',
-    auraColor: '#ffc107',
-    auraIntensity: 25,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    fontSize: 14,
-    textEffect: 'none',
-    crownEnabled: true,
-    effect: 'fireworks',
-    effectIntensity: 'medium'
+    bgColor: '#ffffff', textColor: '#333333', auraColor: '#ffc107', auraIntensity: 25,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", fontSize: 14,
+    textEffect: 'none', crownEnabled: true, effect: 'fireworks', effectIntensity: 'medium'
   };
 }
 function applyWelcomeConfig(cfg){
@@ -1443,6 +1529,7 @@ function previewWelcome(){
 
 /* ========== DOMContentLoaded ========== */
 window.addEventListener('DOMContentLoaded',()=>{
+  initPerfMode();
   setTimeout(()=>{
     if(!window.db)return;
     loadSecurityPasswords();loadWelcomeConfig();loadWebConfig();
@@ -1515,7 +1602,7 @@ function showResultPopup(score,maxScore=10,callback=null){
   else{emojiSet='💖✨';message='XUẤT SẮC! Như này là đỗ Thanh Hóa, Bắc Ninh chắc chắn rồi 💖🎉';animClass='epic-anim';hasConfetti=true;}
   emojiEl.innerText=emojiSet;if(animClass)emojiEl.classList.add(animClass);
   scoreEl.innerText=`${score} / ${maxScore}`;msgEl.innerText=message;
-  if(hasConfetti){
+  if(hasConfetti && fxAllowed()){
     const colors=['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59'];
     const addConfetti=()=>{for(let i=0;i<6;i++){const c=document.createElement('div');c.className='result-popup-confetti';c.style.left=(10+Math.random()*80)+'%';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=(Math.random()*0.5)+'s';c.style.animationDuration=(1.8+Math.random()*1.5)+'s';box.appendChild(c);setTimeout(()=>c.remove(),3800);}};
     addConfetti();resultPopupConfettiTimer=setInterval(addConfetti,700);
@@ -1751,10 +1838,7 @@ async function executeSaveExam(){
     else if(qType==='tf'){
       let count=parseInt(item.querySelector('.tf-branch-count').value)||4;
       let branches=[];
-      for(let i=0;i<count;i++){
-        let ans=item.querySelector(`.tf-branch-ans-${i}`).value;
-        branches.push(ans);
-      }
+      for(let i=0;i<count;i++){let ans=item.querySelector(`.tf-branch-ans-${i}`).value;branches.push(ans);}
       qData.correctAnswer=branches.join(',');
       questions.push(qData);
     }else if(qType==='sa'){qData.correctAnswer=item.querySelector('.correct-ans').value.trim();questions.push(qData);}
@@ -1834,7 +1918,6 @@ async function kickLiveStudent(code,studentId){
     showToast('Đã kick học sinh!','warn');
   }
 }
-
 async function updateLiveRoomStatus(status){
   if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
   try{
@@ -1844,17 +1927,14 @@ async function updateLiveRoomStatus(status){
     fullData.status=status;
     fullData.updatedAt=Date.now();
     await window.dbSet(roomRef, fullData);
-    showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi! Học sinh sẽ nhận thông báo ngay.`,'success');
+    showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi!`,'success');
     const statusEl=document.getElementById('liveRoomStatusDisplay');
     if(statusEl){
       if(status==='started'){statusEl.className='running';statusEl.innerText='🟢 ĐANG THI';}
       else if(status==='ended'){statusEl.className='ended';statusEl.innerText='🔴 ĐÃ KẾT THÚC';}
       else{statusEl.className='';statusEl.innerText='🟡 ĐANG CHỜ';}
     }
-  }catch(err){
-    console.error('[LIVE] >>> ERROR:', err);
-    showToast('❌ Lỗi cập nhật: '+(err.message||err),'error');
-  }
+  }catch(err){console.error('[LIVE] ERROR:', err);showToast('❌ Lỗi cập nhật: '+(err.message||err),'error');}
 }
 async function updateQpStatus(status){
   if(!managedQpCodeGlobal){showToast('Chưa kết nối!','error');return;}
@@ -1866,7 +1946,7 @@ async function updateQpStatus(status){
     fullData.updatedAt=Date.now();
     await window.dbSet(roomRef, fullData);
     showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'success');
-  }catch(err){console.error('[QP] >>> ERROR:',err);showToast('❌ Lỗi: '+(err.message||err),'error');}
+  }catch(err){console.error('[QP] ERROR:',err);showToast('❌ Lỗi: '+(err.message||err),'error');}
 }
 
 function startLiveWaitingPoll(code,studentKey){
@@ -2122,6 +2202,11 @@ async function launchOfficialExamInterface(){
   cheatWarnings=0;totalTabLeaveTime=0;
   document.getElementById('cheatWarningBadge').innerText='Cảnh báo: 0';
   isExamActive=true;setExamActiveClass(true);switchView('studentExamView');
+  // Fix: reset scroll về đầu
+  setTimeout(() => {
+    const er = document.querySelector('#studentExamView .exam-right');
+    if (er) er.scrollTop = 0;
+  }, 80);
   if(currentExamData.isLiveRoom){
     const roomWatchRef=window.ref(window.db,`liverooms/${currentExamData.code}`);
     activeStudentRoomListener=window.onValue(roomWatchRef,(snapshot)=>{
@@ -2176,23 +2261,16 @@ async function submitStudentExam(forced=false){
     let studentAns='',isCorrect=false,qEarned=0;
     if(q.type==='mc'){let grp=document.querySelector(`.opt-group[data-qid="${q.id}"]`);studentAns=grp?(grp.dataset.val||''):'';isCorrect=studentAns.toLowerCase()===q.correctAnswer.toLowerCase();if(isCorrect)qEarned=q.score;}
     else if(q.type==='tf'){
-      let correctArr=q.correctAnswer.split(',');
-      let studentArr=[];
-      let subEarned=0;
+      let correctArr=q.correctAnswer.split(',');let studentArr=[];let subEarned=0;
       let branchScores = q.branchScores;
-      if (!branchScores || branchScores.length !== correctArr.length) {
-        const each = q.score / correctArr.length;
-        branchScores = new Array(correctArr.length).fill(each);
-      }
+      if (!branchScores || branchScores.length !== correctArr.length) {const each = q.score / correctArr.length;branchScores = new Array(correctArr.length).fill(each);}
       correctArr.forEach((ansCorrect, i) => {
         let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
         let val = (row && row.dataset.val) ? row.dataset.val : '_';
         studentArr.push(val);
         if (val === ansCorrect) subEarned += branchScores[i];
       });
-      studentAns = studentArr.join(',');
-      qEarned = subEarned;
-      isCorrect = (subEarned > 0);
+      studentAns = studentArr.join(',');qEarned = subEarned;isCorrect = (subEarned > 0);
     }
     else if(q.type==='sa'){let input=document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);studentAns=input?input.value.trim():'';isCorrect=studentAns.toLowerCase()===q.correctAnswer.toLowerCase();if(isCorrect)qEarned=q.score;}
     totalEarnedScore+=qEarned;
@@ -2227,10 +2305,7 @@ async function cancelStudentExam(){
   showToast('🚪 Đã thoát bài thi.','warn');switchView('studentLoginView');
 }
 async function cancelStudentExamSilently() {
-  clearInterval(examTimer);
-  isExamActive = false;
-  setExamActiveClass(false);
-  stopLiveWaitingPoll();
+  clearInterval(examTimer);isExamActive = false;setExamActiveClass(false);stopLiveWaitingPoll();
   if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
   if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
     try { await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`)); } catch (e) {}
@@ -2374,7 +2449,6 @@ function closeWelcomeModal(){
   document.getElementById('welcomeModal').style.display = 'none';
   stopWelcomeFx();
 }
-
 function stopWelcomeFx(){
   if(welcomeFxAutoStopTimer){ clearTimeout(welcomeFxAutoStopTimer); welcomeFxAutoStopTimer = null; }
   if(welcomeFxRAF){ cancelAnimationFrame(welcomeFxRAF); welcomeFxRAF = null; }
@@ -2386,9 +2460,9 @@ function stopWelcomeFx(){
     canvas.style.opacity = '1';
   }
 }
-
 function startWelcomeFx(type, intensity){
   stopWelcomeFx();
+  if(perfMode === 'optimized') return;
   const canvas = document.getElementById('welcomeFxCanvas');
   if(!canvas || !type || type === 'none') return;
   const ctx = canvas.getContext('2d');
@@ -2411,493 +2485,117 @@ function startWelcomeFx(type, intensity){
   const W = () => window.innerWidth;
   const H = () => window.innerHeight;
   const mul = intensity === 'low' ? 0.6 : intensity === 'high' ? 1.6 : 1;
-  let particles = [];
+
+  if(type === 'none'){ return; }
 
   if(type === 'fire'){
     const N = Math.floor(90 * mul);
-    const spawn = () => ({
-      x: Math.random() * W(),
-      y: H() + Math.random() * 60,
-      vx: (Math.random() - 0.5) * 1.5,
-      vy: -2 - Math.random() * 3,
-      life: 1,
-      decay: 0.008 + Math.random() * 0.012,
-      size: 10 + Math.random() * 25
-    });
-    for(let i = 0; i < N; i++) particles.push(spawn());
+    let particles = [];
+    const spawn = () => ({x: Math.random()*W(), y: H()+Math.random()*60, vx:(Math.random()-0.5)*1.5, vy:-2-Math.random()*3, life:1, decay:0.008+Math.random()*0.012, size:10+Math.random()*25});
+    for(let i=0;i<N;i++) particles.push(spawn());
     const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      ctx.globalCompositeOperation = 'lighter';
-      particles.forEach((p, i) => {
-        p.x += p.vx; p.y += p.vy; p.vy -= 0.02; p.life -= p.decay;
-        if(p.life <= 0){ particles[i] = spawn(); return; }
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-        const a = p.life;
-        grad.addColorStop(0, `rgba(255,255,200,${a})`);
-        grad.addColorStop(0.3, `rgba(255,200,50,${a*0.8})`);
-        grad.addColorStop(0.6, `rgba(255,100,0,${a*0.5})`);
-        grad.addColorStop(1, `rgba(150,20,0,0)`);
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-      });
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+      ctx.clearRect(0,0,W(),H()); ctx.globalCompositeOperation='lighter';
+      particles.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.vy-=0.02;p.life-=p.decay;if(p.life<=0){particles[i]=spawn();return;}
+        const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size); const a=p.life;
+        grad.addColorStop(0,`rgba(255,255,200,${a})`);grad.addColorStop(0.3,`rgba(255,200,50,${a*0.8})`);grad.addColorStop(0.6,`rgba(255,100,0,${a*0.5})`);grad.addColorStop(1,'rgba(150,20,0,0)');
+        ctx.fillStyle=grad;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();});
+      welcomeFxRAF=requestAnimationFrame(loop);
+    }; loop(); scheduleFxAutoStop(); return;
   }
-
   if(type === 'vortex'){
-    const N = Math.floor(180 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        a: Math.random() * Math.PI * 2,
-        r: 50 + Math.random() * Math.max(W(), H()) * 0.6,
-        speed: 0.005 + Math.random() * 0.02,
-        color: Math.random() > 0.5 ? '#a55eea' : '#4a9eff',
-        size: 2 + Math.random() * 4
-      });
-    }
+    const N = Math.floor(180 * mul); let particles=[];
+    for(let i=0;i<N;i++){particles.push({a:Math.random()*Math.PI*2,r:50+Math.random()*Math.max(W(),H())*0.6,speed:0.005+Math.random()*0.02,color:Math.random()>0.5?'#a55eea':'#4a9eff',size:2+Math.random()*4});}
     const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      const cx = W()/2, cy = H()/2;
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
-      g.addColorStop(0, 'rgba(165,94,234,0.35)');
-      g.addColorStop(0.5, 'rgba(74,158,255,0.18)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W(), H());
-      ctx.globalCompositeOperation = 'lighter';
-      particles.forEach(p => {
-        p.a += p.speed;
-        p.r -= 0.3;
-        if(p.r < 40) p.r = 50 + Math.random() * Math.max(W(), H()) * 0.6;
-        const x = cx + Math.cos(p.a) * p.r;
-        const y = cy + Math.sin(p.a) * p.r * 0.5;
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = 0.85;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = p.color;
-        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2); ctx.fill();
-      });
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+      ctx.clearRect(0,0,W(),H()); const cx=W()/2,cy=H()/2;
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,200);g.addColorStop(0,'rgba(165,94,234,0.35)');g.addColorStop(0.5,'rgba(74,158,255,0.18)');g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());ctx.globalCompositeOperation='lighter';
+      particles.forEach(p=>{p.a+=p.speed;p.r-=0.3;if(p.r<40)p.r=50+Math.random()*Math.max(W(),H())*0.6;
+        const x=cx+Math.cos(p.a)*p.r,y=cy+Math.sin(p.a)*p.r*0.5;ctx.fillStyle=p.color;ctx.globalAlpha=0.85;ctx.shadowBlur=12;ctx.shadowColor=p.color;
+        ctx.beginPath();ctx.arc(x,y,p.size,0,Math.PI*2);ctx.fill();});
+      ctx.globalAlpha=1;ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);
+    }; loop(); scheduleFxAutoStop(); return;
   }
-
   if(type === 'fireworks'){
-    let rockets = [], sparks = [], nextLaunch = 0;
-    const launch = () => {
-      rockets.push({
-        x: 100 + Math.random() * (W() - 200),
-        y: H() + 20,
-        targetY: 100 + Math.random() * (H() * 0.5),
-        vy: -8 - Math.random() * 4,
-        color: `hsl(${Math.random()*360}, 100%, 60%)`
-      });
-    };
-    const explode = (x, y) => {
-      const count = Math.floor((60 + Math.random() * 40) * mul);
-      const hue = Math.random() * 360;
-      for(let i = 0; i < count; i++){
-        const angle = (Math.PI*2*i)/count + Math.random()*0.1;
-        const speed = 2 + Math.random() * 5;
-        sparks.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          life: 1,
-          decay: 0.012 + Math.random() * 0.01,
-          color: `hsl(${hue + Math.random()*40-20}, 100%, 65%)`,
-          size: 1.5 + Math.random() * 2
-        });
-      }
-    };
-    const loop = (t) => {
-      ctx.clearRect(0, 0, W(), H());
-      ctx.globalCompositeOperation = 'lighter';
-      if(t > nextLaunch){ launch(); nextLaunch = t + 400 + Math.random()*600/mul; }
-      rockets = rockets.filter(r => {
-        r.y += r.vy; r.vy += 0.12;
-        ctx.fillStyle = r.color;
-        ctx.shadowBlur = 18; ctx.shadowColor = r.color;
-        ctx.beginPath(); ctx.arc(r.x, r.y, 3, 0, Math.PI*2); ctx.fill();
-        if(r.y <= r.targetY || r.vy >= 0){ explode(r.x, r.y); return false; }
-        return true;
-      });
-      sparks = sparks.filter(s => {
-        s.x += s.vx; s.y += s.vy; s.vy += 0.06; s.vx *= 0.99; s.vy *= 0.99;
-        s.life -= s.decay;
-        if(s.life <= 0) return false;
-        ctx.globalAlpha = s.life;
-        ctx.fillStyle = s.color;
-        ctx.shadowBlur = 10; ctx.shadowColor = s.color;
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
-        return true;
-      });
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-    scheduleFxAutoStop();
-    return;
+    let rockets=[], sparks=[], nextLaunch=0;
+    const launch=()=>{rockets.push({x:100+Math.random()*(W()-200),y:H()+20,targetY:100+Math.random()*(H()*0.5),vy:-8-Math.random()*4,color:`hsl(${Math.random()*360},100%,60%)`});};
+    const explode=(x,y)=>{const count=Math.floor((60+Math.random()*40)*mul);const hue=Math.random()*360;for(let i=0;i<count;i++){const angle=(Math.PI*2*i)/count+Math.random()*0.1;const speed=2+Math.random()*5;sparks.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:0.012+Math.random()*0.01,color:`hsl(${hue+Math.random()*40-20},100%,65%)`,size:1.5+Math.random()*2});}};
+    const loop=(t)=>{ctx.clearRect(0,0,W(),H());ctx.globalCompositeOperation='lighter';
+      if(t>nextLaunch){launch();nextLaunch=t+400+Math.random()*600/mul;}
+      rockets=rockets.filter(r=>{r.y+=r.vy;r.vy+=0.12;ctx.fillStyle=r.color;ctx.shadowBlur=18;ctx.shadowColor=r.color;ctx.beginPath();ctx.arc(r.x,r.y,3,0,Math.PI*2);ctx.fill();if(r.y<=r.targetY||r.vy>=0){explode(r.x,r.y);return false;}return true;});
+      sparks=sparks.filter(s=>{s.x+=s.vx;s.y+=s.vy;s.vy+=0.06;s.vx*=0.99;s.vy*=0.99;s.life-=s.decay;if(s.life<=0)return false;ctx.globalAlpha=s.life;ctx.fillStyle=s.color;ctx.shadowBlur=10;ctx.shadowColor=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.size,0,Math.PI*2);ctx.fill();return true;});
+      ctx.globalAlpha=1;ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);};
+    requestAnimationFrame(loop); scheduleFxAutoStop(); return;
   }
-
   if(type === 'halloween'){
-    const emojis = ['🎃','🦇','👻','🕷️','💀','🕸️','🧟'];
-    const N = Math.floor(30 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random() * W(), y: Math.random() * H(),
-        vx: (Math.random()-0.5)*1.5,
-        vy: 0.3 + Math.random()*1,
-        rot: Math.random()*Math.PI*2,
-        rotV: (Math.random()-0.5)*0.05,
-        size: 26 + Math.random()*26,
-        emoji: emojis[Math.floor(Math.random()*emojis.length)],
-        wobble: Math.random()*Math.PI*2
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      const g = ctx.createRadialGradient(W()/2, H()/2, 0, W()/2, H()/2, Math.max(W(),H())/2);
-      g.addColorStop(0, 'rgba(255,120,0,0.18)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
-      particles.forEach(p => {
-        p.wobble += 0.05;
-        p.x += p.vx + Math.sin(p.wobble)*0.5;
-        p.y += p.vy; p.rot += p.rotV;
-        if(p.y > H()+40){ p.y = -40; p.x = Math.random()*W(); }
-        if(p.x < -40) p.x = W()+40;
-        if(p.x > W()+40) p.x = -40;
-        ctx.save();
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.font = p.size + 'px serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.shadowBlur = 15; ctx.shadowColor = '#ff8c00';
-        ctx.fillText(p.emoji, 0, 0);
-        ctx.restore();
-      });
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const emojis=['🎃','🦇','👻','🕷️','💀','🕸️','🧟'];const N=Math.floor(30*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),vx:(Math.random()-0.5)*1.5,vy:0.3+Math.random()*1,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.05,size:26+Math.random()*26,emoji:emojis[Math.floor(Math.random()*emojis.length)],wobble:Math.random()*Math.PI*2});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());const g=ctx.createRadialGradient(W()/2,H()/2,0,W()/2,H()/2,Math.max(W(),H())/2);g.addColorStop(0,'rgba(255,120,0,0.18)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());
+      particles.forEach(p=>{p.wobble+=0.05;p.x+=p.vx+Math.sin(p.wobble)*0.5;p.y+=p.vy;p.rot+=p.rotV;if(p.y>H()+40){p.y=-40;p.x=Math.random()*W();}if(p.x<-40)p.x=W()+40;if(p.x>W()+40)p.x=-40;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.font=p.size+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowBlur=15;ctx.shadowColor='#ff8c00';ctx.fillText(p.emoji,0,0);ctx.restore();});
+      welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
-
   if(type === 'christmas'){
-    const N = Math.floor(150 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random()*W(), y: Math.random()*H(),
-        vx: (Math.random()-0.5)*0.6, vy: 0.5 + Math.random()*1.5,
-        size: 1.5 + Math.random()*3,
-        alpha: 0.4 + Math.random()*0.6,
-        wobble: Math.random()*Math.PI*2,
-        isEmoji: false
-      });
-    }
-    const ornaments = ['🎄','🎅','❄️','🎁','🔔','⛄'];
-    const O = Math.floor(8 * mul);
-    for(let i = 0; i < O; i++){
-      particles.push({
-        x: Math.random()*W(), y: Math.random()*H(),
-        vx: (Math.random()-0.5)*0.4, vy: 0.2 + Math.random()*0.5,
-        size: 34 + Math.random()*30,
-        emoji: ornaments[Math.floor(Math.random()*ornaments.length)],
-        wobble: Math.random()*Math.PI*2,
-        isEmoji: true
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      const g = ctx.createLinearGradient(0, 0, 0, H());
-      g.addColorStop(0, 'rgba(100,150,255,0.12)');
-      g.addColorStop(1, 'rgba(255,255,255,0.04)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
-      particles.forEach(p => {
-        p.wobble += 0.03;
-        if(p.isEmoji){
-          p.x += p.vx + Math.sin(p.wobble)*0.3;
-          p.y += p.vy;
-          if(p.y > H()+50){ p.y = -50; p.x = Math.random()*W(); }
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(Math.sin(p.wobble)*0.15);
-          ctx.font = p.size + 'px serif';
-          ctx.textAlign = 'center';
-          ctx.shadowBlur = 18; ctx.shadowColor = '#a8d8ff';
-          ctx.fillText(p.emoji, 0, 0);
-          ctx.restore();
-        } else {
-          p.x += p.vx + Math.sin(p.wobble)*0.5;
-          p.y += p.vy;
-          if(p.y > H()){ p.y = -10; p.x = Math.random()*W(); }
-          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-          ctx.shadowBlur = 8; ctx.shadowColor = '#fff';
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-        }
-      });
-      ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const N=Math.floor(150*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),vx:(Math.random()-0.5)*0.6,vy:0.5+Math.random()*1.5,size:1.5+Math.random()*3,alpha:0.4+Math.random()*0.6,wobble:Math.random()*Math.PI*2,isEmoji:false});}
+    const ornaments=['🎄','🎅','❄️','🎁','🔔','⛄'];const O=Math.floor(8*mul);
+    for(let i=0;i<O;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),vx:(Math.random()-0.5)*0.4,vy:0.2+Math.random()*0.5,size:34+Math.random()*30,emoji:ornaments[Math.floor(Math.random()*ornaments.length)],wobble:Math.random()*Math.PI*2,isEmoji:true});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());const g=ctx.createLinearGradient(0,0,0,H());g.addColorStop(0,'rgba(100,150,255,0.12)');g.addColorStop(1,'rgba(255,255,255,0.04)');ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());
+      particles.forEach(p=>{p.wobble+=0.03;
+        if(p.isEmoji){p.x+=p.vx+Math.sin(p.wobble)*0.3;p.y+=p.vy;if(p.y>H()+50){p.y=-50;p.x=Math.random()*W();}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(Math.sin(p.wobble)*0.15);ctx.font=p.size+'px serif';ctx.textAlign='center';ctx.shadowBlur=18;ctx.shadowColor='#a8d8ff';ctx.fillText(p.emoji,0,0);ctx.restore();}
+        else{p.x+=p.vx+Math.sin(p.wobble)*0.5;p.y+=p.vy;if(p.y>H()){p.y=-10;p.x=Math.random()*W();}ctx.fillStyle=`rgba(255,255,255,${p.alpha})`;ctx.shadowBlur=8;ctx.shadowColor='#fff';ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();}});
+      ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
-
   if(type === 'tet'){
-    const flowerEmojis = ['🌸','🌺','🧧','🏮','🌼'];
-    const N = Math.floor(45 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random()*W(), y: Math.random()*H(),
-        vx: (Math.random()-0.5)*1.2, vy: 0.5 + Math.random()*1.5,
-        size: 18 + Math.random()*16,
-        emoji: flowerEmojis[Math.floor(Math.random()*flowerEmojis.length)],
-        rot: Math.random()*Math.PI*2,
-        rotV: (Math.random()-0.5)*0.08,
-        wobble: Math.random()*Math.PI*2
-      });
-    }
-    let fireworks = [], nextLaunch = 0;
-    const launch = () => {
-      const x = 100 + Math.random()*(W()-200);
-      const y = 100 + Math.random()*(H()*0.4);
-      const count = Math.floor(35 * mul);
-      const hue = Math.random() > 0.5 ? 0 : 45;
-      for(let i = 0; i < count; i++){
-        const angle = (Math.PI*2*i)/count;
-        const speed = 2 + Math.random()*3;
-        fireworks.push({
-          x, y,
-          vx: Math.cos(angle)*speed,
-          vy: Math.sin(angle)*speed,
-          life: 1, decay: 0.015,
-          color: `hsl(${hue + Math.random()*20-10}, 100%, ${60+Math.random()*20}%)`
-        });
-      }
-    };
-    const loop = (t) => {
-      ctx.clearRect(0, 0, W(), H());
-      const g = ctx.createRadialGradient(W()/2, H()/2, 0, W()/2, H()/2, Math.max(W(),H())/2);
-      g.addColorStop(0, 'rgba(255,80,0,0.12)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
-      ctx.globalCompositeOperation = 'lighter';
-      if(t > nextLaunch){ launch(); nextLaunch = t + 500 + Math.random()*700/mul; }
-      fireworks = fireworks.filter(f => {
-        f.x += f.vx; f.y += f.vy; f.vy += 0.05; f.life -= f.decay;
-        if(f.life <= 0) return false;
-        ctx.globalAlpha = f.life;
-        ctx.fillStyle = f.color;
-        ctx.shadowBlur = 12; ctx.shadowColor = f.color;
-        ctx.beginPath(); ctx.arc(f.x, f.y, 2, 0, Math.PI*2); ctx.fill();
-        return true;
-      });
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      ctx.globalCompositeOperation = 'source-over';
-      particles.forEach(p => {
-        p.wobble += 0.04;
-        p.x += p.vx + Math.sin(p.wobble)*0.6;
-        p.y += p.vy; p.rot += p.rotV;
-        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
-        ctx.save();
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.font = p.size + 'px serif';
-        ctx.textAlign = 'center';
-        ctx.shadowBlur = 12; ctx.shadowColor = '#ffb700';
-        ctx.fillText(p.emoji, 0, 0);
-        ctx.restore();
-      });
-      ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-    scheduleFxAutoStop();
-    return;
+    const flowerEmojis=['🌸','🌺','🧧','🏮','🌼'];const N=Math.floor(45*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),vx:(Math.random()-0.5)*1.2,vy:0.5+Math.random()*1.5,size:18+Math.random()*16,emoji:flowerEmojis[Math.floor(Math.random()*flowerEmojis.length)],rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.08,wobble:Math.random()*Math.PI*2});}
+    let fireworks=[],nextLaunch=0;
+    const launch=()=>{const x=100+Math.random()*(W()-200);const y=100+Math.random()*(H()*0.4);const count=Math.floor(35*mul);const hue=Math.random()>0.5?0:45;for(let i=0;i<count;i++){const angle=(Math.PI*2*i)/count;const speed=2+Math.random()*3;fireworks.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:0.015,color:`hsl(${hue+Math.random()*20-10},100%,${60+Math.random()*20}%)`});}};
+    const loop=(t)=>{ctx.clearRect(0,0,W(),H());const g=ctx.createRadialGradient(W()/2,H()/2,0,W()/2,H()/2,Math.max(W(),H())/2);g.addColorStop(0,'rgba(255,80,0,0.12)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());ctx.globalCompositeOperation='lighter';
+      if(t>nextLaunch){launch();nextLaunch=t+500+Math.random()*700/mul;}
+      fireworks=fireworks.filter(f=>{f.x+=f.vx;f.y+=f.vy;f.vy+=0.05;f.life-=f.decay;if(f.life<=0)return false;ctx.globalAlpha=f.life;ctx.fillStyle=f.color;ctx.shadowBlur=12;ctx.shadowColor=f.color;ctx.beginPath();ctx.arc(f.x,f.y,2,0,Math.PI*2);ctx.fill();return true;});
+      ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.globalCompositeOperation='source-over';
+      particles.forEach(p=>{p.wobble+=0.04;p.x+=p.vx+Math.sin(p.wobble)*0.6;p.y+=p.vy;p.rot+=p.rotV;if(p.y>H()+30){p.y=-30;p.x=Math.random()*W();}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.font=p.size+'px serif';ctx.textAlign='center';ctx.shadowBlur=12;ctx.shadowColor='#ffb700';ctx.fillText(p.emoji,0,0);ctx.restore();});
+      ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);};
+    requestAnimationFrame(loop);scheduleFxAutoStop();return;
   }
-
   if(type === 'galaxy'){
-    const N = Math.floor(220 * mul);
-    for(let i = 0; i < N; i++){
-      const a = Math.random()*Math.PI*2;
-      const r = Math.random()*Math.max(W(),H())*0.7;
-      particles.push({
-        a, r,
-        speed: 0.0005 + Math.random()*0.003,
-        size: 0.5 + Math.random()*2.5,
-        color: ['#fff','#a55eea','#4a9eff','#ff6bcb','#ffd54f'][Math.floor(Math.random()*5)],
-        twinkle: Math.random()*Math.PI*2
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      const cx = W()/2, cy = H()/2;
-      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W(),H())*0.6);
-      g.addColorStop(0, 'rgba(165,94,234,0.25)');
-      g.addColorStop(0.4, 'rgba(74,158,255,0.15)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
-      ctx.globalCompositeOperation = 'lighter';
-      particles.forEach(p => {
-        p.a += p.speed; p.twinkle += 0.05;
-        const x = cx + Math.cos(p.a) * p.r;
-        const y = cy + Math.sin(p.a) * p.r * 0.55;
-        ctx.globalAlpha = 0.5 + Math.sin(p.twinkle)*0.5;
-        ctx.fillStyle = p.color;
-        ctx.shadowBlur = 14; ctx.shadowColor = p.color;
-        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2); ctx.fill();
-      });
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const N=Math.floor(220*mul);let particles=[];
+    for(let i=0;i<N;i++){const a=Math.random()*Math.PI*2;const r=Math.random()*Math.max(W(),H())*0.7;particles.push({a,r,speed:0.0005+Math.random()*0.003,size:0.5+Math.random()*2.5,color:['#fff','#a55eea','#4a9eff','#ff6bcb','#ffd54f'][Math.floor(Math.random()*5)],twinkle:Math.random()*Math.PI*2});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());const cx=W()/2,cy=H()/2;const g=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W(),H())*0.6);g.addColorStop(0,'rgba(165,94,234,0.25)');g.addColorStop(0.4,'rgba(74,158,255,0.15)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());ctx.globalCompositeOperation='lighter';
+      particles.forEach(p=>{p.a+=p.speed;p.twinkle+=0.05;const x=cx+Math.cos(p.a)*p.r;const y=cy+Math.sin(p.a)*p.r*0.55;ctx.globalAlpha=0.5+Math.sin(p.twinkle)*0.5;ctx.fillStyle=p.color;ctx.shadowBlur=14;ctx.shadowColor=p.color;ctx.beginPath();ctx.arc(x,y,p.size,0,Math.PI*2);ctx.fill();});
+      ctx.globalAlpha=1;ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
-
   if(type === 'matrix'){
-    const fontSize = 16;
-    const cols = Math.floor(W() / fontSize);
-    const drops = new Array(cols).fill(0).map(() => Math.random()*H()/fontSize);
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789アイウエオカキクケコサシスセソ';
-    let lastDraw = 0;
-    const loop = (t) => {
-      if(t - lastDraw > 50){
-        ctx.fillStyle = 'rgba(0,0,0,0.08)';
-        ctx.fillRect(0, 0, W(), H());
-        ctx.fillStyle = '#0f0';
-        ctx.font = fontSize + 'px monospace';
-        ctx.shadowBlur = 8; ctx.shadowColor = '#0f0';
-        for(let i = 0; i < cols; i++){
-          const ch = chars[Math.floor(Math.random()*chars.length)];
-          ctx.fillText(ch, i*fontSize, drops[i]*fontSize);
-          if(drops[i]*fontSize > H() && Math.random() > 0.975) drops[i] = 0;
-          drops[i] += 0.5 * mul;
-        }
-        ctx.shadowBlur = 0;
-        lastDraw = t;
-      }
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    requestAnimationFrame(loop);
-    scheduleFxAutoStop();
-    return;
+    const fontSize=16;const cols=Math.floor(W()/fontSize);const drops=new Array(cols).fill(0).map(()=>Math.random()*H()/fontSize);const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789アイウエオカキクケコサシスセソ';let lastDraw=0;
+    const loop=(t)=>{if(t-lastDraw>50){ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(0,0,W(),H());ctx.fillStyle='#0f0';ctx.font=fontSize+'px monospace';ctx.shadowBlur=8;ctx.shadowColor='#0f0';
+      for(let i=0;i<cols;i++){const ch=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(ch,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>H()&&Math.random()>0.975)drops[i]=0;drops[i]+=0.5*mul;}
+      ctx.shadowBlur=0;lastDraw=t;}welcomeFxRAF=requestAnimationFrame(loop);};requestAnimationFrame(loop);scheduleFxAutoStop();return;
   }
-
   if(type === 'sakura'){
-    const N = Math.floor(70 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random()*W(), y: Math.random()*H(),
-        vx: (Math.random()-0.5)*1.5 + 0.5, vy: 1 + Math.random()*2,
-        size: 14 + Math.random()*16,
-        rot: Math.random()*Math.PI*2,
-        rotV: (Math.random()-0.5)*0.1,
-        wobble: Math.random()*Math.PI*2,
-        alpha: 0.6 + Math.random()*0.4
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      const g = ctx.createLinearGradient(0, 0, 0, H());
-      g.addColorStop(0, 'rgba(255,200,220,0.12)');
-      g.addColorStop(1, 'rgba(255,150,200,0.05)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
-      particles.forEach(p => {
-        p.wobble += 0.04;
-        p.x += p.vx + Math.sin(p.wobble)*0.8;
-        p.y += p.vy; p.rot += p.rotV;
-        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
-        if(p.x > W()+30) p.x = -30;
-        ctx.save();
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = '#ffb3d9';
-        ctx.beginPath();
-        ctx.ellipse(0, 0, p.size*0.6, p.size*0.35, 0, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = '#ff85c0';
-        ctx.beginPath();
-        ctx.ellipse(p.size*0.4, 0, p.size*0.5, p.size*0.3, 0.5, 0, Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
-      ctx.globalAlpha = 1;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const N=Math.floor(70*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),vx:(Math.random()-0.5)*1.5+0.5,vy:1+Math.random()*2,size:14+Math.random()*16,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.1,wobble:Math.random()*Math.PI*2,alpha:0.6+Math.random()*0.4});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());const g=ctx.createLinearGradient(0,0,0,H());g.addColorStop(0,'rgba(255,200,220,0.12)');g.addColorStop(1,'rgba(255,150,200,0.05)');ctx.fillStyle=g;ctx.fillRect(0,0,W(),H());
+      particles.forEach(p=>{p.wobble+=0.04;p.x+=p.vx+Math.sin(p.wobble)*0.8;p.y+=p.vy;p.rot+=p.rotV;if(p.y>H()+30){p.y=-30;p.x=Math.random()*W();}if(p.x>W()+30)p.x=-30;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.alpha;ctx.fillStyle='#ffb3d9';ctx.beginPath();ctx.ellipse(0,0,p.size*0.6,p.size*0.35,0,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#ff85c0';ctx.beginPath();ctx.ellipse(p.size*0.4,0,p.size*0.5,p.size*0.3,0.5,0,Math.PI*2);ctx.fill();ctx.restore();});
+      ctx.globalAlpha=1;welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
-
   if(type === 'confetti'){
-    const colors = ['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59','#ff6bcb'];
-    const N = Math.floor(150 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random()*W(), y: -Math.random()*H(),
-        vx: (Math.random()-0.5)*3, vy: 2 + Math.random()*4,
-        w: 6 + Math.random()*8, h: 10 + Math.random()*10,
-        rot: Math.random()*Math.PI*2,
-        rotV: (Math.random()-0.5)*0.3,
-        color: colors[Math.floor(Math.random()*colors.length)],
-        wobble: Math.random()*Math.PI*2
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      particles.forEach(p => {
-        p.wobble += 0.08;
-        p.x += p.vx + Math.sin(p.wobble)*0.8;
-        p.y += p.vy; p.rot += p.rotV;
-        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
-        ctx.save();
-        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-        ctx.restore();
-      });
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const colors=['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59','#ff6bcb'];const N=Math.floor(150*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:-Math.random()*H(),vx:(Math.random()-0.5)*3,vy:2+Math.random()*4,w:6+Math.random()*8,h:10+Math.random()*10,rot:Math.random()*Math.PI*2,rotV:(Math.random()-0.5)*0.3,color:colors[Math.floor(Math.random()*colors.length)],wobble:Math.random()*Math.PI*2});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());
+      particles.forEach(p=>{p.wobble+=0.08;p.x+=p.vx+Math.sin(p.wobble)*0.8;p.y+=p.vy;p.rot+=p.rotV;if(p.y>H()+30){p.y=-30;p.x=Math.random()*W();}
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});
+      welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
-
   if(type === 'stars'){
-    const N = Math.floor(180 * mul);
-    for(let i = 0; i < N; i++){
-      particles.push({
-        x: Math.random()*W(), y: Math.random()*H(),
-        size: 0.5 + Math.random()*2.5,
-        twinkle: Math.random()*Math.PI*2,
-        speed: 0.02 + Math.random()*0.05
-      });
-    }
-    const loop = () => {
-      ctx.clearRect(0, 0, W(), H());
-      particles.forEach(p => {
-        p.twinkle += p.speed;
-        ctx.globalAlpha = 0.3 + Math.abs(Math.sin(p.twinkle))*0.7;
-        ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
-      });
-      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-      welcomeFxRAF = requestAnimationFrame(loop);
-    };
-    loop();
-    scheduleFxAutoStop();
-    return;
+    const N=Math.floor(180*mul);let particles=[];
+    for(let i=0;i<N;i++){particles.push({x:Math.random()*W(),y:Math.random()*H(),size:0.5+Math.random()*2.5,twinkle:Math.random()*Math.PI*2,speed:0.02+Math.random()*0.05});}
+    const loop=()=>{ctx.clearRect(0,0,W(),H());
+      particles.forEach(p=>{p.twinkle+=p.speed;ctx.globalAlpha=0.3+Math.abs(Math.sin(p.twinkle))*0.7;ctx.fillStyle='#fff';ctx.shadowBlur=12;ctx.shadowColor='#fff';ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();});
+      ctx.globalAlpha=1;ctx.shadowBlur=0;welcomeFxRAF=requestAnimationFrame(loop);};loop();scheduleFxAutoStop();return;
   }
 }
-
 function scheduleFxAutoStop(){
   if(welcomeFxAutoStopTimer) clearTimeout(welcomeFxAutoStopTimer);
   welcomeFxAutoStopTimer = setTimeout(() => {
@@ -2917,34 +2615,36 @@ function scheduleFxAutoStop(){
 }
 
 document.addEventListener('visibilitychange', () => {
-  if(document.hidden && welcomeFxRAF){
-    cancelAnimationFrame(welcomeFxRAF);
-    welcomeFxRAF = null;
-  } else if(!document.hidden && !welcomeFxRAF && currentWelcomeConfig && currentWelcomeConfig.effect && currentWelcomeConfig.effect !== 'none' && document.getElementById('welcomeModal').style.display !== 'none'){
+  if(document.hidden && welcomeFxRAF){ cancelAnimationFrame(welcomeFxRAF); welcomeFxRAF = null; }
+  else if(!document.hidden && !welcomeFxRAF && perfMode !== 'optimized' && currentWelcomeConfig && currentWelcomeConfig.effect && currentWelcomeConfig.effect !== 'none' && document.getElementById('welcomeModal').style.display !== 'none'){
     startWelcomeFx(currentWelcomeConfig.effect, currentWelcomeConfig.effectIntensity || 'medium');
   }
 });
-
 document.addEventListener('keydown', (e) => {
-  if(e.key === 'Escape' && document.getElementById('welcomeModal').style.display !== 'none'){
-    closeWelcomeModal();
-  }
+  if(e.key === 'Escape' && document.getElementById('welcomeModal').style.display !== 'none'){ closeWelcomeModal(); }
+});
+
+/* ========== AUTO SCROLL INPUT KHI BÀN PHÍM ẢO MỞ ========== */
+document.addEventListener('focusin', (e) => {
+  const tag = (e.target.tagName || '').toUpperCase();
+  if (tag !== 'INPUT' && tag !== 'TEXTAREA') return;
+  const examView = document.getElementById('studentExamView');
+  const qpView = document.getElementById('qpPracticingView');
+  if (!examView || !qpView) return;
+  if (!examView.classList.contains('active') && !qpView.classList.contains('active')) return;
+  setTimeout(() => {
+    try { e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    catch(err) { e.target.scrollIntoView(); }
+  }, 350);
 });
 
 /* ========== BẢO VỆ SOURCE CODE ========== */
 (function protectSourceCode() {
-  // 1. Chặn chuột phải
-  document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    return false;
-  });
-
-  // 2. Chặn tổ hợp phím nguy hiểm
+  document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
   document.addEventListener('keydown', (e) => {
     const key = (e.key || '').toLowerCase();
     const ctrl = e.ctrlKey || e.metaKey;
     const shift = e.shiftKey;
-
     if (key === 'f12') { e.preventDefault(); e.stopPropagation(); return false; }
     if (ctrl && key === 'u') { e.preventDefault(); e.stopPropagation(); return false; }
     if (ctrl && shift && ['i', 'j', 'c', 'k'].includes(key)) { e.preventDefault(); e.stopPropagation(); return false; }
@@ -2956,21 +2656,14 @@ document.addEventListener('keydown', (e) => {
       if (!editable) { e.preventDefault(); e.stopPropagation(); return false; }
     }
   }, true);
-
-  // 3. Chặn kéo thả
-  document.addEventListener('dragstart', (e) => {
-    e.preventDefault();
-    return false;
-  });
-
-  // 4. Chặn copy ngoài vùng input/textarea
+  document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
   document.addEventListener('copy', (e) => {
     const tag = (e.target.tagName || '').toLowerCase();
     const editable = ['input', 'textarea'].includes(tag) || e.target.isContentEditable;
     if (!editable) { e.preventDefault(); return false; }
   });
 
-  // 5. Cảnh báo khi DevTools mở (CHỈ ÁP DỤNG CHO MÁY TÍNH)
+  // DevTools warning — CHỈ ÁP DỤNG CHO MÁY TÍNH
   const isMobileDevice =
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|CriOS|FxiOS/i.test(navigator.userAgent)
     || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1)
@@ -2991,14 +2684,7 @@ document.addEventListener('keydown', (e) => {
           const warn = document.createElement('div');
           warn.id = 'devtoolsWarnOverlay';
           warn.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:2147483647;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:sans-serif;text-align:center;padding:20px;gap:16px';
-          warn.innerHTML = `
-            <div style="font-size:64px">🔒</div>
-            <div style="font-size:22px;font-weight:bold;color:#ff4d4f">PHÁT HIỆN TRUY CẬP TRÁI PHÉP</div>
-            <div style="font-size:14px;max-width:500px;line-height:1.6;color:#ccc">
-              Vui lòng đóng DevTools (F12) để tiếp tục sử dụng hệ thống.<br>
-              Mọi hành vi sao chép mã nguồn đều bị nghiêm cấm.
-            </div>
-          `;
+          warn.innerHTML = `<div style="font-size:64px">🔒</div><div style="font-size:22px;font-weight:bold;color:#ff4d4f">PHÁT HIỆN TRUY CẬP TRÁI PHÉP</div><div style="font-size:14px;max-width:500px;line-height:1.6;color:#ccc">Vui lòng đóng DevTools (F12) để tiếp tục sử dụng hệ thống.<br>Mọi hành vi sao chép mã nguồn đều bị nghiêm cấm.</div>`;
           document.body.appendChild(warn);
         }
       } else {
