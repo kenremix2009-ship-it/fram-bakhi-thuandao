@@ -142,170 +142,247 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 .forced-submit-btn{background:linear-gradient(135deg,#dc3545,#bb2d3b);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(220,53,69,.4);transition:transform .15s}
 .forced-submit-btn:active{transform:scale(.96)}
 
-/* ===== HIỆU ỨNG CHUYỂN ĐỔI HÌNH THỨC THAM GIA ===== */
-.mode-selector {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-.mode-card {
-  position: relative;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 14px 6px;
-  text-align: center;
+/* ===== DROPDOWN CHỌN HÌNH THỨC ===== */
+.mode-dropdown { position: relative; margin-bottom: 15px; }
+.mode-dropdown-toggle {
+  width: 100%;
+  background: linear-gradient(135deg,#fff,#eef6ff);
+  border: 2px solid #d0e0f0;
+  border-radius: 14px;
+  padding: 13px 16px;
+  display: flex; align-items: center; gap: 12px;
   cursor: pointer;
-  transition: all .3s cubic-bezier(.34,1.56,.64,1);
-  overflow: hidden;
-  user-select: none;
-  -webkit-user-select: none;
+  font-size: 14px; font-weight: 700; color: #333;
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  position: relative; overflow: hidden;
+  text-align: left;
 }
-.mode-card:hover { transform: translateY(-3px); border-color: #1877f2; box-shadow: 0 8px 20px rgba(24,119,242,.2); }
-.mode-card.active {
+.mode-dropdown-toggle:hover {
   border-color: #1877f2;
+  box-shadow: 0 8px 24px rgba(24,119,242,.22);
+  transform: translateY(-2px);
+}
+.mode-dropdown-toggle.open {
+  border-color: #1877f2;
+  box-shadow: 0 8px 24px rgba(24,119,242,.35);
   background: linear-gradient(135deg,#e7f3ff,#fff);
-  box-shadow: 0 6px 18px rgba(24,119,242,.3);
 }
-.mode-card .mode-icon {
-  font-size: 32px;
-  line-height: 1;
-  margin-bottom: 6px;
-  display: block;
-  transition: transform .3s;
+.mode-dropdown-toggle::before {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg,transparent,rgba(24,119,242,.15),transparent);
+  animation: shineBtn 3.5s infinite;
 }
-.mode-card.active .mode-icon { transform: scale(1.15); }
-.mode-card .mode-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #444;
-  line-height: 1.3;
+.mode-dd-icon { font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,.15)); transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
+.mode-dropdown-toggle.open .mode-dd-icon { transform: scale(1.2) rotate(-15deg); }
+.mode-dd-label { flex: 1; text-align: left; font-size: 14px; }
+.mode-dd-arrow {
+  font-size: 12px; color: #1877f2; font-weight: bold;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
 }
-.mode-card.active .mode-label { color: #1877f2; }
+.mode-dropdown-toggle.open .mode-dd-arrow { transform: rotate(180deg) scale(1.2); }
 
-/* Hiệu ứng vòng xoáy vô cực galaxy */
-.galaxy-spin {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
+.mode-dropdown-menu {
+  position: absolute; top: calc(100% + 10px); left: 0; right: 0;
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25), 0 0 0 1px rgba(24,119,242,.1);
+  padding: 8px; z-index: 500;
+  opacity: 0; transform: translateY(-20px) scale(.92);
   pointer-events: none;
-  z-index: 999998;
-  transform: translate(-50%,-50%) scale(0);
-  opacity: 0;
-  background:
-    radial-gradient(circle at 30% 30%, rgba(24,119,242,.9) 0%, transparent 40%),
-    radial-gradient(circle at 70% 70%, rgba(165,94,234,.9) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.6) 0%, transparent 60%);
-  filter: blur(8px);
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  transform-origin: top center;
 }
-.galaxy-spin.play-left { animation: galaxyPlayLeft 1.4s ease-out forwards; left: 25%; }
-.galaxy-spin.play-right { animation: galaxyPlayRight 1.4s ease-out forwards; left: 75%; }
+.mode-dropdown-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+.mode-dropdown-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: 12px;
+  cursor: pointer; transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  position: relative; overflow: hidden;
+}
+.mode-dropdown-item::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,#e7f3ff,#d0e8ff);
+  opacity: 0; transition: opacity .3s; z-index: -1;
+}
+.mode-dropdown-item:hover { transform: translateX(6px); }
+.mode-dropdown-item:hover::after { opacity: 1; }
+.mode-dropdown-item.active {
+  background: linear-gradient(90deg,#e7f3ff,#d0e8ff);
+  box-shadow: inset 0 0 0 2px #1877f2;
+}
+.mode-dropdown-item.active::before {
+  content: '✓';
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  color: #1877f2; font-weight: bold; font-size: 18px;
+  animation: checkPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes checkPop { 0%{transform:translateY(-50%) scale(0) rotate(-90deg)} 100%{transform:translateY(-50%) scale(1) rotate(0)} }
+.mode-dd-item-icon {
+  font-size: 30px; line-height: 1; transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.mode-dropdown-item:hover .mode-dd-item-icon { transform: scale(1.25) rotate(-12deg); }
+.mode-dropdown-item.active .mode-dd-item-icon { transform: scale(1.15); }
+.mode-dd-item-text { flex: 1; text-align: left; }
+.mode-dd-item-title { font-size: 14px; font-weight: 700; color: #333; }
+.mode-dd-item-desc { font-size: 11px; color: #888; margin-top: 2px; }
+.mode-dropdown-item.active .mode-dd-item-title { color: #1877f2; }
+
+/* ===== FX CONTAINER ===== */
+#fxContainer { position: fixed; inset: 0; pointer-events: none; z-index: 999990; overflow: hidden; }
+
+/* ===== GALAXY – THI TỰ DO ===== */
+.galaxy-overlay {
+  position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(20,30,90,.75) 0%, rgba(0,0,0,.35) 55%, transparent 85%);
+  opacity: 0; animation: galaxyFade 1.9s ease-out forwards;
+}
+@keyframes galaxyFade { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
+
+.galaxy-spin {
+  position: fixed; top: 50%; width: 340px; height: 340px; border-radius: 50%;
+  pointer-events: none; z-index: 999998;
+  transform: translate(-50%,-50%) scale(0); opacity: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(120,180,255,.95) 0%, transparent 42%),
+    radial-gradient(circle at 70% 70%, rgba(200,120,255,.95) 0%, transparent 42%),
+    conic-gradient(from 0deg, rgba(120,180,255,.45), rgba(255,120,220,.45), rgba(120,255,220,.45), rgba(120,180,255,.45));
+  filter: blur(10px);
+}
+.galaxy-spin.play-left { left: 25%; animation: galaxyPlayLeft 1.9s ease-out forwards; }
+.galaxy-spin.play-right { left: 75%; animation: galaxyPlayRight 1.9s ease-out forwards; }
 @keyframes galaxyPlayLeft {
-  0% { transform: translate(-50%,-50%) scale(0) rotate(0deg); opacity: 0; }
-  30% { transform: translate(-50%,-50%) scale(1.4) rotate(180deg); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(2.5) rotate(720deg); opacity: 0; }
+  0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}
+  25%{transform:translate(-50%,-50%) scale(1.6) rotate(240deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(3.4) rotate(1080deg);opacity:0}
 }
 @keyframes galaxyPlayRight {
-  0% { transform: translate(-50%,-50%) scale(0) rotate(0deg); opacity: 0; }
-  30% { transform: translate(-50%,-50%) scale(1.4) rotate(-180deg); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(2.5) rotate(-720deg); opacity: 0; }
+  0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}
+  25%{transform:translate(-50%,-50%) scale(1.6) rotate(-240deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(3.4) rotate(-1080deg);opacity:0}
+}
+.galaxy-core {
+  position: fixed; top: 50%; left: 50%; width: 60px; height: 60px; border-radius: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  background: radial-gradient(circle,#fff 0%,#4a9eff 40%,transparent 72%);
+  box-shadow: 0 0 60px #4a9eff, 0 0 120px #4a9eff, 0 0 200px #7aaeff;
+  z-index: 999999; pointer-events: none;
+}
+.galaxy-core.play { animation: galaxyCore 1.9s ease-out forwards; }
+@keyframes galaxyCore {
+  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
+  20%{transform:translate(-50%,-50%) scale(1.6);opacity:1}
+  60%{transform:translate(-50%,-50%) scale(2.8);opacity:.85}
+  100%{transform:translate(-50%,-50%) scale(7);opacity:0}
+}
+.galaxy-star {
+  position: fixed; width: 5px; height: 5px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 10px #fff, 0 0 22px #4a9eff, 0 0 32px #7aaeff;
+  pointer-events: none; z-index: 999999; opacity: 0;
+}
+.galaxy-star.play { animation: starFly 1.7s ease-out forwards; }
+@keyframes starFly {
+  0%{opacity:0; transform: scale(.3) translate(0,0)}
+  20%{opacity:1; transform: scale(1.4) translate(calc(var(--tx,0)*.2), calc(var(--ty,0)*.2))}
+  100%{opacity:0; transform: scale(2.2) translate(var(--tx,0), var(--ty,0))}
 }
 
-/* Hiệu ứng tia sét */
+/* ===== LIGHTNING – BÀI LUYỆN NHANH ===== */
 .lightning-flash {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 999998;
-  opacity: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,235,59,.4) 0%, transparent 70%);
+  position: fixed; inset: 0; pointer-events: none; z-index: 999998; opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,240,150,.95) 0%, rgba(255,200,0,.5) 35%, transparent 72%);
 }
-.lightning-flash.play { animation: lightningFlash 1.2s ease-out forwards; }
+.lightning-flash.play { animation: lightningFlash 1.4s ease-out forwards; }
 @keyframes lightningFlash {
-  0% { opacity: 0; }
-  10% { opacity: 1; background: radial-gradient(circle at 50% 50%, rgba(255,235,59,.9) 0%, transparent 70%); }
-  20% { opacity: 0.3; }
-  30% { opacity: 1; }
-  45% { opacity: 0.5; }
-  60% { opacity: 0.9; }
-  100% { opacity: 0; }
+  0%{opacity:0} 8%{opacity:1} 15%{opacity:.2} 25%{opacity:1}
+  40%{opacity:.4} 55%{opacity:.9} 70%{opacity:.3} 100%{opacity:0}
 }
 .lightning-bolt {
-  position: fixed;
-  pointer-events: none;
-  z-index: 999999;
-  font-size: 80px;
-  opacity: 0;
-  filter: drop-shadow(0 0 12px #ffeb3b) drop-shadow(0 0 24px #ffc107);
+  position: fixed; pointer-events: none; z-index: 999999; font-size: 110px; opacity: 0;
+  filter: drop-shadow(0 0 20px #ffeb3b) drop-shadow(0 0 40px #ffc107) drop-shadow(0 0 70px #ff9800);
 }
-.lightning-bolt.play {
-  animation: boltStrike 0.9s cubic-bezier(.34,1.56,.64,1) forwards;
-}
+.lightning-bolt.play { animation: boltStrike 1.15s cubic-bezier(.34,1.56,.64,1) forwards; }
+.lightning-bolt.small { font-size: 65px; }
 @keyframes boltStrike {
-  0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
-  40% { opacity: 1; transform: scale(1.3) rotate(0deg); }
-  70% { opacity: 1; transform: scale(1) rotate(0deg); }
-  100% { opacity: 0; transform: scale(1.4) rotate(15deg); }
+  0%{opacity:0; transform: scale(.2) rotate(-25deg)}
+  35%{opacity:1; transform: scale(1.55) rotate(6deg)}
+  55%{opacity:1; transform: scale(1.1) rotate(-3deg)}
+  75%{opacity:1; transform: scale(1.3) rotate(2deg)}
+  100%{opacity:0; transform: scale(1.9) rotate(14deg)}
 }
 .mini-bolt {
-  position: fixed;
-  pointer-events: none;
-  z-index: 999999;
-  font-size: 24px;
-  opacity: 0;
-  filter: drop-shadow(0 0 6px #ffeb3b);
+  position: fixed; pointer-events: none; z-index: 999999; font-size: 34px; opacity: 0;
+  filter: drop-shadow(0 0 10px #ffeb3b) drop-shadow(0 0 22px #ffc107);
 }
-.mini-bolt.play { animation: miniBoltFly 1s ease-out forwards; }
+.mini-bolt.play { animation: miniBoltFly 1.25s ease-out forwards; }
 @keyframes miniBoltFly {
-  0% { opacity: 0; transform: scale(0.3); }
-  30% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0; transform: scale(0.6) translate(var(--tx,0), var(--ty,0)); }
+  0%{opacity:0; transform: scale(.2) rotate(0)}
+  30%{opacity:1; transform: scale(1.4) rotate(200deg)}
+  100%{opacity:0; transform: scale(.7) rotate(620deg) translate(var(--tx,0), var(--ty,0))}
+}
+.shockwave {
+  position: fixed; width: 80px; height: 80px; border-radius: 50%;
+  border: 4px solid #ffeb3b;
+  transform: translate(-50%,-50%) scale(0); opacity: 0;
+  z-index: 999997; pointer-events: none;
+  box-shadow: 0 0 30px #ffeb3b, inset 0 0 22px #ffeb3b, 0 0 60px #ffc107;
+}
+.shockwave.play { animation: shockwave 1.25s ease-out forwards; }
+@keyframes shockwave {
+  0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
+  15%{transform:translate(-50%,-50%) scale(1.1);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(5.5);opacity:0}
+}
+body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
+@keyframes screenShake {
+  10%,90%{transform:translate3d(-2px,0,0)}
+  20%,80%{transform:translate3d(4px,0,0)}
+  30%,50%,70%{transform:translate3d(-6px,0,0)}
+  40%,60%{transform:translate3d(6px,0,0)}
 }
 
-/* Hiệu ứng khiên */
+/* ===== SHIELD – PHÒNG THI CHUYÊN DỤNG ===== */
 .shield-burst {
-  position: fixed;
-  top: 50%; left: 50%;
-  width: 200px; height: 200px;
-  pointer-events: none;
-  z-index: 999999;
-  transform: translate(-50%,-50%) scale(0);
-  opacity: 0;
-  font-size: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 20px #1877f2) drop-shadow(0 0 40px #1877f2);
+  position: fixed; top: 50%; left: 50%; width: 200px; height: 200px;
+  transform: translate(-50%,-50%) scale(0); opacity: 0;
+  font-size: 150px; display: flex; align-items: center; justify-content: center;
+  z-index: 999999; pointer-events: none;
+  filter: drop-shadow(0 0 30px #1877f2) drop-shadow(0 0 60px #1877f2);
 }
-.shield-burst.play { animation: shieldBurst 1.3s ease-out forwards; }
+.shield-burst.play { animation: shieldBurst 1.5s ease-out forwards; }
 @keyframes shieldBurst {
-  0% { transform: translate(-50%,-50%) scale(0.2); opacity: 0; filter: drop-shadow(0 0 0 #1877f2) brightness(1); }
-  25% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; filter: drop-shadow(0 0 30px #1877f2) brightness(2.5); }
-  55% { transform: translate(-50%,-50%) scale(1); opacity: 1; filter: drop-shadow(0 0 40px #1877f2) brightness(3); }
-  100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; filter: drop-shadow(0 0 0 #1877f2) brightness(1); }
+  0%{transform:translate(-50%,-50%) scale(.2) rotate(-30deg);opacity:0;filter:drop-shadow(0 0 0 #1877f2) brightness(1)}
+  20%{transform:translate(-50%,-50%) scale(1.35) rotate(0);opacity:1;filter:drop-shadow(0 0 45px #1877f2) brightness(2.6)}
+  45%{transform:translate(-50%,-50%) scale(1) rotate(6deg);opacity:1;filter:drop-shadow(0 0 55px #1877f2) brightness(3)}
+  70%{transform:translate(-50%,-50%) scale(1.12) rotate(-4deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(3.2) rotate(0);opacity:0}
 }
 .shield-ring {
-  position: fixed;
-  top: 50%; left: 50%;
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  border: 4px solid #1877f2;
-  pointer-events: none;
-  z-index: 999998;
-  transform: translate(-50%,-50%) scale(0);
-  opacity: 0;
-  box-shadow: 0 0 30px #1877f2, inset 0 0 20px #1877f2;
+  position: fixed; top: 50%; left: 50%; width: 120px; height: 120px; border-radius: 50%;
+  border: 5px solid #1877f2;
+  transform: translate(-50%,-50%) scale(0); opacity: 0;
+  z-index: 999998; pointer-events: none;
+  box-shadow: 0 0 40px #1877f2, inset 0 0 30px #1877f2, 0 0 90px #4a9eff;
 }
-.shield-ring.play { animation: shieldRing 1.3s ease-out forwards; }
+.shield-ring.play { animation: shieldRing 1.55s ease-out forwards; }
 @keyframes shieldRing {
-  0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
-  20% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
-  100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
+  0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
+  20%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(4.2);opacity:0}
+}
+.shield-particle {
+  position: fixed; width: 9px; height: 9px; border-radius: 50%;
+  background: radial-gradient(circle,#7ac0ff,#1877f2);
+  box-shadow: 0 0 14px #1877f2, 0 0 28px #4a9eff;
+  pointer-events: none; z-index: 999999; opacity: 0;
+  top: 50%; left: 50%;
+}
+.shield-particle.play { animation: shieldParticle 1.55s ease-out forwards; }
+@keyframes shieldParticle {
+  0%{opacity:0; transform: translate(-50%,-50%) scale(0)}
+  15%{opacity:1; transform: translate(-50%,-50%) scale(1.3)}
+  100%{opacity:0; transform: translate(calc(-50% + var(--tx,0)), calc(-50% + var(--ty,0))) scale(.4)}
 }
 
 @media (max-width: 768px) {
@@ -352,9 +429,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   .forced-submit-emoji{font-size:56px}
   .forced-submit-title{font-size:16px}
   .forced-submit-reason{font-size:12px;padding:10px}
-  .mode-card { padding: 10px 4px; }
-  .mode-card .mode-icon { font-size: 26px; }
-  .mode-card .mode-label { font-size: 10px; }
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -431,18 +505,34 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
     <hr style="margin:15px 0">
     <div style="text-align:left">
       <label>Hình thức tham gia:</label>
-      <div class="mode-selector" id="modeSelector">
-        <div class="mode-card active" data-mode="normal" onclick="selectExamMode('normal', this)">
-          <span class="mode-icon">♾️</span>
-          <div class="mode-label">Thi Tự Do</div>
-        </div>
-        <div class="mode-card" data-mode="live" onclick="selectExamMode('live', this)">
-          <span class="mode-icon">🛡️</span>
-          <div class="mode-label">Phòng Thi Chuyên Dụng</div>
-        </div>
-        <div class="mode-card" data-mode="practice" onclick="selectExamMode('practice', this)">
-          <span class="mode-icon">⚡</span>
-          <div class="mode-label">Bài Luyện Nhanh</div>
+      <div class="mode-dropdown" id="modeDropdown">
+        <button type="button" class="mode-dropdown-toggle" onclick="toggleModeDropdown(event)">
+          <span class="mode-dd-icon">♾️</span>
+          <span class="mode-dd-label">Thi Tự Do</span>
+          <span class="mode-dd-arrow">▼</span>
+        </button>
+        <div class="mode-dropdown-menu" id="modeDropdownMenu">
+          <div class="mode-dropdown-item active" data-mode="normal" onclick="selectExamMode('normal', this)">
+            <span class="mode-dd-item-icon">♾️</span>
+            <div class="mode-dd-item-text">
+              <div class="mode-dd-item-title">Thi Tự Do</div>
+              <div class="mode-dd-item-desc">Vào thi ngay, không cần chờ</div>
+            </div>
+          </div>
+          <div class="mode-dropdown-item" data-mode="live" onclick="selectExamMode('live', this)">
+            <span class="mode-dd-item-icon">🛡️</span>
+            <div class="mode-dd-item-text">
+              <div class="mode-dd-item-title">Phòng Thi Chuyên Dụng</div>
+              <div class="mode-dd-item-desc">Cần mật khẩu – GV kiểm soát</div>
+            </div>
+          </div>
+          <div class="mode-dropdown-item" data-mode="practice" onclick="selectExamMode('practice', this)">
+            <span class="mode-dd-item-icon">⚡</span>
+            <div class="mode-dd-item-text">
+              <div class="mode-dd-item-title">Bài Luyện Nhanh</div>
+              <div class="mode-dd-item-desc">Luyện tập, phản hồi tức thì</div>
+            </div>
+          </div>
         </div>
       </div>
       <input type="hidden" id="examModeSelect" value="normal">
@@ -897,25 +987,43 @@ let examEndedByTeacher = false;
 let examEndedForQp = false;
 let forcedSubmitContext = null;
 
-/* ========== HIỆU ỨNG CHUYỂN ĐỔI ========== */
-function getExamMode() {
-  return document.getElementById('examModeSelect').value || 'normal';
+/* ========== DROPDOWN CHỌN HÌNH THỨC ========== */
+function toggleModeDropdown(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('modeDropdownMenu');
+  const toggle = document.querySelector('.mode-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
 }
+document.addEventListener('click', (e) => {
+  const dd = document.getElementById('modeDropdown');
+  if (dd && !dd.contains(e.target)) {
+    const menu = document.getElementById('modeDropdownMenu');
+    const toggle = document.querySelector('.mode-dropdown-toggle');
+    if (menu) menu.classList.remove('open');
+    if (toggle) toggle.classList.remove('open');
+  }
+});
 
-function selectExamMode(mode, cardEl) {
-  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
-  cardEl.classList.add('active');
+function selectExamMode(mode, itemEl) {
+  document.querySelectorAll('.mode-dropdown-item').forEach(i => i.classList.remove('active'));
+  itemEl.classList.add('active');
   document.getElementById('examModeSelect').value = mode;
 
-  if (mode === 'normal') {
-    playGalaxyEffect();
-  } else if (mode === 'practice') {
-    playLightningEffect(cardEl);
-  } else if (mode === 'live') {
-    playShieldEffect();
-  }
+  const icons  = { normal:'♾️', live:'🛡️', practice:'⚡' };
+  const labels = { normal:'Thi Tự Do', live:'Phòng Thi Chuyên Dụng', practice:'Bài Luyện Nhanh' };
+  document.querySelector('.mode-dd-icon').innerText  = icons[mode];
+  document.querySelector('.mode-dd-label').innerText = labels[mode];
 
-  const passBox = document.getElementById('extraPassBox');
+  document.getElementById('modeDropdownMenu').classList.remove('open');
+  document.querySelector('.mode-dropdown-toggle').classList.remove('open');
+
+  if (mode === 'normal')        playGalaxyEffect();
+  else if (mode === 'practice') playLightningEffect(itemEl);
+  else if (mode === 'live')     playShieldEffect();
+
+  const passBox   = document.getElementById('extraPassBox');
   const passLabel = document.getElementById('extraPassLabel');
   const codeLabel = document.getElementById('lblCodeText');
   if (mode === 'practice' || mode === 'live') {
@@ -928,67 +1036,135 @@ function selectExamMode(mode, cardEl) {
   }
 }
 
+/* ========== GALAXY – THI TỰ DO ========== */
 function playGalaxyEffect() {
   const c = document.getElementById('fxContainer');
-  const galaxyL = document.createElement('div');
-  galaxyL.className = 'galaxy-spin play-left';
-  const galaxyR = document.createElement('div');
-  galaxyR.className = 'galaxy-spin play-right';
-  c.appendChild(galaxyL);
-  c.appendChild(galaxyR);
-  setTimeout(() => { galaxyL.remove(); galaxyR.remove(); }, 1600);
-}
 
-function playLightningEffect(cardEl) {
-  const c = document.getElementById('fxContainer');
-  const flash = document.createElement('div');
-  flash.className = 'lightning-flash play';
-  c.appendChild(flash);
-  setTimeout(() => flash.remove(), 1300);
+  const overlay = document.createElement('div');
+  overlay.className = 'galaxy-overlay';
+  c.appendChild(overlay);
+  setTimeout(() => overlay.remove(), 2100);
 
-  const rect = cardEl.getBoundingClientRect();
-  const bolt = document.createElement('div');
-  bolt.className = 'lightning-bolt play';
-  bolt.innerText = '⚡';
-  bolt.style.left = (rect.left + rect.width / 2 - 40) + 'px';
-  bolt.style.top = (rect.top + rect.height / 2 - 40) + 'px';
-  c.appendChild(bolt);
-  setTimeout(() => bolt.remove(), 1100);
+  const core = document.createElement('div');
+  core.className = 'galaxy-core play';
+  c.appendChild(core);
+  setTimeout(() => core.remove(), 2000);
 
-  for (let i = 0; i < 6; i++) {
-    const mini = document.createElement('div');
-    mini.className = 'mini-bolt play';
-    mini.innerText = '⚡';
-    const startX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 60;
-    const startY = rect.top + rect.height / 2 + (Math.random() - 0.5) * 60;
-    mini.style.left = startX + 'px';
-    mini.style.top = startY + 'px';
-    mini.style.setProperty('--tx', ((Math.random() - 0.5) * 300) + 'px');
-    mini.style.setProperty('--ty', ((Math.random() - 0.5) * 300) + 'px');
-    mini.style.animationDelay = (i * 0.08) + 's';
-    c.appendChild(mini);
-    setTimeout(() => mini.remove(), 1400);
+  const gL = document.createElement('div');
+  gL.className = 'galaxy-spin play-left';
+  const gR = document.createElement('div');
+  gR.className = 'galaxy-spin play-right';
+  c.appendChild(gL); c.appendChild(gR);
+  setTimeout(() => { gL.remove(); gR.remove(); }, 2100);
+
+  for (let i = 0; i < 30; i++) {
+    const star = document.createElement('div');
+    star.className = 'galaxy-star play';
+    const ang  = (Math.PI * 2 * i) / 30 + Math.random() * 0.3;
+    const dist = 200 + Math.random() * 320;
+    star.style.left = '50%';
+    star.style.top  = '50%';
+    star.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
+    star.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
+    star.style.animationDelay = (i * 0.03) + 's';
+    c.appendChild(star);
+    setTimeout(() => star.remove(), 2100);
   }
 }
 
+/* ========== LIGHTNING – BÀI LUYỆN NHANH ========== */
+function playLightningEffect(cardEl) {
+  const c = document.getElementById('fxContainer');
+  const rect = cardEl
+    ? cardEl.getBoundingClientRect()
+    : { left: window.innerWidth/2 - 40, top: window.innerHeight/2 - 40, width: 80, height: 80 };
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+
+  const flash = document.createElement('div');
+  flash.className = 'lightning-flash play';
+  c.appendChild(flash);
+  setTimeout(() => flash.remove(), 1500);
+
+  document.body.classList.add('fx-shake');
+  setTimeout(() => document.body.classList.remove('fx-shake'), 700);
+
+  const bolt = document.createElement('div');
+  bolt.className = 'lightning-bolt play';
+  bolt.innerText = '⚡';
+  bolt.style.left = (cx - 55) + 'px';
+  bolt.style.top  = (cy - 55) + 'px';
+  c.appendChild(bolt);
+  setTimeout(() => bolt.remove(), 1300);
+
+  for (let i = 0; i < 2; i++) {
+    const b = document.createElement('div');
+    b.className = 'lightning-bolt small play';
+    b.innerText = '⚡';
+    b.style.left = (cx + (Math.random() - 0.5) * 220) + 'px';
+    b.style.top  = (cy + (Math.random() - 0.5) * 120) + 'px';
+    b.style.animationDelay = (0.1 + i * 0.15) + 's';
+    c.appendChild(b);
+    setTimeout(() => b.remove(), 1700);
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const sw = document.createElement('div');
+    sw.className = 'shockwave play';
+    sw.style.left = cx + 'px';
+    sw.style.top  = cy + 'px';
+    sw.style.animationDelay = (i * 0.15) + 's';
+    c.appendChild(sw);
+    setTimeout(() => sw.remove(), 1900);
+  }
+
+  for (let i = 0; i < 10; i++) {
+    const mini = document.createElement('div');
+    mini.className = 'mini-bolt play';
+    mini.innerText = '⚡';
+    mini.style.left = (cx + (Math.random() - 0.5) * 90) + 'px';
+    mini.style.top  = (cy + (Math.random() - 0.5) * 90) + 'px';
+    mini.style.setProperty('--tx', ((Math.random() - 0.5) * 520) + 'px');
+    mini.style.setProperty('--ty', ((Math.random() - 0.5) * 520) + 'px');
+    mini.style.animationDelay = (i * 0.05) + 's';
+    c.appendChild(mini);
+    setTimeout(() => mini.remove(), 1900);
+  }
+}
+
+/* ========== SHIELD – PHÒNG THI CHUYÊN DỤNG ========== */
 function playShieldEffect() {
   const c = document.getElementById('fxContainer');
+
   const shield = document.createElement('div');
   shield.className = 'shield-burst play';
   shield.innerText = '🛡️';
   c.appendChild(shield);
-  setTimeout(() => shield.remove(), 1500);
+  setTimeout(() => shield.remove(), 1700);
 
-  const ring1 = document.createElement('div');
-  ring1.className = 'shield-ring play';
-  c.appendChild(ring1);
-  setTimeout(() => ring1.remove(), 1500);
+  for (let i = 0; i < 4; i++) {
+    const ring = document.createElement('div');
+    ring.className = 'shield-ring play';
+    ring.style.animationDelay = (i * 0.12) + 's';
+    if (i % 2 === 1) {
+      ring.style.borderColor = '#7ac0ff';
+      ring.style.boxShadow = '0 0 45px #7ac0ff, inset 0 0 35px #7ac0ff, 0 0 90px #4a9eff';
+    }
+    c.appendChild(ring);
+    setTimeout(() => ring.remove(), 2100);
+  }
 
-  const ring2 = document.createElement('div');
-  ring2.className = 'shield-ring play';
-  ring2.style.animationDelay = '0.2s';
-  c.appendChild(ring2);
-  setTimeout(() => ring2.remove(), 1700);
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'shield-particle play';
+    const ang  = (Math.PI * 2 * i) / 24;
+    const dist = 150 + Math.random() * 260;
+    p.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
+    p.style.animationDelay = (i * 0.02) + 's';
+    c.appendChild(p);
+    setTimeout(() => p.remove(), 1900);
+  }
 }
 
 /* ========== HÀM TÍNH ĐIỂM TỰ ĐỘNG PHÂN BỐ LẠI ========== */
