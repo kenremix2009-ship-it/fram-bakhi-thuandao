@@ -130,7 +130,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 #liveRoomStatusDisplay{font-size:14px;font-weight:bold;padding:6px 12px;border-radius:8px;background:#fff3cd;color:#856404;display:inline-block;margin-bottom:8px}
 #liveRoomStatusDisplay.running{background:#d1e7dd;color:#0f5132}
 #liveRoomStatusDisplay.ended{background:#f8d7da;color:#842029}
-/* Modal cưỡng chế nộp bài */
 #forcedSubmitModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:999999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #forcedSubmitModal.show{display:flex}
 .forced-submit-box{background:#fff;border-radius:20px;padding:32px 24px 24px 24px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);position:relative;overflow:hidden;animation:popupPop .55s cubic-bezier(.34,1.56,.64,1);border-top:8px solid #dc3545}
@@ -142,6 +141,173 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 .forced-submit-note{font-size:13px;color:#666;margin-bottom:18px;font-style:italic}
 .forced-submit-btn{background:linear-gradient(135deg,#dc3545,#bb2d3b);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(220,53,69,.4);transition:transform .15s}
 .forced-submit-btn:active{transform:scale(.96)}
+
+/* ===== HIỆU ỨNG CHUYỂN ĐỔI HÌNH THỨC THAM GIA ===== */
+.mode-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.mode-card {
+  position: relative;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 14px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mode-card:hover { transform: translateY(-3px); border-color: #1877f2; box-shadow: 0 8px 20px rgba(24,119,242,.2); }
+.mode-card.active {
+  border-color: #1877f2;
+  background: linear-gradient(135deg,#e7f3ff,#fff);
+  box-shadow: 0 6px 18px rgba(24,119,242,.3);
+}
+.mode-card .mode-icon {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: 6px;
+  display: block;
+  transition: transform .3s;
+}
+.mode-card.active .mode-icon { transform: scale(1.15); }
+.mode-card .mode-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #444;
+  line-height: 1.3;
+}
+.mode-card.active .mode-label { color: #1877f2; }
+
+/* Hiệu ứng vòng xoáy vô cực galaxy */
+.galaxy-spin {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999998;
+  transform: translate(-50%,-50%) scale(0);
+  opacity: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(24,119,242,.9) 0%, transparent 40%),
+    radial-gradient(circle at 70% 70%, rgba(165,94,234,.9) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.6) 0%, transparent 60%);
+  filter: blur(8px);
+}
+.galaxy-spin.play-left { animation: galaxyPlayLeft 1.4s ease-out forwards; left: 25%; }
+.galaxy-spin.play-right { animation: galaxyPlayRight 1.4s ease-out forwards; left: 75%; }
+@keyframes galaxyPlayLeft {
+  0% { transform: translate(-50%,-50%) scale(0) rotate(0deg); opacity: 0; }
+  30% { transform: translate(-50%,-50%) scale(1.4) rotate(180deg); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(2.5) rotate(720deg); opacity: 0; }
+}
+@keyframes galaxyPlayRight {
+  0% { transform: translate(-50%,-50%) scale(0) rotate(0deg); opacity: 0; }
+  30% { transform: translate(-50%,-50%) scale(1.4) rotate(-180deg); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(2.5) rotate(-720deg); opacity: 0; }
+}
+
+/* Hiệu ứng tia sét */
+.lightning-flash {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 999998;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,235,59,.4) 0%, transparent 70%);
+}
+.lightning-flash.play { animation: lightningFlash 1.2s ease-out forwards; }
+@keyframes lightningFlash {
+  0% { opacity: 0; }
+  10% { opacity: 1; background: radial-gradient(circle at 50% 50%, rgba(255,235,59,.9) 0%, transparent 70%); }
+  20% { opacity: 0.3; }
+  30% { opacity: 1; }
+  45% { opacity: 0.5; }
+  60% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+.lightning-bolt {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999999;
+  font-size: 80px;
+  opacity: 0;
+  filter: drop-shadow(0 0 12px #ffeb3b) drop-shadow(0 0 24px #ffc107);
+}
+.lightning-bolt.play {
+  animation: boltStrike 0.9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes boltStrike {
+  0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+  40% { opacity: 1; transform: scale(1.3) rotate(0deg); }
+  70% { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(1.4) rotate(15deg); }
+}
+.mini-bolt {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999999;
+  font-size: 24px;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px #ffeb3b);
+}
+.mini-bolt.play { animation: miniBoltFly 1s ease-out forwards; }
+@keyframes miniBoltFly {
+  0% { opacity: 0; transform: scale(0.3); }
+  30% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(0.6) translate(var(--tx,0), var(--ty,0)); }
+}
+
+/* Hiệu ứng khiên */
+.shield-burst {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 200px; height: 200px;
+  pointer-events: none;
+  z-index: 999999;
+  transform: translate(-50%,-50%) scale(0);
+  opacity: 0;
+  font-size: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 20px #1877f2) drop-shadow(0 0 40px #1877f2);
+}
+.shield-burst.play { animation: shieldBurst 1.3s ease-out forwards; }
+@keyframes shieldBurst {
+  0% { transform: translate(-50%,-50%) scale(0.2); opacity: 0; filter: drop-shadow(0 0 0 #1877f2) brightness(1); }
+  25% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; filter: drop-shadow(0 0 30px #1877f2) brightness(2.5); }
+  55% { transform: translate(-50%,-50%) scale(1); opacity: 1; filter: drop-shadow(0 0 40px #1877f2) brightness(3); }
+  100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; filter: drop-shadow(0 0 0 #1877f2) brightness(1); }
+}
+.shield-ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 4px solid #1877f2;
+  pointer-events: none;
+  z-index: 999998;
+  transform: translate(-50%,-50%) scale(0);
+  opacity: 0;
+  box-shadow: 0 0 30px #1877f2, inset 0 0 20px #1877f2;
+}
+.shield-ring.play { animation: shieldRing 1.3s ease-out forwards; }
+@keyframes shieldRing {
+  0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; }
+  20% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0; }
+}
+
 @media (max-width: 768px) {
   html,body{width:100%}
   body{-webkit-text-size-adjust:100%}
@@ -186,6 +352,9 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   .forced-submit-emoji{font-size:56px}
   .forced-submit-title{font-size:16px}
   .forced-submit-reason{font-size:12px;padding:10px}
+  .mode-card { padding: 10px 4px; }
+  .mode-card .mode-icon { font-size: 26px; }
+  .mode-card .mode-label { font-size: 10px; }
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -214,7 +383,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- MODAL CẢNH BÁO GIAN LẬN -->
 <div class="modal-overlay" id="cheatAlertModal">
   <div class="modal-box" style="text-align:center;max-width:400px;padding:25px">
     <div style="font-size:40px;color:#dc3545;margin-bottom:10px">⚠️</div>
@@ -227,20 +395,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- MODAL: GIÁO VIÊN KẾT THÚC BÀI THI (thông báo + xem kết quả) -->
-<div class="modal-overlay" id="examEndedModal">
-  <div class="modal-box" style="text-align:center;max-width:420px;padding:25px">
-    <div style="font-size:50px;margin-bottom:10px">🛑</div>
-    <h3 style="color:#dc3545;font-size:20px;margin-bottom:12px">GIÁO VIÊN ĐÃ KẾT THÚC BÀI THI</h3>
-    <div style="background:#fff3cd;padding:12px;border-radius:8px;margin-bottom:18px;font-size:14px;line-height:1.6;color:#856404">
-      <p>Bài làm của bạn đã được <b>cưỡng chế nộp</b>.</p>
-      <p style="margin-top:6px">Bấm nút bên dưới để xem kết quả.</p>
-    </div>
-    <button class="btn btn-success" onclick="acknowledgeExamEnded()" style="padding:12px;font-weight:bold">✅ Đã rõ / Xem kết quả</button>
-  </div>
-</div>
-
-<!-- MODAL CƯỠNG CHẾ NỘP BÀI (dùng chung cho kick, hết giờ, vi phạm) -->
 <div id="forcedSubmitModal">
   <div class="forced-submit-box">
     <span class="forced-submit-emoji" id="forcedSubmitEmoji">🚫</span>
@@ -277,11 +431,21 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
     <hr style="margin:15px 0">
     <div style="text-align:left">
       <label>Hình thức tham gia:</label>
-      <select id="examModeSelect" onchange="toggleStudentMode()">
-        <option value="normal">Thi Tự Do Bình Thường</option>
-        <option value="live">🛡️ Phòng Thi Chuyên Dụng (Live Exam)</option>
-        <option value="practice">⚡ Bài Luyện Nhanh</option>
-      </select>
+      <div class="mode-selector" id="modeSelector">
+        <div class="mode-card active" data-mode="normal" onclick="selectExamMode('normal', this)">
+          <span class="mode-icon">♾️</span>
+          <div class="mode-label">Thi Tự Do</div>
+        </div>
+        <div class="mode-card" data-mode="live" onclick="selectExamMode('live', this)">
+          <span class="mode-icon">🛡️</span>
+          <div class="mode-label">Phòng Thi Chuyên Dụng</div>
+        </div>
+        <div class="mode-card" data-mode="practice" onclick="selectExamMode('practice', this)">
+          <span class="mode-icon">⚡</span>
+          <div class="mode-label">Bài Luyện Nhanh</div>
+        </div>
+      </div>
+      <input type="hidden" id="examModeSelect" value="normal">
       <label>Họ và Tên:</label>
       <input type="text" id="studentName" placeholder="Nhập tên của bạn...">
       <label id="lblCodeText">Mã Bài Kiểm Tra:</label>
@@ -707,6 +871,8 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
+<div id="fxContainer"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
@@ -727,10 +893,103 @@ let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 
-/* ===== CỜ ĐÁNH DẤU ===== */
 let examEndedByTeacher = false;
 let examEndedForQp = false;
-let forcedSubmitContext = null; // 'forced' | 'kick' | 'timeout' | 'violation' | 'teacher' | 'qp'
+let forcedSubmitContext = null;
+
+/* ========== HIỆU ỨNG CHUYỂN ĐỔI ========== */
+function getExamMode() {
+  return document.getElementById('examModeSelect').value || 'normal';
+}
+
+function selectExamMode(mode, cardEl) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  cardEl.classList.add('active');
+  document.getElementById('examModeSelect').value = mode;
+
+  if (mode === 'normal') {
+    playGalaxyEffect();
+  } else if (mode === 'practice') {
+    playLightningEffect(cardEl);
+  } else if (mode === 'live') {
+    playShieldEffect();
+  }
+
+  const passBox = document.getElementById('extraPassBox');
+  const passLabel = document.getElementById('extraPassLabel');
+  const codeLabel = document.getElementById('lblCodeText');
+  if (mode === 'practice' || mode === 'live') {
+    passBox.style.display = 'block';
+    passLabel.innerText = mode === 'practice' ? 'Mật Khẩu Bài Luyện:' : 'Mật Khẩu Phòng Thi:';
+    codeLabel.innerText = mode === 'practice' ? 'Mã Bài Luyện Nhanh:' : 'Mã Bài Kiểm Tra:';
+  } else {
+    passBox.style.display = 'none';
+    codeLabel.innerText = 'Mã Bài Kiểm Tra:';
+  }
+}
+
+function playGalaxyEffect() {
+  const c = document.getElementById('fxContainer');
+  const galaxyL = document.createElement('div');
+  galaxyL.className = 'galaxy-spin play-left';
+  const galaxyR = document.createElement('div');
+  galaxyR.className = 'galaxy-spin play-right';
+  c.appendChild(galaxyL);
+  c.appendChild(galaxyR);
+  setTimeout(() => { galaxyL.remove(); galaxyR.remove(); }, 1600);
+}
+
+function playLightningEffect(cardEl) {
+  const c = document.getElementById('fxContainer');
+  const flash = document.createElement('div');
+  flash.className = 'lightning-flash play';
+  c.appendChild(flash);
+  setTimeout(() => flash.remove(), 1300);
+
+  const rect = cardEl.getBoundingClientRect();
+  const bolt = document.createElement('div');
+  bolt.className = 'lightning-bolt play';
+  bolt.innerText = '⚡';
+  bolt.style.left = (rect.left + rect.width / 2 - 40) + 'px';
+  bolt.style.top = (rect.top + rect.height / 2 - 40) + 'px';
+  c.appendChild(bolt);
+  setTimeout(() => bolt.remove(), 1100);
+
+  for (let i = 0; i < 6; i++) {
+    const mini = document.createElement('div');
+    mini.className = 'mini-bolt play';
+    mini.innerText = '⚡';
+    const startX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 60;
+    const startY = rect.top + rect.height / 2 + (Math.random() - 0.5) * 60;
+    mini.style.left = startX + 'px';
+    mini.style.top = startY + 'px';
+    mini.style.setProperty('--tx', ((Math.random() - 0.5) * 300) + 'px');
+    mini.style.setProperty('--ty', ((Math.random() - 0.5) * 300) + 'px');
+    mini.style.animationDelay = (i * 0.08) + 's';
+    c.appendChild(mini);
+    setTimeout(() => mini.remove(), 1400);
+  }
+}
+
+function playShieldEffect() {
+  const c = document.getElementById('fxContainer');
+  const shield = document.createElement('div');
+  shield.className = 'shield-burst play';
+  shield.innerText = '🛡️';
+  c.appendChild(shield);
+  setTimeout(() => shield.remove(), 1500);
+
+  const ring1 = document.createElement('div');
+  ring1.className = 'shield-ring play';
+  c.appendChild(ring1);
+  setTimeout(() => ring1.remove(), 1500);
+
+  const ring2 = document.createElement('div');
+  ring2.className = 'shield-ring play';
+  ring2.style.animationDelay = '0.2s';
+  c.appendChild(ring2);
+  setTimeout(() => ring2.remove(), 1700);
+}
 
 /* ========== HÀM TÍNH ĐIỂM TỰ ĐỘNG PHÂN BỐ LẠI ========== */
 function redistributeScores(questions, targetTotal = 10) {
@@ -806,7 +1065,6 @@ async function acknowledgeForcedSubmit() {
       switchView('studentLoginView');
     }
   } else if (ctx === 'kick') {
-    // Đã bị kick -> thoát về login, không nộp bài (bài đã bị hủy)
     await cancelStudentExamSilently();
   } else if (ctx === 'timeout' || ctx === 'violation' || ctx === 'teacher') {
     if (isExamActive) {
@@ -1139,12 +1397,7 @@ function toggleQpAdvancedPanel(){const e=document.getElementById('qpEnableAdvanc
 function toggleQpTimerConfig(){const e=document.getElementById('qpEnableTimer').checked;document.getElementById('qpTimerInputBox').style.display=e?'block':'none';}
 function toggleQpAntiCheatConfig(){const e=document.getElementById('qpEnableAntiCheat').checked;document.getElementById('qpAntiCheatBox').style.display=e?'block':'none';}
 function toggleQpAntiCheatType(){const t=document.getElementById('qpAntiCheatType').value;document.getElementById('qpMaxWarningBox').style.display=(t==='limited')?'block':'none';}
-function toggleStudentMode(){
-  const mode=document.getElementById('examModeSelect').value;
-  const passBox=document.getElementById('extraPassBox'),passLabel=document.getElementById('extraPassLabel'),codeLabel=document.getElementById('lblCodeText');
-  if(mode==='practice'||mode==='live'){passBox.style.display='block';passLabel.innerText=mode==='practice'?'Mật Khẩu Bài Luyện:':'Mật Khẩu Phòng Thi:';codeLabel.innerText=mode==='practice'?'Mã Bài Luyện Nhanh:':'Mã Bài Kiểm Tra:';}
-  else{passBox.style.display='none';codeLabel.innerText='Mã Bài Kiểm Tra:';}
-}
+
 function showLoadingSequence(callback){
   const overlay=document.getElementById('loadingOverlay');overlay.style.display='flex';
   setTimeout(()=>{
@@ -1322,7 +1575,6 @@ async function kickLiveStudent(code,studentId){
   }
 }
 
-/* ===== CẬP NHẬT STATUS ===== */
 async function updateLiveRoomStatus(status){
   if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
   try{
@@ -1357,7 +1609,6 @@ async function updateQpStatus(status){
   }catch(err){console.error('[QP] >>> ERROR:',err);showToast('❌ Lỗi: '+(err.message||err),'error');}
 }
 
-/* ===== POLLING ===== */
 function startLiveWaitingPoll(code,studentKey){
   if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
   liveWaitingPollInterval=setInterval(async()=>{
@@ -1520,7 +1771,7 @@ async function deleteQpExam(){
 }
 
 async function startStudentParticipation(){
-  const mode=document.getElementById('examModeSelect').value;
+  const mode = getExamMode();
   const name=document.getElementById('studentName').value.trim();
   const code=document.getElementById('studentExamCode').value.trim().toUpperCase();
   const pass=document.getElementById('studentExtraPass').value.trim();
@@ -1635,7 +1886,6 @@ async function launchOfficialExamInterface(){
   }
 }
 
-/* ===== XỬ LÝ TAB LEAVE (VI PHẠM) ===== */
 async function handleTabLeaveEvent(durationAway){
   if(!currentAntiCheatEnabled)return;
   if(durationAway>currentCheatThreshold){
