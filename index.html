@@ -211,6 +211,19 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
+<!-- MODAL MỚI: GIÁO VIÊN KẾT THÚC BÀI THI -->
+<div class="modal-overlay" id="examEndedModal">
+  <div class="modal-box" style="text-align:center;max-width:400px;padding:25px">
+    <div style="font-size:50px;margin-bottom:10px">🛑</div>
+    <h3 style="color:#dc3545;font-size:20px;margin-bottom:12px">GIÁO VIÊN ĐÃ KẾT THÚC BÀI THI</h3>
+    <div style="background:#fff3cd;padding:12px;border-radius:8px;margin-bottom:18px;font-size:14px;line-height:1.6;color:#856404">
+      <p>Bài làm của bạn đã được <b>cưỡng chế nộp</b>.</p>
+      <p style="margin-top:6px">Bấm nút bên dưới để xem kết quả.</p>
+    </div>
+    <button class="btn btn-success" onclick="acknowledgeExamEnded()" style="padding:12px;font-weight:bold">✅ Đã rõ / Xem kết quả</button>
+  </div>
+</div>
+
 <div class="navbar">
   <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
   <div class="nav-tabs">
@@ -683,6 +696,10 @@ let audioBlobCache={},currentLoadedAudioKey=null,supremeAudioListListener=null,p
 let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
+
+/* ===== CỜ ĐÁNH DẤU GV ĐÃ KẾT THÚC ===== */
+let examEndedByTeacher = false;
+let examEndedForQp = false;
 
 /* ========== MẬT KHẨU BẢO MẬT ========== */
 async function loadSecurityPasswords(){
@@ -1157,7 +1174,6 @@ async function connectLiveRoomDashboard(){
   liveRoomDashboardListener=window.onValue(roomRef,(snapshot)=>{
     let data=snapshot.val()||{},students=data.students||{},tbody=document.getElementById('liveRoomStudentsBody');
     tbody.innerHTML='';let keys=Object.keys(students);document.getElementById('liveRoomCount').innerText=keys.length;
-    // Update status display
     const statusEl=document.getElementById('liveRoomStatusDisplay');
     if(statusEl){
       const st=data.status||'waiting';
@@ -1179,66 +1195,46 @@ async function kickLiveStudent(code,studentId){
   }
 }
 
-/* ===== FIX CHÍNH: cập nhật status bằng cách ghi field riêng biệt ===== */
+/* ===== HÀM CẬP NHẬT STATUS PHÒNG LIVE (đã sửa: dùng dbSet toàn bộ) ===== */
 async function updateLiveRoomStatus(status){
   if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
   console.log('[LIVE] >>> Attempting to set status:', status, 'for room:', managedLiveCodeGlobal);
   try{
     const roomRef=window.ref(window.db,`liverooms/${managedLiveCodeGlobal}`);
-    // Ghi riêng từng field - không ghi đè students
-    await window.dbUpdate(roomRef, { status: status, updatedAt: Date.now() });
-    console.log('[LIVE] >>> dbUpdate succeeded');
-    // Verify
-    await new Promise(r => setTimeout(r, 300)); // small delay to let it propagate
-    const verify = await window.dbGet(roomRef);
-    const vData = verify.val() || {};
-    console.log('[LIVE] >>> Verified status from DB:', vData.status);
-    if(vData.status === status){
-      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi! Học sinh đang chờ sẽ vào thi ngay.`,'success');
-      const statusEl=document.getElementById('liveRoomStatusDisplay');
-      if(statusEl){
-        if(status==='started'){statusEl.className='running';statusEl.innerText='🟢 ĐANG THI';}
-        else if(status==='ended'){statusEl.className='ended';statusEl.innerText='🔴 ĐÃ KẾT THÚC';}
-        else{statusEl.className='';statusEl.innerText='🟡 ĐANG CHỜ';}
-      }
-    } else {
-      // Fallback: ghi bằng dbSet
-      console.warn('[LIVE] >>> dbUpdate didn\'t persist, trying dbSet fallback...');
-      const snap = await window.dbGet(roomRef);
-      const fullData = snap.val() || {};
-      fullData.status = status;
-      fullData.updatedAt = Date.now();
-      await window.dbSet(roomRef, fullData);
-      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi!`,'success');
+    const snap=await window.dbGet(roomRef);
+    const fullData=snap.val()||{};
+    fullData.status=status;
+    fullData.updatedAt=Date.now();
+    await window.dbSet(roomRef, fullData);
+    console.log('[LIVE] >>> dbSet succeeded with full data');
+    showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi! Học sinh sẽ nhận thông báo ngay.`,'success');
+    const statusEl=document.getElementById('liveRoomStatusDisplay');
+    if(statusEl){
+      if(status==='started'){statusEl.className='running';statusEl.innerText='🟢 ĐANG THI';}
+      else if(status==='ended'){statusEl.className='ended';statusEl.innerText='🔴 ĐÃ KẾT THÚC';}
+      else{statusEl.className='';statusEl.innerText='🟡 ĐANG CHỜ';}
     }
   }catch(err){
     console.error('[LIVE] >>> ERROR:', err);
     showToast('❌ Lỗi cập nhật: '+(err.message||err),'error');
   }
 }
+/* ===== HÀM CẬP NHẬT STATUS QP (đã sửa) ===== */
 async function updateQpStatus(status){
   if(!managedQpCodeGlobal){showToast('Chưa kết nối!','error');return;}
   console.log('[QP] >>> Attempting to set status:', status, 'for room:', managedQpCodeGlobal);
   try{
     const roomRef=window.ref(window.db,`qp_rooms/${managedQpCodeGlobal}`);
-    await window.dbUpdate(roomRef, { status: status, updatedAt: Date.now() });
-    await new Promise(r => setTimeout(r, 300));
-    const verify = await window.dbGet(roomRef);
-    const vData = verify.val() || {};
-    if(vData.status === status){
-      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'success');
-    } else {
-      const snap = await window.dbGet(roomRef);
-      const fullData = snap.val() || {};
-      fullData.status = status;
-      fullData.updatedAt = Date.now();
-      await window.dbSet(roomRef, fullData);
-      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'success');
-    }
+    const snap=await window.dbGet(roomRef);
+    const fullData=snap.val()||{};
+    fullData.status=status;
+    fullData.updatedAt=Date.now();
+    await window.dbSet(roomRef, fullData);
+    showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'success');
   }catch(err){console.error('[QP] >>> ERROR:',err);showToast('❌ Lỗi: '+(err.message||err),'error');}
 }
 
-/* ===== POLLING - 1 giây - luôn hoạt động kể cả khi listener miss ===== */
+/* ===== POLLING - 1 giây ===== */
 function startLiveWaitingPoll(code,studentKey){
   if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
   console.log('[STUDENT-POLL] Starting live poll for code:', code, 'student:', studentKey);
@@ -1264,7 +1260,7 @@ function startLiveWaitingPoll(code,studentKey){
       if(data.status==='ended'){
         clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
-        showToast('Kì thi đã kết thúc!','info');switchView('studentLoginView');return;
+        showExamEndedModal(false);return;
       }
     }catch(e){console.error('[STUDENT-POLL] error:',e);}
   }, 1000);
@@ -1293,10 +1289,10 @@ function startQpWaitingPoll(code,studentKey){
         try{await window.dbUpdate(window.ref(window.db,`qp_rooms/${code}/students/${studentKey}`),{status:'testing'});}catch(e){}
         launchQpPracticeInterface();return;
       }
-      if(data.status==='ended'&&isQpActive){
+      if(data.status==='ended'&&!isQpActive){
         clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
         if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
-        showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);return;
+        showExamEndedModal(true);return;
       }
     }catch(e){console.error('[QP-POLL] error:',e);}
   }, 1000);
@@ -1428,7 +1424,7 @@ async function startStudentParticipation(){
         document.getElementById('qpWaitStudentCount').innerText=Object.keys(students).length;
         if(!students[studentKey]){showToast('Bạn đã bị kick!','error');if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();switchView('studentLoginView');return;}
         if(data.status==='started'&&!isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchQpPracticeInterface();}
-        else if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}
+        else if(data.status==='ended'&&!isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();showExamEndedModal(true);}
       });
       startQpWaitingPoll(code,studentKey);
     }else{
@@ -1451,7 +1447,7 @@ async function startStudentParticipation(){
           document.getElementById('waitStudentCount').innerText=Object.keys(students).length;
           if(!students[studentSessionKeyGlobal]){showToast('Bạn đã bị kick!','error');if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();switchView('studentLoginView');return;}
           if(data.status==='started'&&!isExamActive){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchOfficialExamInterface();}
-          else if(data.status==='ended'){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();showToast('Kì thi đã kết thúc!','info');switchView('studentLoginView');}
+          else if(data.status==='ended'){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();showExamEndedModal(false);}
         });
         startLiveWaitingPoll(code,studentSessionKeyGlobal);
       }else{
@@ -1498,6 +1494,77 @@ async function launchOfficialExamInterface(){
   cheatWarnings=0;totalTabLeaveTime=0;
   document.getElementById('cheatWarningBadge').innerText='Cảnh báo: 0';
   isExamActive=true;setExamActiveClass(true);switchView('studentExamView');
+
+  /* ===== LISTENER MỚI: THEO DÕI PHÒNG LIVE KHI ĐANG LÀM BÀI ===== */
+  if(currentExamData.isLiveRoom){
+    const roomWatchRef=window.ref(window.db,`liverooms/${currentExamData.code}`);
+    activeStudentRoomListener=window.onValue(roomWatchRef,(snapshot)=>{
+      const data=snapshot.val()||{};
+      const students=data.students||{};
+      // Bị kick khi đang thi
+      if(!students[studentSessionKeyGlobal]){
+        if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
+        showToast('Bạn đã bị kick khỏi phòng!','error');
+        cancelStudentExamSilently();
+        return;
+      }
+      // GV kết thúc bài thi
+      if(data.status==='ended'&&isExamActive){
+        if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
+        showExamEndedModal(false);
+      }
+    });
+  }
+}
+
+/* ===== HÀM XỬ LÝ KHI GV KẾT THÚC ===== */
+function showExamEndedModal(forQp = false) {
+  examEndedForQp = forQp;
+  document.getElementById('examEndedModal').style.display = 'flex';
+}
+
+async function acknowledgeExamEnded() {
+  document.getElementById('examEndedModal').style.display = 'none';
+
+  if (examEndedForQp) {
+    examEndedForQp = false;
+    if (isQpActive) {
+      isQpActive = false;
+      clearInterval(qpTimer);
+      stopQpWaitingPoll();
+      if (activeQpRoomListener) { try { activeQpRoomListener(); } catch (e) {} activeQpRoomListener = null; }
+      try { await submitQpPractice('already'); } catch (e) { console.error(e); }
+    } else {
+      switchView('studentLoginView');
+    }
+  } else {
+    examEndedByTeacher = false;
+    if (isExamActive) {
+      isExamActive = false;
+      clearInterval(examTimer);
+      stopLiveWaitingPoll();
+      if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
+      try { await submitStudentExam('already'); } catch (e) { console.error(e); }
+    } else {
+      switchView('studentLoginView');
+    }
+  }
+}
+
+async function cancelStudentExamSilently() {
+  clearInterval(examTimer);
+  isExamActive = false;
+  setExamActiveClass(false);
+  stopLiveWaitingPoll();
+  if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
+  if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
+    try { await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`)); } catch (e) {}
+  }
+  currentExamData = null; studentNameGlobal = ''; studentSessionKeyGlobal = '';
+  cheatWarnings = 0; totalTabLeaveTime = 0; tabLeaveStartTime = null;
+  const media = document.getElementById('examMediaContainer'), sheet = document.getElementById('studentAnswerSheet');
+  if (media) media.innerHTML = ''; if (sheet) sheet.innerHTML = '';
+  switchView('studentLoginView');
 }
 
 async function handleTabLeaveEvent(durationAway){
@@ -1524,7 +1591,9 @@ function selectTfSub(btn,val){let p=btn.parentElement;p.querySelectorAll('.tf-su
 
 async function submitStudentExam(forced=false){
   if(!forced&&!confirm('Xác nhận nộp bài?'))return;
+  if(!isExamActive&&forced!=='already')return; // tránh nộp 2 lần
   clearInterval(examTimer);isExamActive=false;setExamActiveClass(false);stopLiveWaitingPoll();
+  if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
   let totalEarnedScore=0,reviewHtml='';
   currentExamData.questions.forEach(q=>{
     let studentAns='',isCorrect=false,qEarned=0;
@@ -1542,7 +1611,9 @@ async function submitStudentExam(forced=false){
   document.getElementById('resultScore').innerText=`${finalScore} / 10`;
   document.getElementById('resultDetailText').innerText=currentTimerEnabled?`Thời gian: ${Math.floor(timeSpentSeconds/60)}p ${timeSpentSeconds%60}s`:'Không giới hạn';
   document.getElementById('resultReviewContainer').innerHTML=reviewHtml;
-  await window.dbPush(window.ref(window.db,'leaderboard/'+currentExamData.code),{name:studentNameGlobal,score:finalScore,timeSpent:timeSpentSeconds,cheatWarnings:cheatWarnings,totalLeaveTime:Math.round(totalTabLeaveTime/1000),timestamp:Date.now()});
+  try {
+    await window.dbPush(window.ref(window.db,'leaderboard/'+currentExamData.code),{name:studentNameGlobal,score:finalScore,timeSpent:timeSpentSeconds,cheatWarnings:cheatWarnings,totalLeaveTime:Math.round(totalTabLeaveTime/1000),timestamp:Date.now()});
+  } catch (e) { console.error('Lỗi lưu kết quả:', e); }
   showToast('📤 Nộp bài thành công!','success');
   showResultPopup(finalScore,10,()=>{switchView('studentResultView');});
 }
@@ -1580,7 +1651,7 @@ function launchQpPracticeInterface(){
   switchView('qpPracticingView');
   if(currentQpData.isAdvancedMode){
     let roomMainRef=window.ref(window.db,`qp_rooms/${currentQpData.code}`);
-    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}});
+    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showExamEndedModal(true);}});
   }
 }
 function renderQpLayoutV1(){
@@ -1622,7 +1693,7 @@ function selectQpOpt(btn,qid,label){if(!isQpActive)return;let group=btn.parentEl
 function toggleQpExp(qid){let box=document.getElementById(`qp-exp-${qid}`),btn=box.previousElementSibling;if(box.style.display==='block'){box.style.display='none';btn.innerText='>';}else{box.style.display='block';btn.innerText='v';}}
 async function submitQpPractice(forced=false){
   if(!forced&&!confirm('Xác nhận nộp bài?'))return;
-  if(!isQpActive&&!forced)return;
+  if(!isQpActive&&forced!=='already')return;
   isQpActive=false;clearInterval(qpTimer);if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();
   let totalEarned=0,totalMax=0,reviewHtml='';
   currentQpData.questions.forEach(q=>{
@@ -1643,7 +1714,9 @@ async function submitQpPractice(forced=false){
   document.getElementById('qpResultScore').innerText=`${finalScore} / 10`;
   document.getElementById('qpResultDetailText').innerText=`Thời gian: ${Math.floor(timeSpentSeconds/60)}p ${timeSpentSeconds%60}s`;
   document.getElementById('qpResultReviewContainer').innerHTML=reviewHtml;
-  await window.dbPush(window.ref(window.db,`qp_leaderboard/${currentQpData.code}`),{name:studentNameGlobal,score:finalScore,timeSpent:timeSpentSeconds,timestamp:Date.now()});
+  try {
+    await window.dbPush(window.ref(window.db,`qp_leaderboard/${currentQpData.code}`),{name:studentNameGlobal,score:finalScore,timeSpent:timeSpentSeconds,timestamp:Date.now()});
+  } catch (e) { console.error('Lỗi lưu QP:', e); }
   showToast('📤 Nộp bài thành công!','success');
   showResultPopup(finalScore,10,()=>{switchView('qpResultView');});
 }
