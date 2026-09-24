@@ -988,6 +988,10 @@ let examEndedForQp = false;
 let forcedSubmitContext = null;
 
 /* ========== DROPDOWN CHỌN HÌNH THỨC ========== */
+function getExamMode() {
+  return document.getElementById('examModeSelect').value || 'normal';
+}
+
 function toggleModeDropdown(e) {
   e.stopPropagation();
   const menu = document.getElementById('modeDropdownMenu');
