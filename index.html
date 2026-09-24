@@ -9,6 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#f0f2f5;color:#333}
@@ -338,6 +339,28 @@ img{-webkit-user-drag:none;user-drag:none}
 .smart-tf-btn.selected-d{background:#198754;color:#fff;border-color:#157347}
 .smart-tf-btn.selected-s{background:#dc3545;color:#fff;border-color:#bb2d3b}
 .smart-progress-box{background:#f0f8ff;border:1px solid #b3d9ff;padding:12px;border-radius:8px;margin-top:8px;font-size:12px;color:#004085;line-height:1.5}
+/* ===== SMART EXAM V4 ===== */
+.smart-type-switcher{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
+.smart-type-btn{padding:4px 10px;font-size:11px;font-weight:bold;border:2px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;transition:all .2s}
+.smart-type-btn:hover{border-color:#1877f2;background:#e7f3ff}
+.smart-type-btn.active{background:#1877f2;color:#fff;border-color:#1877f2;box-shadow:0 3px 8px rgba(24,119,242,.3)}
+.smart-type-btn.active.tf{background:#198754;border-color:#198754;box-shadow:0 3px 8px rgba(25,135,84,.3)}
+.smart-type-btn.active.sa{background:#6f42c1;border-color:#6f42c1;box-shadow:0 3px 8px rgba(111,66,193,.3)}
+.smart-branch-count-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f8f9fa;border-radius:6px;margin-top:6px;font-size:12px}
+.smart-branch-count-row label{font-weight:bold;color:#555}
+.smart-branch-count-row select{padding:4px 8px;border-radius:5px;border:1px solid #ccc;font-size:12px;width:auto;margin:0}
+.smart-tf-branches{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.smart-tf-branch{display:flex;align-items:center;justify-content:space-between;background:#f8f9fa;padding:8px 12px;border-radius:8px;border:1px solid #e0e0e0;gap:8px;flex-wrap:wrap}
+.smart-tf-branch-label{font-weight:bold;font-size:13px;color:#555;flex:1;min-width:120px}
+.smart-tf-branch-opts{display:flex;gap:6px}
+.smart-tf-btn{width:42px;height:38px;border-radius:8px;border:2px solid #ccc;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;cursor:pointer;transition:all .2s}
+.smart-tf-btn:hover{border-color:#1877f2}
+.smart-tf-btn.selected-d{background:#198754;color:#fff;border-color:#157347;transform:scale(1.05)}
+.smart-tf-btn.selected-s{background:#dc3545;color:#fff;border-color:#bb2d3b;transform:scale(1.05)}
+.smart-section-header{background:linear-gradient(135deg,#e7f3ff,#f0f8ff);border-left:5px solid #1877f2;padding:10px 14px;border-radius:8px;margin:15px 0 10px 0;font-weight:bold;color:#1877f2;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.smart-section-header.tf{background:linear-gradient(135deg,#d1e7dd,#f0fff4);border-left-color:#198754;color:#0f5132}
+.smart-section-header.sa{background:linear-gradient(135deg,#ede7ff,#f8f0ff);border-left-color:#6f42c1;color:#4a2a8a}
+.smart-section-count{font-size:12px;background:#fff;padding:3px 10px;border-radius:20px;font-weight:bold}
 @media (max-width: 768px) {
   html,body{width:100%}
   body{-webkit-text-size-adjust:100%}
@@ -869,10 +892,14 @@ img{-webkit-user-drag:none;user-drag:none}
 
   <!-- ===== SMART EXAM MODULE ===== -->
   <div id="smartExamCreate" class="card sub-module-box" style="display:none">
-    <h3 style="color:#1877f2;margin-bottom:10px">🎓 Tạo Đề Thông Minh Từ PDF</h3>
+    <h3 style="color:#1877f2;margin-bottom:10px">🎓 Tạo Đề Thông Minh Từ PDF (V4)</h3>
     <hr style="margin:10px 0">
     <p style="font-size:13px;color:#555;margin-bottom:12px">
-      Hệ thống sẽ <b>tự động cắt ảnh từng câu hỏi</b> từ file PDF (giữ nguyên công thức, hình vẽ, bảng biến thiên). Sau đó bạn có thể chỉnh sửa và chọn đáp án đúng trước khi lưu.
+      Hệ thống <b>tự động cắt ảnh từng câu hỏi</b> và <b>phân tích 3 phần</b>:
+      <span style="background:#e7f3ff;color:#1877f2;padding:2px 8px;border-radius:20px;font-weight:bold;font-size:11px">📝 Trắc nghiệm</span>
+      <span style="background:#d1e7dd;color:#0f5132;padding:2px 8px;border-radius:20px;font-weight:bold;font-size:11px">🔀 Đúng/Sai</span>
+      <span style="background:#ede7ff;color:#4a2a8a;padding:2px 8px;border-radius:20px;font-weight:bold;font-size:11px">✍️ Trả lời ngắn</span>
+      <br><b>Bạn có thể đổi dạng câu hỏi bất kỳ lúc nào</b> trong Preview.
     </p>
 
     <div style="background:#f0f8ff;border:2px dashed #1877f2;padding:20px;border-radius:12px;text-align:center;margin-bottom:15px">
@@ -908,30 +935,23 @@ img{-webkit-user-drag:none;user-drag:none}
           </select>
         </div>
       </div>
-      <div class="smart-progress-box" style="margin-top:10px">
-        💡 <b>Mẹo:</b> Chọn <b>"Cắt ảnh câu hỏi"</b> để giữ nguyên công thức toán, hình vẽ, bảng biến thiên — học sinh sẽ thấy đề y hệt PDF gốc.
-      </div>
     </div>
 
     <div id="smartExamPreviewContainer" style="display:none">
       <div style="background:#d1e7dd;border-left:4px solid #198754;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;color:#0f5132">
         ✅ Đã phân tích xong! <span id="smartExamStats"></span>
       </div>
-
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <button class="btn" style="width:auto;background:#0d6efd;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('mc')">➕ Thêm câu trắc nghiệm</button>
-        <button class="btn" style="width:auto;background:#6f42c1;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('sa')">➕ Thêm câu trả lời ngắn</button>
+        <button class="btn" style="width:auto;background:#0d6efd;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('mc')">➕ Thêm trắc nghiệm</button>
+        <button class="btn" style="width:auto;background:#198754;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('tf')">➕ Thêm Đúng/Sai</button>
+        <button class="btn" style="width:auto;background:#6f42c1;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('sa')">➕ Thêm trả lời ngắn</button>
         <button class="btn btn-secondary" style="width:auto;padding:8px 14px;font-size:13px" onclick="reparseSmartExam()">🔄 Phân tích lại</button>
       </div>
-
-      <div id="smartQuestionsList" style="max-height:600px;overflow-y:auto;padding-right:6px"></div>
-
+      <div id="smartQuestionsList" style="max-height:650px;overflow-y:auto;padding-right:6px"></div>
       <button class="btn btn-success" style="margin-top:15px;padding:14px;font-size:15px" onclick="promptSaveSmartExam()">💾 Lưu Đề Thi Thông Minh</button>
       <button class="btn btn-secondary" style="margin-top:8px;padding:10px;font-size:13px" onclick="cancelSmartExam()">❌ Hủy & Xóa</button>
     </div>
   </div>
-</div>
-
 <div id="supremeView" class="view-section">
   <div class="card" style="border:2px solid #ffc107">
     <h2 style="color:#d32f2f;margin-bottom:15px">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
@@ -1522,7 +1542,7 @@ document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&document.getEleme
 document.addEventListener('focusin',(e)=>{const tag=(e.target.tagName||'').toUpperCase();if(tag!=='INPUT'&&tag!=='TEXTAREA')return;const examView=document.getElementById('studentExamView');const qpView=document.getElementById('qpPracticingView');if(!examView||!qpView)return;if(!examView.classList.contains('active')&&!qpView.classList.contains('active'))return;setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'});}catch(err){e.target.scrollIntoView();}},350);});
 
 /* ============================================================
-   SMART EXAM V3 — CẮT ẢNH CÂU HỎI TỪ PDF
+   SMART EXAM V4 — 3 PHẦN + ĐỔI DẠNG CÂU HỎI
    ============================================================ */
 
 async function handleSmartExamUpload(input){
@@ -1543,423 +1563,365 @@ async function handleSmartExamUpload(input){
   const autoTitle=file.name.replace(/\.pdf$/i,'').trim();
   if(!document.getElementById('smartExamTitle').value){document.getElementById('smartExamTitle').value=autoTitle;}
   try{
-    progressText.innerText='📖 Đang đọc file PDF...';progressBar.style.width='10%';
+    progressText.innerText='📖 Đang đọc PDF...';progressBar.style.width='10%';
     const arrayBuffer=await file.arrayBuffer();
     const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
     smartExamPdfDoc=pdf;
     const totalPages=pdf.numPages;
-    let allText='';
-    for(let i=1;i<=totalPages;i++){progressText.innerText=`📖 Đang đọc text trang ${i}/${totalPages}...`;progressBar.style.width=`${10+(i/totalPages)*15}%`;const page=await pdf.getPage(i);const textContent=await page.getTextContent();allText+='\n'+textContent.items.map(it=>it.str).join(' ');}
-    const cleanTextLen=allText.replace(/\s+/g,' ').trim().length;
-    const needOCR=parseMode==='ocr'||(parseMode==='auto'&&cleanTextLen<150);
-    if(needOCR){progressText.innerText='🔍 PDF dạng scan — chạy OCR...';progressBar.style.width='30%';let ocrText='';for(let i=1;i<=totalPages;i++){progressText.innerText=`🔍 OCR trang ${i}/${totalPages}...`;progressBar.style.width=`${30+(i/totalPages)*30}%`;const page=await pdf.getPage(i);const viewport=page.getViewport({scale:2.0});const canvas=document.createElement('canvas');canvas.width=viewport.width;canvas.height=viewport.height;const ctx=canvas.getContext('2d');await page.render({canvasContext:ctx,viewport}).promise;const imgData=canvas.toDataURL('image/png');try{const result=await Tesseract.recognize(imgData,'vie+eng',{logger:m=>{if(m.status==='recognizing text'){progressText.innerText=`🔍 OCR trang ${i}/${totalPages}... ${Math.round(m.progress*100)}%`;}}});ocrText+='\n'+(result.data.text||'');}catch(e){console.error(e);}}allText=ocrText;}
+    let allText='',totalTextLen=0;
+    for(let i=1;i<=totalPages;i++){
+      progressText.innerText=`📖 Đọc text trang ${i}/${totalPages}...`;
+      progressBar.style.width=`${10+(i/totalPages)*15}%`;
+      const page=await pdf.getPage(i);
+      const tc=await page.getTextContent();
+      const pageText=tc.items.map(it=>it.str).join(' ');
+      allText+='\n'+pageText;
+      totalTextLen+=pageText.replace(/\s+/g,'').length;
+    }
+    const needOCR=parseMode==='ocr'||(parseMode==='auto'&&totalTextLen<200);
+    if(needOCR){
+      progressText.innerText='🔍 PDF scan — OCR...';progressBar.style.width='30%';
+      let ocrText='';
+      for(let i=1;i<=totalPages;i++){
+        progressText.innerText=`🔍 OCR trang ${i}/${totalPages}...`;
+        progressBar.style.width=`${30+(i/totalPages)*30}%`;
+        const page=await pdf.getPage(i);
+        const vp=page.getViewport({scale:2.0});
+        const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;
+        await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+        try{
+          const res=await Tesseract.recognize(cv.toDataURL('image/png'),'vie+eng',{logger:m=>{if(m.status==='recognizing text')progressText.innerText=`🔍 OCR trang ${i}/${totalPages}... ${Math.round(m.progress*100)}%`;}});
+          ocrText+='\n'+(res.data.text||'');
+        }catch(e){console.error(e);}
+      }
+      allText=ocrText;
+    }
     smartExamRawText=allText;
-    progressText.innerText='🧠 Đang phân tích & cắt ảnh câu hỏi...';progressBar.style.width='65%';
+    progressText.innerText='🧠 Phân tích & cắt ảnh...';progressBar.style.width='65%';
     await new Promise(r=>setTimeout(r,200));
-    const parsed=await parseExamTextAndCropImages(pdf,allText,parseMode,progressText,progressBar);
+    const parsed=await parseExamTextAndCropImages(pdf,allText,progressText,progressBar);
     smartExamQuestions=parsed.questions;
     smartExamStats=parsed.stats;
     progressBar.style.width='100%';
-    progressText.innerText=`✅ Hoàn tất! Tìm thấy ${smartExamQuestions.length} câu hỏi.`;
-    setTimeout(()=>{progressBox.style.display='none';configBox.style.display='block';previewBox.style.display='block';
-      const stats=document.getElementById('smartExamStats');
-      stats.innerHTML=`Tìm thấy <b>${smartExamQuestions.length}</b> câu hỏi — 📝 ${smartExamStats.mc} trắc nghiệm, ✍️ ${smartExamStats.sa} trả lời ngắn, 🔀 ${smartExamStats.tf} đúng/sai${smartExamStats.ambiguous>0?`, ⚠️ ${smartExamStats.ambiguous} cần kiểm tra`:''}`;
+    progressText.innerText=`✅ Tìm thấy ${smartExamQuestions.length} câu hỏi.`;
+    setTimeout(()=>{
+      progressBox.style.display='none';
+      configBox.style.display='block';
+      previewBox.style.display='block';
+      document.getElementById('smartExamStats').innerHTML=`Tìm thấy <b>${smartExamQuestions.length}</b> câu — 📝 ${smartExamStats.mc} trắc nghiệm, 🔀 ${smartExamStats.tf} đúng/sai, ✍️ ${smartExamStats.sa} trả lời ngắn`;
       renderSmartQuestionsList();
-      if(smartExamQuestions.length===0){showToast('⚠️ Không tìm thấy câu hỏi. Hãy thử chỉnh chế độ phân tích hoặc thêm thủ công.','warn');}else{showToast(`🎓 Phân tích xong ${smartExamQuestions.length} câu hỏi!`,'success');}
+      showToast(smartExamQuestions.length>0?`🎓 Phân tích xong ${smartExamQuestions.length} câu!`:'⚠️ Không tìm thấy câu hỏi.','success');
     },400);
-  }catch(err){console.error('Smart exam error:',err);progressBox.style.display='none';showToast('❌ Lỗi xử lý PDF: '+(err.message||err),'error');}
+  }catch(err){console.error('Smart exam error:',err);progressBox.style.display='none';showToast('❌ Lỗi: '+(err.message||err),'error');}
   finally{input.value='';}
 }
 
-/* ============================================================
-   PARSER V3 — TRÍCH XUẤT VỊ TRÍ Y ĐỂ CẮT ẢNH
-   ============================================================ */
-
-async function parseExamTextAndCropImages(pdf, rawText, parseMode, progressText, progressBar){
-  const stats={mc:0,sa:0,tf:0,ambiguous:0};
-  const questions=[];
-  
-  if(!rawText) return {questions:[],stats};
-  
-  // ===== Chuẩn hóa text =====
-  let text = rawText
-    .replace(/\r\n/g,'\n').replace(/\r/g,'\n')
-    .replace(/\u00A0/g,' ')
-    .replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
-    .replace(/[–—]/g,'-');
-  text = text.replace(/\bCau\b/g,'Câu');
-  
-  // ===== Lấy vị trí Y của từng câu hỏi trên từng trang =====
-  const questionMarkers = []; // {page, y, num, raw}
-  
-  for(let pageNum=1; pageNum<=pdf.numPages; pageNum++){
-    const page = await pdf.getPage(pageNum);
-    const viewport = page.getViewport({scale:1.0});
-    const textContent = await page.getTextContent();
-    const items = textContent.items;
-    
-    // Nhóm items theo dòng (cùng Y)
-    const linesMap = {};
-    items.forEach(it=>{
-      const y = Math.round(it.transform[5]);
-      const yKey = Math.round(y/3)*3;
-      if(!linesMap[yKey]) linesMap[yKey] = { y, items: [] };
-      linesMap[yKey].items.push(it);
-    });
-    
-    const sortedLines = Object.values(linesMap).sort((a,b)=>b.y-a.y);
-    
-    // Tìm các dòng bắt đầu bằng "Câu N", "Question N", "Bài N", "PHẦN ..."
-    sortedLines.forEach(line=>{
-      line.items.sort((a,b)=>a.transform[4]-b.transform[4]);
-      const lineText = line.items.map(it=>it.str).join(' ').trim();
-      
-      // Câu hỏi chuẩn
-      const m1 = lineText.match(/^(?:Câu|CÂU|Cau|Question|Bài|BÀI)\s*(\d{1,3})\b/i);
-      // Dạng PHẦN I, PHẦN II, PHẦN III
-      const m2 = lineText.match(/^PHẦN\s+(I{1,3}|IV|V|VI|[0-9]+)\b/i);
-      
-      if(m1){
-        questionMarkers.push({ page: pageNum, y: line.y, num: parseInt(m1[1]), raw: lineText, type:'question' });
-      } else if(m2){
-        questionMarkers.push({ page: pageNum, y: line.y, num: 0, raw: lineText, type:'section', section: m2[1].toUpperCase() });
-      }
-    });
-  }
-  
-  if(questionMarkers.length === 0){
-    // Fallback: nếu không tìm thấy marker nào → parse text thuần
-    return parseExamTextOnly(text);
-  }
-  
-  // ===== Sắp xếp các marker theo thứ tự =====
-  questionMarkers.sort((a,b)=>{
-    if(a.page !== b.page) return a.page - b.page;
-    return b.y - a.y;
-  });
-  
-  // ===== Tạo danh sách vùng cần cắt cho mỗi câu =====
-  const regions = [];
-  for(let i=0; i<questionMarkers.length; i++){
-    const m = questionMarkers[i];
-    if(m.type === 'section') continue; // bỏ qua marker PHẦN
-    
-    // Tìm marker tiếp theo (bất kỳ, kể cả section)
-    let nextMarker = null;
-    for(let j=i+1; j<questionMarkers.length; j++){
-      nextMarker = questionMarkers[j];
-      break;
-    }
-    
-    regions.push({
-      page: m.page,
-      startY: m.y,
-      endY: nextMarker ? (nextMarker.page === m.page ? nextMarker.y : 0) : 0,
-      endPage: nextMarker ? nextMarker.page : m.page,
-      num: m.num,
-      raw: m.raw
-    });
-  }
-  
-  // ===== Cắt ảnh cho từng region =====
-  const CROP_SCALE = 2.0;
-  const JPEG_QUALITY = 0.82;
-  const renderedPagesCache = {};
-  
-  for(let i=0; i<regions.length; i++){
-    const r = regions[i];
-    progressText.innerText = `✂️ Cắt ảnh câu ${r.num} (${i+1}/${regions.length})...`;
-    progressBar.style.width = `${65 + (i/regions.length)*30}%`;
-    
-    try {
-      const page = await pdf.getPage(r.page);
-      const viewport = page.getViewport({scale:CROP_SCALE});
-      const pageHeightPx = viewport.height;
-      const pageWidthPx = viewport.width;
-      
-      // Tọa độ Y trong PDF (gốc dưới) → pixel trong canvas (gốc trên)
-      const y_top_pdf = r.startY;
-      const y_bottom_pdf = r.endY > 0 ? r.endY : 0;
-      
-      const yTopPx = Math.max(0, (page.getViewport({scale:1}).height - y_top_pdf) * CROP_SCALE - 20);
-      const yBottomPx = Math.min(pageHeightPx, (page.getViewport({scale:1}).height - y_bottom_pdf) * CROP_SCALE + 20);
-      
-      const cropHeight = Math.max(60, yBottomPx - yTopPx);
-      
-      // Cache canvas của trang
-      if(!renderedPagesCache[r.page]){
-        const renderCanvas = document.createElement('canvas');
-        renderCanvas.width = pageWidthPx;
-        renderCanvas.height = pageHeightPx;
-        const renderCtx = renderCanvas.getContext('2d');
-        await page.render({canvasContext:renderCtx, viewport}).promise;
-        renderedPagesCache[r.page] = renderCanvas;
-      }
-      
-      const srcCanvas = renderedPagesCache[r.page];
-      const cropCanvas = document.createElement('canvas');
-      cropCanvas.width = srcCanvas.width;
-      cropCanvas.height = cropHeight;
-      const cropCtx = cropCanvas.getContext('2d');
-      cropCtx.fillStyle = '#ffffff';
-      cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
-      cropCtx.drawImage(srcCanvas, 0, yTopPx, srcCanvas.width, cropHeight, 0, 0, srcCanvas.width, cropHeight);
-      
-      const imgData = cropCanvas.toDataURL('image/jpeg', JPEG_QUALITY);
-      
-      const q = {
-        id: questions.length + 1,
-        type: 'mc',
-        content: '',
-        imageData: imgData,
-        imageUrl: '',
-        options: [],
-        correctAnswer: '',
-        score: 0.25,
-        note: '',
-        _region: r
-      };
-      questions.push(q);
-    } catch(err) {
-      console.error('Crop error for region', i, err);
-      questions.push({
-        id: questions.length + 1,
-        type: 'mc',
-        content: '',
-        imageData: '',
-        options: [],
-        correctAnswer: '',
-        score: 0.25,
-        note: 'Không cắt được ảnh câu hỏi'
-      });
-    }
-  }
-  
-  // ===== Gán loại câu hỏi dựa vào vị trí PHẦN =====
-  let currentSection = 1;
-  let mcCount = 0, tfCount = 0, saCount = 0;
-  
-  for(let i = 0; i < questions.length; i++){
-    const q = questions[i];
-    
-    // Kiểm tra region gốc nằm sau PHẦN nào
-    // (đã sắp xếp cùng thứ tự với questionMarkers, nhưng cần check PHẦN)
-    // Đơn giản: đếm số câu trong PHẦN I, II, III dựa vào marker PHẦN
-    let sectionIdx = 1;
-    let foundSection = false;
-    for(const marker of questionMarkers){
-      if(marker.type === 'section'){
-        const s = marker.section;
-        let snum = 1;
-        if(s==='I') snum = 1;
-        else if(s==='II') snum = 2;
-        else if(s==='III') snum = 3;
-        else if(s==='IV') snum = 4;
-        else snum = parseInt(s) || 1;
-        
-        if(marker.page < q._region.page || (marker.page === q._region.page && marker.y > q._region.startY)){
-          sectionIdx = snum;
-          foundSection = true;
-        } else {
-          break;
-        }
-      }
-    }
-    if(!foundSection) sectionIdx = 1;
-    
-    q._section = sectionIdx;
-  }
-  
-  // Đếm tổng số câu mỗi phần
-  const mcTotal = questions.filter(q=>q._section===1).length;
-  const tfTotal = questions.filter(q=>q._section===2).length;
-  const saTotal = questions.filter(q=>q._section===3).length;
-  
-  // ===== Phân loại =====
-  questions.forEach(q=>{
-    delete q._region;
-    if(q._section === 1){q.type = 'mc';stats.mc++;}
-    else if(q._section === 2){q.type = 'tf';stats.tf++;
-      // Đoán số nhánh từ text OCR (nếu có a) b) c) d))
-      q._tfBranches = guessTFBranches(smartExamRawText, q.id);
-      if(!q._tfBranches || q._tfBranches.length===0){q._tfBranches = ['Đ','Đ','S','S'];}
-      stats.ambiguous += (q._tfBranches ? 0 : 1);
-    }
-    else if(q._section === 3){q.type = 'sa';stats.sa++;}
-    else {q.type = 'mc';stats.mc++;}
-    q.score = q.type==='mc'?0.25:(q.type==='tf'?1.0:0.5);
-  });
-  
-  // ===== Thử trích xuất đáp án đúng từ text (nếu có) =====
-  // Không có pattern chuẩn cho đáp án → để GV tự chọn
-  
-  // ===== Thử trích options text từ OCR =====
-  questions.forEach(q=>{
-    if(q.type==='mc'){
-      const opts = extractOptionsForQuestion(smartExamRawText, q.id);
-      q.options = opts.length >= 2 ? opts : [
-        {label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}
-      ];
-    }
-  });
-  
-  // ===== Đánh lại ID =====
-  questions.forEach((q,i)=>{q.id = i+1;});
-  
-  return {questions, stats};
-}
-
-function guessTFBranches(rawText, qNum){
-  // Đoán số nhánh a) b) c) d) trong text
-  return ['Đ','Đ','S','S'];
-}
-
-function extractOptionsForQuestion(rawText, qNum){
-  // Đơn giản: trả về 4 đáp án trống để GV nhập
-  return [{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}];
-}
-
-function parseExamTextOnly(rawText){
-  // Fallback parser như V2
+async function parseExamTextAndCropImages(pdf,rawText,progressText,progressBar){
   const stats={mc:0,sa:0,tf:0,ambiguous:0};
   const questions=[];
   if(!rawText) return {questions,stats};
-  let text = rawText.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
-  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l);
-  const questionRe = /^(?:Câu|CÂU|Cau|Question|Bài|BÀI|Problem)\s*(\d{1,3})\s*[.:)\-]?\s*(.*)$/i;
-  const optionRe = /^[\(\[]?([A-Da-d])[\)\]]?\s*[.:)\-]\s*(.+)$/;
-  let current = null;
-  for(let i=0;i<lines.length;i++){
-    const line = lines[i];
-    const qm = line.match(questionRe);
-    if(qm){
-      if(current){questions.push(current);}
-      current = {id:questions.length+1,type:'mc',content:qm[2]||'',options:[],correctAnswer:'',score:0.25,note:''};
-      continue;
-    }
-    const om = line.match(optionRe);
-    if(om && current){current.options.push({label:om[1].toUpperCase(),text:om[2].trim()});continue;}
-    if(current){if(current.options.length>0){const last=current.options[current.options.length-1];last.text+=' '+line;}else{current.content+=' '+line;}}
+  let text=rawText.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\u00A0/g,' ').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[–—]/g,'-');
+  text=text.replace(/\bCau\b/g,'Câu');
+  const markers=[];
+  for(let pageNum=1;pageNum<=pdf.numPages;pageNum++){
+    const page=await pdf.getPage(pageNum);
+    const tc=await page.getTextContent();
+    const linesMap={};
+    tc.items.forEach(it=>{
+      const y=Math.round(it.transform[5]);
+      const yKey=Math.round(y/4)*4;
+      if(!linesMap[yKey]) linesMap[yKey]={y,items:[]};
+      linesMap[yKey].items.push(it);
+    });
+    const sortedLines=Object.values(linesMap).sort((a,b)=>b.y-a.y);
+    sortedLines.forEach(line=>{
+      line.items.sort((a,b)=>a.transform[4]-b.transform[4]);
+      const lineText=line.items.map(it=>it.str).join(' ').trim();
+      if(!lineText) return;
+      const secMatch=lineText.match(/^PHẦN\s+(I{1,3}|IV|V|VI|[0-9]+)\b/i);
+      if(secMatch){
+        const s=secMatch[1].toUpperCase();
+        let snum=1;
+        if(s==='I')snum=1;else if(s==='II')snum=2;else if(s==='III')snum=3;else if(s==='IV')snum=4;else snum=parseInt(s)||1;
+        markers.push({page:pageNum,y:line.y,type:'section',section:snum});
+        return;
+      }
+      const qMatch=lineText.match(/^(?:Câu|CÂU|Cau|Question|Bài|BÀI)\s*(\d{1,3})\b/i);
+      if(qMatch) markers.push({page:pageNum,y:line.y,type:'question',num:parseInt(qMatch[1])});
+    });
   }
-  if(current)questions.push(current);
+  if(markers.length===0) return parseExamTextOnly(text);
+  markers.sort((a,b)=>{if(a.page!==b.page)return a.page-b.page;return b.y-a.y;});
+  let curSection=1;
+  markers.forEach(m=>{
+    if(m.type==='section')curSection=m.section;
+    else if(m.type==='question')m.section=curSection;
+  });
+  const qMarkers=markers.filter(m=>m.type==='question');
+  const regions=[];
+  for(let i=0;i<qMarkers.length;i++){
+    const m=qMarkers[i];
+    let nextMarker=null;
+    const idx=markers.indexOf(m);
+    for(let j=idx+1;j<markers.length;j++){nextMarker=markers[j];break;}
+    regions.push({
+      page:m.page,startY:m.y,
+      endY:nextMarker?(nextMarker.page===m.page?nextMarker.y:0):0,
+      endPage:nextMarker?nextMarker.page:m.page,
+      num:m.num,section:m.section
+    });
+  }
+  const SCALE=2.0,QUALITY=0.82;
+  const pageCache={};
+  for(let i=0;i<regions.length;i++){
+    const r=regions[i];
+    progressText.innerText=`✂️ Cắt câu ${r.num}/${regions.length}...`;
+    progressBar.style.width=`${65+(i/regions.length)*30}%`;
+    try{
+      const page=await pdf.getPage(r.page);
+      const vp=page.getViewport({scale:SCALE});
+      const vp1=page.getViewport({scale:1});
+      const yTop=Math.max(0,(vp1.height-r.startY)*SCALE-25);
+      const yBot=r.endY>0?Math.min(vp.height,(vp1.height-r.endY)*SCALE+25):vp.height;
+      const cropH=Math.max(60,yBot-yTop);
+      if(!pageCache[r.page]){
+        const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+        await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+        pageCache[r.page]=c;
+      }
+      const src=pageCache[r.page];
+      const cc=document.createElement('canvas');cc.width=src.width;cc.height=cropH;
+      const cctx=cc.getContext('2d');cctx.fillStyle='#fff';cctx.fillRect(0,0,cc.width,cc.height);
+      cctx.drawImage(src,0,yTop,src.width,cropH,0,0,src.width,cropH);
+      const imgData=cc.toDataURL('image/jpeg',QUALITY);
+      let qType='mc';
+      if(r.section===2)qType='tf';
+      else if(r.section===3)qType='sa';
+      questions.push({
+        id:questions.length+1,type:qType,content:'',imageData:imgData,
+        options:qType==='mc'?[{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}]:[],
+        correctAnswer:'',
+        score:qType==='mc'?0.25:(qType==='tf'?1.0:0.5),
+        note:'',
+        _tfBranches:qType==='tf'?['Đ','Đ','S','S']:null,
+        _section:r.section
+      });
+    }catch(err){
+      console.error('Crop error:',err);
+      questions.push({id:questions.length+1,type:'mc',content:'',imageData:'',options:[{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}],correctAnswer:'',score:0.25,note:'Không cắt được ảnh'});
+    }
+  }
   questions.forEach(q=>{
-    if(q.options.length<2){q.type='sa';q.options=[];stats.sa++;}
-    else{q.type='mc';stats.mc++;}
+    if(q.type==='mc')stats.mc++;
+    else if(q.type==='tf')stats.tf++;
+    else if(q.type==='sa')stats.sa++;
+  });
+  questions.forEach((q,i)=>{q.id=i+1;});
+  return {questions,stats};
+}
+
+function parseExamTextOnly(rawText){
+  const stats={mc:0,sa:0,tf:0,ambiguous:0};
+  const questions=[];
+  if(!rawText) return {questions,stats};
+  let text=rawText.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  text=text.replace(/(Câu\s+\d+)/gi,'\n$1');
+  text=text.replace(/([A-D])\s*[.):]\s+/g,'\n$1. ');
+  const lines=text.split('\n').map(l=>l.trim()).filter(l=>l);
+  const qRe=/^(?:Câu|CÂU|Cau|Question|Bài|BÀI)\s*(\d{1,3})\s*[.:)\-]?\s*(.*)$/i;
+  const optRe=/^[\(\[]?([A-Da-d])[\)\]]?\s*[.:)\-]\s*(.+)$/;
+  let cur=null;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const qm=line.match(qRe);
+    if(qm){if(cur)questions.push(cur);cur={id:questions.length+1,type:'mc',content:qm[2]||'',imageData:'',options:[],correctAnswer:'',score:0.25,note:''};continue;}
+    const om=line.match(optRe);
+    if(om&&cur){cur.options.push({label:om[1].toUpperCase(),text:om[2].trim()});continue;}
+    if(cur){if(cur.options.length>0){const last=cur.options[cur.options.length-1];last.text+=' '+line;}else{cur.content+=' '+line;}}
+  }
+  if(cur)questions.push(cur);
+  questions.forEach(q=>{
+    if(q.options.length<2){q.type='sa';q.options=[];stats.sa++;}else{q.type='mc';stats.mc++;}
     q.content=q.content.replace(/\s+/g,' ').trim();
   });
   return {questions,stats};
 }
 
-/* ====== RENDER PREVIEW ====== */
 function renderSmartQuestionsList(){
-  const container = document.getElementById('smartQuestionsList');
+  const container=document.getElementById('smartQuestionsList');
   if(!container) return;
-  if(smartExamQuestions.length === 0){
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:#888;font-style:italic">Không có câu hỏi nào. Hãy thêm thủ công hoặc thử phân tích lại.</div>';
+  if(smartExamQuestions.length===0){
+    container.innerHTML='<div style="text-align:center;padding:30px;color:#888;font-style:italic">Không có câu hỏi nào.</div>';
     return;
   }
-  let html = '';
-  smartExamQuestions.forEach((q, idx) => {
-    const typeLabel = q.type === 'mc' ? '📝 Trắc nghiệm'
-                    : q.type === 'sa' ? '✍️ Trả lời ngắn'
-                    : '🔀 Đúng/Sai';
-    const typeColor = q.type === 'mc' ? '#1877f2'
-                    : q.type === 'sa' ? '#6f42c1'
-                    : '#198754';
-    html += `<div class="smart-q-card" data-idx="${idx}">`;
-    html += `<div class="smart-q-header">`;
-    html += `<span class="smart-q-num">Câu ${idx + 1}</span>`;
-    html += `<span class="smart-q-type" style="background:${typeColor}22;color:${typeColor}">${typeLabel}</span>`;
-    html += `<div class="smart-q-actions">`;
-    html += `<button class="smart-q-del" onclick="removeSmartQuestion(${idx})">🗑️ Xóa</button>`;
-    html += `</div></div>`;
-    if(q.note){html += `<div class="smart-q-note">⚠️ ${escapeHtml(q.note)}</div>`;}
-    if(q.imageData){
-      html += `<img src="${q.imageData}" class="smart-q-img" alt="Câu hỏi ${idx+1}">`;
-    } else {
-      html += `<textarea class="smart-q-content" placeholder="Nội dung câu hỏi..." onchange="updateSmartQ(${idx},'content',this.value)">${escapeHtml(q.content||'')}</textarea>`;
-    }
-    if(q.type === 'mc'){
-      q.options.forEach((opt, oi) => {
-        const isCorrect = q.correctAnswer && q.correctAnswer.toUpperCase() === opt.label.toUpperCase();
-        html += `<div class="smart-opt-row">`;
-        html += `<div class="smart-opt-label ${isCorrect ? 'correct' : ''}" onclick="setSmartCorrect(${idx},'${opt.label}')" title="Bấm để chọn đáp án đúng">${opt.label}</div>`;
-        html += `<input type="text" class="smart-opt-input ${isCorrect ? 'correct' : ''}" value="${escapeHtml(opt.text||'')}" onchange="updateSmartOpt(${idx},${oi},this.value)" placeholder="Nội dung đáp án ${opt.label}...">`;
-        html += `</div>`;
-      });
-      if(!q.correctAnswer){html += `<div style="font-size:11px;color:#dc3545;margin-top:4px">⚠️ Chưa chọn đáp án đúng. Bấm vào A/B/C/D để chọn.</div>`;}
-    } else if(q.type === 'sa'){
-      html += `<div class="smart-answer-row">`;
-      html += `<label>Đáp án đúng:</label>`;
-      html += `<input type="text" class="smart-answer-input" value="${escapeHtml(q.correctAnswer || '')}" onchange="updateSmartQ(${idx},'correctAnswer',this.value)" placeholder="Nhập đáp án...">`;
-      html += `<span class="smart-correct-hint">So sánh linh hoạt dấu , và .</span>`;
-      html += `</div>`;
-    } else if(q.type === 'tf'){
-      html += `<div style="font-size:12px;color:#666;margin-bottom:6px">Chọn Đúng/Sai cho từng nhánh:</div>`;
-      html += `<div class="smart-tf-branches">`;
-      const branches = q._tfBranches || ['Đ','Đ','S','S'];
-      const letters = ['a','b','c','d','e'];
-      branches.forEach((ans, bi) => {
-        html += `<div class="smart-tf-branch">`;
-        html += `<span class="smart-tf-branch-label">Nhánh ${letters[bi]||bi+1}</span>`;
-        html += `<div class="smart-tf-branch-opts">`;
-        html += `<button class="smart-tf-btn ${ans==='Đ'?'selected-d':''}" onclick="setSmartTF(${idx},${bi},'Đ')">Đ</button>`;
-        html += `<button class="smart-tf-btn ${ans==='S'?'selected-s':''}" onclick="setSmartTF(${idx},${bi},'S')">S</button>`;
-        html += `</div></div>`;
-      });
-      html += `</div>`;
-    }
-    html += `</div>`;
-  });
-  container.innerHTML = html;
+  const groups={
+    mc:smartExamQuestions.map((q,i)=>({q,i})).filter(o=>o.q.type==='mc'),
+    tf:smartExamQuestions.map((q,i)=>({q,i})).filter(o=>o.q.type==='tf'),
+    sa:smartExamQuestions.map((q,i)=>({q,i})).filter(o=>o.q.type==='sa')
+  };
+  let html='';
+  if(groups.mc.length>0){
+    html+=`<div class="smart-section-header"><span>📝 PHẦN TRẮC NGHIỆM</span><span class="smart-section-count">${groups.mc.length} câu</span></div>`;
+    groups.mc.forEach(o=>html+=renderSmartCard(o.q,o.i,'mc'));
+  }
+  if(groups.tf.length>0){
+    html+=`<div class="smart-section-header tf"><span>🔀 PHẦN ĐÚNG / SAI</span><span class="smart-section-count">${groups.tf.length} câu</span></div>`;
+    groups.tf.forEach(o=>html+=renderSmartCard(o.q,o.i,'tf'));
+  }
+  if(groups.sa.length>0){
+    html+=`<div class="smart-section-header sa"><span>✍️ PHẦN TRẢ LỜI NGẮN</span><span class="smart-section-count">${groups.sa.length} câu</span></div>`;
+    groups.sa.forEach(o=>html+=renderSmartCard(o.q,o.i,'sa'));
+  }
+  container.innerHTML=html;
 }
+
+function renderSmartCard(q,idx,displayType){
+  const typeLabel=displayType==='mc'?'📝 Trắc nghiệm':(displayType==='tf'?'🔀 Đúng/Sai':'✍️ Trả lời ngắn');
+  const typeColor=displayType==='mc'?'#1877f2':(displayType==='tf'?'#198754':'#6f42c1');
+  let html=`<div class="smart-q-card" data-idx="${idx}">`;
+  html+=`<div class="smart-q-header">`;
+  html+=`<span class="smart-q-num">Câu ${idx+1}</span>`;
+  html+=`<span class="smart-q-type" style="background:${typeColor}22;color:${typeColor}">${typeLabel}</span>`;
+  html+=`<div class="smart-type-switcher">`;
+  html+=`<button class="smart-type-btn ${displayType==='mc'?'active':''}" onclick="changeSmartType(${idx},'mc')">📝 MC</button>`;
+  html+=`<button class="smart-type-btn ${displayType==='tf'?'active tf':''}" onclick="changeSmartType(${idx},'tf')">🔀 Đ/S</button>`;
+  html+=`<button class="smart-type-btn ${displayType==='sa'?'active sa':''}" onclick="changeSmartType(${idx},'sa')">✍️ TLN</button>`;
+  html+=`<button class="smart-q-del" onclick="removeSmartQuestion(${idx})" style="margin-left:6px">🗑️</button>`;
+  html+=`</div></div>`;
+  if(q.note){html+=`<div class="smart-q-note">⚠️ ${escapeHtml(q.note)}</div>`;}
+  if(q.imageData){html+=`<img src="${q.imageData}" class="smart-q-img" alt="Câu ${idx+1}">`;}
+  else{html+=`<textarea class="smart-q-content" placeholder="Nội dung câu hỏi..." onchange="updateSmartQ(${idx},'content',this.value)">${escapeHtml(q.content||'')}</textarea>`;}
+  if(displayType==='mc'){
+    if(!q.options||q.options.length<2)q.options=[{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}];
+    q.options.forEach((opt,oi)=>{
+      const isCorrect=q.correctAnswer&&q.correctAnswer.toUpperCase()===opt.label.toUpperCase();
+      html+=`<div class="smart-opt-row">`;
+      html+=`<div class="smart-opt-label ${isCorrect?'correct':''}" onclick="setSmartCorrect(${idx},'${opt.label}')">${opt.label}</div>`;
+      html+=`<input type="text" class="smart-opt-input ${isCorrect?'correct':''}" value="${escapeHtml(opt.text||'')}" onchange="updateSmartOpt(${idx},${oi},this.value)" placeholder="Đáp án ${opt.label}...">`;
+      html+=`</div>`;
+    });
+    if(!q.correctAnswer){html+=`<div style="font-size:11px;color:#dc3545;margin-top:4px">⚠️ Bấm A/B/C/D để chọn đáp án đúng</div>`;}
+  }else if(displayType==='tf'){
+    if(!q._tfBranches)q._tfBranches=['Đ','Đ','S','S'];
+    const branchCount=q._tfBranches.length;
+    html+=`<div class="smart-branch-count-row"><label>Số nhánh:</label><select onchange="setSmartBranchCount(${idx},this.value)">${[2,3,4,5,6].map(n=>`<option value="${n}" ${n===branchCount?'selected':''}>${n} nhánh</option>`).join('')}</select></div>`;
+    const letters=['a','b','c','d','e','f'];
+    html+=`<div class="smart-tf-branches">`;
+    q._tfBranches.forEach((ans,bi)=>{
+      html+=`<div class="smart-tf-branch">`;
+      html+=`<span class="smart-tf-branch-label">Nhánh ${letters[bi]||bi+1}</span>`;
+      html+=`<div class="smart-tf-branch-opts">`;
+      html+=`<button class="smart-tf-btn ${ans==='Đ'?'selected-d':''}" onclick="setSmartTF(${idx},${bi},'Đ')">Đ</button>`;
+      html+=`<button class="smart-tf-btn ${ans==='S'?'selected-s':''}" onclick="setSmartTF(${idx},${bi},'S')">S</button>`;
+      html+=`</div></div>`;
+    });
+    html+=`</div>`;
+  }else if(displayType==='sa'){
+    html+=`<div class="smart-answer-row"><label>Đáp án đúng:</label>`;
+    html+=`<input type="text" class="smart-answer-input" value="${escapeHtml(q.correctAnswer||'')}" onchange="updateSmartQ(${idx},'correctAnswer',this.value)" placeholder="Nhập đáp án...">`;
+    html+=`<span class="smart-correct-hint">So sánh dấu , và . linh hoạt</span></div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
 function escapeHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function updateSmartQ(idx,field,value){if(smartExamQuestions[idx]){smartExamQuestions[idx][field]=value;if(field==='correctAnswer')renderSmartQuestionsList();}}
 function updateSmartOpt(idx,oi,value){if(smartExamQuestions[idx]&&smartExamQuestions[idx].options[oi]){smartExamQuestions[idx].options[oi].text=value;}}
 function setSmartCorrect(idx,label){if(smartExamQuestions[idx]){smartExamQuestions[idx].correctAnswer=label;renderSmartQuestionsList();}}
 function setSmartTF(idx,bi,val){if(smartExamQuestions[idx]){if(!smartExamQuestions[idx]._tfBranches)smartExamQuestions[idx]._tfBranches=['Đ','Đ','S','S'];smartExamQuestions[idx]._tfBranches[bi]=val;renderSmartQuestionsList();}}
-function removeSmartQuestion(idx){if(!confirm('Xóa câu hỏi này?'))return;smartExamQuestions.splice(idx,1);smartExamQuestions.forEach((q,i)=>q.id=i+1);renderSmartQuestionsList();document.getElementById('smartExamStats').innerText=`Còn ${smartExamQuestions.length} câu hỏi`;}
+function setSmartBranchCount(idx,count){
+  count=parseInt(count);
+  if(!smartExamQuestions[idx])return;
+  const q=smartExamQuestions[idx];
+  if(!q._tfBranches)q._tfBranches=[];
+  const cur=q._tfBranches;
+  if(count>cur.length){for(let i=cur.length;i<count;i++)cur.push('Đ');}
+  else{q._tfBranches=cur.slice(0,count);}
+  renderSmartQuestionsList();
+}
+
+function changeSmartType(idx,newType){
+  if(!smartExamQuestions[idx])return;
+  const q=smartExamQuestions[idx];
+  const oldType=q.type;
+  if(oldType===newType)return;
+  q.type=newType;
+  if(newType==='mc'){
+    q.score=0.25;
+    if(!q.options||q.options.length<2){q.options=[{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}];}
+    q.correctAnswer='';
+    q._tfBranches=null;
+  }else if(newType==='tf'){
+    q.score=1.0;
+    q.options=[];
+    if(!q._tfBranches)q._tfBranches=['Đ','Đ','S','S'];
+    q.correctAnswer=q._tfBranches.join(',');
+  }else if(newType==='sa'){
+    q.score=0.5;
+    q.options=[];
+    q._tfBranches=null;
+    q.correctAnswer='';
+  }
+  renderSmartQuestionsList();
+  showToast(`✅ Đã đổi câu ${idx+1} sang ${newType==='mc'?'trắc nghiệm':(newType==='tf'?'Đúng/Sai':'trả lời ngắn')}`,'success');
+}
+
+function removeSmartQuestion(idx){
+  if(!confirm('Xóa câu hỏi này?'))return;
+  smartExamQuestions.splice(idx,1);
+  smartExamQuestions.forEach((q,i)=>q.id=i+1);
+  renderSmartQuestionsList();
+  const stats={mc:0,tf:0,sa:0};
+  smartExamQuestions.forEach(q=>{if(stats[q.type]!==undefined)stats[q.type]++;});
+  document.getElementById('smartExamStats').innerHTML=`Còn <b>${smartExamQuestions.length}</b> câu — 📝 ${stats.mc} trắc nghiệm, 🔀 ${stats.tf} đúng/sai, ✍️ ${stats.sa} trả lời ngắn`;
+}
 function addSmartQuestion(type){
-  const newQ = {
-    id: smartExamQuestions.length + 1,
-    type: type || 'mc',
-    content: '',
-    imageData: '',
-    options: type === 'mc' ? [{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}] : [],
-    correctAnswer: '',
-    score: type === 'mc' ? 0.25 : (type==='tf'?1.0:0.5),
-    note: '',
-    _tfBranches: type==='tf' ? ['Đ','Đ','S','S'] : null
+  const newQ={
+    id:smartExamQuestions.length+1,
+    type:type||'mc',
+    content:'',
+    imageData:'',
+    options:type==='mc'?[{label:'A',text:''},{label:'B',text:''},{label:'C',text:''},{label:'D',text:''}]:[],
+    correctAnswer:'',
+    score:type==='mc'?0.25:(type==='tf'?1.0:0.5),
+    note:'',
+    _tfBranches:type==='tf'?['Đ','Đ','S','S']:null
   };
   smartExamQuestions.push(newQ);
   renderSmartQuestionsList();
-  document.getElementById('smartExamStats').innerText = `Còn ${smartExamQuestions.length} câu hỏi`;
+  const stats={mc:0,tf:0,sa:0};
+  smartExamQuestions.forEach(q=>{if(stats[q.type]!==undefined)stats[q.type]++;});
+  document.getElementById('smartExamStats').innerHTML=`Còn <b>${smartExamQuestions.length}</b> câu — 📝 ${stats.mc} trắc nghiệm, 🔀 ${stats.tf} đúng/sai, ✍️ ${stats.sa} trả lời ngắn`;
 }
 function reparseSmartExam(){
   if(!smartExamRawText){showToast('Chưa có dữ liệu để phân tích lại!','error');return;}
   if(!confirm('Phân tích lại sẽ mất các chỉnh sửa hiện tại. Tiếp tục?'))return;
   if(smartExamPdfDoc){
-    parseExamTextAndCropImages(smartExamPdfDoc, smartExamRawText, 'image', 
+    parseExamTextAndCropImages(smartExamPdfDoc,smartExamRawText,
       document.getElementById('smartExamProgressText'),
       document.getElementById('smartExamProgressBar')
     ).then(parsed=>{
       smartExamQuestions=parsed.questions;
       smartExamStats=parsed.stats;
       renderSmartQuestionsList();
-      document.getElementById('smartExamStats').innerHTML=`Tìm thấy <b>${smartExamQuestions.length}</b> câu hỏi — 📝 ${smartExamStats.mc} trắc nghiệm, ✍️ ${smartExamStats.sa} trả lời ngắn, 🔀 ${smartExamStats.tf} đúng/sai`;
+      document.getElementById('smartExamStats').innerHTML=`Tìm thấy <b>${smartExamQuestions.length}</b> câu — 📝 ${smartExamStats.mc} trắc nghiệm, 🔀 ${smartExamStats.tf} đúng/sai, ✍️ ${smartExamStats.sa} trả lời ngắn`;
       showToast(`🔄 Đã phân tích lại: ${smartExamQuestions.length} câu`,'success');
     });
-  } else {
-    const parsed = parseExamTextOnly(smartExamRawText);
-    smartExamQuestions = parsed.questions;
-    smartExamStats = parsed.stats;
+  }else{
+    const parsed=parseExamTextOnly(smartExamRawText);
+    smartExamQuestions=parsed.questions;
+    smartExamStats=parsed.stats;
     renderSmartQuestionsList();
     showToast(`🔄 Đã phân tích lại: ${smartExamQuestions.length} câu`,'success');
   }
 }
 function cancelSmartExam(){
   if(!confirm('Hủy và xóa toàn bộ dữ liệu đã phân tích?'))return;
-  smartExamRawText='';smartExamQuestions=[];smartExamStats={mc:0,sa:0,tf:0,ambiguous:0};smartExamPdfDoc=null;
+  smartExamRawText='';
+  smartExamQuestions=[];
+  smartExamStats={mc:0,sa:0,tf:0,ambiguous:0};
+  smartExamPdfDoc=null;
   document.getElementById('smartExamPreviewContainer').style.display='none';
   document.getElementById('smartExamConfigBox').style.display='none';
   document.getElementById('smartExamProgress').style.display='none';
@@ -1978,8 +1940,10 @@ async function promptSaveSmartExam(){
     const q=smartExamQuestions[i];
     if(q.type==='mc'){
       if(!q.correctAnswer){showToast(`Câu ${i+1} chưa chọn đáp án đúng!`,'error');return;}
-    } else if(q.type==='sa'){
+    }else if(q.type==='sa'){
       if(!q.correctAnswer||!q.correctAnswer.trim()){showToast(`Câu ${i+1} chưa có đáp án!`,'error');return;}
+    }else if(q.type==='tf'){
+      if(!q._tfBranches||q._tfBranches.length<2){showToast(`Câu ${i+1} cần ít nhất 2 nhánh!`,'error');return;}
     }
   }
   const dupExam=await checkExamCodeDuplicate(code,'exam');
@@ -1995,7 +1959,14 @@ async function executeSaveSmartExam(){
   const title=document.getElementById('smartExamTitle').value.trim();
   const duration=parseInt(document.getElementById('smartExamDuration').value)||45;
   const questions=smartExamQuestions.map((q,idx)=>{
-    const qData={id:idx+1,type:q.type,score:q.score||(q.type==='mc'?0.25:(q.type==='tf'?1.0:0.5)),explanation:'',expImage:'',imageData:q.imageData||''};
+    const qData={
+      id:idx+1,
+      type:q.type,
+      score:q.score||(q.type==='mc'?0.25:(q.type==='tf'?1.0:0.5)),
+      explanation:'',
+      expImage:'',
+      imageData:q.imageData||''
+    };
     if(q.type==='mc'){qData.correctAnswer=(q.correctAnswer||'').toUpperCase();}
     else if(q.type==='sa'){qData.correctAnswer=(q.correctAnswer||'').trim();}
     else if(q.type==='tf'){const branches=q._tfBranches||['Đ','Đ','S','S'];qData.correctAnswer=branches.join(',');}
@@ -2003,7 +1974,16 @@ async function executeSaveSmartExam(){
   });
   redistributeScores(questions,10);
   redistributeTfBranchScores(questions);
-  const examObject={code,title,duration,timerEnabled:true,antiCheatEnabled:true,cheatThreshold:7,cheatLimitType:'unlimited',maxWarnings:5,isLiveRoom:false,livePassword:'',liveLimit:50,media:{type:'image',files:[]},questions,source:'smart-pdf-v3',createdAt:Date.now()};
+  const examObject={
+    code,title,duration,
+    timerEnabled:true,antiCheatEnabled:true,cheatThreshold:7,
+    cheatLimitType:'unlimited',maxWarnings:5,
+    isLiveRoom:false,livePassword:'',liveLimit:50,
+    media:{type:'image',files:[]},
+    questions,
+    source:'smart-pdf-v4',
+    createdAt:Date.now()
+  };
   try{
     await window.dbSet(window.ref(window.db,'exams/'+code),examObject);
     await window.dbSet(window.ref(window.db,'liverooms/'+code),{status:'waiting'});
@@ -2038,3 +2018,4 @@ addQuestionV2('mc');addQuestionV2('tf');
 </script>
 </body>
 </html>
+
