@@ -9,7 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#f0f2f5;color:#333}
@@ -339,7 +338,6 @@ img{-webkit-user-drag:none;user-drag:none}
 .smart-tf-btn.selected-d{background:#198754;color:#fff;border-color:#157347}
 .smart-tf-btn.selected-s{background:#dc3545;color:#fff;border-color:#bb2d3b}
 .smart-progress-box{background:#f0f8ff;border:1px solid #b3d9ff;padding:12px;border-radius:8px;margin-top:8px;font-size:12px;color:#004085;line-height:1.5}
-/* ===== SMART EXAM V4 ===== */
 .smart-type-switcher{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
 .smart-type-btn{padding:4px 10px;font-size:11px;font-weight:bold;border:2px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;transition:all .2s}
 .smart-type-btn:hover{border-color:#1877f2;background:#e7f3ff}
@@ -349,14 +347,6 @@ img{-webkit-user-drag:none;user-drag:none}
 .smart-branch-count-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f8f9fa;border-radius:6px;margin-top:6px;font-size:12px}
 .smart-branch-count-row label{font-weight:bold;color:#555}
 .smart-branch-count-row select{padding:4px 8px;border-radius:5px;border:1px solid #ccc;font-size:12px;width:auto;margin:0}
-.smart-tf-branches{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.smart-tf-branch{display:flex;align-items:center;justify-content:space-between;background:#f8f9fa;padding:8px 12px;border-radius:8px;border:1px solid #e0e0e0;gap:8px;flex-wrap:wrap}
-.smart-tf-branch-label{font-weight:bold;font-size:13px;color:#555;flex:1;min-width:120px}
-.smart-tf-branch-opts{display:flex;gap:6px}
-.smart-tf-btn{width:42px;height:38px;border-radius:8px;border:2px solid #ccc;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;cursor:pointer;transition:all .2s}
-.smart-tf-btn:hover{border-color:#1877f2}
-.smart-tf-btn.selected-d{background:#198754;color:#fff;border-color:#157347;transform:scale(1.05)}
-.smart-tf-btn.selected-s{background:#dc3545;color:#fff;border-color:#bb2d3b;transform:scale(1.05)}
 .smart-section-header{background:linear-gradient(135deg,#e7f3ff,#f0f8ff);border-left:5px solid #1877f2;padding:10px 14px;border-radius:8px;margin:15px 0 10px 0;font-weight:bold;color:#1877f2;font-size:14px;display:flex;justify-content:space-between;align-items:center}
 .smart-section-header.tf{background:linear-gradient(135deg,#d1e7dd,#f0fff4);border-left-color:#198754;color:#0f5132}
 .smart-section-header.sa{background:linear-gradient(135deg,#ede7ff,#f8f0ff);border-left-color:#6f42c1;color:#4a2a8a}
@@ -524,7 +514,7 @@ img{-webkit-user-drag:none;user-drag:none}
   </div>
 </div>
 
-<div class="navbar">
+<!-- END OF TIN 1 — CON TRỎ ĐỂ NGUYÊN Ở CUỐI DÒNG NÀY --><div class="navbar">
   <div class="logo" id="webLogo">✨ AURORA</div>
   <div class="nav-tabs">
     <button onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
@@ -774,9 +764,9 @@ img{-webkit-user-drag:none;user-drag:none}
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">🎓</span> Tạo Đề Thông Minh (Cắt Ảnh)</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào <b>⚙️ MÔ HÌNH NÂNG CAO (GV)</b> → bấm <b>🎓 Tạo Đề Thông Minh</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Tải file PDF đề thi lên. Hệ thống sẽ <b>tự động cắt ảnh từng câu hỏi</b> (giữ nguyên công thức, hình vẽ, bảng biến thiên).</div></div>
-      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Xem preview — hệ thống đã tự động đoán đáp án (nếu có trong đề). GV có thể <b>chỉnh sửa</b> lại.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Xem preview — hệ thống phân loại câu hỏi theo <b>3 phần: Trắc nghiệm, Đúng/Sai, Trả lời ngắn</b>. GV có thể <b>đổi dạng câu hỏi</b> bất kỳ lúc nào.</div></div>
       <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Chọn <b>đáp án đúng</b> cho từng câu → nhập mã đề, tên → <b>💾 Lưu</b>.</div></div>
-      <div class="guide-tip">💡 <b>Ưu điểm:</b> Không mất công thức, hình vẽ. Học sinh thấy đề y hệt PDF gốc.</div>
+      <div class="guide-tip">💡 <b>Ưu điểm:</b> Không mất công thức, hình vẽ. Học sinh thấy đề y hệt PDF gốc. <b>Đổi dạng câu hỏi linh hoạt</b> — MC ↔ Đ/S ↔ TLN chỉ với 1 click.</div>
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚙️</span> Quản Lý Phòng Live & Đề Thi</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bấm nút <b>⚙️ Nâng Cao & Quản Lý Phòng</b> ở góc phải trên cùng.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã đề</b> + <b>Mật khẩu bảo mật</b> → bấm <b>📡 Kết Nối Quản Lý Phòng Live</b>.</div></div>
@@ -827,6 +817,7 @@ img{-webkit-user-drag:none;user-drag:none}
       <button class="btn btn-warning" style="width:auto;color:#000;font-weight:bold" onclick="switchSubModule('smartExamCreate')">🎓 Tạo Đề Thông Minh</button>
     </div>
   </div>
+
   <div id="quickPracticeCreate" class="card sub-module-box" style="display:none">
     <h3 style="color:#1877f2;margin-bottom:10px">⚡ Tạo Bài Luyện Nhanh Thủ Công</h3><hr style="margin:10px 0">
     <div class="form-grid-2">
@@ -865,6 +856,7 @@ img{-webkit-user-drag:none;user-drag:none}
     <button class="btn btn-success" style="margin-top:15px;padding:12px" onclick="promptSaveQuickPractice()">💾 Khởi Tạo Bài Luyện</button>
     <button class="btn btn-warning" style="margin-top:8px;padding:10px" onclick="resetQpForm()">🔄 Đặt Lại Nhanh</button>
   </div>
+
   <div id="quickPracticeManage" class="card sub-module-box" style="display:none">
     <h3 style="color:#1877f2;margin-bottom:10px">🛡️ Bảng Điều Khiển Bài Luyện Nhanh</h3>
     <p style="font-size:12px;color:#666;margin-bottom:10px">Nhập Mã bài luyện và Mật khẩu bảo mật quản lý:</p>
@@ -890,7 +882,7 @@ img{-webkit-user-drag:none;user-drag:none}
     </div>
   </div>
 
-  <!-- ===== SMART EXAM MODULE ===== -->
+  <!-- ===== SMART EXAM MODULE V4 ===== -->
   <div id="smartExamCreate" class="card sub-module-box" style="display:none">
     <h3 style="color:#1877f2;margin-bottom:10px">🎓 Tạo Đề Thông Minh Từ PDF (V4)</h3>
     <hr style="margin:10px 0">
@@ -935,23 +927,31 @@ img{-webkit-user-drag:none;user-drag:none}
           </select>
         </div>
       </div>
+      <div class="smart-progress-box" style="margin-top:10px">
+        💡 <b>Mẹo:</b> Chọn <b>"Cắt ảnh câu hỏi"</b> để giữ nguyên công thức toán, hình vẽ, bảng biến thiên — học sinh sẽ thấy đề y hệt PDF gốc.
+      </div>
     </div>
 
     <div id="smartExamPreviewContainer" style="display:none">
       <div style="background:#d1e7dd;border-left:4px solid #198754;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;color:#0f5132">
         ✅ Đã phân tích xong! <span id="smartExamStats"></span>
       </div>
+
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
         <button class="btn" style="width:auto;background:#0d6efd;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('mc')">➕ Thêm trắc nghiệm</button>
         <button class="btn" style="width:auto;background:#198754;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('tf')">➕ Thêm Đúng/Sai</button>
         <button class="btn" style="width:auto;background:#6f42c1;padding:8px 14px;font-size:13px" onclick="addSmartQuestion('sa')">➕ Thêm trả lời ngắn</button>
         <button class="btn btn-secondary" style="width:auto;padding:8px 14px;font-size:13px" onclick="reparseSmartExam()">🔄 Phân tích lại</button>
       </div>
+
       <div id="smartQuestionsList" style="max-height:650px;overflow-y:auto;padding-right:6px"></div>
+
       <button class="btn btn-success" style="margin-top:15px;padding:14px;font-size:15px" onclick="promptSaveSmartExam()">💾 Lưu Đề Thi Thông Minh</button>
       <button class="btn btn-secondary" style="margin-top:8px;padding:10px;font-size:13px" onclick="cancelSmartExam()">❌ Hủy & Xóa</button>
     </div>
   </div>
+</div>
+
 <div id="supremeView" class="view-section">
   <div class="card" style="border:2px solid #ffc107">
     <h2 style="color:#d32f2f;margin-bottom:15px">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
@@ -1167,7 +1167,7 @@ img{-webkit-user-drag:none;user-drag:none}
 
 <div id="fxContainer"></div>
 
-<script type="module">
+<!-- END OF TIN 2 — CON TRỎ ĐỂ NGUYÊN Ở CUỐI DÒNG NÀY --><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getDatabase, ref, set, get, child, remove, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyC33ENu7xxo8Z9YXz_t3J8NZkfsShuuzKM",authDomain:"kho-du-lieu-de.firebaseapp.com",databaseURL:"https://kho-du-lieu-de-default-rtdb.firebaseio.com",projectId:"kho-du-lieu-de",storageBucket:"kho-du-lieu-de.firebasestorage.app",messagingSenderId:"420574558880",appId:"1:420574558880:web:f9c5037be3e34a6674a7c5"};
@@ -1197,7 +1197,6 @@ let smartExamQuestions=[];
 let smartExamFileName='';
 let smartExamStats={mc:0,sa:0,tf:0,ambiguous:0};
 let smartExamPdfDoc=null;
-
 const DEFAULT_WEB_NAME='✨ AURORA';
 
 /* ========== PERFORMANCE MODE ========== */
@@ -1514,7 +1513,8 @@ async function cancelStudentExamSilently(){clearInterval(examTimer);isExamActive
 function cancelQpPractice(){if(!confirm('Bạn có chắc muốn THOÁT bài luyện?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!'))return;clearInterval(qpTimer);isQpActive=false;stopQpWaitingPoll();if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}currentQpData=null;studentNameGlobal='';qpStudentAnswers={};currentQpV2Index=0;cheatWarnings=0;totalTabLeaveTime=0;tabLeaveStartTime=null;const container=document.getElementById('qpPlayQuestionsContainer');if(container)container.innerHTML='';showToast('🚪 Đã thoát bài luyện.','warn');switchView('studentLoginView');}
 function launchQpPracticeInterface(){isQpActive=true;currentQpV2Index=0;qpStudentAnswers={};document.getElementById('qpPlayTitle').innerText=currentQpData.title;if(currentQpData.enableAntiCheat){document.getElementById('qpCheatWarningBanner').style.display='flex';cheatWarnings=0;totalTabLeaveTime=0;document.getElementById('qpCheatWarningBadge').innerText='Cảnh báo: 0';}else document.getElementById('qpCheatWarningBanner').style.display='none';if(currentQpData.useLayoutV2)renderQpQuestionV2Item();else renderQpLayoutV1();if(currentQpData.enableTimer){qpTimeLeft=(currentQpData.durationMinutes||15)*60;document.getElementById('qpPlayTimer').style.display='block';clearInterval(qpTimer);qpTimer=setInterval(()=>{qpTimeLeft--;let m=Math.floor(qpTimeLeft/60),s=qpTimeLeft%60;document.getElementById('qpPlayTimer').innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;if(qpTimeLeft<=0){clearInterval(qpTimer);showForcedSubmitModal('timeout','Hết thời gian làm bài luyện');}},1000);}else{qpTimeLeft=0;document.getElementById('qpPlayTimer').style.display='none';clearInterval(qpTimer);qpTimer=setInterval(()=>{qpTimeLeft++;},1000);}switchView('qpPracticingView');if(currentQpData.isAdvancedMode){let roomMainRef=window.ref(window.db,`qp_rooms/${currentQpData.code}`);activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showForcedSubmitModal('qp','Giáo viên đã kết thúc bài luyện');}});}}
 function renderQpLayoutV1(){let container=document.getElementById('qpPlayQuestionsContainer');container.innerHTML='';document.getElementById('qpPrevBtn').style.display='none';document.getElementById('qpNextBtn').style.display='none';document.getElementById('qpSubmitBtn').style.display='block';currentQpData.questions.forEach((q,idx)=>{let optHtml='';q.options.forEach(opt=>{optHtml+=`<div class="opt-btn" onclick="selectQpOpt(this,${q.id},'${opt.label}')" style="width:auto;height:auto;padding:8px 12px;border-radius:6px">${opt.label}. ${opt.text}</div>`;});let hasExp=q.explanation||q.expImage;container.innerHTML+=`<div class="card" style="background:#fdfdfd;border:1px solid #ddd;margin-bottom:12px"><p style="font-weight:bold;margin-bottom:6px">Câu ${idx+1} (${q.score||0.25}đ): ${q.question}</p>${q.image?`<img src="${q.image}" class="img-preview">`:''}<div class="opt-group" data-qid="${q.id}" style="flex-direction:column;gap:6px">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size:13px;font-weight:bold;margin-top:6px"></div>${hasExp?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation?`<p>${q.explanation}</p>`:''}${q.expImage?`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`:''}</div></div>`:''}</div>`;});}
-function renderQpQuestionV2Item(){let container=document.getElementById('qpPlayQuestionsContainer');let q=currentQpData.questions[currentQpV2Index],totalQ=currentQpData.questions.length;let isAnswered=qpStudentAnswers.hasOwnProperty(q.id),savedVal=isAnswered?qpStudentAnswers[q.id]:'';document.getElementById('qpPrevBtn').style.display=currentQpV2Index>0?'block':'none';let nextBtn=document.getElementById('qpNextBtn'),submitBtn=document.getElementById('qpSubmitBtn');if(currentQpV2Index<totalQ-1){nextBtn.style.display='block';nextBtn.innerText=isAnswered?'Tiếp Tục ➡️':'Xác Nhận & Tiếp Tục ➡️';submitBtn.style.display='none';}else{nextBtn.style.display='none';submitBtn.style.display='block';submitBtn.innerText=isAnswered?'📤 Nộp Bài':'Xác Nhận & Nộp Bài';}let optHtml='';q.options.forEach(opt=>{let isSel=(savedVal===opt.label),bgStyle='';if(isAnswered){if(opt.label===savedVal)bgStyle=(savedVal===q.correct)?'background:#1877f2;color:white;':'background:#dc3545;color:white;';else if(opt.label===q.correct)bgStyle='background:#1877f2;color:white;';}else{let group=document.querySelector(`.opt-group[data-qid="${q.id}"]`);if(group&&group.dataset.val===opt.label){isSel=true;bgStyle='background:#1877f2;color:white;';}}let clickEvent=isAnswered?'':`onclick="selectQpOpt(this,${q.id},'${opt.label}')"`,cursorStyle=isAnswered?'cursor:not-allowed;opacity:0.8;':'cursor:pointer;';optHtml+=`<div class="opt-btn ${isSel?'selected':''}" ${clickEvent} style="width:auto;height:auto;padding:8px 12px;border-radius:6px;${bgStyle}${cursorStyle}">${opt.label}. ${opt.text}</div>`;});let hasExp=q.explanation||q.expImage,feedbackHtml='';if(isAnswered){if(savedVal===q.correct)feedbackHtml=`<span style="color:#1877f2">✓ Chính xác!</span>`;else feedbackHtml=`<span style="color:#dc3545">✗ Sai! Đáp án đúng là ${q.correct}</span>`;}container.innerHTML=`<div class="card" style="background:#fdfdfd;border:1px solid #ddd"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:bold;color:#1877f2">Câu ${currentQpV2Index+1} / ${totalQ} ${isAnswered?'<span style="color:red;font-size:12px">(Đã khóa)</span>':''}</span><span style="font-size:12px;color:#666">Điểm: ${q.score||0.25}đ</span></div><p style="font-weight:bold;margin-bottom:8px">${q.question}</p>${q.image?`<img src="${q.image}" class="img-preview">`:''}<div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction:column;gap:6px">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size:13px;font-weight:bold;margin-top:6px">${feedbackHtml}</div>${(hasExp&&isAnswered)?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation?`<p>${q.explanation}</p>`:''}${q.expImage?`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`:''}</div></div>`:''}</div>`;}
+
+/* ===== END OF TIN 3A — JAVASCRIPT PHẦN 1 ===== */function renderQpQuestionV2Item(){let container=document.getElementById('qpPlayQuestionsContainer');let q=currentQpData.questions[currentQpV2Index],totalQ=currentQpData.questions.length;let isAnswered=qpStudentAnswers.hasOwnProperty(q.id),savedVal=isAnswered?qpStudentAnswers[q.id]:'';document.getElementById('qpPrevBtn').style.display=currentQpV2Index>0?'block':'none';let nextBtn=document.getElementById('qpNextBtn'),submitBtn=document.getElementById('qpSubmitBtn');if(currentQpV2Index<totalQ-1){nextBtn.style.display='block';nextBtn.innerText=isAnswered?'Tiếp Tục ➡️':'Xác Nhận & Tiếp Tục ➡️';submitBtn.style.display='none';}else{nextBtn.style.display='none';submitBtn.style.display='block';submitBtn.innerText=isAnswered?'📤 Nộp Bài':'Xác Nhận & Nộp Bài';}let optHtml='';q.options.forEach(opt=>{let isSel=(savedVal===opt.label),bgStyle='';if(isAnswered){if(opt.label===savedVal)bgStyle=(savedVal===q.correct)?'background:#1877f2;color:white;':'background:#dc3545;color:white;';else if(opt.label===q.correct)bgStyle='background:#1877f2;color:white;';}else{let group=document.querySelector(`.opt-group[data-qid="${q.id}"]`);if(group&&group.dataset.val===opt.label){isSel=true;bgStyle='background:#1877f2;color:white;';}}let clickEvent=isAnswered?'':`onclick="selectQpOpt(this,${q.id},'${opt.label}')"`,cursorStyle=isAnswered?'cursor:not-allowed;opacity:0.8;':'cursor:pointer;';optHtml+=`<div class="opt-btn ${isSel?'selected':''}" ${clickEvent} style="width:auto;height:auto;padding:8px 12px;border-radius:6px;${bgStyle}${cursorStyle}">${opt.label}. ${opt.text}</div>`;});let hasExp=q.explanation||q.expImage,feedbackHtml='';if(isAnswered){if(savedVal===q.correct)feedbackHtml=`<span style="color:#1877f2">✓ Chính xác!</span>`;else feedbackHtml=`<span style="color:#dc3545">✗ Sai! Đáp án đúng là ${q.correct}</span>`;}container.innerHTML=`<div class="card" style="background:#fdfdfd;border:1px solid #ddd"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:bold;color:#1877f2">Câu ${currentQpV2Index+1} / ${totalQ} ${isAnswered?'<span style="color:red;font-size:12px">(Đã khóa)</span>':''}</span><span style="font-size:12px;color:#666">Điểm: ${q.score||0.25}đ</span></div><p style="font-weight:bold;margin-bottom:8px">${q.question}</p>${q.image?`<img src="${q.image}" class="img-preview">`:''}<div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction:column;gap:6px">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size:13px;font-weight:bold;margin-top:6px">${feedbackHtml}</div>${(hasExp&&isAnswered)?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation?`<p>${q.explanation}</p>`:''}${q.expImage?`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`:''}</div></div>`:''}</div>`;}
 function nextQpQuestionV2(){let q=currentQpData.questions[currentQpV2Index];if(!qpStudentAnswers.hasOwnProperty(q.id)){let group=document.querySelector(`.opt-group[data-qid="${q.id}"]`);let selectedVal=group?group.dataset.val:'';if(!selectedVal){showToast('Vui lòng chọn 1 đáp án!','error');return;}qpStudentAnswers[q.id]=selectedVal;}if(currentQpV2Index<currentQpData.questions.length-1){currentQpV2Index++;renderQpQuestionV2Item();}}
 function prevQpQuestionV2(){if(currentQpV2Index>0){currentQpV2Index--;renderQpQuestionV2Item();}}
 function selectQpOpt(btn,qid,label){if(!isQpActive)return;let group=btn.parentElement;group.querySelectorAll('.opt-btn').forEach(b=>{b.classList.remove('selected');b.style.background='white';b.style.color='#333';});btn.classList.add('selected');btn.style.background='#1877f2';btn.style.color='white';group.dataset.val=label;}
@@ -1523,7 +1523,6 @@ async function submitQpPractice(forced=false){if(!forced&&!confirm('Xác nhận 
 function toggleResultExp(btn){let box=btn.nextElementSibling;if(box.style.display==='block'){box.style.display='none';btn.innerText='>';}else{box.style.display='block';btn.innerText='v';}}
 async function loadLeaderboard(){const code=document.getElementById('searchLbCode').value.trim().toUpperCase();const tbody=document.getElementById('lbTableBody');tbody.innerHTML='<tr><td colspan="5">⏳ Đang tải...</td></tr>';if(!code){showToast('Nhập mã bài!','error');return;}let snapshot=await window.dbGet(window.dbChild(window.dbRef,`leaderboard/${code}`));if(!snapshot.exists())snapshot=await window.dbGet(window.dbChild(window.dbRef,`qp_leaderboard/${code}`));if(!snapshot.exists()){tbody.innerHTML='<tr><td colspan="5">Chưa có dữ liệu.</td></tr>';return;}let history=Object.values(snapshot.val());history.sort((a,b)=>(b.score!==a.score)?b.score-a.score:a.timeSpent-b.timeSpent);tbody.innerHTML='';history.forEach((row,idx)=>{let m=Math.floor(row.timeSpent/60),s=row.timeSpent%60;let warnings=row.cheatWarnings||0,leaveSec=row.totalLeaveTime||0,rowId=`lb_detail_${idx}`;tbody.innerHTML+=`<tr><td><b>#${idx+1}</b></td><td>${row.name}</td><td><b style="color:#1877f2">${row.score}</b></td><td>${m}p ${s}s</td><td><button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button><div id="${rowId}" style="display:none;text-align:left;font-size:12px;margin-top:5px;background:#f8f9fa;padding:6px;border-radius:4px">- Cảnh cáo: <b style="color:red">${warnings} lần</b><br>- Rời phòng: <b>${leaveSec} giây</b></div></td></tr>`;});showToast('📊 Tải thành công!','success');}
 function toggleLbDetail(rowId){let el=document.getElementById(rowId),btn=el.previousElementSibling;if(el.style.display==='block'){el.style.display='none';btn.innerText='>';}else{el.style.display='block';btn.innerText='v';}}
-
 function switchGuideTab(tabName,btnEl){document.querySelectorAll('.guide-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.guide-panel').forEach(p=>p.classList.remove('active'));btnEl.classList.add('active');const panel=document.getElementById('guide-'+tabName);if(panel)panel.classList.add('active');}
 
 /* ========== WELCOME FX ========== */
@@ -1542,7 +1541,7 @@ document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&document.getEleme
 document.addEventListener('focusin',(e)=>{const tag=(e.target.tagName||'').toUpperCase();if(tag!=='INPUT'&&tag!=='TEXTAREA')return;const examView=document.getElementById('studentExamView');const qpView=document.getElementById('qpPracticingView');if(!examView||!qpView)return;if(!examView.classList.contains('active')&&!qpView.classList.contains('active'))return;setTimeout(()=>{try{e.target.scrollIntoView({block:'center',behavior:'smooth'});}catch(err){e.target.scrollIntoView();}},350);});
 
 /* ============================================================
-   SMART EXAM V4 — 3 PHẦN + ĐỔI DẠNG CÂU HỎI
+   SMART EXAM V4 — CẮT ẢNH + PHÂN TÍCH 3 PHẦN + ĐỔI DẠNG CÂU HỎI
    ============================================================ */
 
 async function handleSmartExamUpload(input){
@@ -1783,9 +1782,9 @@ function renderSmartCard(q,idx,displayType){
   html+=`<span class="smart-q-num">Câu ${idx+1}</span>`;
   html+=`<span class="smart-q-type" style="background:${typeColor}22;color:${typeColor}">${typeLabel}</span>`;
   html+=`<div class="smart-type-switcher">`;
-  html+=`<button class="smart-type-btn ${displayType==='mc'?'active':''}" onclick="changeSmartType(${idx},'mc')">📝 MC</button>`;
-  html+=`<button class="smart-type-btn ${displayType==='tf'?'active tf':''}" onclick="changeSmartType(${idx},'tf')">🔀 Đ/S</button>`;
-  html+=`<button class="smart-type-btn ${displayType==='sa'?'active sa':''}" onclick="changeSmartType(${idx},'sa')">✍️ TLN</button>`;
+  html+=`<button class="smart-type-btn ${displayType==='mc'?'active':''}" onclick="changeSmartType(${idx},'mc')" title="Chuyển sang trắc nghiệm">📝 MC</button>`;
+  html+=`<button class="smart-type-btn ${displayType==='tf'?'active tf':''}" onclick="changeSmartType(${idx},'tf')" title="Chuyển sang Đúng/Sai">🔀 Đ/S</button>`;
+  html+=`<button class="smart-type-btn ${displayType==='sa'?'active sa':''}" onclick="changeSmartType(${idx},'sa')" title="Chuyển sang trả lời ngắn">✍️ TLN</button>`;
   html+=`<button class="smart-q-del" onclick="removeSmartQuestion(${idx})" style="margin-left:6px">🗑️</button>`;
   html+=`</div></div>`;
   if(q.note){html+=`<div class="smart-q-note">⚠️ ${escapeHtml(q.note)}</div>`;}
@@ -2018,4 +2017,3 @@ addQuestionV2('mc');addQuestionV2('tf');
 </script>
 </body>
 </html>
-
