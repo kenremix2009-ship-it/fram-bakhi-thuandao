@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>FRAM BÁ KHÍ V2 - Hệ Thống Kiểm Tra Trực Tuyến</title>
+<title>Auroura - Hệ Thống Kiểm Tra Trực Tuyến</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <style>
@@ -91,8 +91,8 @@ th{background:#f4f6f8;font-weight:600}
 .result-popup-btn:active{transform:scale(.96)}
 .result-popup-confetti{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;pointer-events:none;animation:confettiFall 2.5s linear infinite}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(450px) rotate(720deg);opacity:0}}
-#welcomeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#welcomeModalBox{background:#fff;width:100%;max-width:420px;padding:40px 25px 25px 25px;border-radius:20px;text-align:center;position:relative;animation:welcomePop .7s cubic-bezier(.34,1.56,.64,1);transition:all .5s ease}
+#welcomeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:999999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#welcomeModalBox{background:#fff;width:100%;max-width:420px;padding:40px 25px 25px 25px;border-radius:20px;text-align:center;position:relative;animation:welcomePop .7s cubic-bezier(.34,1.56,.64,1);transition:all .5s ease;z-index:2}
 @keyframes welcomePop{0%{transform:scale(.4) rotate(-6deg);opacity:0}60%{transform:scale(1.05) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 #welcomeCrown{position:absolute;top:-38px;left:50%;transform:translateX(-50%);font-size:64px;line-height:1;animation:crownFloat 3s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(255,193,7,.7))}
 @keyframes crownFloat{0%,100%{transform:translateX(-50%) translateY(0) rotate(-6deg)}50%{transform:translateX(-50%) translateY(-10px) rotate(6deg)}}
@@ -100,7 +100,7 @@ th{background:#f4f6f8;font-weight:600}
 #welcomeModalContent{font-size:13px;line-height:1.7;margin-bottom:20px;padding:14px;border-radius:10px;text-align:left}
 .welcome-line{padding:4px 0}
 .welcome-line strong{font-weight:bold}
-#welcomeCloseBtn{background:linear-gradient(135deg,#198754,#157347);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 6px 18px rgba(25,135,84,.35)}
+#welcomeCloseBtn{background:linear-gradient(135deg,#198754,#157347);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 6px 18px rgba(25,135,84,.35);position:relative;z-index:3}
 #welcomeCloseBtn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(25,135,84,.5)}
 .crown-none #welcomeCrown{display:none}
 .crown-none #welcomeModalBox{padding-top:25px}
@@ -232,158 +232,196 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 /* ===== FX CONTAINER ===== */
 #fxContainer { position: fixed; inset: 0; pointer-events: none; z-index: 999990; overflow: hidden; }
 
-/* ===== GALAXY – THI TỰ DO ===== */
-.galaxy-overlay {
-  position: fixed; inset: 0; pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, rgba(20,30,90,.75) 0%, rgba(0,0,0,.35) 55%, transparent 85%);
-  opacity: 0; animation: galaxyFade 1.9s ease-out forwards;
+/* ===== WELCOME FX (hiệu ứng chào mừng) ===== */
+#welcomeFxLayer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 999998;
+  overflow: hidden; display: none;
 }
-@keyframes galaxyFade { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
+#welcomeFxLayer.active { display: block; }
 
-.galaxy-spin {
-  position: fixed; top: 50%; width: 340px; height: 340px; border-radius: 50%;
-  pointer-events: none; z-index: 999998;
-  transform: translate(-50%,-50%) scale(0); opacity: 0;
+/* Lửa dữ dội */
+.fire-fx {
+  position: absolute; bottom: -50px; width: 100%; height: 120%;
   background:
-    radial-gradient(circle at 30% 30%, rgba(120,180,255,.95) 0%, transparent 42%),
-    radial-gradient(circle at 70% 70%, rgba(200,120,255,.95) 0%, transparent 42%),
-    conic-gradient(from 0deg, rgba(120,180,255,.45), rgba(255,120,220,.45), rgba(120,255,220,.45), rgba(120,180,255,.45));
-  filter: blur(10px);
+    radial-gradient(ellipse at 50% 100%, rgba(255,200,0,.95) 0%, rgba(255,80,0,.85) 25%, rgba(200,0,0,.7) 50%, transparent 75%),
+    radial-gradient(ellipse at 20% 100%, rgba(255,150,0,.8) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(255,100,0,.8) 0%, transparent 60%);
+  animation: fireDance 1.2s ease-in-out infinite alternate;
+  filter: blur(8px);
 }
-.galaxy-spin.play-left { left: 25%; animation: galaxyPlayLeft 1.9s ease-out forwards; }
-.galaxy-spin.play-right { left: 75%; animation: galaxyPlayRight 1.9s ease-out forwards; }
-@keyframes galaxyPlayLeft {
-  0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}
-  25%{transform:translate(-50%,-50%) scale(1.6) rotate(240deg);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(3.4) rotate(1080deg);opacity:0}
+@keyframes fireDance {
+  0%   { transform: scaleY(1) scaleX(1) translateY(0); opacity: .9; }
+  50%  { transform: scaleY(1.1) scaleX(1.05) translateY(-8px); opacity: 1; }
+  100% { transform: scaleY(1.05) scaleX(.98) translateY(0); opacity: .95; }
 }
-@keyframes galaxyPlayRight {
-  0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}
-  25%{transform:translate(-50%,-50%) scale(1.6) rotate(-240deg);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(3.4) rotate(-1080deg);opacity:0}
+.fire-particle {
+  position: absolute; bottom: 0; width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, #fff700 0%, #ff8c00 50%, #ff2200 100%);
+  box-shadow: 0 0 20px #ff8c00, 0 0 40px #ff2200;
+  animation: fireRise 2.5s ease-in infinite;
 }
-.galaxy-core {
-  position: fixed; top: 50%; left: 50%; width: 60px; height: 60px; border-radius: 50%;
-  transform: translate(-50%,-50%) scale(0);
-  background: radial-gradient(circle,#fff 0%,#4a9eff 40%,transparent 72%);
-  box-shadow: 0 0 60px #4a9eff, 0 0 120px #4a9eff, 0 0 200px #7aaeff;
-  z-index: 999999; pointer-events: none;
-}
-.galaxy-core.play { animation: galaxyCore 1.9s ease-out forwards; }
-@keyframes galaxyCore {
-  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
-  20%{transform:translate(-50%,-50%) scale(1.6);opacity:1}
-  60%{transform:translate(-50%,-50%) scale(2.8);opacity:.85}
-  100%{transform:translate(-50%,-50%) scale(7);opacity:0}
-}
-.galaxy-star {
-  position: fixed; width: 5px; height: 5px; border-radius: 50%; background: #fff;
-  box-shadow: 0 0 10px #fff, 0 0 22px #4a9eff, 0 0 32px #7aaeff;
-  pointer-events: none; z-index: 999999; opacity: 0;
-}
-.galaxy-star.play { animation: starFly 1.7s ease-out forwards; }
-@keyframes starFly {
-  0%{opacity:0; transform: scale(.3) translate(0,0)}
-  20%{opacity:1; transform: scale(1.4) translate(calc(var(--tx,0)*.2), calc(var(--ty,0)*.2))}
-  100%{opacity:0; transform: scale(2.2) translate(var(--tx,0), var(--ty,0))}
+@keyframes fireRise {
+  0%   { transform: translateY(0) scale(.5); opacity: 1; }
+  100% { transform: translateY(-100vh) scale(.2); opacity: 0; }
 }
 
-/* ===== LIGHTNING – BÀI LUYỆN NHANH ===== */
-.lightning-flash {
-  position: fixed; inset: 0; pointer-events: none; z-index: 999998; opacity: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,240,150,.95) 0%, rgba(255,200,0,.5) 35%, transparent 72%);
+/* Vòng xoáy thời gian tím xanh */
+.time-vortex {
+  position: absolute; top: 50%; left: 50%; width: 600px; height: 600px;
+  border-radius: 50%; transform: translate(-50%,-50%);
+  background: conic-gradient(from 0deg, #8a2be2, #00ffff, #8a2be2, #00ffff, #8a2be2);
+  filter: blur(30px); animation: vortexSpin 2.5s linear infinite;
+  opacity: .8;
 }
-.lightning-flash.play { animation: lightningFlash 1.4s ease-out forwards; }
-@keyframes lightningFlash {
-  0%{opacity:0} 8%{opacity:1} 15%{opacity:.2} 25%{opacity:1}
-  40%{opacity:.4} 55%{opacity:.9} 70%{opacity:.3} 100%{opacity:0}
+@keyframes vortexSpin {
+  0%   { transform: translate(-50%,-50%) rotate(0deg) scale(.6); }
+  50%  { transform: translate(-50%,-50%) rotate(180deg) scale(1); }
+  100% { transform: translate(-50%,-50%) rotate(360deg) scale(.6); }
 }
-.lightning-bolt {
-  position: fixed; pointer-events: none; z-index: 999999; font-size: 110px; opacity: 0;
-  filter: drop-shadow(0 0 20px #ffeb3b) drop-shadow(0 0 40px #ffc107) drop-shadow(0 0 70px #ff9800);
+.vortex-ring {
+  position: absolute; top: 50%; left: 50%; border-radius: 50%;
+  border: 3px solid rgba(138,43,226,.8); transform: translate(-50%,-50%);
+  box-shadow: 0 0 40px #8a2be2, inset 0 0 40px #00ffff;
+  animation: ringExpand 2.2s ease-out infinite;
 }
-.lightning-bolt.play { animation: boltStrike 1.15s cubic-bezier(.34,1.56,.64,1) forwards; }
-.lightning-bolt.small { font-size: 65px; }
-@keyframes boltStrike {
-  0%{opacity:0; transform: scale(.2) rotate(-25deg)}
-  35%{opacity:1; transform: scale(1.55) rotate(6deg)}
-  55%{opacity:1; transform: scale(1.1) rotate(-3deg)}
-  75%{opacity:1; transform: scale(1.3) rotate(2deg)}
-  100%{opacity:0; transform: scale(1.9) rotate(14deg)}
+@keyframes ringExpand {
+  0%   { width: 60px; height: 60px; opacity: 1; }
+  100% { width: 800px; height: 800px; opacity: 0; }
 }
-.mini-bolt {
-  position: fixed; pointer-events: none; z-index: 999999; font-size: 34px; opacity: 0;
-  filter: drop-shadow(0 0 10px #ffeb3b) drop-shadow(0 0 22px #ffc107);
+.vortex-star {
+  position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
+  border-radius: 50%; background: #fff; box-shadow: 0 0 20px #00ffff, 0 0 40px #8a2be2;
+  animation: starVortex 2s ease-out infinite;
 }
-.mini-bolt.play { animation: miniBoltFly 1.25s ease-out forwards; }
-@keyframes miniBoltFly {
-  0%{opacity:0; transform: scale(.2) rotate(0)}
-  30%{opacity:1; transform: scale(1.4) rotate(200deg)}
-  100%{opacity:0; transform: scale(.7) rotate(620deg) translate(var(--tx,0), var(--ty,0))}
-}
-.shockwave {
-  position: fixed; width: 80px; height: 80px; border-radius: 50%;
-  border: 4px solid #ffeb3b;
-  transform: translate(-50%,-50%) scale(0); opacity: 0;
-  z-index: 999997; pointer-events: none;
-  box-shadow: 0 0 30px #ffeb3b, inset 0 0 22px #ffeb3b, 0 0 60px #ffc107;
-}
-.shockwave.play { animation: shockwave 1.25s ease-out forwards; }
-@keyframes shockwave {
-  0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
-  15%{transform:translate(-50%,-50%) scale(1.1);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(5.5);opacity:0}
-}
-body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
-@keyframes screenShake {
-  10%,90%{transform:translate3d(-2px,0,0)}
-  20%,80%{transform:translate3d(4px,0,0)}
-  30%,50%,70%{transform:translate3d(-6px,0,0)}
-  40%,60%{transform:translate3d(6px,0,0)}
+@keyframes starVortex {
+  0%   { transform: translate(-50%,-50%) rotate(0deg) translateX(40px) rotate(0deg) scale(.5); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translate(-50%,-50%) rotate(720deg) translateX(400px) rotate(-720deg) scale(0); opacity: 0; }
 }
 
-/* ===== SHIELD – PHÒNG THI CHUYÊN DỤNG ===== */
-.shield-burst {
-  position: fixed; top: 50%; left: 50%; width: 200px; height: 200px;
-  transform: translate(-50%,-50%) scale(0); opacity: 0;
-  font-size: 150px; display: flex; align-items: center; justify-content: center;
-  z-index: 999999; pointer-events: none;
-  filter: drop-shadow(0 0 30px #1877f2) drop-shadow(0 0 60px #1877f2);
+/* Pháo hoa */
+.firework {
+  position: absolute; width: 6px; height: 6px; border-radius: 50%;
+  pointer-events: none; animation: fireworkBurst 1.8s ease-out forwards;
 }
-.shield-burst.play { animation: shieldBurst 1.5s ease-out forwards; }
-@keyframes shieldBurst {
-  0%{transform:translate(-50%,-50%) scale(.2) rotate(-30deg);opacity:0;filter:drop-shadow(0 0 0 #1877f2) brightness(1)}
-  20%{transform:translate(-50%,-50%) scale(1.35) rotate(0);opacity:1;filter:drop-shadow(0 0 45px #1877f2) brightness(2.6)}
-  45%{transform:translate(-50%,-50%) scale(1) rotate(6deg);opacity:1;filter:drop-shadow(0 0 55px #1877f2) brightness(3)}
-  70%{transform:translate(-50%,-50%) scale(1.12) rotate(-4deg);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(3.2) rotate(0);opacity:0}
+@keyframes fireworkBurst {
+  0%   { transform: scale(0); opacity: 1; }
+  50%  { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
 }
-.shield-ring {
-  position: fixed; top: 50%; left: 50%; width: 120px; height: 120px; border-radius: 50%;
-  border: 5px solid #1877f2;
-  transform: translate(-50%,-50%) scale(0); opacity: 0;
-  z-index: 999998; pointer-events: none;
-  box-shadow: 0 0 40px #1877f2, inset 0 0 30px #1877f2, 0 0 90px #4a9eff;
+.firework-trail {
+  position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  pointer-events: none; animation: trailFall 2s ease-out forwards;
 }
-.shield-ring.play { animation: shieldRing 1.55s ease-out forwards; }
-@keyframes shieldRing {
-  0%{transform:translate(-50%,-50%) scale(.2);opacity:0}
-  20%{transform:translate(-50%,-50%) scale(1);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(4.2);opacity:0}
+@keyframes trailFall {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
-.shield-particle {
-  position: fixed; width: 9px; height: 9px; border-radius: 50%;
-  background: radial-gradient(circle,#7ac0ff,#1877f2);
-  box-shadow: 0 0 14px #1877f2, 0 0 28px #4a9eff;
-  pointer-events: none; z-index: 999999; opacity: 0;
-  top: 50%; left: 50%;
+
+/* Halloween */
+.halloween-fx {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 80%, rgba(255,140,0,.4) 0%, rgba(80,0,80,.5) 40%, rgba(0,0,0,.85) 100%);
+  animation: halloweenPulse 2s ease-in-out infinite alternate;
 }
-.shield-particle.play { animation: shieldParticle 1.55s ease-out forwards; }
-@keyframes shieldParticle {
-  0%{opacity:0; transform: translate(-50%,-50%) scale(0)}
-  15%{opacity:1; transform: translate(-50%,-50%) scale(1.3)}
-  100%{opacity:0; transform: translate(calc(-50% + var(--tx,0)), calc(-50% + var(--ty,0))) scale(.4)}
+@keyframes halloweenPulse { 0%{opacity:.8} 100%{opacity:1} }
+.halloween-emoji {
+  position: absolute; font-size: 48px; opacity: 0;
+  animation: ghostFloat 2.2s ease-in-out forwards;
+  filter: drop-shadow(0 0 20px #ff8c00);
 }
+@keyframes ghostFloat {
+  0%   { opacity: 0; transform: translateY(40px) scale(.5) rotate(-10deg); }
+  40%  { opacity: 1; transform: translateY(0) scale(1.2) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(-60px) scale(.8) rotate(10deg); }
+}
+.halloween-bat {
+  position: absolute; font-size: 36px; opacity: 0;
+  animation: batFly 2.5s linear forwards;
+}
+@keyframes batFly {
+  0%   { opacity: 0; transform: translate(0,0) scale(.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.2); }
+}
+
+/* Giáng sinh */
+.xmas-fx {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.15) 0%, rgba(200,0,0,.15) 40%, rgba(0,60,0,.25) 100%);
+  animation: xmasGlow 2.5s ease-in-out infinite alternate;
+}
+@keyframes xmasGlow { 0%{opacity:.6} 100%{opacity:1} }
+.xmas-snow {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #fff;
+  box-shadow: 0 0 10px #fff; opacity: .9;
+  animation: snowFall 3s linear infinite;
+}
+@keyframes snowFall {
+  0%   { transform: translateY(-20px) translateX(0) rotate(0); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(100vh) translateX(var(--tx,20px)) rotate(360deg); opacity: 0; }
+}
+.xmas-emoji {
+  position: absolute; font-size: 52px; opacity: 0;
+  animation: xmasBounce 2.5s ease-in-out forwards;
+  filter: drop-shadow(0 0 15px gold);
+}
+@keyframes xmasBounce {
+  0%   { opacity: 0; transform: scale(.3) rotate(-20deg); }
+  50%  { opacity: 1; transform: scale(1.3) rotate(5deg); }
+  100% { opacity: 0; transform: scale(.9) rotate(-5deg); }
+}
+
+/* Tết */
+.tet-fx {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,0,0,.25) 0%, rgba(255,215,0,.2) 50%, rgba(0,0,0,.5) 100%);
+  animation: tetPulse 2s ease-in-out infinite alternate;
+}
+@keyframes tetPulse { 0%{opacity:.7} 100%{opacity:1} }
+.tet-flower {
+  position: absolute; font-size: 44px; opacity: 0;
+  animation: flowerFall 3s ease-in forwards;
+  filter: drop-shadow(0 0 12px #ff4d4f);
+}
+@keyframes flowerFall {
+  0%   { opacity: 0; transform: translateY(-40px) rotate(0deg) scale(.5); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(1); }
+}
+.tet-lantern {
+  position: absolute; font-size: 56px; opacity: 0;
+  animation: lanternGlow 2.8s ease-in-out forwards;
+  filter: drop-shadow(0 0 25px #ffd700) drop-shadow(0 0 50px #ff4d4f);
+}
+@keyframes lanternGlow {
+  0%   { opacity: 0; transform: scale(.4) rotate(-15deg); }
+  40%  { opacity: 1; transform: scale(1.2) rotate(0deg); }
+  100% { opacity: 0; transform: scale(1) rotate(15deg); }
+}
+
+/* Tuyết rơi */
+.snow-fx { position: absolute; inset: 0; background: rgba(200,220,255,.08); }
+.snowflake {
+  position: absolute; color: #fff; font-size: 20px;
+  text-shadow: 0 0 10px #fff, 0 0 20px #87ceeb;
+  animation: snowFall 3s linear infinite; opacity: .9;
+}
+
+/* Ánh sáng vàng */
+.gold-light-fx {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,215,0,.6) 0%, rgba(255,180,0,.3) 35%, transparent 70%);
+  animation: goldPulse 2s ease-in-out infinite alternate;
+}
+@keyframes goldPulse { 0%{opacity:.5; transform:scale(.9)} 100%{opacity:1; transform:scale(1.1)} }
+.gold-ray {
+  position: absolute; top: 50%; left: 50%; width: 4px; height: 100vh;
+  background: linear-gradient(to bottom, transparent, rgba(255,215,0,.8), transparent);
+  transform-origin: top center; animation: raySpin 3s linear infinite;
+}
+@keyframes raySpin { 0%{transform:translate(-50%,-50%) rotate(0deg)} 100%{transform:translate(-50%,-50%) rotate(360deg)} }
 
 @media (max-width: 768px) {
   html,body{width:100%}
@@ -439,6 +477,9 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
 </head>
 <body>
 
+<!-- LỚP HIỆU ỨNG CHÀO MỪNG (nằm dưới Welcome Modal) -->
+<div id="welcomeFxLayer"></div>
+
 <div id="globalBroadcastBanner" class="pos-top">Thông báo từ nhà phát triển</div>
 <audio id="globalAudioPlayer" style="display:none" loop></audio>
 <div id="systemToast">Thông báo hệ thống</div>
@@ -448,7 +489,7 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
 <div id="welcomeModal">
   <div id="welcomeModalBox">
     <div id="welcomeCrown">👑</div>
-    <h3 id="welcomeModalTitle">CHÀO MỪNG ĐẾN VỚI HỆ THỐNG</h3>
+    <h3 id="welcomeModalTitle">CHÀO MỪNG ĐẾN VỚI AURORA</h3>
     <div id="welcomeModalContent">
       <p class="welcome-line">🌐 <strong>Web được tạo bởi:</strong> <span style="color:#d32f2f;font-weight:bold">DaoDaiThuan</span></p>
       <p class="welcome-line" style="margin-top:6px">🤖 <strong>Aurora AI:</strong> <span style="color:#198754;font-weight:bold">make by thuan2810</span></p>
@@ -483,7 +524,7 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
 </div>
 
 <div class="navbar">
-  <div class="logo">⚡ FRAM BÁ KHÍ V2</div>
+  <div class="logo" id="webLogo">⚡ Auroura</div>
   <div class="nav-tabs">
     <button onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
     <button class="active" onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
@@ -785,6 +826,28 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
     <h2 style="color:#d32f2f;margin-bottom:15px">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
     <p style="font-size:13px;color:#555;margin-bottom:15px">Bảng điều khiển tối cao của hệ thống.</p>
 
+    <div class="section-title"><span>0. TÊN WEB & HIỆU ỨNG CHÀO MỪNG</span></div>
+    <div style="background:#f0f8ff;border:1px dashed #1877f2;padding:12px;border-radius:8px;margin-bottom:15px">
+      <label>Tên hiển thị của Web (Logo):</label>
+      <input type="text" id="webNameInput" placeholder="Ví dụ: ⚡ Auroura" value="⚡ Auroura">
+      <button class="btn btn-success" style="width:auto;padding:6px 16px" onclick="saveWebName()">💾 Lưu Tên Web</button>
+      <hr style="margin:12px 0">
+      <label>Hiệu ứng chào mừng (5 giây):</label>
+      <select id="welcomeFxSelect" style="margin-bottom:10px">
+        <option value="none">Không có hiệu ứng</option>
+        <option value="fire">🔥 Lửa dữ dội</option>
+        <option value="vortex">🌀 Vòng xoáy thời gian tím xanh</option>
+        <option value="firework">🎆 Pháo hoa</option>
+        <option value="halloween">🎃 Halloween</option>
+        <option value="xmas">🎄 Giáng sinh</option>
+        <option value="tet">🧧 Tết</option>
+        <option value="snow">❄️ Tuyết rơi</option>
+        <option value="gold">✨ Ánh sáng vàng</option>
+      </select>
+      <button class="btn btn-warning" style="width:auto;padding:6px 16px" onclick="saveWelcomeFx()">💾 Lưu Hiệu Ứng</button>
+      <button class="btn btn-secondary" style="width:auto;padding:6px 16px" onclick="previewWelcomeFx()">👁️ Xem Trước Hiệu Ứng</button>
+    </div>
+
     <div class="section-title"><span>1. QUẢN LÝ TẤT CẢ ĐỀ THI & BÀI LUYỆN</span></div>
     <div style="margin-bottom:15px"><button class="btn" style="width:auto;background:#0d6efd" onclick="loadAllSupremeExams()">🔄 Tải Lại Danh Sách Đề</button></div>
     <div class="table-responsive"><table><thead><tr><th>Mã Đề</th><th>Tên Đề / Bài Luyện</th><th>Loại</th><th>Thao Tác Quản Trị</th></tr></thead><tbody id="supremeExamsTableBody"><tr><td colspan="4">Bấm "Tải Lại Danh Sách Đề" để xem.</td></tr></tbody></table></div>
@@ -837,7 +900,7 @@ body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
     </div>
     <div id="welcomeAdvancedPanel" style="display:none;background:#fffbe6;border:1px solid #ffe58f;padding:12px;border-radius:8px">
       <label>Tiêu đề:</label>
-      <input type="text" id="welcomeTitle" placeholder="CHÀO MỪNG ĐẾN VỚI HỆ THỐNG">
+      <input type="text" id="welcomeTitle" placeholder="CHÀO MỪNG ĐẾN VỚI AURORA">
       <label>Nội dung (mỗi dòng 1 mục, hỗ trợ HTML):</label>
       <textarea id="welcomeContent" rows="4" placeholder="🌐 Web được tạo bởi: DaoDaiThuan&#10;🤖 Aurora AI: make by thuan2810"></textarea>
       <div class="form-grid-2">
@@ -982,10 +1045,261 @@ let audioBlobCache={},currentLoadedAudioKey=null,supremeAudioListListener=null,p
 let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
-
 let examEndedByTeacher = false;
 let examEndedForQp = false;
 let forcedSubmitContext = null;
+let welcomeFxTimeout = null;
+
+/* ========== HIỆU ỨNG CHÀO MỪNG ========== */
+function clearWelcomeFx() {
+  const layer = document.getElementById('welcomeFxLayer');
+  if (layer) {
+    layer.innerHTML = '';
+    layer.classList.remove('active');
+  }
+  if (welcomeFxTimeout) {
+    clearTimeout(welcomeFxTimeout);
+    welcomeFxTimeout = null;
+  }
+}
+
+function playWelcomeFx(type) {
+  clearWelcomeFx();
+  if (!type || type === 'none') return;
+
+  const layer = document.getElementById('welcomeFxLayer');
+  layer.classList.add('active');
+
+  if (type === 'fire') {
+    const fire = document.createElement('div');
+    fire.className = 'fire-fx';
+    layer.appendChild(fire);
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'fire-particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = (Math.random() * 1.5) + 's';
+      p.style.animationDuration = (1.8 + Math.random() * 1.5) + 's';
+      p.style.width = (8 + Math.random() * 14) + 'px';
+      p.style.height = p.style.width;
+      layer.appendChild(p);
+    }
+  } else if (type === 'vortex') {
+    const vortex = document.createElement('div');
+    vortex.className = 'time-vortex';
+    layer.appendChild(vortex);
+    for (let i = 0; i < 6; i++) {
+      const ring = document.createElement('div');
+      ring.className = 'vortex-ring';
+      ring.style.animationDelay = (i * 0.3) + 's';
+      layer.appendChild(ring);
+    }
+    for (let i = 0; i < 24; i++) {
+      const star = document.createElement('div');
+      star.className = 'vortex-star';
+      star.style.animationDelay = (i * 0.08) + 's';
+      star.style.width = star.style.height = (3 + Math.random() * 6) + 'px';
+      layer.appendChild(star);
+    }
+  } else if (type === 'firework') {
+    for (let f = 0; f < 8; f++) {
+      setTimeout(() => {
+        const cx = 15 + Math.random() * 70;
+        const cy = 10 + Math.random() * 50;
+        const colors = ['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59','#ff6b81'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        for (let i = 0; i < 20; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'firework';
+          const ang = (Math.PI * 2 * i) / 20;
+          const dist = 40 + Math.random() * 60;
+          particle.style.left = cx + '%';
+          particle.style.top = cy + '%';
+          particle.style.background = color;
+          particle.style.boxShadow = `0 0 15px ${color}, 0 0 30px ${color}`;
+          particle.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
+          particle.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
+          particle.style.animationDelay = (Math.random() * 0.2) + 's';
+          layer.appendChild(particle);
+        }
+        for (let i = 0; i < 8; i++) {
+          const trail = document.createElement('div');
+          trail.className = 'firework-trail';
+          trail.style.left = cx + '%';
+          trail.style.top = cy + '%';
+          trail.style.background = color;
+          trail.style.boxShadow = `0 0 10px ${color}`;
+          const ang = (Math.PI * 2 * i) / 8;
+          const dist = 70 + Math.random() * 50;
+          trail.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
+          trail.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
+          trail.style.animationDelay = (Math.random() * 0.3) + 's';
+          layer.appendChild(trail);
+        }
+      }, f * 250);
+    }
+  } else if (type === 'halloween') {
+    const bg = document.createElement('div');
+    bg.className = 'halloween-fx';
+    layer.appendChild(bg);
+    const emojis = ['🎃','👻','🦇','🕷️','💀','🧙'];
+    for (let i = 0; i < 14; i++) {
+      const e = document.createElement('div');
+      e.className = 'halloween-emoji';
+      e.innerText = emojis[i % emojis.length];
+      e.style.left = (5 + Math.random() * 90) + '%';
+      e.style.top = (10 + Math.random() * 80) + '%';
+      e.style.animationDelay = (i * 0.12) + 's';
+      e.style.fontSize = (36 + Math.random() * 40) + 'px';
+      layer.appendChild(e);
+    }
+    for (let i = 0; i < 6; i++) {
+      const b = document.createElement('div');
+      b.className = 'halloween-bat';
+      b.innerText = '🦇';
+      b.style.left = (Math.random() * 100) + '%';
+      b.style.top = (Math.random() * 100) + '%';
+      b.style.setProperty('--tx', ((Math.random() - 0.5) * 500) + 'px');
+      b.style.setProperty('--ty', ((Math.random() - 0.5) * 500) + 'px');
+      b.style.animationDelay = (i * 0.3) + 's';
+      layer.appendChild(b);
+    }
+  } else if (type === 'xmas') {
+    const bg = document.createElement('div');
+    bg.className = 'xmas-fx';
+    layer.appendChild(bg);
+    for (let i = 0; i < 40; i++) {
+      const snow = document.createElement('div');
+      snow.className = 'xmas-snow';
+      snow.style.left = Math.random() * 100 + '%';
+      snow.style.setProperty('--tx', ((Math.random() - 0.5) * 100) + 'px');
+      snow.style.animationDelay = (Math.random() * 3) + 's';
+      snow.style.animationDuration = (2 + Math.random() * 3) + 's';
+      snow.style.width = snow.style.height = (4 + Math.random() * 8) + 'px';
+      layer.appendChild(snow);
+    }
+    const emojis = ['🎄','🎅','⛄','🎁','🦌','🌟'];
+    for (let i = 0; i < 10; i++) {
+      const e = document.createElement('div');
+      e.className = 'xmas-emoji';
+      e.innerText = emojis[i % emojis.length];
+      e.style.left = (10 + Math.random() * 80) + '%';
+      e.style.top = (10 + Math.random() * 70) + '%';
+      e.style.animationDelay = (i * 0.2) + 's';
+      e.style.fontSize = (44 + Math.random() * 36) + 'px';
+      layer.appendChild(e);
+    }
+  } else if (type === 'tet') {
+    const bg = document.createElement('div');
+    bg.className = 'tet-fx';
+    layer.appendChild(bg);
+    const flowers = ['🌸','🌼','🏮','🧧','🎊','✨'];
+    for (let i = 0; i < 30; i++) {
+      const f = document.createElement('div');
+      f.className = 'tet-flower';
+      f.innerText = flowers[i % flowers.length];
+      f.style.left = Math.random() * 100 + '%';
+      f.style.animationDelay = (Math.random() * 3) + 's';
+      f.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      f.style.fontSize = (28 + Math.random() * 32) + 'px';
+      layer.appendChild(f);
+    }
+    for (let i = 0; i < 6; i++) {
+      const l = document.createElement('div');
+      l.className = 'tet-lantern';
+      l.innerText = '🏮';
+      l.style.left = (5 + Math.random() * 90) + '%';
+      l.style.top = (5 + Math.random() * 60) + '%';
+      l.style.animationDelay = (i * 0.3) + 's';
+      l.style.fontSize = (48 + Math.random() * 32) + 'px';
+      layer.appendChild(l);
+    }
+  } else if (type === 'snow') {
+    const bg = document.createElement('div');
+    bg.className = 'snow-fx';
+    layer.appendChild(bg);
+    for (let i = 0; i < 60; i++) {
+      const flake = document.createElement('div');
+      flake.className = 'snowflake';
+      flake.innerText = ['❄','❅','❆','•','*'][i % 5];
+      flake.style.left = Math.random() * 100 + '%';
+      flake.style.setProperty('--tx', ((Math.random() - 0.5) * 120) + 'px');
+      flake.style.animationDelay = (Math.random() * 3) + 's';
+      flake.style.animationDuration = (2 + Math.random() * 3) + 's';
+      flake.style.fontSize = (10 + Math.random() * 22) + 'px';
+      layer.appendChild(flake);
+    }
+  } else if (type === 'gold') {
+    const bg = document.createElement('div');
+    bg.className = 'gold-light-fx';
+    layer.appendChild(bg);
+    for (let i = 0; i < 24; i++) {
+      const ray = document.createElement('div');
+      ray.className = 'gold-ray';
+      ray.style.animationDelay = (i * 0.1) + 's';
+      ray.style.width = (2 + Math.random() * 6) + 'px';
+      ray.style.opacity = 0.3 + Math.random() * 0.5;
+      layer.appendChild(ray);
+    }
+  }
+
+  // Hiệu ứng tồn tại 5 giây
+  welcomeFxTimeout = setTimeout(() => {
+    clearWelcomeFx();
+  }, 5000);
+}
+
+/* ========== LƯU / TẢI CẤU HÌNH WEB NAME + WELCOME FX ========== */
+async function saveWebName() {
+  const name = document.getElementById('webNameInput').value.trim();
+  if (!name) { showToast('Vui lòng nhập tên web!', 'error'); return; }
+  try {
+    await window.dbSet(window.ref(window.db, 'system/web_name'), { name, updatedAt: Date.now() });
+    document.getElementById('webLogo').innerText = name;
+    document.title = name.replace(/<[^>]+>/g, '') + ' - Hệ Thống Kiểm Tra Trực Tuyến';
+    showToast('✅ Đã lưu tên web!', 'success');
+  } catch (e) { showToast('❌ Lỗi: ' + e.message, 'error'); }
+}
+
+function applyWebName(name) {
+  if (!name) return;
+  document.getElementById('webLogo').innerText = name;
+  document.title = name.replace(/<[^>]+>/g, '') + ' - Hệ Thống Kiểm Tra Trực Tuyến';
+}
+
+async function saveWelcomeFx() {
+  const fx = document.getElementById('welcomeFxSelect').value;
+  try {
+    await window.dbSet(window.ref(window.db, 'system/welcome_fx'), { type: fx, updatedAt: Date.now() });
+    showToast('✅ Đã lưu hiệu ứng chào mừng!', 'success');
+  } catch (e) { showToast('❌ Lỗi: ' + e.message, 'error'); }
+}
+
+function previewWelcomeFx() {
+  const fx = document.getElementById('welcomeFxSelect').value;
+  playWelcomeFx(fx);
+}
+
+function loadWebNameAndFx() {
+  window.onValue(window.ref(window.db, 'system/web_name'), (snap) => {
+    const data = snap.val();
+    if (data && data.name) {
+      applyWebName(data.name);
+      document.getElementById('webNameInput').value = data.name;
+    }
+  });
+  window.onValue(window.ref(window.db, 'system/welcome_fx'), (snap) => {
+    const data = snap.val();
+    if (data && data.type) {
+      document.getElementById('welcomeFxSelect').value = data.type;
+      // Chỉ chạy hiệu ứng khi vào web lần đầu
+      if (!sessionStorage.getItem('welcomeFxShown')) {
+        sessionStorage.setItem('welcomeFxShown', '1');
+        playWelcomeFx(data.type);
+      }
+    }
+  });
+}
 
 /* ========== DROPDOWN CHỌN HÌNH THỨC ========== */
 function getExamMode() {
@@ -1310,7 +1624,7 @@ function loadSecurityPassList(){
 
 /* ========== WELCOME CONFIG ========== */
 function defaultWelcomeConfig(){
-  return{enabled:true,title:'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',content:'🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',bgColor:'#ffffff',textColor:'#333333',auraColor:'#ffc107',auraIntensity:25,fontFamily:"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",fontSize:14,textEffect:'none',crownEnabled:true};
+  return{enabled:true,title:'CHÀO MỪNG ĐẾN VỚI AURORA',content:'🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',bgColor:'#ffffff',textColor:'#333333',auraColor:'#ffc107',auraIntensity:25,fontFamily:"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",fontSize:14,textEffect:'none',crownEnabled:true};
 }
 function applyWelcomeConfig(cfg){
   if(!cfg)return;currentWelcomeConfig=cfg;
@@ -1350,7 +1664,7 @@ function fillWelcomeForm(cfg){
 function toggleWelcomeAdvanced(){const p=document.getElementById('welcomeAdvancedPanel');p.style.display=p.style.display==='none'?'block':'none';}
 async function saveWelcomeConfig(){
   const $=id=>document.getElementById(id);
-  const cfg={enabled:$('welcomeEnabled').checked,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,updatedAt:Date.now()};
+  const cfg={enabled:$('welcomeEnabled').checked,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI AURORA',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,updatedAt:Date.now()};
   try{await window.dbSet(window.ref(window.db,'system/welcome_config'),cfg);showToast('✅ Đã lưu tùy chỉnh thông báo!','success');}
   catch(e){showToast('❌ Lỗi: '+e.message,'error');}
 }
@@ -1364,7 +1678,7 @@ function previewWelcome(){
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     if(!window.db)return;
-    loadSecurityPasswords();loadWelcomeConfig();
+    loadSecurityPasswords();loadWelcomeConfig();loadWebNameAndFx();
     window.onValue(window.ref(window.db,'system/broadcast'),(snapshot)=>{
       let data=snapshot.val();const banner=document.getElementById('globalBroadcastBanner'),noticeSpan=document.getElementById('currentCloudNotice');
       if(data&&data.text){
