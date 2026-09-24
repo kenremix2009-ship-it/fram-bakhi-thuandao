@@ -130,6 +130,18 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 #liveRoomStatusDisplay{font-size:14px;font-weight:bold;padding:6px 12px;border-radius:8px;background:#fff3cd;color:#856404;display:inline-block;margin-bottom:8px}
 #liveRoomStatusDisplay.running{background:#d1e7dd;color:#0f5132}
 #liveRoomStatusDisplay.ended{background:#f8d7da;color:#842029}
+/* Modal cưỡng chế nộp bài */
+#forcedSubmitModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:999999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#forcedSubmitModal.show{display:flex}
+.forced-submit-box{background:#fff;border-radius:20px;padding:32px 24px 24px 24px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);position:relative;overflow:hidden;animation:popupPop .55s cubic-bezier(.34,1.56,.64,1);border-top:8px solid #dc3545}
+.forced-submit-emoji{font-size:72px;line-height:1;margin-bottom:14px;display:block;animation:forcedPulse 1.2s infinite ease-in-out}
+@keyframes forcedPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.forced-submit-title{font-size:20px;font-weight:bold;color:#dc3545;margin-bottom:12px}
+.forced-submit-reason{background:#fff3cd;border-left:4px solid #ffc107;padding:12px;border-radius:8px;margin-bottom:16px;font-size:14px;color:#856404;text-align:left;line-height:1.5}
+.forced-submit-reason b{color:#d32f2f}
+.forced-submit-note{font-size:13px;color:#666;margin-bottom:18px;font-style:italic}
+.forced-submit-btn{background:linear-gradient(135deg,#dc3545,#bb2d3b);color:#fff;border:none;padding:14px 24px;border-radius:10px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;box-shadow:0 6px 18px rgba(220,53,69,.4);transition:transform .15s}
+.forced-submit-btn:active{transform:scale(.96)}
 @media (max-width: 768px) {
   html,body{width:100%}
   body{-webkit-text-size-adjust:100%}
@@ -171,6 +183,9 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   #welcomeModalBox{padding:32px 18px 20px 18px;max-width:340px}
   #welcomeModalTitle{font-size:16px}
   #welcomeModalContent{font-size:12px;padding:10px}
+  .forced-submit-emoji{font-size:56px}
+  .forced-submit-title{font-size:16px}
+  .forced-submit-reason{font-size:12px;padding:10px}
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -199,6 +214,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
+<!-- MODAL CẢNH BÁO GIAN LẬN -->
 <div class="modal-overlay" id="cheatAlertModal">
   <div class="modal-box" style="text-align:center;max-width:400px;padding:25px">
     <div style="font-size:40px;color:#dc3545;margin-bottom:10px">⚠️</div>
@@ -211,9 +227,9 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- MODAL: GIÁO VIÊN KẾT THÚC BÀI THI -->
+<!-- MODAL: GIÁO VIÊN KẾT THÚC BÀI THI (thông báo + xem kết quả) -->
 <div class="modal-overlay" id="examEndedModal">
-  <div class="modal-box" style="text-align:center;max-width:400px;padding:25px">
+  <div class="modal-box" style="text-align:center;max-width:420px;padding:25px">
     <div style="font-size:50px;margin-bottom:10px">🛑</div>
     <h3 style="color:#dc3545;font-size:20px;margin-bottom:12px">GIÁO VIÊN ĐÃ KẾT THÚC BÀI THI</h3>
     <div style="background:#fff3cd;padding:12px;border-radius:8px;margin-bottom:18px;font-size:14px;line-height:1.6;color:#856404">
@@ -221,6 +237,20 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
       <p style="margin-top:6px">Bấm nút bên dưới để xem kết quả.</p>
     </div>
     <button class="btn btn-success" onclick="acknowledgeExamEnded()" style="padding:12px;font-weight:bold">✅ Đã rõ / Xem kết quả</button>
+  </div>
+</div>
+
+<!-- MODAL CƯỠNG CHẾ NỘP BÀI (dùng chung cho kick, hết giờ, vi phạm) -->
+<div id="forcedSubmitModal">
+  <div class="forced-submit-box">
+    <span class="forced-submit-emoji" id="forcedSubmitEmoji">🚫</span>
+    <div class="forced-submit-title" id="forcedSubmitTitle">BÀI THI ĐÃ BỊ CƯỠNG CHẾ NỘP</div>
+    <div class="forced-submit-reason" id="forcedSubmitReason">
+      <p><b>Lý do:</b> <span id="forcedSubmitReasonText">Vi phạm quy định</span></p>
+      <p id="forcedSubmitDetailText" style="margin-top:6px;font-size:13px;color:#666"></p>
+    </div>
+    <div class="forced-submit-note">Bài làm của bạn đã được hệ thống tự động ghi nhận và nộp.</div>
+    <button class="forced-submit-btn" onclick="acknowledgeForcedSubmit()">✅ Đã rõ / Xem kết quả</button>
   </div>
 </div>
 
@@ -697,9 +727,10 @@ let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 
-/* ===== CỜ ĐÁNH DẤU GV ĐÃ KẾT THÚC ===== */
+/* ===== CỜ ĐÁNH DẤU ===== */
 let examEndedByTeacher = false;
 let examEndedForQp = false;
+let forcedSubmitContext = null; // 'forced' | 'kick' | 'timeout' | 'violation' | 'teacher' | 'qp'
 
 /* ========== HÀM TÍNH ĐIỂM TỰ ĐỘNG PHÂN BỐ LẠI ========== */
 function redistributeScores(questions, targetTotal = 10) {
@@ -735,6 +766,63 @@ function redistributeTfBranchScores(questions) {
   return questions;
 }
 
+/* ========== MODAL CƯỠNG CHẾ NỘP BÀI ========== */
+function showForcedSubmitModal(reason, detailText, emoji) {
+  forcedSubmitContext = reason;
+  const modal = document.getElementById('forcedSubmitModal');
+  const emojiEl = document.getElementById('forcedSubmitEmoji');
+  const titleEl = document.getElementById('forcedSubmitTitle');
+  const reasonEl = document.getElementById('forcedSubmitReasonText');
+  const detailEl = document.getElementById('forcedSubmitDetailText');
+
+  const config = {
+    teacher: { emoji: '🛑', title: 'GIÁO VIÊN ĐÃ KẾT THÚC BÀI THI', reason: 'Giáo viên kết thúc kì thi', detail: 'Bài làm của bạn đã được cưỡng chế nộp.' },
+    kick: { emoji: '🚫', title: 'BẠN ĐÃ BỊ ĐUỔI KHỎI PHÒNG THI', reason: 'Bị giáo viên kick khỏi phòng', detail: 'Bài làm của bạn đã được cưỡng chế nộp.' },
+    timeout: { emoji: '⏰', title: 'HẾT THỜI GIAN LÀM BÀI', reason: 'Hết thời gian quy định', detail: 'Bài làm của bạn đã được tự động nộp.' },
+    violation: { emoji: '⚠️', title: 'BỊ ĐUỔI VÌ VI PHẠM QUY ĐỊNH', reason: 'Vi phạm quy định chống gian lận', detail: 'Bài làm của bạn đã bị cưỡng chế nộp.' },
+    qp: { emoji: '🛑', title: 'BÀI LUYỆN ĐÃ KẾT THÚC', reason: 'Giáo viên kết thúc bài luyện', detail: 'Bài làm của bạn đã được cưỡng chế nộp.' }
+  };
+  const cfg = config[reason] || config.teacher;
+  emojiEl.innerText = emoji || cfg.emoji;
+  titleEl.innerText = cfg.title;
+  reasonEl.innerText = detailText ? detailText : cfg.reason;
+  detailEl.innerText = cfg.detail;
+  modal.classList.add('show');
+}
+
+async function acknowledgeForcedSubmit() {
+  document.getElementById('forcedSubmitModal').classList.remove('show');
+  const ctx = forcedSubmitContext;
+  forcedSubmitContext = null;
+
+  if (ctx === 'qp') {
+    if (isQpActive) {
+      isQpActive = false;
+      clearInterval(qpTimer);
+      stopQpWaitingPoll();
+      if (activeQpRoomListener) { try { activeQpRoomListener(); } catch (e) {} activeQpRoomListener = null; }
+      try { await submitQpPractice('already'); } catch (e) { console.error(e); }
+    } else {
+      switchView('studentLoginView');
+    }
+  } else if (ctx === 'kick') {
+    // Đã bị kick -> thoát về login, không nộp bài (bài đã bị hủy)
+    await cancelStudentExamSilently();
+  } else if (ctx === 'timeout' || ctx === 'violation' || ctx === 'teacher') {
+    if (isExamActive) {
+      isExamActive = false;
+      clearInterval(examTimer);
+      stopLiveWaitingPoll();
+      if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
+      try { await submitStudentExam('already'); } catch (e) { console.error(e); }
+    } else {
+      switchView('studentLoginView');
+    }
+  } else {
+    switchView('studentLoginView');
+  }
+}
+
 /* ========== MẬT KHẨU BẢO MẬT ========== */
 async function loadSecurityPasswords(){
   try{
@@ -745,7 +833,6 @@ async function loadSecurityPasswords(){
       list={default:{value:'THUANBAKHI',label:'Mật khẩu mặc định'}};
     }
     cachedPasswords=Object.values(list).map(p=>(p.value||'').toUpperCase()).filter(v=>v);
-    console.log('[PASS] Loaded:', cachedPasswords.length, 'passwords');
   }catch(e){console.error('Lỗi tải mật khẩu:',e);cachedPasswords=['THUANBAKHI'];}
 }
 function checkSecurityPassword(pass){if(!pass)return false;return cachedPasswords.includes(pass.toUpperCase());}
@@ -1155,11 +1242,9 @@ async function executeSaveExam(){
         branches.push(ans);
       }
       qData.correctAnswer=branches.join(',');
-      // branchScores sẽ được hệ thống tự chia đều ở bước redistributeTfBranchScores
       questions.push(qData);
     }else if(qType==='sa'){qData.correctAnswer=item.querySelector('.correct-ans').value.trim();questions.push(qData);}
   }
-  /* ===== TỰ ĐỘNG PHÂN BỐ LẠI ĐIỂM ===== */
   questions = redistributeScores(questions, 10);
   questions = redistributeTfBranchScores(questions);
 
@@ -1237,7 +1322,7 @@ async function kickLiveStudent(code,studentId){
   }
 }
 
-/* ===== HÀM CẬP NHẬT STATUS PHÒNG LIVE ===== */
+/* ===== CẬP NHẬT STATUS ===== */
 async function updateLiveRoomStatus(status){
   if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
   try{
@@ -1272,7 +1357,7 @@ async function updateQpStatus(status){
   }catch(err){console.error('[QP] >>> ERROR:',err);showToast('❌ Lỗi: '+(err.message||err),'error');}
 }
 
-/* ===== POLLING - 1 giây ===== */
+/* ===== POLLING ===== */
 function startLiveWaitingPoll(code,studentKey){
   if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
   liveWaitingPollInterval=setInterval(async()=>{
@@ -1295,7 +1380,8 @@ function startLiveWaitingPoll(code,studentKey){
       if(data.status==='ended'){
         clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
-        showExamEndedModal(false);return;
+        showForcedSubmitModal('teacher', 'Giáo viên đã kết thúc kì thi');
+        return;
       }
     }catch(e){console.error('[STUDENT-POLL] error:',e);}
   }, 1000);
@@ -1325,7 +1411,8 @@ function startQpWaitingPoll(code,studentKey){
       if(data.status==='ended'&&!isQpActive){
         clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
         if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
-        showExamEndedModal(true);return;
+        showForcedSubmitModal('qp', 'Giáo viên đã kết thúc bài luyện');
+        return;
       }
     }catch(e){console.error('[QP-POLL] error:',e);}
   }, 1000);
@@ -1385,7 +1472,6 @@ async function executeSaveQuickPractice(){
     let expImgB64=expImgInput&&expImgInput.files.length>0?await fileToBase64(expImgInput.files[0]):'';
     questions.push({id:idx+1,question:qText,image:qImgB64,options,correct:correctOpt,score:scoreVal,explanation:expText,expImage:expImgB64});
   }
-  /* ===== TỰ ĐỘNG PHÂN BỐ LẠI ĐIỂM QP ===== */
   questions = redistributeScores(questions, 10);
 
   let qpObj={code,title,password,isAdvancedMode,limit,durationMinutes,enableTimer,enableAntiCheat,antiCheatType,maxWarnings,useLayoutV2,questions};
@@ -1460,7 +1546,7 @@ async function startStudentParticipation(){
         document.getElementById('qpWaitStudentCount').innerText=Object.keys(students).length;
         if(!students[studentKey]){showToast('Bạn đã bị kick!','error');if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();switchView('studentLoginView');return;}
         if(data.status==='started'&&!isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchQpPracticeInterface();}
-        else if(data.status==='ended'&&!isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();showExamEndedModal(true);}
+        else if(data.status==='ended'&&!isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();showForcedSubmitModal('qp', 'Giáo viên đã kết thúc bài luyện');}
       });
       startQpWaitingPoll(code,studentKey);
     }else{
@@ -1483,7 +1569,7 @@ async function startStudentParticipation(){
           document.getElementById('waitStudentCount').innerText=Object.keys(students).length;
           if(!students[studentSessionKeyGlobal]){showToast('Bạn đã bị kick!','error');if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();switchView('studentLoginView');return;}
           if(data.status==='started'&&!isExamActive){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchOfficialExamInterface();}
-          else if(data.status==='ended'){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();showExamEndedModal(false);}
+          else if(data.status==='ended'){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();showForcedSubmitModal('teacher', 'Giáo viên đã kết thúc kì thi');}
         });
         startLiveWaitingPoll(code,studentSessionKeyGlobal);
       }else{
@@ -1525,13 +1611,12 @@ async function launchOfficialExamInterface(){
   const timerDisplay=document.getElementById('timerDisplay');
   if(currentTimerEnabled){
     timeLeft=currentExamData.duration*60;clearInterval(examTimer);
-    examTimer=setInterval(()=>{timeLeft--;let m=Math.floor(timeLeft/60),s=timeLeft%60;timerDisplay.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;if(timeLeft<=0){clearInterval(examTimer);showToast('⌛ Hết giờ!','error');submitStudentExam(true);}},1000);
+    examTimer=setInterval(()=>{timeLeft--;let m=Math.floor(timeLeft/60),s=timeLeft%60;timerDisplay.innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;if(timeLeft<=0){clearInterval(examTimer);showForcedSubmitModal('timeout', 'Hết thời gian làm bài');}},1000);
   }else{timerDisplay.innerText='∞';clearInterval(examTimer);timeLeft=0;}
   cheatWarnings=0;totalTabLeaveTime=0;
   document.getElementById('cheatWarningBadge').innerText='Cảnh báo: 0';
   isExamActive=true;setExamActiveClass(true);switchView('studentExamView');
 
-  /* ===== LISTENER THEO DÕI PHÒNG LIVE KHI ĐANG LÀM BÀI ===== */
   if(currentExamData.isLiveRoom){
     const roomWatchRef=window.ref(window.db,`liverooms/${currentExamData.code}`);
     activeStudentRoomListener=window.onValue(roomWatchRef,(snapshot)=>{
@@ -1539,67 +1624,18 @@ async function launchOfficialExamInterface(){
       const students=data.students||{};
       if(!students[studentSessionKeyGlobal]){
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
-        showToast('Bạn đã bị kick khỏi phòng!','error');
-        cancelStudentExamSilently();
+        showForcedSubmitModal('kick', 'Bạn đã bị giáo viên kick khỏi phòng thi');
         return;
       }
       if(data.status==='ended'&&isExamActive){
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
-        showExamEndedModal(false);
+        showForcedSubmitModal('teacher', 'Giáo viên đã kết thúc kì thi');
       }
     });
   }
 }
 
-/* ===== XỬ LÝ KHI GV KẾT THÚC ===== */
-function showExamEndedModal(forQp = false) {
-  examEndedForQp = forQp;
-  document.getElementById('examEndedModal').style.display = 'flex';
-}
-
-async function acknowledgeExamEnded() {
-  document.getElementById('examEndedModal').style.display = 'none';
-  if (examEndedForQp) {
-    examEndedForQp = false;
-    if (isQpActive) {
-      isQpActive = false;
-      clearInterval(qpTimer);
-      stopQpWaitingPoll();
-      if (activeQpRoomListener) { try { activeQpRoomListener(); } catch (e) {} activeQpRoomListener = null; }
-      try { await submitQpPractice('already'); } catch (e) { console.error(e); }
-    } else {
-      switchView('studentLoginView');
-    }
-  } else {
-    examEndedByTeacher = false;
-    if (isExamActive) {
-      isExamActive = false;
-      clearInterval(examTimer);
-      stopLiveWaitingPoll();
-      if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
-      try { await submitStudentExam('already'); } catch (e) { console.error(e); }
-    } else {
-      switchView('studentLoginView');
-    }
-  }
-}
-
-async function cancelStudentExamSilently() {
-  clearInterval(examTimer);
-  isExamActive = false;
-  setExamActiveClass(false);
-  stopLiveWaitingPoll();
-  if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
-  if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
-    try { await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`)); } catch (e) {}
-  }
-  currentExamData = null; studentNameGlobal = ''; studentSessionKeyGlobal = '';
-  cheatWarnings = 0; totalTabLeaveTime = 0; tabLeaveStartTime = null;
-  const media = document.getElementById('examMediaContainer'), sheet = document.getElementById('studentAnswerSheet');
-  if (media) media.innerHTML = ''; if (sheet) sheet.innerHTML = '';
-  switchView('studentLoginView');
-}
-
+/* ===== XỬ LÝ TAB LEAVE (VI PHẠM) ===== */
 async function handleTabLeaveEvent(durationAway){
   if(!currentAntiCheatEnabled)return;
   if(durationAway>currentCheatThreshold){
@@ -1610,8 +1646,12 @@ async function handleTabLeaveEvent(durationAway){
     document.getElementById('cheatWarningBadge').innerText=`Cảnh báo: ${cheatWarnings}`;
     let qpBadge=document.getElementById('qpCheatWarningBadge');if(qpBadge)qpBadge.innerText=`Cảnh báo: ${cheatWarnings}`;
     if(currentExamData&&currentExamData.isLiveRoom&&studentSessionKeyGlobal){await window.dbUpdate(window.ref(window.db,`liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`),{cheatWarnings:cheatWarnings,totalLeaveTime:totalTabLeaveTime});}
-    if(currentExamData&&currentCheatLimitType==='limited'&&cheatWarnings>=currentMaxWarnings){showToast(`🚨 Đã đạt giới hạn!`,'error');dismissCheatAlert();submitStudentExam(true);return;}
-    if(currentQpData&&currentQpData.enableAntiCheat){if(currentQpData.antiCheatType==='limited'){let maxW=currentQpData.maxWarnings||5;if(cheatWarnings>=maxW){showToast(`🚨 Đã đạt giới hạn!`,'error');dismissCheatAlert();submitQpPractice(true);return;}}}
+    if(currentExamData&&currentCheatLimitType==='limited'&&cheatWarnings>=currentMaxWarnings){
+      dismissCheatAlert();
+      showForcedSubmitModal('violation', `Vi phạm ${cheatWarnings} lần vượt quá giới hạn ${currentMaxWarnings} lần`);
+      return;
+    }
+    if(currentQpData&&currentQpData.enableAntiCheat){if(currentQpData.antiCheatType==='limited'){let maxW=currentQpData.maxWarnings||5;if(cheatWarnings>=maxW){dismissCheatAlert();showForcedSubmitModal('violation', `Vi phạm ${cheatWarnings} lần vượt quá giới hạn ${maxW} lần`);return;}}}
   }
 }
 function dismissCheatAlert(){document.getElementById('cheatAlertModal').style.display='none';}
@@ -1682,6 +1722,22 @@ async function cancelStudentExam(){
   if(media)media.innerHTML='';if(sheet)sheet.innerHTML='';
   showToast('🚪 Đã thoát bài thi.','warn');switchView('studentLoginView');
 }
+async function cancelStudentExamSilently() {
+  clearInterval(examTimer);
+  isExamActive = false;
+  setExamActiveClass(false);
+  stopLiveWaitingPoll();
+  if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
+  if (currentExamData && currentExamData.isLiveRoom && studentSessionKeyGlobal) {
+    try { await window.dbRemove(window.ref(window.db, `liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`)); } catch (e) {}
+  }
+  currentExamData = null; studentNameGlobal = ''; studentSessionKeyGlobal = '';
+  cheatWarnings = 0; totalTabLeaveTime = 0; tabLeaveStartTime = null;
+  const media = document.getElementById('examMediaContainer'), sheet = document.getElementById('studentAnswerSheet');
+  if (media) media.innerHTML = ''; if (sheet) sheet.innerHTML = '';
+  showToast('🚪 Đã thoát bài thi.','warn');
+  switchView('studentLoginView');
+}
 function cancelQpPractice(){
   if(!confirm('Bạn có chắc muốn THOÁT bài luyện?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!'))return;
   clearInterval(qpTimer);isQpActive=false;stopQpWaitingPoll();
@@ -1700,12 +1756,12 @@ function launchQpPracticeInterface(){
   if(currentQpData.enableTimer){
     qpTimeLeft=(currentQpData.durationMinutes||15)*60;document.getElementById('qpPlayTimer').style.display='block';
     clearInterval(qpTimer);
-    qpTimer=setInterval(()=>{qpTimeLeft--;let m=Math.floor(qpTimeLeft/60),s=qpTimeLeft%60;document.getElementById('qpPlayTimer').innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;if(qpTimeLeft<=0){clearInterval(qpTimer);showToast('⌛ Hết thời gian!','error');submitQpPractice(true);}},1000);
+    qpTimer=setInterval(()=>{qpTimeLeft--;let m=Math.floor(qpTimeLeft/60),s=qpTimeLeft%60;document.getElementById('qpPlayTimer').innerText=`${m<10?'0'+m:m}:${s<10?'0'+s:s}`;if(qpTimeLeft<=0){clearInterval(qpTimer);showForcedSubmitModal('timeout', 'Hết thời gian làm bài luyện');}},1000);
   }else{qpTimeLeft=0;document.getElementById('qpPlayTimer').style.display='none';clearInterval(qpTimer);qpTimer=setInterval(()=>{qpTimeLeft++;},1000);}
   switchView('qpPracticingView');
   if(currentQpData.isAdvancedMode){
     let roomMainRef=window.ref(window.db,`qp_rooms/${currentQpData.code}`);
-    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showExamEndedModal(true);}});
+    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showForcedSubmitModal('qp', 'Giáo viên đã kết thúc bài luyện');}});
   }
 }
 function renderQpLayoutV1(){
