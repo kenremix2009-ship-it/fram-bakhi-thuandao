@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#f0f2f5;color:#333}
@@ -349,6 +350,24 @@ img { -webkit-user-drag: none; user-drag: none; }
 .qr-close-btn{background:#6c757d;color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s}
 .qr-close-btn:hover{background:#5c636a}
 
+/* ===== QR SCAN MODAL ===== */
+#qrScanModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;justify-content:center;align-items:center;z-index:999999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#qrScanModal.show{display:flex}
+.qr-scan-box{background:#fff;border-radius:20px;padding:20px;max-width:500px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7);position:relative;animation:popupPop .55s cubic-bezier(.34,1.56,.64,1)}
+.qr-scan-box h3{font-size:18px;color:#1877f2;margin-bottom:12px;font-weight:900}
+#qrReaderContainer{width:100%;border-radius:12px;overflow:hidden;background:#000;margin-bottom:12px;min-height:280px}
+#qrReaderContainer video{border-radius:12px}
+.qr-scan-hint{font-size:13px;color:#555;margin-bottom:12px;line-height:1.5}
+.qr-scan-close-btn{background:#dc3545;color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s}
+.qr-scan-close-btn:hover{background:#bb2d3b}
+
+/* ===== NÚT QR TRÊN GÓC ===== */
+.qr-scan-fab{position:fixed;top:70px;right:15px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1877f2,#0d5fd6);color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:0 8px 24px rgba(24,119,242,.45);z-index:9998;display:none;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.qr-scan-fab:hover{transform:scale(1.1) rotate(-8deg);box-shadow:0 12px 32px rgba(24,119,242,.6)}
+.qr-scan-fab.show{display:flex}
+.qr-scan-fab::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid #1877f2;opacity:.5;animation:qrPulse 2s infinite}
+@keyframes qrPulse{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.3);opacity:0}}
+
 @media (max-width: 768px) {
   html,body{width:100%}
   body{-webkit-text-size-adjust:100%}
@@ -408,6 +427,7 @@ img { -webkit-user-drag: none; user-drag: none; }
   .perf-icon{font-size:34px}
   .perf-title{font-size:14px}
   .perf-sub{font-size:11px}
+  .qr-scan-fab{top:60px;right:10px;width:50px;height:50px;font-size:22px}
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -455,6 +475,19 @@ img { -webkit-user-drag: none; user-drag: none; }
     <button class="qr-close-btn" onclick="closeQRModal()">Đóng</button>
   </div>
 </div>
+
+<!-- ===== QR SCAN MODAL ===== -->
+<div id="qrScanModal">
+  <div class="qr-scan-box">
+    <h3>📷 QUÉT MÃ QR</h3>
+    <div class="qr-scan-hint">Đưa mã QR vào khung hình để quét tự động</div>
+    <div id="qrReaderContainer"></div>
+    <button class="qr-scan-close-btn" onclick="closeQRScanModal()">❌ Đóng Camera</button>
+  </div>
+</div>
+
+<!-- ===== NÚT QUÉT QR NỔI ===== -->
+<button id="qrScanFab" class="qr-scan-fab" onclick="openQRScanModal()" title="Quét mã QR để vào thi">📷</button>
 
 <div id="globalBroadcastBanner" class="pos-top">Thông báo từ nhà phát triển</div>
 <audio id="globalAudioPlayer" style="display:none" loop></audio>
@@ -556,6 +589,7 @@ img { -webkit-user-drag: none; user-drag: none; }
       </div>
     </div>
     <button class="btn btn-success" style="margin-top:10px" onclick="startStudentParticipation()">🚀 Bắt Đầu Ngay</button>
+    <button class="btn" style="margin-top:8px;background:linear-gradient(135deg,#0d6efd,#0b5ed7)" onclick="openQRScanModal()">📷 Quét Mã QR Để Vào Thi</button>
   </div>
 </div>
 
@@ -752,7 +786,7 @@ img { -webkit-user-drag: none; user-drag: none; }
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚙️</span> Quản Lý Phòng Live & Đề Thi</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bấm nút <b>⚙️ Nâng Cao & Quản Lý Phòng</b> ở góc phải trên cùng.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã đề</b> + <b>Mật khẩu bảo mật</b> → bấm <b>📡 Kết Nối Quản Lý Phòng Live</b>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nút <b>📄 Tải Đề PDF</b> và <b>🗑️ Xóa Đề</b> để quản lý file. Xem <b>🔑 Mật khẩu phòng thi</b> để biết mật khẩu cấp cho học sinh.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nút <b>📄 Tải Đề PDF</b>, <b>🗑️ Xóa Đề</b>, <b>📱 Tải Mã QR</b> và <b>🔑 Xem Mật Khẩu</b> để quản lý.</div></div>
       <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚡</span> Tạo Bài Luyện Nhanh</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào <b>⚙️ MÔ HÌNH NÂNG CAO (GV)</b> → bấm <b>⚡ Tạo Bài Luyện Nhanh</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập Mã + Tên bài luyện, cấu hình → thêm câu hỏi → bấm <b>💾 Khởi Tạo Bài Luyện</b>.</div></div>
@@ -763,7 +797,7 @@ img { -webkit-user-drag: none; user-drag: none; }
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>🧑‍🎓 HỌC SINH</b>. Nhập <b>Họ và Tên</b> đầy đủ.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Bấm vào <b>Hình thức tham gia</b> để chọn 1 trong 3 chế độ: <b>♾️ Thi Tự Do</b> / <b>🛡️ Phòng Thi Chuyên Dụng</b> / <b>⚡ Bài Luyện Nhanh</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nhập <b>Mã bài</b> do giáo viên cung cấp. Nếu chọn Live hoặc Luyện thì nhập thêm <b>Mật Khẩu</b>.</div></div>
-      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Bấm <b>🚀 Bắt Đầu Ngay</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Bấm <b>🚀 Bắt Đầu Ngay</b>. Hoặc bấm <b>📷 Quét Mã QR</b> để vào thi nhanh không cần nhập thủ công.</div></div>
       <div class="guide-section-title" style="color:#198754;border-bottom-color:#d1e7dd;margin-top:30px"><span class="icon">📝</span> Trong Khi Làm Bài</div>
       <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bên <b>trái</b> là đề thi, bên <b>phải</b> là phiếu trả lời, trên cùng là <b>đồng hồ đếm ngược</b>.</div></div>
       <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Trả lời: <span class="guide-badge mc">Trắc nghiệm</span> Bấm A/B/C/D • <span class="guide-badge tf">Đúng/Sai</span> Bấm Đ/S từng nhánh • <span class="guide-badge sa">Trả lời ngắn</span> Gõ đáp án.</div></div>
@@ -1110,7 +1144,8 @@ let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 let webConfigListener=null;
 let forcedSubmitContext = null;
 let perfMode = 'full';
-let currentQRCode = null;
+let html5QrCodeScanner = null;
+let qrScanActive = false;
 
 const DEFAULT_WEB_NAME = '✨ AURORA';
 
@@ -1146,6 +1181,7 @@ function choosePerfMode(mode){
   applyPerfMode(mode);
   document.getElementById('perfModeModal').style.display = 'none';
   showToast(mode === 'optimized' ? '⚡ Đã bật chế độ Tối ưu — mượt hơn!' : '✨ Đã bật chế độ Đầy đủ — đẹp mắt!', 'success');
+  updateQrFabVisibility();
 }
 
 function openPerfModeModal(){
@@ -1161,7 +1197,18 @@ function initPerfMode(){
   document.getElementById('perfModeModal').style.display = 'flex';
 }
 
-/* ========== QR CODE ========== */
+function updateQrFabVisibility(){
+  const fab = document.getElementById('qrScanFab');
+  const loginView = document.getElementById('studentLoginView');
+  if(!fab || !loginView) return;
+  if(loginView.classList.contains('active') && !isExamActive && !isQpActive){
+    fab.classList.add('show');
+  } else {
+    fab.classList.remove('show');
+  }
+}
+
+/* ========== QR CODE GENERATOR ========== */
 function showExamQRCode(){
   const code = document.getElementById('advExamCode').value.trim().toUpperCase();
   const pass = document.getElementById('advLivePass').value.trim();
@@ -1250,48 +1297,164 @@ function closeQRModal(){
   document.getElementById('qrCodeContainer').innerHTML = '';
 }
 
-function showExamPassword(){
-  const code = document.getElementById('advExamCode').value.trim().toUpperCase();
-  const pass = document.getElementById('advLivePass').value.trim();
-  if(!code){ showToast('Vui lòng nhập mã đề!', 'error'); return; }
-  if(!checkSecurityPassword(pass)){ showToast('❌ Sai mật khẩu bảo mật!', 'error'); return; }
+/* ========== QR SCANNER (HỌC SINH) ========== */
+function openQRScanModal(){
+  if(qrScanActive) return;
+  const modal = document.getElementById('qrScanModal');
+  modal.classList.add('show');
   
-  window.dbGet(window.dbChild(window.dbRef, `exams/${code}`)).then(snapshot => {
-    if(!snapshot.exists()){ showToast('Không tìm thấy đề!', 'error'); return; }
-    const exam = snapshot.val();
-    const passDisplay = document.getElementById('liveRoomPassDisplay');
-    const passValue = document.getElementById('liveRoomPassValue');
-    
-    if (exam.isLiveRoom && exam.livePassword) {
-      passDisplay.style.display = 'block';
-      passValue.innerText = exam.livePassword;
-      showToast(`🔑 Mật khẩu phòng thi: ${exam.livePassword}`, 'info');
-    } else {
-      passDisplay.style.display = 'none';
-      showToast('Đề này không có mật khẩu phòng thi!', 'warn');
+  setTimeout(() => {
+    try {
+      if (typeof Html5Qrcode === 'undefined') {
+        showToast('❌ Thư viện quét QR chưa tải. Vui lòng thử lại!', 'error');
+        closeQRScanModal();
+        return;
+      }
+      
+      html5QrCodeScanner = new Html5Qrcode("qrReaderContainer");
+      qrScanActive = true;
+      
+      const config = {
+        fps: 10,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+          const qrboxSize = Math.floor(minEdge * 0.75);
+          return { width: qrboxSize, height: qrboxSize };
+        },
+        aspectRatio: 1.0,
+        disableFlip: false
+      };
+      
+      html5QrCodeScanner.start(
+        { facingMode: "environment" },
+        config,
+        onQRCodeScanned,
+        onQRCodeScanError
+      ).catch(err => {
+        console.error('Lỗi khởi động camera:', err);
+        showToast('❌ Không thể mở camera. Vui lòng cấp quyền truy cập!', 'error');
+        closeQRScanModal();
+      });
+    } catch(err) {
+      console.error('Lỗi QR scanner:', err);
+      showToast('❌ Lỗi khởi tạo máy quét QR!', 'error');
+      closeQRScanModal();
     }
-  }).catch(err => {
-    showToast('❌ Lỗi: ' + err.message, 'error');
-  });
+  }, 300);
 }
 
-function showQpPassword(){
-  const code = document.getElementById('manageQpCode').value.trim().toUpperCase();
-  const pass = document.getElementById('manageQpPass').value.trim();
-  if(!code){ showToast('Vui lòng nhập mã bài luyện!', 'error'); return; }
-  if(!checkSecurityPassword(pass)){ showToast('❌ Sai mật khẩu bảo mật!', 'error'); return; }
+function onQRCodeScanned(decodedText, decodedResult) {
+  console.log('QR decoded:', decodedText);
   
-  window.dbGet(window.dbChild(window.dbRef, `quick_practices/${code}`)).then(snapshot => {
-    if(!snapshot.exists()){ showToast('Không tìm thấy bài luyện!', 'error'); return; }
-    const qp = snapshot.val();
-    if (qp.password) {
-      showToast(`🔑 Mật khẩu bài luyện: ${qp.password}`, 'info');
+  let examCode = '', practiceCode = '', mode = '';
+  
+  try {
+    if (decodedText.includes('?')) {
+      const urlParams = new URLSearchParams(decodedText.split('?')[1]);
+      examCode = urlParams.get('exam') || '';
+      practiceCode = urlParams.get('practice') || '';
+      mode = urlParams.get('mode') || '';
     } else {
-      showToast('Bài luyện này không có mật khẩu!', 'warn');
+      const parts = decodedText.split(':');
+      if (parts.length >= 2) {
+        mode = parts[0].trim();
+        examCode = parts[1].trim().toUpperCase();
+      }
     }
-  }).catch(err => {
-    showToast('❌ Lỗi: ' + err.message, 'error');
-  });
+  } catch(e) {
+    console.error('Lỗi parse QR:', e);
+  }
+  
+  if (!examCode && !practiceCode) {
+    showToast('❌ Mã QR không hợp lệ!', 'error');
+    return;
+  }
+  
+  stopQRScanner();
+  closeQRScanModal();
+  
+  if (practiceCode) {
+    document.getElementById('examModeSelect').value = 'practice';
+    document.querySelectorAll('.mode-dropdown-item').forEach(i => {
+      i.classList.toggle('active', i.dataset.mode === 'practice');
+    });
+    document.querySelector('.mode-dd-icon').innerText = '⚡';
+    document.querySelector('.mode-dd-label').innerText = 'Bài Luyện Nhanh';
+    document.getElementById('lblCodeText').innerText = 'Mã Bài Luyện Nhanh:';
+    document.getElementById('extraPassBox').style.display = 'block';
+    document.getElementById('extraPassLabel').innerText = 'Mật Khẩu Bài Luyện:';
+    document.getElementById('studentExamCode').value = practiceCode;
+    
+    window.dbGet(window.dbChild(window.dbRef, `quick_practices/${practiceCode}`)).then(snap => {
+      if (snap.exists()) {
+        const qp = snap.val();
+        if (qp.password) {
+          document.getElementById('studentExtraPass').placeholder = 'Nhập mật khẩu bài luyện...';
+          showToast(`📱 Đã quét mã bài luyện: ${qp.title}. Vui lòng nhập mật khẩu!`, 'info');
+          document.getElementById('studentExtraPass').focus();
+        } else {
+          showToast(`📱 Đã quét mã bài luyện: ${qp.title}. Bấm "Bắt Đầu Ngay"!`, 'success');
+          setTimeout(() => startStudentParticipation(), 500);
+        }
+      } else {
+        showToast('❌ Không tìm thấy bài luyện!', 'error');
+      }
+    });
+  } else if (examCode) {
+    document.getElementById('examModeSelect').value = 'live';
+    document.querySelectorAll('.mode-dropdown-item').forEach(i => {
+      i.classList.toggle('active', i.dataset.mode === 'live');
+    });
+    document.querySelector('.mode-dd-icon').innerText = '🛡️';
+    document.querySelector('.mode-dd-label').innerText = 'Phòng Thi Chuyên Dụng';
+    document.getElementById('lblCodeText').innerText = 'Mã Bài Kiểm Tra:';
+    document.getElementById('extraPassBox').style.display = 'block';
+    document.getElementById('extraPassLabel').innerText = 'Mật Khẩu Phòng Thi:';
+    document.getElementById('studentExamCode').value = examCode;
+    
+    window.dbGet(window.dbChild(window.dbRef, `exams/${examCode}`)).then(snap => {
+      if (snap.exists()) {
+        const exam = snap.val();
+        if (exam.livePassword) {
+          document.getElementById('studentExtraPass').placeholder = 'Nhập mật khẩu phòng thi...';
+          showToast(`📱 Đã quét mã đề: ${exam.title}. Vui lòng nhập mật khẩu!`, 'info');
+          document.getElementById('studentExtraPass').focus();
+        } else {
+          showToast(`📱 Đã quét mã đề: ${exam.title}. Bấm "Bắt Đầu Ngay"!`, 'success');
+          setTimeout(() => startStudentParticipation(), 500);
+        }
+      } else {
+        showToast('❌ Không tìm thấy đề thi!', 'error');
+      }
+    });
+  }
+}
+
+function onQRCodeScanError(errorMessage) {
+  // Bỏ qua lỗi thông thường khi chưa quét được mã
+}
+
+function stopQRScanner(){
+  if (html5QrCodeScanner) {
+    try {
+      html5QrCodeScanner.stop().then(() => {
+        try { html5QrCodeScanner.clear(); } catch(e){}
+        html5QrCodeScanner = null;
+      }).catch(err => {
+        console.warn('Lỗi dừng scanner:', err);
+        html5QrCodeScanner = null;
+      });
+    } catch(e) {
+      html5QrCodeScanner = null;
+    }
+  }
+  qrScanActive = false;
+}
+
+function closeQRScanModal(){
+  stopQRScanner();
+  document.getElementById('qrScanModal').classList.remove('show');
+  document.getElementById('qrReaderContainer').innerHTML = '';
 }
 
 /* ========== ĐẶT LẠI NHANH ========== */
@@ -1801,6 +1964,52 @@ function previewWelcome(){
 /* ========== DOMContentLoaded ========== */
 window.addEventListener('DOMContentLoaded',()=>{
   initPerfMode();
+  updateQrFabVisibility();
+  
+  // Kiểm tra URL params để tự động join phòng
+  setTimeout(() => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const examParam = urlParams.get('exam');
+      const practiceParam = urlParams.get('practice');
+      const modeParam = urlParams.get('mode');
+      
+      if (examParam) {
+        document.getElementById('examModeSelect').value = 'live';
+        document.querySelectorAll('.mode-dropdown-item').forEach(i => {
+          i.classList.toggle('active', i.dataset.mode === 'live');
+        });
+        document.querySelector('.mode-dd-icon').innerText = '🛡️';
+        document.querySelector('.mode-dd-label').innerText = 'Phòng Thi Chuyên Dụng';
+        document.getElementById('lblCodeText').innerText = 'Mã Bài Kiểm Tra:';
+        document.getElementById('extraPassBox').style.display = 'block';
+        document.getElementById('extraPassLabel').innerText = 'Mật Khẩu Phòng Thi:';
+        document.getElementById('studentExamCode').value = examParam.toUpperCase();
+        showToast('📱 Đã nhận mã đề từ link. Vui lòng nhập Tên và Mật khẩu!', 'info');
+        if (window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else if (practiceParam) {
+        document.getElementById('examModeSelect').value = 'practice';
+        document.querySelectorAll('.mode-dropdown-item').forEach(i => {
+          i.classList.toggle('active', i.dataset.mode === 'practice');
+        });
+        document.querySelector('.mode-dd-icon').innerText = '⚡';
+        document.querySelector('.mode-dd-label').innerText = 'Bài Luyện Nhanh';
+        document.getElementById('lblCodeText').innerText = 'Mã Bài Luyện Nhanh:';
+        document.getElementById('extraPassBox').style.display = 'block';
+        document.getElementById('extraPassLabel').innerText = 'Mật Khẩu Bài Luyện:';
+        document.getElementById('studentExamCode').value = practiceParam.toUpperCase();
+        showToast('📱 Đã nhận mã bài luyện từ link. Vui lòng nhập Tên và Mật khẩu!', 'info');
+        if (window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    } catch(e) {
+      console.error('Lỗi parse URL params:', e);
+    }
+  }, 1200);
+  
   setTimeout(()=>{
     if(!window.db)return;
     loadSecurityPasswords();loadWelcomeConfig();loadWebConfig();
@@ -1891,6 +2100,7 @@ function switchView(viewId,btn=null){
   document.querySelectorAll('.view-section').forEach(el=>el.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
   if(btn){document.querySelectorAll('.nav-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  updateQrFabVisibility();
 }
 function setExamActiveClass(active){if(active)document.body.classList.add('exam-active');else document.body.classList.remove('exam-active');}
 
@@ -2945,6 +3155,7 @@ document.addEventListener('visibilitychange', () => {
 });
 document.addEventListener('keydown', (e) => {
   if(e.key === 'Escape' && document.getElementById('welcomeModal').style.display !== 'none'){ closeWelcomeModal(); }
+  if(e.key === 'Escape' && document.getElementById('qrScanModal').classList.contains('show')){ closeQRScanModal(); }
 });
 
 /* ========== AUTO SCROLL INPUT KHI BÀN PHÍM ẢO MỞ ========== */
