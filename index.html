@@ -91,8 +91,6 @@ th{background:#f4f6f8;font-weight:600}
 .result-popup-btn:active{transform:scale(.96)}
 .result-popup-confetti{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;pointer-events:none;animation:confettiFall 2.5s linear infinite}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(450px) rotate(720deg);opacity:0}}
-
-/* ===== WELCOME MODAL REDESIGN ===== */
 #welcomeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fadeInBg .4s ease}
 @keyframes fadeInBg{from{opacity:0}to{opacity:1}}
 #welcomeModalBox{background:#fff;width:100%;max-width:420px;padding:40px 25px 25px 25px;border-radius:20px;text-align:center;position:relative;animation:welcomePop .7s cubic-bezier(.34,1.56,.64,1);transition:all .5s ease}
@@ -112,8 +110,6 @@ th{background:#f4f6f8;font-weight:600}
 .we-3d{text-shadow:2px 2px 0 rgba(0,0,0,.15),3px 3px 6px rgba(0,0,0,.2)}
 .we-gradient{background:linear-gradient(90deg,#ff4d4f,#ffc107,#198754,#1877f2,#a55eea,#ff4d4f);background-size:300% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shineText 4s linear infinite}
 .we-shadow{text-shadow:3px 3px 6px rgba(0,0,0,.4)}
-
-/* ===== STUDENT VIEW ANIMATIONS ===== */
 #studentLoginView{position:relative;overflow:hidden;min-height:calc(100vh - 120px)}
 #studentLoginView::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#e7f3ff 0%,#f0f2f5 50%,#e7ffee 100%);background-size:400% 400%;animation:bgGradient 15s ease infinite;z-index:-2}
 @keyframes bgGradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -131,13 +127,7 @@ th{background:#f4f6f8;font-weight:600}
 @keyframes shineBtn{0%{left:-100%}100%{left:100%}}
 body.exam-active #studentLoginView::before,
 body.exam-active #studentLoginView .floating-shape{display:none!important}
-
-/* Password list styling */
 .pw-list-item{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:8px 12px;border-radius:6px;border:1px solid #eee;gap:8px;flex-wrap:wrap}
-
-/* ============================================================
-   ===== MOBILE =====
-   ============================================================ */
 @media (max-width: 768px) {
   html,body{width:100%}
   body{-webkit-text-size-adjust:100%}
@@ -161,24 +151,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   #studentExamView .exam-left{flex:0 0 40vh!important;max-height:40vh!important;min-height:140px!important;width:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:6px!important;border-radius:6px;overscroll-behavior:contain}
   #studentExamView .exam-right{flex:1 1 auto!important;min-height:0!important;width:100%!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;padding:8px!important;padding-bottom:80px!important;border-radius:6px;display:flex;flex-direction:column;overscroll-behavior:contain}
   #studentExamView #studentAnswerSheet{flex:0 0 auto!important;overflow:visible!important;-webkit-overflow-scrolling:auto}
-  /* FIX: Nút Thoát/Nộp - dùng fixed định vị dính dưới màn hình, luôn dễ bấm */
-  #studentExamView .exam-right > div:last-child{
-    position:fixed!important;
-    bottom:0!important;
-    left:0!important;
-    right:0!important;
-    width:100%!important;
-    background:#fff!important;
-    padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) 12px!important;
-    margin:0!important;
-    border-top:2px solid #e0e0e0!important;
-    z-index:9999!important;
-    box-shadow:0 -6px 16px rgba(0,0,0,.12)!important;
-    display:flex!important;
-    gap:8px!important;
-    align-items:center!important;
-    justify-content:space-between!important;
-  }
+  #studentExamView .exam-right > div:last-child{position:fixed!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;background:#fff!important;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px)) 12px!important;margin:0!important;border-top:2px solid #e0e0e0!important;z-index:9999!important;box-shadow:0 -6px 16px rgba(0,0,0,.12)!important;display:flex!important;gap:8px!important;align-items:center!important;justify-content:space-between!important}
   #studentExamView .exam-right > div:last-child .btn{padding:14px 12px!important;font-size:15px!important;font-weight:bold!important;min-height:52px!important;border-radius:10px!important;touch-action:manipulation!important}
   #studentExamView .exam-header{flex-wrap:wrap;gap:6px}
   #studentExamView .timer{font-size:12px;padding:3px 8px}
@@ -212,7 +185,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 <div id="loadingOverlay"><div class="spinner"></div><h3 id="loadingText" style="color:#1877f2;font-size:18px">loading...</h3></div>
 <div id="loadingCompleteToast">Hoàn thành</div>
 
-<!-- WELCOME MODAL -->
 <div id="welcomeModal">
   <div id="welcomeModalBox">
     <div id="welcomeCrown">👑</div>
@@ -250,7 +222,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 
 <div class="container">
 
-<!-- STUDENT LOGIN (DEFAULT) -->
 <div id="studentLoginView" class="view-section active">
   <div class="floating-shape" style="width:200px;height:200px;background:#1877f2;top:5%;left:-50px;animation-delay:0s"></div>
   <div class="floating-shape" style="width:150px;height:150px;background:#198754;top:50%;right:-40px;animation-delay:-5s"></div>
@@ -279,7 +250,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- TEACHER -->
 <div id="teacherView" class="view-section">
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px">
@@ -352,7 +322,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- QP WAITING -->
 <div id="qpWaitingRoomView" class="view-section">
   <div class="card" style="max-width:600px;margin:40px auto;text-align:center;padding:30px">
     <h2 style="color:#1877f2;margin-bottom:10px">⏳ PHÒNG CHỜ BÀI LUYỆN NHANH</h2>
@@ -367,7 +336,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- LIVE WAITING -->
 <div id="studentWaitingRoomView" class="view-section">
   <div class="card" style="max-width:600px;margin:40px auto;text-align:center;padding:30px">
     <h2 style="color:#1877f2;margin-bottom:10px">⏳ PHÒNG CHỜ THI CHUYÊN DỤNG</h2>
@@ -382,7 +350,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- EXAM VIEW -->
 <div id="studentExamView" class="view-section">
   <div class="card" style="background:#fff3cd;border:1px solid #ffeeba;padding:10px 15px;margin-bottom:10px;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
     <span>🛡️ <b>Chống gian lận:</b> Rời tab quá <span id="cheatThresholdDisplay">7</span> giây sẽ bị cảnh báo!</span>
@@ -404,7 +371,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- RESULT -->
 <div id="studentResultView" class="view-section">
   <div class="card" style="max-width:800px;margin:0 auto">
     <div style="text-align:center;border-bottom:1px solid #eee;padding-bottom:12px">
@@ -418,7 +384,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- QP RESULT -->
 <div id="qpResultView" class="view-section" style="max-width:800px;margin:20px auto;padding:0 10px">
   <div class="card">
     <div style="text-align:center;border-bottom:1px solid #eee;padding-bottom:12px">
@@ -432,7 +397,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- LEADERBOARD -->
 <div id="leaderboardView" class="view-section">
   <div class="card">
     <h2>🏆 BẢNG XẾP HẠNG</h2>
@@ -446,7 +410,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- ADVANCED MODEL -->
 <div id="advancedModelView" class="view-section">
   <div class="card">
     <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
@@ -518,7 +481,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- SUPREME -->
 <div id="supremeView" class="view-section">
   <div class="card" style="border:2px solid #ffc107">
     <h2 style="color:#d32f2f;margin-bottom:15px">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
@@ -556,7 +518,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
     <div id="supremeAudioListContainer"><p style="font-size:13px;color:#888;font-style:italic">Chưa có file nhạc nào.</p></div>
     <div style="display:flex;gap:10px;margin-top:10px"><button class="btn btn-danger" onclick="stopGlobalAudio()">🛑 Dừng Phát Nhạc</button></div>
 
-    <!-- MỤC 4: QUẢN LÝ MẬT KHẨU BẢO MẬT -->
     <div class="section-title" style="margin-top:25px"><span>4. QUẢN LÝ MẬT KHẨU BẢO MẬT GIÁO VIÊN</span></div>
     <p style="font-size:13px;color:#555;margin-bottom:8px">Mật khẩu dùng để tạo đề, xóa đề, quản lý phòng. Có thể thêm nhiều mật khẩu cho nhiều giáo viên.</p>
     <div class="form-grid-2">
@@ -568,7 +529,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
       <p style="font-size:13px;color:#888;font-style:italic">Đang tải...</p>
     </div>
 
-    <!-- MỤC 5: TÙY CHỈNH THÔNG BÁO VÀO WEB -->
     <div class="section-title" style="margin-top:25px"><span>5. TÙY CHỈNH THÔNG BÁO VÀO WEB (WELCOME)</span></div>
     <div style="background:#f0f8ff;border:1px dashed #1877f2;padding:10px;border-radius:8px;margin-bottom:10px">
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:#1877f2;font-weight:bold;font-size:13px;margin-bottom:8px">
@@ -616,7 +576,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 
 </div>
 
-<!-- QP PRACTICE -->
 <div id="qpPracticingView" class="view-section" style="max-width:800px;margin:20px auto;padding:0 10px">
   <div class="card">
     <div id="qpCheatWarningBanner" class="card" style="background:#fff3cd;border:1px solid #ffeeba;padding:8px 12px;margin-bottom:10px;font-size:13px;display:none;justify-content:space-between;align-items:center">
@@ -639,7 +598,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- RESULT POPUP -->
 <div id="resultPopup">
   <div class="result-popup-box">
     <span class="result-popup-emoji" id="resultPopupEmoji">🎉</span>
@@ -649,7 +607,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="passwordModal">
   <div class="modal-box">
     <div class="modal-header"><h3>🔐 Xác Thực Bảo Mật Giáo Viên</h3><button class="close-btn" onclick="closePasswordModal()">✖</button></div>
@@ -722,6 +679,8 @@ const AUDIO_CHUNK_SIZE=2*1024*1024,AUDIO_MAX_SIZE=12*1024*1024;
 let audioBlobCache={},currentLoadedAudioKey=null,supremeAudioListListener=null,pendingGlobalAudioPlay=false;
 let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
+// === FIX: POLLING fallback cho phòng chờ ===
+let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 
 /* ========== MẬT KHẨU BẢO MẬT ========== */
 async function loadSecurityPasswords(){
@@ -735,10 +694,7 @@ async function loadSecurityPasswords(){
     cachedPasswords=Object.values(list).map(p=>(p.value||'').toUpperCase()).filter(v=>v);
   }catch(e){console.error('Lỗi tải mật khẩu:',e);cachedPasswords=['THUANBAKHI'];}
 }
-function checkSecurityPassword(pass){
-  if(!pass)return false;
-  return cachedPasswords.includes(pass.toUpperCase());
-}
+function checkSecurityPassword(pass){if(!pass)return false;return cachedPasswords.includes(pass.toUpperCase());}
 async function addSecurityPassword(){
   const pass=document.getElementById('newSecPass').value.trim();
   const note=document.getElementById('newSecPassNote').value.trim()||'Không có ghi chú';
@@ -749,183 +705,97 @@ async function addSecurityPassword(){
     const key='pw_'+Date.now();
     await window.dbSet(window.ref(window.db,'system/security_passwords/'+key),{value:pass,label:note,createdAt:Date.now()});
     showToast('✅ Đã thêm mật khẩu bảo mật mới!','success');
-    document.getElementById('newSecPass').value='';
-    document.getElementById('newSecPassNote').value='';
+    document.getElementById('newSecPass').value='';document.getElementById('newSecPassNote').value='';
   }catch(e){showToast('❌ Lỗi: '+e.message,'error');}
 }
 async function deleteSecurityPassword(key,label){
   if(!confirm('Bạn có chắc muốn xóa mật khẩu: '+(label||key)+'?'))return;
-  try{
-    await window.dbRemove(window.ref(window.db,'system/security_passwords/'+key));
-    showToast('🗑️ Đã xóa mật khẩu!','warn');
-  }catch(e){showToast('❌ Lỗi: '+e.message,'error');}
+  try{await window.dbRemove(window.ref(window.db,'system/security_passwords/'+key));showToast('🗑️ Đã xóa mật khẩu!','warn');}
+  catch(e){showToast('❌ Lỗi: '+e.message,'error');}
 }
 function renderSecurityPassList(list){
-  const c=document.getElementById('securityPassListContainer');
-  if(!c)return;
+  const c=document.getElementById('securityPassListContainer');if(!c)return;
   const keys=Object.keys(list||{});
   if(keys.length===0){c.innerHTML='<p style="font-size:13px;color:#888;font-style:italic">Chưa có mật khẩu nào.</p>';return;}
   let html='<div style="display:flex;flex-direction:column;gap:6px">';
   keys.forEach(k=>{
     const p=list[k];
-    html+=`<div class="pw-list-item">
-      <div style="flex:1;min-width:120px">
-        <div style="font-size:13px;font-weight:bold">🔑 ${(p.value||'').slice(0,3)}${'•'.repeat(Math.max(0,(p.value||'').length-3))}</div>
-        <div style="font-size:11px;color:#888">${p.label||'Không có ghi chú'}</div>
-      </div>
-      <button class="btn btn-danger" style="width:auto;padding:4px 10px;font-size:12px" onclick="deleteSecurityPassword('${k}','${(p.label||'').replace(/'/g,"\\'")}')">🗑️ Xóa</button>
-    </div>`;
+    html+=`<div class="pw-list-item"><div style="flex:1;min-width:120px"><div style="font-size:13px;font-weight:bold">🔑 ${(p.value||'').slice(0,3)}${'•'.repeat(Math.max(0,(p.value||'').length-3))}</div><div style="font-size:11px;color:#888">${p.label||'Không có ghi chú'}</div></div><button class="btn btn-danger" style="width:auto;padding:4px 10px;font-size:12px" onclick="deleteSecurityPassword('${k}','${(p.label||'').replace(/'/g,"\\'")}')">🗑️ Xóa</button></div>`;
   });
-  html+='</div>';
-  c.innerHTML=html;
+  html+='</div>';c.innerHTML=html;
 }
 function loadSecurityPassList(){
   if(securityPassListListener)securityPassListListener();
-  securityPassListListener=window.onValue(window.ref(window.db,'system/security_passwords'),(snap)=>{
-    renderSecurityPassList(snap.val()||{});
-  });
+  securityPassListListener=window.onValue(window.ref(window.db,'system/security_passwords'),(snap)=>{renderSecurityPassList(snap.val()||{});});
 }
 
 /* ========== WELCOME CONFIG ========== */
 function defaultWelcomeConfig(){
-  return{
-    enabled:true,
-    title:'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',
-    content:'🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',
-    bgColor:'#ffffff',
-    textColor:'#333333',
-    auraColor:'#ffc107',
-    auraIntensity:25,
-    fontFamily:"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    fontSize:14,
-    textEffect:'none',
-    crownEnabled:true
-  };
+  return{enabled:true,title:'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',content:'🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',bgColor:'#ffffff',textColor:'#333333',auraColor:'#ffc107',auraIntensity:25,fontFamily:"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",fontSize:14,textEffect:'none',crownEnabled:true};
 }
 function applyWelcomeConfig(cfg){
-  if(!cfg)return;
-  currentWelcomeConfig=cfg;
-  const box=document.getElementById('welcomeModalBox');
-  const modal=document.getElementById('welcomeModal');
-  const crown=document.getElementById('welcomeCrown');
-  const title=document.getElementById('welcomeModalTitle');
-  const content=document.getElementById('welcomeModalContent');
+  if(!cfg)return;currentWelcomeConfig=cfg;
+  const box=document.getElementById('welcomeModalBox'),modal=document.getElementById('welcomeModal'),crown=document.getElementById('welcomeCrown'),title=document.getElementById('welcomeModalTitle'),content=document.getElementById('welcomeModalContent');
   if(!cfg.enabled){modal.style.display='none';return;}
   modal.style.display='flex';
-  box.style.background=cfg.bgColor||'#fff';
-  box.style.fontFamily=cfg.fontFamily||"'Segoe UI',sans-serif";
-  box.style.fontSize=(cfg.fontSize||14)+'px';
-  box.style.color=cfg.textColor||'#333';
-  const aura=cfg.auraIntensity||0;
-  const auraColor=cfg.auraColor||'#ffc107';
-  if(aura>0){
-    box.style.boxShadow=`0 0 ${aura}px ${auraColor}, 0 0 ${aura*2}px ${auraColor}88, 0 20px 60px rgba(0,0,0,.5)`;
-  }else{
-    box.style.boxShadow='0 10px 25px rgba(0,0,0,.3)';
-  }
+  box.style.background=cfg.bgColor||'#fff';box.style.fontFamily=cfg.fontFamily||"'Segoe UI',sans-serif";
+  box.style.fontSize=(cfg.fontSize||14)+'px';box.style.color=cfg.textColor||'#333';
+  const aura=cfg.auraIntensity||0,auraColor=cfg.auraColor||'#ffc107';
+  if(aura>0){box.style.boxShadow=`0 0 ${aura}px ${auraColor}, 0 0 ${aura*2}px ${auraColor}88, 0 20px 60px rgba(0,0,0,.5)`;}
+  else{box.style.boxShadow='0 10px 25px rgba(0,0,0,.3)';}
   crown.style.display=cfg.crownEnabled===false?'none':'block';
   box.classList.toggle('crown-none',cfg.crownEnabled===false);
-  title.innerText=cfg.title||'CHÀO MỪNG';
-  title.style.color=cfg.textColor||'#333';
-  title.className='';
-  const eff=cfg.textEffect||'none';
-  if(eff!=='none')title.classList.add('we-'+eff);
+  title.innerText=cfg.title||'CHÀO MỪNG';title.style.color=cfg.textColor||'#333';title.className='';
+  const eff=cfg.textEffect||'none';if(eff!=='none')title.classList.add('we-'+eff);
   const lines=(cfg.content||'').split('\n').filter(l=>l.trim());
   content.innerHTML=lines.map(l=>`<p class="welcome-line">${l}</p>`).join('');
-  content.style.background=cfg.bgColor==='#ffffff'?'#f8f9fa':'rgba(0,0,0,0.05)';
-  content.style.color=cfg.textColor||'#333';
+  content.style.background=cfg.bgColor==='#ffffff'?'#f8f9fa':'rgba(0,0,0,0.05)';content.style.color=cfg.textColor||'#333';
 }
 function loadWelcomeConfig(){
   if(welcomeConfigListener)welcomeConfigListener();
   welcomeConfigListener=window.onValue(window.ref(window.db,'system/welcome_config'),(snap)=>{
     const cfg=snap.val()||defaultWelcomeConfig();
     if(!snap.exists()){window.dbSet(window.ref(window.db,'system/welcome_config'),cfg);}
-    currentWelcomeConfig=cfg;
-    applyWelcomeConfig(cfg);
-    fillWelcomeForm(cfg);
+    currentWelcomeConfig=cfg;applyWelcomeConfig(cfg);fillWelcomeForm(cfg);
   });
 }
 function fillWelcomeForm(cfg){
-  const $=id=>document.getElementById(id);
-  if(!$)return;
-  $('welcomeEnabled').checked=cfg.enabled!==false;
-  $('welcomeTitle').value=cfg.title||'';
-  $('welcomeContent').value=cfg.content||'';
-  $('welcomeBgColor').value=cfg.bgColor||'#ffffff';
-  $('welcomeTextColor').value=cfg.textColor||'#333333';
-  $('welcomeAuraColor').value=cfg.auraColor||'#ffc107';
-  $('welcomeAuraIntensity').value=cfg.auraIntensity||25;
-  $('welcomeFontFamily').value=cfg.fontFamily||"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-  $('welcomeFontSize').value=cfg.fontSize||14;
-  $('welcomeTextEffect').value=cfg.textEffect||'none';
+  const $=id=>document.getElementById(id);if(!$)return;
+  $('welcomeEnabled').checked=cfg.enabled!==false;$('welcomeTitle').value=cfg.title||'';
+  $('welcomeContent').value=cfg.content||'';$('welcomeBgColor').value=cfg.bgColor||'#ffffff';
+  $('welcomeTextColor').value=cfg.textColor||'#333333';$('welcomeAuraColor').value=cfg.auraColor||'#ffc107';
+  $('welcomeAuraIntensity').value=cfg.auraIntensity||25;$('welcomeFontFamily').value=cfg.fontFamily||"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+  $('welcomeFontSize').value=cfg.fontSize||14;$('welcomeTextEffect').value=cfg.textEffect||'none';
   $('welcomeCrownEnabled').checked=cfg.crownEnabled!==false;
 }
-function toggleWelcomeAdvanced(){
-  const p=document.getElementById('welcomeAdvancedPanel');
-  p.style.display=p.style.display==='none'?'block':'none';
-}
+function toggleWelcomeAdvanced(){const p=document.getElementById('welcomeAdvancedPanel');p.style.display=p.style.display==='none'?'block':'none';}
 async function saveWelcomeConfig(){
   const $=id=>document.getElementById(id);
-  const cfg={
-    enabled:$('welcomeEnabled').checked,
-    title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',
-    content:$('welcomeContent').value,
-    bgColor:$('welcomeBgColor').value,
-    textColor:$('welcomeTextColor').value,
-    auraColor:$('welcomeAuraColor').value,
-    auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,
-    fontFamily:$('welcomeFontFamily').value,
-    fontSize:parseInt($('welcomeFontSize').value)||14,
-    textEffect:$('welcomeTextEffect').value,
-    crownEnabled:$('welcomeCrownEnabled').checked,
-    updatedAt:Date.now()
-  };
-  try{
-    await window.dbSet(window.ref(window.db,'system/welcome_config'),cfg);
-    showToast('✅ Đã lưu tùy chỉnh thông báo!','success');
-  }catch(e){showToast('❌ Lỗi: '+e.message,'error');}
+  const cfg={enabled:$('welcomeEnabled').checked,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI HỆ THỐNG',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,updatedAt:Date.now()};
+  try{await window.dbSet(window.ref(window.db,'system/welcome_config'),cfg);showToast('✅ Đã lưu tùy chỉnh thông báo!','success');}
+  catch(e){showToast('❌ Lỗi: '+e.message,'error');}
 }
 function previewWelcome(){
   const $=id=>document.getElementById(id);
-  const cfg={
-    enabled:true,
-    title:$('welcomeTitle').value.trim()||'CHÀO MỪNG',
-    content:$('welcomeContent').value,
-    bgColor:$('welcomeBgColor').value,
-    textColor:$('welcomeTextColor').value,
-    auraColor:$('welcomeAuraColor').value,
-    auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,
-    fontFamily:$('welcomeFontFamily').value,
-    fontSize:parseInt($('welcomeFontSize').value)||14,
-    textEffect:$('welcomeTextEffect').value,
-    crownEnabled:$('welcomeCrownEnabled').checked
-  };
-  applyWelcomeConfig(cfg);
-  document.getElementById('welcomeModal').style.display='flex';
+  const cfg={enabled:true,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked};
+  applyWelcomeConfig(cfg);document.getElementById('welcomeModal').style.display='flex';
 }
 
 /* ========== DOMContentLoaded ========== */
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     if(!window.db)return;
-    loadSecurityPasswords();
-    loadWelcomeConfig();
+    loadSecurityPasswords();loadWelcomeConfig();
     window.onValue(window.ref(window.db,'system/broadcast'),(snapshot)=>{
       let data=snapshot.val();const banner=document.getElementById('globalBroadcastBanner'),noticeSpan=document.getElementById('currentCloudNotice');
       if(data&&data.text){
-        banner.innerText=data.text;
-        banner.style.backgroundColor=data.bgColor||'#ff4d4f';
-        banner.style.color=data.textColor||'#ffffff';
-        banner.style.opacity=data.opacity||0.95;
-        banner.style.fontFamily=data.fontFamily||"'Segoe UI',Tahoma,sans-serif";
+        banner.innerText=data.text;banner.style.backgroundColor=data.bgColor||'#ff4d4f';banner.style.color=data.textColor||'#ffffff';
+        banner.style.opacity=data.opacity||0.95;banner.style.fontFamily=data.fontFamily||"'Segoe UI',Tahoma,sans-serif";
         banner.style.fontSize=(data.fontSize||16)+'px';
         banner.classList.remove('pos-top','pos-middle','pos-bottom');
         let pos=data.position||'top';
-        if(pos==='middle')banner.classList.add('pos-middle');
-        else if(pos==='bottom')banner.classList.add('pos-bottom');
-        else banner.classList.add('pos-top');
-        banner.style.display='block';
-        if(noticeSpan)noticeSpan.innerText=data.text;
+        if(pos==='middle')banner.classList.add('pos-middle');else if(pos==='bottom')banner.classList.add('pos-bottom');else banner.classList.add('pos-top');
+        banner.style.display='block';if(noticeSpan)noticeSpan.innerText=data.text;
         if(data.durationSec)setTimeout(()=>{banner.style.display='none';},data.durationSec*1000);
       }else{banner.style.display='none';if(noticeSpan)noticeSpan.innerText='Không có';}
     });
@@ -1012,8 +882,7 @@ function verifySupremePassword(){
   if(pass==='thuan281009@'){
     document.getElementById('supremePasswordModal').style.display='none';
     showToast('👑 Chào mừng Nhà Phát Triển tối cao!','info');
-    switchView('supremeView');
-    loadAllSupremeExams();loadSupremeAudioList();loadSecurityPassList();
+    switchView('supremeView');loadAllSupremeExams();loadSupremeAudioList();loadSecurityPassList();
   }else showToast('❌ Sai mật khẩu vua!','error');
 }
 
@@ -1044,8 +913,7 @@ async function supremeDeleteData(folder,code){
     await window.dbRemove(window.ref(window.db,`${folder}/${code}`));
     if(folder==='exams'){await window.dbRemove(window.ref(window.db,`leaderboard/${code}`));await window.dbRemove(window.ref(window.db,`liverooms/${code}`));}
     else{await window.dbRemove(window.ref(window.db,`qp_rooms/${code}`));await window.dbRemove(window.ref(window.db,`qp_leaderboard/${code}`));}
-    showToast(`🗑️ Đã xóa [${code}] thành công!`,'warn');
-    loadAllSupremeExams();
+    showToast(`🗑️ Đã xóa [${code}] thành công!`,'warn');loadAllSupremeExams();
   }
 }
 async function sendGlobalBroadcast(){
@@ -1059,8 +927,7 @@ async function sendGlobalBroadcast(){
   let opacity=parseFloat(document.getElementById('supremeOpacity').value)||0.95;
   if(!text){showToast('Vui lòng nhập nội dung!','error');return;}
   await window.dbSet(window.ref(window.db,'system/broadcast'),{text,position,fontFamily,fontSize,bgColor,textColor,durationSec,opacity,timestamp:Date.now()});
-  showToast('📢 Đã phát thông báo!','success');
-  document.getElementById('supremeBroadcastText').value='';
+  showToast('📢 Đã phát thông báo!','success');document.getElementById('supremeBroadcastText').value='';
 }
 async function clearGlobalBroadcast(){await window.dbRemove(window.ref(window.db,'system/broadcast'));showToast('🗑️ Đã xóa thông báo!','warn');}
 
@@ -1245,7 +1112,10 @@ async function executeSaveExam(){
   }catch(err){showToast('Lỗi: '+err.message,'error');}
 }
 function openAdvancedModal(){document.getElementById('advLivePass').value='';document.getElementById('liveRoomDashboard').style.display='none';document.getElementById('advancedModal').style.display='flex';}
-function closeAdvancedModal(){if(liveRoomDashboardListener)liveRoomDashboardListener();document.getElementById('advancedModal').style.display='none';}
+function closeAdvancedModal(){
+  if(liveRoomDashboardListener){try{liveRoomDashboardListener();}catch(e){}liveRoomDashboardListener=null;}
+  document.getElementById('advancedModal').style.display='none';
+}
 async function downloadExamPDF(){
   const code=document.getElementById('advExamCode').value.trim().toUpperCase();
   if(!code){showToast('Nhập mã đề!','error');return;}
@@ -1279,7 +1149,7 @@ async function connectLiveRoomDashboard(){
   managedLiveCodeGlobal=code;
   document.getElementById('liveRoomDashboard').style.display='block';
   showToast('📡 Kết nối phòng live thành công!','info');
-  if(liveRoomDashboardListener)liveRoomDashboardListener();
+  if(liveRoomDashboardListener){try{liveRoomDashboardListener();}catch(e){}liveRoomDashboardListener=null;}
   let roomRef=window.ref(window.db,`liverooms/${code}`);
   liveRoomDashboardListener=window.onValue(roomRef,(snapshot)=>{
     let data=snapshot.val()||{},students=data.students||{},tbody=document.getElementById('liveRoomStudentsBody');
@@ -1297,9 +1167,9 @@ async function kickLiveStudent(code,studentId){
     showToast('Đã kick học sinh!','warn');
   }
 }
-/* FIX: cập nhật trạng thái phòng live — dùng dbGet + dbSet để đảm bảo hoạt động */
+// === FIX: Đọc + ghi toàn bộ data để đảm bảo không mất field students ===
 async function updateLiveRoomStatus(status){
-  if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live!','error');return;}
+  if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Vui lòng nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
   try{
     const roomRef=window.ref(window.db,`liverooms/${managedLiveCodeGlobal}`);
     const snap=await window.dbGet(roomRef);
@@ -1307,10 +1177,19 @@ async function updateLiveRoomStatus(status){
     currentData.status=status;
     currentData.updatedAt=Date.now();
     await window.dbSet(roomRef,currentData);
-    showToast(`Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng live!`,'info');
-  }catch(err){console.error(err);showToast('❌ Lỗi cập nhật: '+err.message,'error');}
+    // Verify ghi thành công
+    const verify=await window.dbGet(roomRef);
+    const vData=verify.val()||{};
+    if(vData.status===status){
+      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng live! Học sinh đang chờ sẽ vào thi.`,'success');
+    }else{
+      showToast(`⚠️ Đã ghi nhưng xác thực thất bại. Thử lại!`,'warn');
+    }
+  }catch(err){
+    console.error('updateLiveRoomStatus error:',err);
+    showToast('❌ Lỗi cập nhật: '+(err.message||err),'error');
+  }
 }
-/* FIX: cập nhật trạng thái phòng luyện */
 async function updateQpStatus(status){
   if(!managedQpCodeGlobal){showToast('Chưa kết nối!','error');return;}
   try{
@@ -1320,8 +1199,76 @@ async function updateQpStatus(status){
     currentData.status=status;
     currentData.updatedAt=Date.now();
     await window.dbSet(roomRef,currentData);
-    showToast(`Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'info');
-  }catch(err){console.error(err);showToast('❌ Lỗi: '+err.message,'error');}
+    const verify=await window.dbGet(roomRef);
+    if((verify.val()||{}).status===status){
+      showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} bài luyện!`,'success');
+    }
+  }catch(err){console.error(err);showToast('❌ Lỗi: '+(err.message||err),'error');}
+}
+
+/* ========== POLLING FALLBACK ==========
+   Đảm bảo học sinh luôn nhận được trạng thái mới ngay cả khi listener Firebase
+   bị lỗi hoặc miss update. Poll mỗi 1.5 giây. */
+function startLiveWaitingPoll(code,studentKey){
+  if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
+  liveWaitingPollInterval=setInterval(async()=>{
+    try{
+      const snap=await window.dbGet(window.dbChild(window.dbRef,`liverooms/${code}`));
+      const data=snap.val()||{};
+      const students=data.students||{};
+      // Nếu bị kick
+      if(!students[studentKey]){
+        clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
+        if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
+        showToast('Bạn đã bị kick!','error');switchView('studentLoginView');return;
+      }
+      // Nếu GV bắt đầu
+      if(data.status==='started'&&!isExamActive){
+        clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
+        if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
+        try{await window.dbUpdate(window.ref(window.db,`liverooms/${code}/students/${studentKey}`),{status:'testing'});}catch(e){}
+        launchOfficialExamInterface();return;
+      }
+      // Nếu GV kết thúc
+      if(data.status==='ended'){
+        clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
+        if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
+        showToast('Kì thi đã kết thúc!','info');switchView('studentLoginView');return;
+      }
+    }catch(e){console.error('Poll error:',e);}
+  },1500);
+}
+function stopLiveWaitingPoll(){
+  if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
+}
+function startQpWaitingPoll(code,studentKey){
+  if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;}
+  qpWaitingPollInterval=setInterval(async()=>{
+    try{
+      const snap=await window.dbGet(window.dbChild(window.dbRef,`qp_rooms/${code}`));
+      const data=snap.val()||{};
+      const students=data.students||{};
+      if(!students[studentKey]){
+        clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
+        if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
+        showToast('Bạn đã bị kick!','error');switchView('studentLoginView');return;
+      }
+      if(data.status==='started'&&!isQpActive){
+        clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
+        if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
+        try{await window.dbUpdate(window.ref(window.db,`qp_rooms/${code}/students/${studentKey}`),{status:'testing'});}catch(e){}
+        launchQpPracticeInterface();return;
+      }
+      if(data.status==='ended'&&isQpActive){
+        clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
+        if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
+        showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);return;
+      }
+    }catch(e){console.error('QP Poll error:',e);}
+  },1500);
+}
+function stopQpWaitingPoll(){
+  if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;}
 }
 
 function addQpQuestionItem(){
@@ -1445,10 +1392,12 @@ async function startStudentParticipation(){
       activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{
         let data=snapshot.val()||{},students=data.students||{};
         document.getElementById('qpWaitStudentCount').innerText=Object.keys(students).length;
-        if(!students[studentKey]){showToast('Bạn đã bị kick!','error');if(activeQpRoomListener)activeQpRoomListener();switchView('studentLoginView');return;}
-        if(data.status==='started'){if(activeQpRoomListener)activeQpRoomListener();window.dbUpdate(roomRef,{status:'testing'});launchQpPracticeInterface();}
-        else if(data.status==='ended'&&isQpActive){if(activeQpRoomListener)activeQpRoomListener();showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}
+        if(!students[studentKey]){showToast('Bạn đã bị kick!','error');if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();switchView('studentLoginView');return;}
+        if(data.status==='started'){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchQpPracticeInterface();}
+        else if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}
       });
+      // POLLING FALLBACK
+      startQpWaitingPoll(code,studentKey);
     }else{
       const snapshot=await window.dbGet(window.dbChild(window.dbRef,`exams/${code}`));
       if(!snapshot.exists()){showToast('Không tìm thấy đề!','error');return;}
@@ -1467,10 +1416,12 @@ async function startStudentParticipation(){
         activeStudentRoomListener=window.onValue(roomMainRef,(snapshot)=>{
           let data=snapshot.val()||{},students=data.students||{};
           document.getElementById('waitStudentCount').innerText=Object.keys(students).length;
-          if(!students[studentSessionKeyGlobal]){showToast('Bạn đã bị kick!','error');switchView('studentLoginView');return;}
-          if(data.status==='started'){if(activeStudentRoomListener)activeStudentRoomListener();window.dbUpdate(roomRef,{status:'testing'});launchOfficialExamInterface();}
-          else if(data.status==='ended'){if(activeStudentRoomListener)activeStudentRoomListener();showToast('Kì thi đã kết thúc!','info');switchView('studentLoginView');}
+          if(!students[studentSessionKeyGlobal]){showToast('Bạn đã bị kick!','error');if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();switchView('studentLoginView');return;}
+          if(data.status==='started'&&!isExamActive){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();window.dbUpdate(roomRef,{status:'testing'});launchOfficialExamInterface();}
+          else if(data.status==='ended'){if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}stopLiveWaitingPoll();showToast('Kì thi đã kết thúc!','info');switchView('studentLoginView');}
         });
+        // POLLING FALLBACK — đảm bảo hoạt động ngay cả khi listener Firebase miss
+        startLiveWaitingPoll(code,studentSessionKeyGlobal);
       }else{
         studentSessionKeyGlobal='s_free_'+Date.now();
         launchOfficialExamInterface();
@@ -1478,7 +1429,7 @@ async function startStudentParticipation(){
     }
   });
 }
-function leaveQpWaitingRoom(){if(activeQpRoomListener)activeQpRoomListener();switchView('studentLoginView');}
+function leaveQpWaitingRoom(){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}stopQpWaitingPoll();switchView('studentLoginView');}
 
 async function launchOfficialExamInterface(){
   document.getElementById('displayExamTitle').innerText=currentExamData.title;
@@ -1563,27 +1514,25 @@ async function submitStudentExam(forced=false){
   showToast('📤 Nộp bài thành công!','success');
   showResultPopup(finalScore,10,()=>{switchView('studentResultView');});
 }
-function leaveWaitingRoom(){switchView('studentLoginView');}
+function leaveWaitingRoom(){stopLiveWaitingPoll();if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}switchView('studentLoginView');}
 async function cancelStudentExam(){
   if(!confirm('Bạn có chắc muốn THOÁT bài thi?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!'))return;
-  clearInterval(examTimer);isExamActive=false;setExamActiveClass(false);
+  clearInterval(examTimer);isExamActive=false;setExamActiveClass(false);stopLiveWaitingPoll();
   if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
   if(currentExamData&&currentExamData.isLiveRoom&&studentSessionKeyGlobal){try{await window.dbRemove(window.ref(window.db,`liverooms/${currentExamData.code}/students/${studentSessionKeyGlobal}`));}catch(e){}}
   currentExamData=null;studentNameGlobal='';studentSessionKeyGlobal='';cheatWarnings=0;totalTabLeaveTime=0;tabLeaveStartTime=null;
   const media=document.getElementById('examMediaContainer'),sheet=document.getElementById('studentAnswerSheet');
   if(media)media.innerHTML='';if(sheet)sheet.innerHTML='';
-  showToast('🚪 Đã thoát bài thi.','warn');
-  switchView('studentLoginView');
+  showToast('🚪 Đã thoát bài thi.','warn');switchView('studentLoginView');
 }
 function cancelQpPractice(){
   if(!confirm('Bạn có chắc muốn THOÁT bài luyện?\n\n⚠️ Kết quả sẽ KHÔNG được ghi nhận!'))return;
-  clearInterval(qpTimer);isQpActive=false;
+  clearInterval(qpTimer);isQpActive=false;stopQpWaitingPoll();
   if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
   currentQpData=null;studentNameGlobal='';qpStudentAnswers={};currentQpV2Index=0;
   cheatWarnings=0;totalTabLeaveTime=0;tabLeaveStartTime=null;
   const container=document.getElementById('qpPlayQuestionsContainer');if(container)container.innerHTML='';
-  showToast('🚪 Đã thoát bài luyện.','warn');
-  switchView('studentLoginView');
+  showToast('🚪 Đã thoát bài luyện.','warn');switchView('studentLoginView');
 }
 function launchQpPracticeInterface(){
   isQpActive=true;currentQpV2Index=0;qpStudentAnswers={};
@@ -1599,7 +1548,7 @@ function launchQpPracticeInterface(){
   switchView('qpPracticingView');
   if(currentQpData.isAdvancedMode){
     let roomMainRef=window.ref(window.db,`qp_rooms/${currentQpData.code}`);
-    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener)activeQpRoomListener();showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}});
+    activeQpRoomListener=window.onValue(roomMainRef,(snapshot)=>{let data=snapshot.val()||{};if(data.status==='ended'&&isQpActive){if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}showToast('🛑 GV đã kết thúc!','error');submitQpPractice(true);}});
   }
 }
 function renderQpLayoutV1(){
@@ -1642,7 +1591,7 @@ function toggleQpExp(qid){let box=document.getElementById(`qp-exp-${qid}`),btn=b
 async function submitQpPractice(forced=false){
   if(!forced&&!confirm('Xác nhận nộp bài?'))return;
   if(!isQpActive&&!forced)return;
-  isQpActive=false;clearInterval(qpTimer);if(activeQpRoomListener)activeQpRoomListener();
+  isQpActive=false;clearInterval(qpTimer);if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
   let totalEarned=0,totalMax=0,reviewHtml='';
   currentQpData.questions.forEach(q=>{
     let qScore=q.score||0.25;totalMax+=qScore;
