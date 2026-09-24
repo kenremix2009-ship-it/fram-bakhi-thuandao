@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Auroura - Hệ Thống Kiểm Tra Trực Tuyến</title>
+<title>Aurora - Hệ Thống Kiểm Tra Trực Tuyến</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 <style>
@@ -91,8 +91,8 @@ th{background:#f4f6f8;font-weight:600}
 .result-popup-btn:active{transform:scale(.96)}
 .result-popup-confetti{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;pointer-events:none;animation:confettiFall 2.5s linear infinite}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(450px) rotate(720deg);opacity:0}}
-#welcomeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:999999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#welcomeModalBox{background:#fff;width:100%;max-width:420px;padding:40px 25px 25px 25px;border-radius:20px;text-align:center;position:relative;animation:welcomePop .7s cubic-bezier(.34,1.56,.64,1);transition:all .5s ease;z-index:2}
+#welcomeModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);display:flex;justify-content:center;align-items:center;z-index:999999;padding:15px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:hidden}
+#welcomeModalBox{background:#fff;width:100%;max-width:420px;padding:40px 25px 25px 25px;border-radius:20px;text-align:center;position:relative;animation:welcomePop .7s cubic-bezier(.34,1.56,.64,1);transition:all .5s ease;z-index:100 !important}
 @keyframes welcomePop{0%{transform:scale(.4) rotate(-6deg);opacity:0}60%{transform:scale(1.05) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 #welcomeCrown{position:absolute;top:-38px;left:50%;transform:translateX(-50%);font-size:64px;line-height:1;animation:crownFloat 3s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(255,193,7,.7))}
 @keyframes crownFloat{0%,100%{transform:translateX(-50%) translateY(0) rotate(-6deg)}50%{transform:translateX(-50%) translateY(-10px) rotate(6deg)}}
@@ -100,7 +100,7 @@ th{background:#f4f6f8;font-weight:600}
 #welcomeModalContent{font-size:13px;line-height:1.7;margin-bottom:20px;padding:14px;border-radius:10px;text-align:left}
 .welcome-line{padding:4px 0}
 .welcome-line strong{font-weight:bold}
-#welcomeCloseBtn{background:linear-gradient(135deg,#198754,#157347);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 6px 18px rgba(25,135,84,.35);position:relative;z-index:3}
+#welcomeCloseBtn{background:linear-gradient(135deg,#198754,#157347);color:#fff;border:none;padding:12px 20px;border-radius:10px;font-weight:bold;font-size:14px;cursor:pointer;width:100%;transition:all .3s;box-shadow:0 6px 18px rgba(25,135,84,.35)}
 #welcomeCloseBtn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(25,135,84,.5)}
 .crown-none #welcomeCrown{display:none}
 .crown-none #welcomeModalBox{padding-top:25px}
@@ -232,196 +232,105 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 /* ===== FX CONTAINER ===== */
 #fxContainer { position: fixed; inset: 0; pointer-events: none; z-index: 999990; overflow: hidden; }
 
-/* ===== WELCOME FX (hiệu ứng chào mừng) ===== */
+/* ===== GALAXY ===== */
+.galaxy-overlay { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 50%, rgba(20,30,90,.75) 0%, rgba(0,0,0,.35) 55%, transparent 85%); opacity: 0; animation: galaxyFade 1.9s ease-out forwards; }
+@keyframes galaxyFade { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
+.galaxy-spin { position: fixed; top: 50%; width: 340px; height: 340px; border-radius: 50%; pointer-events: none; z-index: 999998; transform: translate(-50%,-50%) scale(0); opacity: 0; background: radial-gradient(circle at 30% 30%, rgba(120,180,255,.95) 0%, transparent 42%), radial-gradient(circle at 70% 70%, rgba(200,120,255,.95) 0%, transparent 42%), conic-gradient(from 0deg, rgba(120,180,255,.45), rgba(255,120,220,.45), rgba(120,255,220,.45), rgba(120,180,255,.45)); filter: blur(10px); }
+.galaxy-spin.play-left { left: 25%; animation: galaxyPlayLeft 1.9s ease-out forwards; }
+.galaxy-spin.play-right { left: 75%; animation: galaxyPlayRight 1.9s ease-out forwards; }
+@keyframes galaxyPlayLeft { 0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0} 25%{transform:translate(-50%,-50%) scale(1.6) rotate(240deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(3.4) rotate(1080deg);opacity:0} }
+@keyframes galaxyPlayRight { 0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0} 25%{transform:translate(-50%,-50%) scale(1.6) rotate(-240deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(3.4) rotate(-1080deg);opacity:0} }
+.galaxy-core { position: fixed; top: 50%; left: 50%; width: 60px; height: 60px; border-radius: 50%; transform: translate(-50%,-50%) scale(0); background: radial-gradient(circle,#fff 0%,#4a9eff 40%,transparent 72%); box-shadow: 0 0 60px #4a9eff, 0 0 120px #4a9eff, 0 0 200px #7aaeff; z-index: 999999; pointer-events: none; }
+.galaxy-core.play { animation: galaxyCore 1.9s ease-out forwards; }
+@keyframes galaxyCore { 0%{transform:translate(-50%,-50%) scale(0);opacity:0} 20%{transform:translate(-50%,-50%) scale(1.6);opacity:1} 60%{transform:translate(-50%,-50%) scale(2.8);opacity:.85} 100%{transform:translate(-50%,-50%) scale(7);opacity:0} }
+.galaxy-star { position: fixed; width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #fff, 0 0 22px #4a9eff, 0 0 32px #7aaeff; pointer-events: none; z-index: 999999; opacity: 0; }
+.galaxy-star.play { animation: starFly 1.7s ease-out forwards; }
+@keyframes starFly { 0%{opacity:0; transform: scale(.3) translate(0,0)} 20%{opacity:1; transform: scale(1.4) translate(calc(var(--tx,0)*.2), calc(var(--ty,0)*.2))} 100%{opacity:0; transform: scale(2.2) translate(var(--tx,0), var(--ty,0))} }
+
+/* ===== LIGHTNING ===== */
+.lightning-flash { position: fixed; inset: 0; pointer-events: none; z-index: 999998; opacity: 0; background: radial-gradient(circle at 50% 50%, rgba(255,240,150,.95) 0%, rgba(255,200,0,.5) 35%, transparent 72%); }
+.lightning-flash.play { animation: lightningFlash 1.4s ease-out forwards; }
+@keyframes lightningFlash { 0%{opacity:0} 8%{opacity:1} 15%{opacity:.2} 25%{opacity:1} 40%{opacity:.4} 55%{opacity:.9} 70%{opacity:.3} 100%{opacity:0} }
+.lightning-bolt { position: fixed; pointer-events: none; z-index: 999999; font-size: 110px; opacity: 0; filter: drop-shadow(0 0 20px #ffeb3b) drop-shadow(0 0 40px #ffc107) drop-shadow(0 0 70px #ff9800); }
+.lightning-bolt.play { animation: boltStrike 1.15s cubic-bezier(.34,1.56,.64,1) forwards; }
+.lightning-bolt.small { font-size: 65px; }
+@keyframes boltStrike { 0%{opacity:0; transform: scale(.2) rotate(-25deg)} 35%{opacity:1; transform: scale(1.55) rotate(6deg)} 55%{opacity:1; transform: scale(1.1) rotate(-3deg)} 75%{opacity:1; transform: scale(1.3) rotate(2deg)} 100%{opacity:0; transform: scale(1.9) rotate(14deg)} }
+.mini-bolt { position: fixed; pointer-events: none; z-index: 999999; font-size: 34px; opacity: 0; filter: drop-shadow(0 0 10px #ffeb3b) drop-shadow(0 0 22px #ffc107); }
+.mini-bolt.play { animation: miniBoltFly 1.25s ease-out forwards; }
+@keyframes miniBoltFly { 0%{opacity:0; transform: scale(.2) rotate(0)} 30%{opacity:1; transform: scale(1.4) rotate(200deg)} 100%{opacity:0; transform: scale(.7) rotate(620deg) translate(var(--tx,0), var(--ty,0))} }
+.shockwave { position: fixed; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #ffeb3b; transform: translate(-50%,-50%) scale(0); opacity: 0; z-index: 999997; pointer-events: none; box-shadow: 0 0 30px #ffeb3b, inset 0 0 22px #ffeb3b, 0 0 60px #ffc107; }
+.shockwave.play { animation: shockwave 1.25s ease-out forwards; }
+@keyframes shockwave { 0%{transform:translate(-50%,-50%) scale(.3);opacity:0} 15%{transform:translate(-50%,-50%) scale(1.1);opacity:1} 100%{transform:translate(-50%,-50%) scale(5.5);opacity:0} }
+body.fx-shake { animation: screenShake .65s cubic-bezier(.36,.07,.19,.97); }
+@keyframes screenShake { 10%,90%{transform:translate3d(-2px,0,0)} 20%,80%{transform:translate3d(4px,0,0)} 30%,50%,70%{transform:translate3d(-6px,0,0)} 40%,60%{transform:translate3d(6px,0,0)} }
+
+/* ===== SHIELD ===== */
+.shield-burst { position: fixed; top: 50%; left: 50%; width: 200px; height: 200px; transform: translate(-50%,-50%) scale(0); opacity: 0; font-size: 150px; display: flex; align-items: center; justify-content: center; z-index: 999999; pointer-events: none; filter: drop-shadow(0 0 30px #1877f2) drop-shadow(0 0 60px #1877f2); }
+.shield-burst.play { animation: shieldBurst 1.5s ease-out forwards; }
+@keyframes shieldBurst { 0%{transform:translate(-50%,-50%) scale(.2) rotate(-30deg);opacity:0;filter:drop-shadow(0 0 0 #1877f2) brightness(1)} 20%{transform:translate(-50%,-50%) scale(1.35) rotate(0);opacity:1;filter:drop-shadow(0 0 45px #1877f2) brightness(2.6)} 45%{transform:translate(-50%,-50%) scale(1) rotate(6deg);opacity:1;filter:drop-shadow(0 0 55px #1877f2) brightness(3)} 70%{transform:translate(-50%,-50%) scale(1.12) rotate(-4deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(3.2) rotate(0);opacity:0} }
+.shield-ring { position: fixed; top: 50%; left: 50%; width: 120px; height: 120px; border-radius: 50%; border: 5px solid #1877f2; transform: translate(-50%,-50%) scale(0); opacity: 0; z-index: 999998; pointer-events: none; box-shadow: 0 0 40px #1877f2, inset 0 0 30px #1877f2, 0 0 90px #4a9eff; }
+.shield-ring.play { animation: shieldRing 1.55s ease-out forwards; }
+@keyframes shieldRing { 0%{transform:translate(-50%,-50%) scale(.2);opacity:0} 20%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(-50%,-50%) scale(4.2);opacity:0} }
+.shield-particle { position: fixed; width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle,#7ac0ff,#1877f2); box-shadow: 0 0 14px #1877f2, 0 0 28px #4a9eff; pointer-events: none; z-index: 999999; opacity: 0; top: 50%; left: 50%; }
+.shield-particle.play { animation: shieldParticle 1.55s ease-out forwards; }
+@keyframes shieldParticle { 0%{opacity:0; transform: translate(-50%,-50%) scale(0)} 15%{opacity:1; transform: translate(-50%,-50%) scale(1.3)} 100%{opacity:0; transform: translate(calc(-50% + var(--tx,0)), calc(-50% + var(--ty,0))) scale(.4)} }
+
+/* ===== WELCOME FX LAYER ===== */
 #welcomeFxLayer {
-  position: fixed; inset: 0; pointer-events: none; z-index: 999998;
-  overflow: hidden; display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  border-radius: 0;
 }
-#welcomeFxLayer.active { display: block; }
-
-/* Lửa dữ dội */
-.fire-fx {
-  position: absolute; bottom: -50px; width: 100%; height: 120%;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(255,200,0,.95) 0%, rgba(255,80,0,.85) 25%, rgba(200,0,0,.7) 50%, transparent 75%),
-    radial-gradient(ellipse at 20% 100%, rgba(255,150,0,.8) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(255,100,0,.8) 0%, transparent 60%);
-  animation: fireDance 1.2s ease-in-out infinite alternate;
-  filter: blur(8px);
-}
-@keyframes fireDance {
-  0%   { transform: scaleY(1) scaleX(1) translateY(0); opacity: .9; }
-  50%  { transform: scaleY(1.1) scaleX(1.05) translateY(-8px); opacity: 1; }
-  100% { transform: scaleY(1.05) scaleX(.98) translateY(0); opacity: .95; }
-}
-.fire-particle {
-  position: absolute; bottom: 0; width: 14px; height: 14px; border-radius: 50%;
-  background: radial-gradient(circle, #fff700 0%, #ff8c00 50%, #ff2200 100%);
-  box-shadow: 0 0 20px #ff8c00, 0 0 40px #ff2200;
-  animation: fireRise 2.5s ease-in infinite;
-}
-@keyframes fireRise {
-  0%   { transform: translateY(0) scale(.5); opacity: 1; }
-  100% { transform: translateY(-100vh) scale(.2); opacity: 0; }
+#welcomeFxCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: opacity .8s ease;
 }
 
-/* Vòng xoáy thời gian tím xanh */
-.time-vortex {
-  position: absolute; top: 50%; left: 50%; width: 600px; height: 600px;
-  border-radius: 50%; transform: translate(-50%,-50%);
-  background: conic-gradient(from 0deg, #8a2be2, #00ffff, #8a2be2, #00ffff, #8a2be2);
-  filter: blur(30px); animation: vortexSpin 2.5s linear infinite;
-  opacity: .8;
-}
-@keyframes vortexSpin {
-  0%   { transform: translate(-50%,-50%) rotate(0deg) scale(.6); }
-  50%  { transform: translate(-50%,-50%) rotate(180deg) scale(1); }
-  100% { transform: translate(-50%,-50%) rotate(360deg) scale(.6); }
-}
-.vortex-ring {
-  position: absolute; top: 50%; left: 50%; border-radius: 50%;
-  border: 3px solid rgba(138,43,226,.8); transform: translate(-50%,-50%);
-  box-shadow: 0 0 40px #8a2be2, inset 0 0 40px #00ffff;
-  animation: ringExpand 2.2s ease-out infinite;
-}
-@keyframes ringExpand {
-  0%   { width: 60px; height: 60px; opacity: 1; }
-  100% { width: 800px; height: 800px; opacity: 0; }
-}
-.vortex-star {
-  position: absolute; top: 50%; left: 50%; width: 6px; height: 6px;
-  border-radius: 50%; background: #fff; box-shadow: 0 0 20px #00ffff, 0 0 40px #8a2be2;
-  animation: starVortex 2s ease-out infinite;
-}
-@keyframes starVortex {
-  0%   { transform: translate(-50%,-50%) rotate(0deg) translateX(40px) rotate(0deg) scale(.5); opacity: 0; }
-  30%  { opacity: 1; }
-  100% { transform: translate(-50%,-50%) rotate(720deg) translateX(400px) rotate(-720deg) scale(0); opacity: 0; }
-}
-
-/* Pháo hoa */
-.firework {
-  position: absolute; width: 6px; height: 6px; border-radius: 50%;
-  pointer-events: none; animation: fireworkBurst 1.8s ease-out forwards;
-}
-@keyframes fireworkBurst {
-  0%   { transform: scale(0); opacity: 1; }
-  50%  { transform: scale(1.5); opacity: 1; }
-  100% { transform: scale(0); opacity: 0; }
-}
-.firework-trail {
-  position: absolute; width: 3px; height: 3px; border-radius: 50%;
-  pointer-events: none; animation: trailFall 2s ease-out forwards;
-}
-@keyframes trailFall {
-  0%   { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
-}
-
-/* Halloween */
-.halloween-fx {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 80%, rgba(255,140,0,.4) 0%, rgba(80,0,80,.5) 40%, rgba(0,0,0,.85) 100%);
-  animation: halloweenPulse 2s ease-in-out infinite alternate;
-}
-@keyframes halloweenPulse { 0%{opacity:.8} 100%{opacity:1} }
-.halloween-emoji {
-  position: absolute; font-size: 48px; opacity: 0;
-  animation: ghostFloat 2.2s ease-in-out forwards;
-  filter: drop-shadow(0 0 20px #ff8c00);
-}
-@keyframes ghostFloat {
-  0%   { opacity: 0; transform: translateY(40px) scale(.5) rotate(-10deg); }
-  40%  { opacity: 1; transform: translateY(0) scale(1.2) rotate(0deg); }
-  100% { opacity: 0; transform: translateY(-60px) scale(.8) rotate(10deg); }
-}
-.halloween-bat {
-  position: absolute; font-size: 36px; opacity: 0;
-  animation: batFly 2.5s linear forwards;
-}
-@keyframes batFly {
-  0%   { opacity: 0; transform: translate(0,0) scale(.6); }
-  20%  { opacity: 1; }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.2); }
-}
-
-/* Giáng sinh */
-.xmas-fx {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,.15) 0%, rgba(200,0,0,.15) 40%, rgba(0,60,0,.25) 100%);
-  animation: xmasGlow 2.5s ease-in-out infinite alternate;
-}
-@keyframes xmasGlow { 0%{opacity:.6} 100%{opacity:1} }
-.xmas-snow {
-  position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #fff;
-  box-shadow: 0 0 10px #fff; opacity: .9;
-  animation: snowFall 3s linear infinite;
-}
-@keyframes snowFall {
-  0%   { transform: translateY(-20px) translateX(0) rotate(0); opacity: 0; }
-  10%  { opacity: 1; }
-  100% { transform: translateY(100vh) translateX(var(--tx,20px)) rotate(360deg); opacity: 0; }
-}
-.xmas-emoji {
-  position: absolute; font-size: 52px; opacity: 0;
-  animation: xmasBounce 2.5s ease-in-out forwards;
-  filter: drop-shadow(0 0 15px gold);
-}
-@keyframes xmasBounce {
-  0%   { opacity: 0; transform: scale(.3) rotate(-20deg); }
-  50%  { opacity: 1; transform: scale(1.3) rotate(5deg); }
-  100% { opacity: 0; transform: scale(.9) rotate(-5deg); }
-}
-
-/* Tết */
-.tet-fx {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,0,0,.25) 0%, rgba(255,215,0,.2) 50%, rgba(0,0,0,.5) 100%);
-  animation: tetPulse 2s ease-in-out infinite alternate;
-}
-@keyframes tetPulse { 0%{opacity:.7} 100%{opacity:1} }
-.tet-flower {
-  position: absolute; font-size: 44px; opacity: 0;
-  animation: flowerFall 3s ease-in forwards;
-  filter: drop-shadow(0 0 12px #ff4d4f);
-}
-@keyframes flowerFall {
-  0%   { opacity: 0; transform: translateY(-40px) rotate(0deg) scale(.5); }
-  20%  { opacity: 1; }
-  100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(1); }
-}
-.tet-lantern {
-  position: absolute; font-size: 56px; opacity: 0;
-  animation: lanternGlow 2.8s ease-in-out forwards;
-  filter: drop-shadow(0 0 25px #ffd700) drop-shadow(0 0 50px #ff4d4f);
-}
-@keyframes lanternGlow {
-  0%   { opacity: 0; transform: scale(.4) rotate(-15deg); }
-  40%  { opacity: 1; transform: scale(1.2) rotate(0deg); }
-  100% { opacity: 0; transform: scale(1) rotate(15deg); }
-}
-
-/* Tuyết rơi */
-.snow-fx { position: absolute; inset: 0; background: rgba(200,220,255,.08); }
-.snowflake {
-  position: absolute; color: #fff; font-size: 20px;
-  text-shadow: 0 0 10px #fff, 0 0 20px #87ceeb;
-  animation: snowFall 3s linear infinite; opacity: .9;
-}
-
-/* Ánh sáng vàng */
-.gold-light-fx {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,215,0,.6) 0%, rgba(255,180,0,.3) 35%, transparent 70%);
-  animation: goldPulse 2s ease-in-out infinite alternate;
-}
-@keyframes goldPulse { 0%{opacity:.5; transform:scale(.9)} 100%{opacity:1; transform:scale(1.1)} }
-.gold-ray {
-  position: absolute; top: 50%; left: 50%; width: 4px; height: 100vh;
-  background: linear-gradient(to bottom, transparent, rgba(255,215,0,.8), transparent);
-  transform-origin: top center; animation: raySpin 3s linear infinite;
-}
-@keyframes raySpin { 0%{transform:translate(-50%,-50%) rotate(0deg)} 100%{transform:translate(-50%,-50%) rotate(360deg)} }
+/* ===== TRANG HƯỚNG DẪN ===== */
+.guide-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; background: #f8f9fa; padding: 8px; border-radius: 14px; box-shadow: inset 0 2px 8px rgba(0,0,0,.05); }
+.guide-tab { flex: 1; min-width: 120px; padding: 12px 14px; border: 2px solid transparent; background: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; justify-content: center; transition: all .3s cubic-bezier(.34,1.56,.64,1); color: #555; }
+.guide-tab:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.1); }
+.guide-tab.active { background: linear-gradient(135deg,#1877f2,#0d5fd6); color: #fff; border-color: #1877f2; box-shadow: 0 8px 22px rgba(24,119,242,.4); transform: translateY(-2px); }
+.guide-tab.active.tab-teacher { background: linear-gradient(135deg,#1877f2,#0d5fd6); }
+.guide-tab.active.tab-student { background: linear-gradient(135deg,#198754,#157347); }
+.guide-tab.active.tab-leaderboard { background: linear-gradient(135deg,#ffc107,#e0a800); color:#000; }
+.guide-tab.active.tab-supreme { background: linear-gradient(135deg,#dc3545,#bb2d3b); }
+.guide-panel { display: none; animation: guideFadeIn .45s ease; }
+.guide-panel.active { display: block; }
+@keyframes guideFadeIn { from{opacity:0; transform:translateY(15px)} to{opacity:1; transform:translateY(0)} }
+.guide-step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; background: #fff; border-left: 5px solid #1877f2; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0,0,0,.05); transition: all .3s ease; }
+.guide-step:hover { transform: translateX(6px); box-shadow: 0 8px 22px rgba(24,119,242,.15); border-left-width: 8px; }
+.guide-step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1877f2,#0d5fd6); color: #fff; font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24,119,242,.35); }
+.guide-step-content { flex: 1; font-size: 14px; line-height: 1.7; color: #333; }
+.guide-step-content b { color: #1877f2; }
+.guide-step-content code { background: #f0f2f5; padding: 2px 8px; border-radius: 5px; font-family: 'Courier New', monospace; font-size: 13px; color: #d32f2f; font-weight: bold; border: 1px solid #e0e0e0; }
+.guide-section-title { font-size: 18px; font-weight: 900; color: #1877f2; margin: 25px 0 14px 0; padding-bottom: 8px; border-bottom: 3px solid #e7f3ff; display: flex; align-items: center; gap: 10px; }
+.guide-section-title .icon { font-size: 26px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.15)); }
+.guide-warning { background: linear-gradient(135deg,#fff3cd,#ffe58f); border-left: 5px solid #ffc107; padding: 14px 16px; border-radius: 10px; margin: 12px 0; font-size: 13px; color: #856404; line-height: 1.6; }
+.guide-warning b { color: #d32f2f; }
+.guide-tip { background: linear-gradient(135deg,#d1e7dd,#c3e6cb); border-left: 5px solid #198754; padding: 14px 16px; border-radius: 10px; margin: 12px 0; font-size: 13px; color: #0f5132; line-height: 1.6; }
+.guide-tip b { color: #157347; }
+.guide-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-right: 6px; }
+.guide-badge.mc { background: #e7f3ff; color: #1877f2; }
+.guide-badge.tf { background: #fff3cd; color: #856404; }
+.guide-badge.sa { background: #f8d7da; color: #842029; }
+.guide-panel.teacher .guide-step { border-left-color: #1877f2; }
+.guide-panel.teacher .guide-step-num { background: linear-gradient(135deg,#1877f2,#0d5fd6); box-shadow: 0 4px 12px rgba(24,119,242,.35); }
+.guide-panel.student .guide-step { border-left-color: #198754; }
+.guide-panel.student .guide-step-num { background: linear-gradient(135deg,#198754,#157347); box-shadow: 0 4px 12px rgba(25,135,84,.35); }
+.guide-panel.student .guide-step-content b { color: #198754; }
+.guide-panel.leaderboard .guide-step { border-left-color: #ffc107; }
+.guide-panel.leaderboard .guide-step-num { background: linear-gradient(135deg,#ffc107,#e0a800); color:#000; box-shadow: 0 4px 12px rgba(255,193,7,.35); }
+.guide-panel.leaderboard .guide-step-content b { color: #e0a800; }
+.guide-panel.supreme .guide-step { border-left-color: #dc3545; }
+.guide-panel.supreme .guide-step-num { background: linear-gradient(135deg,#dc3545,#bb2d3b); box-shadow: 0 4px 12px rgba(220,53,69,.35); }
+.guide-panel.supreme .guide-step-content b { color: #dc3545; }
+.guide-panel.supreme .guide-section-title { color: #dc3545; border-bottom-color: #f8d7da; }
 
 @media (max-width: 768px) {
   html,body{width:100%}
@@ -467,6 +376,12 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   .forced-submit-emoji{font-size:56px}
   .forced-submit-title{font-size:16px}
   .forced-submit-reason{font-size:12px;padding:10px}
+  .guide-tab { min-width: 45%; font-size: 11px; padding: 10px 6px; }
+  .guide-step { padding: 10px 12px; gap: 10px; }
+  .guide-step-num { width: 30px; height: 30px; font-size: 14px; }
+  .guide-step-content { font-size: 12px; }
+  .guide-section-title { font-size: 15px; }
+  .guide-section-title .icon { font-size: 20px; }
 }
 @media (max-width: 480px) {
   .nav-tabs button{font-size:10px;padding:5px 4px}
@@ -477,9 +392,6 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 </head>
 <body>
 
-<!-- LỚP HIỆU ỨNG CHÀO MỪNG (nằm dưới Welcome Modal) -->
-<div id="welcomeFxLayer"></div>
-
 <div id="globalBroadcastBanner" class="pos-top">Thông báo từ nhà phát triển</div>
 <audio id="globalAudioPlayer" style="display:none" loop></audio>
 <div id="systemToast">Thông báo hệ thống</div>
@@ -487,6 +399,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 <div id="loadingCompleteToast">Hoàn thành</div>
 
 <div id="welcomeModal">
+  <div id="welcomeFxLayer"><canvas id="welcomeFxCanvas"></canvas></div>
   <div id="welcomeModalBox">
     <div id="welcomeCrown">👑</div>
     <h3 id="welcomeModalTitle">CHÀO MỪNG ĐẾN VỚI AURORA</h3>
@@ -494,7 +407,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
       <p class="welcome-line">🌐 <strong>Web được tạo bởi:</strong> <span style="color:#d32f2f;font-weight:bold">DaoDaiThuan</span></p>
       <p class="welcome-line" style="margin-top:6px">🤖 <strong>Aurora AI:</strong> <span style="color:#198754;font-weight:bold">make by thuan2810</span></p>
     </div>
-    <button id="welcomeCloseBtn" onclick="document.getElementById('welcomeModal').style.display='none'">ĐÃ HIỂU & VÀO WEB</button>
+    <button id="welcomeCloseBtn" onclick="closeWelcomeModal()">ĐÃ HIỂU & VÀO WEB</button>
   </div>
 </div>
 
@@ -524,10 +437,11 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
 </div>
 
 <div class="navbar">
-  <div class="logo" id="webLogo">⚡ Auroura</div>
+  <div class="logo" id="webLogo">✨ AURORA</div>
   <div class="nav-tabs">
     <button onclick="switchView('teacherView', this)">👨‍🏫 GIÁO VIÊN</button>
     <button class="active" onclick="switchView('studentLoginView', this)">🧑‍🎓 HỌC SINH</button>
+    <button onclick="switchView('guideView', this)">📖 HƯỚNG DẪN</button>
     <button onclick="switchView('leaderboardView', this)">🏆 XẾP HẠNG</button>
     <button onclick="switchView('advancedModelView', this)">⚙️ MÔ HÌNH NÂNG CAO (GV)</button>
     <button onclick="checkSupremeAccess(this)" style="background:#ffc107;color:#000;font-weight:bold">👑 TỐI CAO NHÀ PHÁT TRIỂN</button>
@@ -750,6 +664,93 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
+<div id="guideView" class="view-section">
+  <div class="card" style="max-width:1000px;margin:0 auto">
+    <div style="text-align:center;padding-bottom:15px;border-bottom:2px solid #eee;margin-bottom:20px">
+      <h1 style="font-size:24px;background:linear-gradient(90deg,#1877f2,#198754,#ffc107,#dc3545,#1877f2);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shineText 3s linear infinite;font-weight:900">📖 HƯỚNG DẪN SỬ DỤNG</h1>
+      <p style="font-size:13px;color:#666;margin-top:6px">Cẩm nang chi tiết cho tất cả vai trò trên hệ thống <b style="color:#1877f2">AURORA</b></p>
+    </div>
+
+    <div class="guide-tabs">
+      <div class="guide-tab tab-teacher active" data-guide="teacher" onclick="switchGuideTab('teacher', this)">
+        <span style="font-size:18px">👨‍🏫</span> Giáo Viên
+      </div>
+      <div class="guide-tab tab-student" data-guide="student" onclick="switchGuideTab('student', this)">
+        <span style="font-size:18px">🧑‍🎓</span> Học Sinh
+      </div>
+      <div class="guide-tab tab-leaderboard" data-guide="leaderboard" onclick="switchGuideTab('leaderboard', this)">
+        <span style="font-size:18px">🏆</span> Xếp Hạng
+      </div>
+      <div class="guide-tab tab-supreme" data-guide="supreme" onclick="switchGuideTab('supreme', this)">
+        <span style="font-size:18px">👑</span> Tối Cao
+      </div>
+    </div>
+
+    <div class="guide-panel teacher active" id="guide-teacher">
+      <div class="guide-section-title"><span class="icon">🛠️</span> Tạo Đề Kiểm Tra Chính Thức</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>👨‍🏫 GIÁO VIÊN</b> trên thanh điều hướng. Nhập <b>Mã bài kiểm tra</b> (VD: <code>TOAN12</code>) và <b>Tên bài</b>. Mã nên viết HOA, không dấu, không khoảng trắng.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Chọn <b>Hình thức tải đề</b>: PDF (1 file) hoặc Ảnh (nhiều ảnh). Sau đó bấm <b>Chọn File Đề Thi</b> để tải lên.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">(Tùy chọn) Mở <b>⚙️ Cài đặt nâng cao</b> để bật: đếm ngược thời gian, chống gian lận rời tab, hoặc bật <b>Phòng Thi Chuyên Dụng (Live)</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Thêm câu hỏi theo 3 loại: <span class="guide-badge mc">Trắc nghiệm 0.25đ</span><span class="guide-badge tf">Đúng/Sai 1.0đ</span><span class="guide-badge sa">Trả lời ngắn 0.5đ</span>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-content">Nhấn <b>💾 Lưu & Phát Hành</b>. Nhập <b>mật khẩu bảo mật giáo viên</b> (mặc định: <code>THUANBAKHI</code>).</div></div>
+      <div class="guide-warning">⚠️ <b>Lưu ý:</b> Mật khẩu giáo viên mặc định là <code>THUANBAKHI</code>. Vào khu vực <b>👑 TỐI CAO</b> để thêm nhiều mật khẩu khác.</div>
+
+      <div class="guide-section-title" style="margin-top:30px"><span class="icon">📸</span> Nhập Nhanh Đáp Án Từ Ảnh</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Trong tab <b>GIÁO VIÊN</b>, kéo xuống mục <b>📸 Tự Động Nhập Đáp Án Từ Ảnh</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Tải ảnh → hệ thống tự tạo mẫu 12 câu TN + 4 câu Đ/S + 6 câu TL ngắn. Sau đó bạn chỉ cần sửa lại.</div></div>
+
+      <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚙️</span> Quản Lý Phòng Live & Đề Thi</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bấm nút <b>⚙️ Nâng Cao & Quản Lý Phòng</b> ở góc phải trên cùng.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã đề</b> + <b>Mật khẩu bảo mật</b> → bấm <b>📡 Kết Nối Quản Lý Phòng Live</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nút <b>📄 Tải Đề PDF</b> và <b>🗑️ Xóa Đề</b> để quản lý file.</div></div>
+
+      <div class="guide-section-title" style="margin-top:30px"><span class="icon">⚡</span> Tạo Bài Luyện Nhanh</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào <b>⚙️ MÔ HÌNH NÂNG CAO (GV)</b> → bấm <b>⚡ Tạo Bài Luyện Nhanh</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập Mã + Tên bài luyện, cấu hình như mong muốn.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Thêm câu hỏi → bấm <b>💾 Khởi Tạo Bài Luyện</b>.</div></div>
+    </div>
+
+    <div class="guide-panel student" id="guide-student">
+      <div class="guide-section-title" style="color:#198754;border-bottom-color:#d1e7dd"><span class="icon">🧑‍🎓</span> Bắt Đầu Làm Bài</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>🧑‍🎓 HỌC SINH</b>. Nhập <b>Họ và Tên</b> đầy đủ.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Bấm vào <b>Hình thức tham gia</b> để chọn 1 trong 3 chế độ: <b>♾️ Thi Tự Do</b> / <b>🛡️ Phòng Thi Chuyên Dụng</b> / <b>⚡ Bài Luyện Nhanh</b>. Mỗi lần chọn có hiệu ứng đặc sắc.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Nhập <b>Mã bài</b> do giáo viên cung cấp. Nếu chọn Live hoặc Luyện thì nhập thêm <b>Mật Khẩu</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content">Bấm <b>🚀 Bắt Đầu Ngay</b>.</div></div>
+
+      <div class="guide-section-title" style="color:#198754;border-bottom-color:#d1e7dd;margin-top:30px"><span class="icon">📝</span> Trong Khi Làm Bài</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Bên <b>trái</b> là đề thi, bên <b>phải</b> là phiếu trả lời, trên cùng là <b>đồng hồ đếm ngược</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Trả lời: <span class="guide-badge mc">Trắc nghiệm</span> Bấm A/B/C/D • <span class="guide-badge tf">Đúng/Sai</span> Bấm Đ/S từng nhánh • <span class="guide-badge sa">Trả lời ngắn</span> Gõ đáp án.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Khi xong, bấm <b>📤 Nộp Bài Thi</b> và xác nhận.</div></div>
+
+      <div class="guide-warning">⚠️ <b>Cảnh báo gian lận:</b> Nếu rời tab / ẩn màn hình quá <b>7 giây</b>, hệ thống sẽ ghi cảnh cáo. Vượt giới hạn sẽ bị <b>cưỡng chế nộp bài</b>.</div>
+      <div class="guide-tip">💡 <b>Mẹo:</b> Nếu đáp án bị khóa (Bài Luyện V2), nghĩa là đã xác nhận và không thể sửa.</div>
+    </div>
+
+    <div class="guide-panel leaderboard" id="guide-leaderboard">
+      <div class="guide-section-title" style="color:#e0a800;border-bottom-color:#ffe58f"><span class="icon">🏆</span> Xem Bảng Xếp Hạng</div>
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content">Vào tab <b>🏆 XẾP HẠNG</b> trên navbar.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content">Nhập <b>Mã bài thi</b> hoặc <b>Mã bài luyện</b> rồi bấm <b>Xem</b>.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content">Bấm mũi tên <b>&gt;</b> ở cột cuối để xem <b>chi tiết vi phạm</b>.</div></div>
+      <div class="guide-tip">💡 <b>Xếp hạng:</b> Điểm cao trước, nếu trùng điểm ai làm nhanh hơn xếp trên.</div>
+      <div class="guide-warning">⚠️ Bảng chỉ hiển thị <b>dữ liệu đã nộp bài</b>. Nếu thoát giữa chừng, kết quả KHÔNG được ghi nhận.</div>
+    </div>
+
+    <div class="guide-panel supreme" id="guide-supreme">
+      <div class="guide-section-title"><span class="icon">👑</span> Khu Vực Tối Cao</div>
+      <div class="guide-warning">🔒 <b>Mật khẩu vua:</b> <code>thuan281009@</code> — Chỉ dành cho nhà phát triển.</div>
+
+      <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-content"><b>Sửa tên Website:</b> Nhập tên mới (VD: <code>✨ AURORA</code>) → bấm <b>💾 Lưu Tên</b>. Tên sẽ đổi ngay trên navbar và tiêu đề tab.</div></div>
+      <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-content"><b>Quản Lý Tất Cả Đề:</b> Xem/xóa mọi đề thi và bài luyện.</div></div>
+      <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-content"><b>Phát Thông Báo Toàn Cầu:</b> Hiện banner ngay cho tất cả mọi người online.</div></div>
+      <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-content"><b>Hệ Thống Phát Nhạc:</b> Tối đa 12MB, tự chia chunk, phát đồng bộ.</div></div>
+      <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-content"><b>Quản Lý Mật Khẩu Bảo Mật:</b> Thêm nhiều mật khẩu cho từng tổ/nhóm.</div></div>
+      <div class="guide-step"><div class="guide-step-num">6</div><div class="guide-step-content"><b>Tùy Chỉnh Welcome:</b> Bật/tắt popup chào mừng, chọn <b>hiệu ứng nền lộng lẫy</b> (Lửa / Vòng xoáy / Pháo hoa / Halloween / Giáng Sinh / Tết / Galaxy / Matrix / Sakura / Confetti / Stars). Hiệu ứng tự tắt sau 5 giây.</div></div>
+      <div class="guide-step"><div class="guide-step-num">7</div><div class="guide-step-content"><b>Trạng Thái Hệ Thống:</b> Xem thông báo hiện tại và nhạc nền đang phát.</div></div>
+    </div>
+
+  </div>
+</div>
+
 <div id="advancedModelView" class="view-section">
   <div class="card">
     <h2>⚙️ Mô Hình Nâng Cao (Giáo Viên)</h2>
@@ -826,26 +827,15 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
     <h2 style="color:#d32f2f;margin-bottom:15px">👑 KHU VỰC TỐI CAO NHÀ PHÁT TRIỂN</h2>
     <p style="font-size:13px;color:#555;margin-bottom:15px">Bảng điều khiển tối cao của hệ thống.</p>
 
-    <div class="section-title"><span>0. TÊN WEB & HIỆU ỨNG CHÀO MỪNG</span></div>
-    <div style="background:#f0f8ff;border:1px dashed #1877f2;padding:12px;border-radius:8px;margin-bottom:15px">
-      <label>Tên hiển thị của Web (Logo):</label>
-      <input type="text" id="webNameInput" placeholder="Ví dụ: ⚡ Auroura" value="⚡ Auroura">
-      <button class="btn btn-success" style="width:auto;padding:6px 16px" onclick="saveWebName()">💾 Lưu Tên Web</button>
-      <hr style="margin:12px 0">
-      <label>Hiệu ứng chào mừng (5 giây):</label>
-      <select id="welcomeFxSelect" style="margin-bottom:10px">
-        <option value="none">Không có hiệu ứng</option>
-        <option value="fire">🔥 Lửa dữ dội</option>
-        <option value="vortex">🌀 Vòng xoáy thời gian tím xanh</option>
-        <option value="firework">🎆 Pháo hoa</option>
-        <option value="halloween">🎃 Halloween</option>
-        <option value="xmas">🎄 Giáng sinh</option>
-        <option value="tet">🧧 Tết</option>
-        <option value="snow">❄️ Tuyết rơi</option>
-        <option value="gold">✨ Ánh sáng vàng</option>
-      </select>
-      <button class="btn btn-warning" style="width:auto;padding:6px 16px" onclick="saveWelcomeFx()">💾 Lưu Hiệu Ứng</button>
-      <button class="btn btn-secondary" style="width:auto;padding:6px 16px" onclick="previewWelcomeFx()">👁️ Xem Trước Hiệu Ứng</button>
+    <div class="section-title"><span>0. TÊN WEBSITE</span></div>
+    <div style="background:#f0f8ff;border:1px dashed #1877f2;padding:12px;border-radius:8px;margin-bottom:20px">
+      <label>Nhập tên hiển thị của Website (VD: ✨ AURORA)</label>
+      <input type="text" id="supremeWebName" placeholder="✨ AURORA" style="margin-bottom:8px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-success" style="width:auto;padding:8px 16px" onclick="saveWebName()">💾 Lưu Tên Website</button>
+        <button class="btn btn-secondary" style="width:auto;padding:8px 16px" onclick="resetWebName()">🔄 Reset Về Mặc Định</button>
+      </div>
+      <p style="font-size:12px;color:#666;margin-top:8px;font-style:italic">Tên sẽ hiển thị trên thanh navbar và tiêu đề tab của trình duyệt.</p>
     </div>
 
     <div class="section-title"><span>1. QUẢN LÝ TẤT CẢ ĐỀ THI & BÀI LUYỆN</span></div>
@@ -921,6 +911,34 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
           <label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" id="welcomeCrownEnabled" checked style="width:16px;height:16px"> 👑 Hiển thị vương miện</label>
         </div>
       </div>
+      <div class="form-grid-2">
+        <div>
+          <label>🎆 Hiệu ứng nền:</label>
+          <select id="welcomeEffect">
+            <option value="none">Không có</option>
+            <option value="fire">🔥 Ngọn lửa bốc cháy dữ dội</option>
+            <option value="vortex">🌀 Vòng xoáy thời gian tím xanh</option>
+            <option value="fireworks">🎆 Pháo hoa rực rỡ</option>
+            <option value="halloween">🎃 Halloween ma quái</option>
+            <option value="christmas">🎄 Giáng Sinh lung linh</option>
+            <option value="tet">🧧 Tết sum vầy</option>
+            <option value="galaxy">🌌 Dải ngân hà huyền ảo</option>
+            <option value="matrix">💚 Ma trận xanh</option>
+            <option value="sakura">🌸 Hoa anh đào rơi</option>
+            <option value="confetti">🎉 Pháo giấy rơi</option>
+            <option value="stars">✨ Sao lấp lánh</option>
+          </select>
+        </div>
+        <div>
+          <label>Cường độ hiệu ứng:</label>
+          <select id="welcomeEffectIntensity">
+            <option value="low">Nhẹ nhàng</option>
+            <option value="medium" selected>Vừa phải</option>
+            <option value="high">Mạnh mẽ</option>
+          </select>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#666;font-style:italic;margin-bottom:8px">💡 Hiệu ứng chỉ chạy ~5 giây sau khi mở web để không làm phiền.</p>
       <button class="btn btn-success" style="margin-top:10px" onclick="saveWelcomeConfig()">💾 Lưu Tùy Chỉnh</button>
       <button class="btn btn-secondary" style="margin-top:6px" onclick="previewWelcome()">👁️ Xem Trước</button>
     </div>
@@ -1045,259 +1063,47 @@ let audioBlobCache={},currentLoadedAudioKey=null,supremeAudioListListener=null,p
 let securityPassListListener=null,cachedPasswords=['THUANBAKHI'];
 let welcomeConfigListener=null,currentWelcomeConfig=null;
 let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
+let webConfigListener=null;
+
 let examEndedByTeacher = false;
 let examEndedForQp = false;
 let forcedSubmitContext = null;
-let welcomeFxTimeout = null;
 
-/* ========== HIỆU ỨNG CHÀO MỪNG ========== */
-function clearWelcomeFx() {
-  const layer = document.getElementById('welcomeFxLayer');
-  if (layer) {
-    layer.innerHTML = '';
-    layer.classList.remove('active');
-  }
-  if (welcomeFxTimeout) {
-    clearTimeout(welcomeFxTimeout);
-    welcomeFxTimeout = null;
-  }
-}
+const DEFAULT_WEB_NAME = '✨ AURORA';
 
-function playWelcomeFx(type) {
-  clearWelcomeFx();
-  if (!type || type === 'none') return;
-
-  const layer = document.getElementById('welcomeFxLayer');
-  layer.classList.add('active');
-
-  if (type === 'fire') {
-    const fire = document.createElement('div');
-    fire.className = 'fire-fx';
-    layer.appendChild(fire);
-    for (let i = 0; i < 30; i++) {
-      const p = document.createElement('div');
-      p.className = 'fire-particle';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.animationDelay = (Math.random() * 1.5) + 's';
-      p.style.animationDuration = (1.8 + Math.random() * 1.5) + 's';
-      p.style.width = (8 + Math.random() * 14) + 'px';
-      p.style.height = p.style.width;
-      layer.appendChild(p);
-    }
-  } else if (type === 'vortex') {
-    const vortex = document.createElement('div');
-    vortex.className = 'time-vortex';
-    layer.appendChild(vortex);
-    for (let i = 0; i < 6; i++) {
-      const ring = document.createElement('div');
-      ring.className = 'vortex-ring';
-      ring.style.animationDelay = (i * 0.3) + 's';
-      layer.appendChild(ring);
-    }
-    for (let i = 0; i < 24; i++) {
-      const star = document.createElement('div');
-      star.className = 'vortex-star';
-      star.style.animationDelay = (i * 0.08) + 's';
-      star.style.width = star.style.height = (3 + Math.random() * 6) + 'px';
-      layer.appendChild(star);
-    }
-  } else if (type === 'firework') {
-    for (let f = 0; f < 8; f++) {
-      setTimeout(() => {
-        const cx = 15 + Math.random() * 70;
-        const cy = 10 + Math.random() * 50;
-        const colors = ['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59','#ff6b81'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        for (let i = 0; i < 20; i++) {
-          const particle = document.createElement('div');
-          particle.className = 'firework';
-          const ang = (Math.PI * 2 * i) / 20;
-          const dist = 40 + Math.random() * 60;
-          particle.style.left = cx + '%';
-          particle.style.top = cy + '%';
-          particle.style.background = color;
-          particle.style.boxShadow = `0 0 15px ${color}, 0 0 30px ${color}`;
-          particle.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
-          particle.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
-          particle.style.animationDelay = (Math.random() * 0.2) + 's';
-          layer.appendChild(particle);
-        }
-        for (let i = 0; i < 8; i++) {
-          const trail = document.createElement('div');
-          trail.className = 'firework-trail';
-          trail.style.left = cx + '%';
-          trail.style.top = cy + '%';
-          trail.style.background = color;
-          trail.style.boxShadow = `0 0 10px ${color}`;
-          const ang = (Math.PI * 2 * i) / 8;
-          const dist = 70 + Math.random() * 50;
-          trail.style.setProperty('--tx', Math.cos(ang) * dist + 'px');
-          trail.style.setProperty('--ty', Math.sin(ang) * dist + 'px');
-          trail.style.animationDelay = (Math.random() * 0.3) + 's';
-          layer.appendChild(trail);
-        }
-      }, f * 250);
-    }
-  } else if (type === 'halloween') {
-    const bg = document.createElement('div');
-    bg.className = 'halloween-fx';
-    layer.appendChild(bg);
-    const emojis = ['🎃','👻','🦇','🕷️','💀','🧙'];
-    for (let i = 0; i < 14; i++) {
-      const e = document.createElement('div');
-      e.className = 'halloween-emoji';
-      e.innerText = emojis[i % emojis.length];
-      e.style.left = (5 + Math.random() * 90) + '%';
-      e.style.top = (10 + Math.random() * 80) + '%';
-      e.style.animationDelay = (i * 0.12) + 's';
-      e.style.fontSize = (36 + Math.random() * 40) + 'px';
-      layer.appendChild(e);
-    }
-    for (let i = 0; i < 6; i++) {
-      const b = document.createElement('div');
-      b.className = 'halloween-bat';
-      b.innerText = '🦇';
-      b.style.left = (Math.random() * 100) + '%';
-      b.style.top = (Math.random() * 100) + '%';
-      b.style.setProperty('--tx', ((Math.random() - 0.5) * 500) + 'px');
-      b.style.setProperty('--ty', ((Math.random() - 0.5) * 500) + 'px');
-      b.style.animationDelay = (i * 0.3) + 's';
-      layer.appendChild(b);
-    }
-  } else if (type === 'xmas') {
-    const bg = document.createElement('div');
-    bg.className = 'xmas-fx';
-    layer.appendChild(bg);
-    for (let i = 0; i < 40; i++) {
-      const snow = document.createElement('div');
-      snow.className = 'xmas-snow';
-      snow.style.left = Math.random() * 100 + '%';
-      snow.style.setProperty('--tx', ((Math.random() - 0.5) * 100) + 'px');
-      snow.style.animationDelay = (Math.random() * 3) + 's';
-      snow.style.animationDuration = (2 + Math.random() * 3) + 's';
-      snow.style.width = snow.style.height = (4 + Math.random() * 8) + 'px';
-      layer.appendChild(snow);
-    }
-    const emojis = ['🎄','🎅','⛄','🎁','🦌','🌟'];
-    for (let i = 0; i < 10; i++) {
-      const e = document.createElement('div');
-      e.className = 'xmas-emoji';
-      e.innerText = emojis[i % emojis.length];
-      e.style.left = (10 + Math.random() * 80) + '%';
-      e.style.top = (10 + Math.random() * 70) + '%';
-      e.style.animationDelay = (i * 0.2) + 's';
-      e.style.fontSize = (44 + Math.random() * 36) + 'px';
-      layer.appendChild(e);
-    }
-  } else if (type === 'tet') {
-    const bg = document.createElement('div');
-    bg.className = 'tet-fx';
-    layer.appendChild(bg);
-    const flowers = ['🌸','🌼','🏮','🧧','🎊','✨'];
-    for (let i = 0; i < 30; i++) {
-      const f = document.createElement('div');
-      f.className = 'tet-flower';
-      f.innerText = flowers[i % flowers.length];
-      f.style.left = Math.random() * 100 + '%';
-      f.style.animationDelay = (Math.random() * 3) + 's';
-      f.style.animationDuration = (2.5 + Math.random() * 2) + 's';
-      f.style.fontSize = (28 + Math.random() * 32) + 'px';
-      layer.appendChild(f);
-    }
-    for (let i = 0; i < 6; i++) {
-      const l = document.createElement('div');
-      l.className = 'tet-lantern';
-      l.innerText = '🏮';
-      l.style.left = (5 + Math.random() * 90) + '%';
-      l.style.top = (5 + Math.random() * 60) + '%';
-      l.style.animationDelay = (i * 0.3) + 's';
-      l.style.fontSize = (48 + Math.random() * 32) + 'px';
-      layer.appendChild(l);
-    }
-  } else if (type === 'snow') {
-    const bg = document.createElement('div');
-    bg.className = 'snow-fx';
-    layer.appendChild(bg);
-    for (let i = 0; i < 60; i++) {
-      const flake = document.createElement('div');
-      flake.className = 'snowflake';
-      flake.innerText = ['❄','❅','❆','•','*'][i % 5];
-      flake.style.left = Math.random() * 100 + '%';
-      flake.style.setProperty('--tx', ((Math.random() - 0.5) * 120) + 'px');
-      flake.style.animationDelay = (Math.random() * 3) + 's';
-      flake.style.animationDuration = (2 + Math.random() * 3) + 's';
-      flake.style.fontSize = (10 + Math.random() * 22) + 'px';
-      layer.appendChild(flake);
-    }
-  } else if (type === 'gold') {
-    const bg = document.createElement('div');
-    bg.className = 'gold-light-fx';
-    layer.appendChild(bg);
-    for (let i = 0; i < 24; i++) {
-      const ray = document.createElement('div');
-      ray.className = 'gold-ray';
-      ray.style.animationDelay = (i * 0.1) + 's';
-      ray.style.width = (2 + Math.random() * 6) + 'px';
-      ray.style.opacity = 0.3 + Math.random() * 0.5;
-      layer.appendChild(ray);
-    }
-  }
-
-  // Hiệu ứng tồn tại 5 giây
-  welcomeFxTimeout = setTimeout(() => {
-    clearWelcomeFx();
-  }, 5000);
-}
-
-/* ========== LƯU / TẢI CẤU HÌNH WEB NAME + WELCOME FX ========== */
-async function saveWebName() {
-  const name = document.getElementById('webNameInput').value.trim();
-  if (!name) { showToast('Vui lòng nhập tên web!', 'error'); return; }
+/* ========== SỬA TÊN WEB ========== */
+async function saveWebName(){
+  const name = document.getElementById('supremeWebName').value.trim();
+  if(!name){ showToast('Vui lòng nhập tên website!', 'error'); return; }
   try {
-    await window.dbSet(window.ref(window.db, 'system/web_name'), { name, updatedAt: Date.now() });
-    document.getElementById('webLogo').innerText = name;
-    document.title = name.replace(/<[^>]+>/g, '') + ' - Hệ Thống Kiểm Tra Trực Tuyến';
-    showToast('✅ Đã lưu tên web!', 'success');
-  } catch (e) { showToast('❌ Lỗi: ' + e.message, 'error'); }
+    await window.dbSet(window.ref(window.db, 'system/web_config'), { name, updatedAt: Date.now() });
+    showToast('✅ Đã lưu tên website!', 'success');
+  } catch(e){ showToast('❌ Lỗi: ' + e.message, 'error'); }
 }
 
-function applyWebName(name) {
-  if (!name) return;
-  document.getElementById('webLogo').innerText = name;
-  document.title = name.replace(/<[^>]+>/g, '') + ' - Hệ Thống Kiểm Tra Trực Tuyến';
-}
-
-async function saveWelcomeFx() {
-  const fx = document.getElementById('welcomeFxSelect').value;
+async function resetWebName(){
+  if(!confirm('Bạn có chắc muốn reset tên về mặc định "' + DEFAULT_WEB_NAME + '"?')) return;
   try {
-    await window.dbSet(window.ref(window.db, 'system/welcome_fx'), { type: fx, updatedAt: Date.now() });
-    showToast('✅ Đã lưu hiệu ứng chào mừng!', 'success');
-  } catch (e) { showToast('❌ Lỗi: ' + e.message, 'error'); }
+    await window.dbSet(window.ref(window.db, 'system/web_config'), { name: DEFAULT_WEB_NAME, updatedAt: Date.now() });
+    showToast('🔄 Đã reset tên website!', 'warn');
+  } catch(e){ showToast('❌ Lỗi: ' + e.message, 'error'); }
 }
 
-function previewWelcomeFx() {
-  const fx = document.getElementById('welcomeFxSelect').value;
-  playWelcomeFx(fx);
+function applyWebName(name){
+  const finalName = name || DEFAULT_WEB_NAME;
+  const logo = document.getElementById('webLogo');
+  if(logo) logo.innerText = finalName;
+  document.title = finalName + ' - Hệ Thống Kiểm Tra Trực Tuyến';
 }
 
-function loadWebNameAndFx() {
-  window.onValue(window.ref(window.db, 'system/web_name'), (snap) => {
-    const data = snap.val();
-    if (data && data.name) {
-      applyWebName(data.name);
-      document.getElementById('webNameInput').value = data.name;
-    }
-  });
-  window.onValue(window.ref(window.db, 'system/welcome_fx'), (snap) => {
-    const data = snap.val();
-    if (data && data.type) {
-      document.getElementById('welcomeFxSelect').value = data.type;
-      // Chỉ chạy hiệu ứng khi vào web lần đầu
-      if (!sessionStorage.getItem('welcomeFxShown')) {
-        sessionStorage.setItem('welcomeFxShown', '1');
-        playWelcomeFx(data.type);
-      }
-    }
+function loadWebConfig(){
+  if(webConfigListener) webConfigListener();
+  webConfigListener = window.onValue(window.ref(window.db, 'system/web_config'), (snap) => {
+    const cfg = snap.val() || {};
+    const name = cfg.name || DEFAULT_WEB_NAME;
+    applyWebName(name);
+    const input = document.getElementById('supremeWebName');
+    if(input && document.activeElement !== input) input.value = name;
   });
 }
 
@@ -1354,27 +1160,23 @@ function selectExamMode(mode, itemEl) {
   }
 }
 
-/* ========== GALAXY – THI TỰ DO ========== */
+/* ========== GALAXY ========== */
 function playGalaxyEffect() {
   const c = document.getElementById('fxContainer');
-
   const overlay = document.createElement('div');
   overlay.className = 'galaxy-overlay';
   c.appendChild(overlay);
   setTimeout(() => overlay.remove(), 2100);
-
   const core = document.createElement('div');
   core.className = 'galaxy-core play';
   c.appendChild(core);
   setTimeout(() => core.remove(), 2000);
-
   const gL = document.createElement('div');
   gL.className = 'galaxy-spin play-left';
   const gR = document.createElement('div');
   gR.className = 'galaxy-spin play-right';
   c.appendChild(gL); c.appendChild(gR);
   setTimeout(() => { gL.remove(); gR.remove(); }, 2100);
-
   for (let i = 0; i < 30; i++) {
     const star = document.createElement('div');
     star.className = 'galaxy-star play';
@@ -1390,23 +1192,18 @@ function playGalaxyEffect() {
   }
 }
 
-/* ========== LIGHTNING – BÀI LUYỆN NHANH ========== */
+/* ========== LIGHTNING ========== */
 function playLightningEffect(cardEl) {
   const c = document.getElementById('fxContainer');
-  const rect = cardEl
-    ? cardEl.getBoundingClientRect()
-    : { left: window.innerWidth/2 - 40, top: window.innerHeight/2 - 40, width: 80, height: 80 };
+  const rect = cardEl ? cardEl.getBoundingClientRect() : { left: window.innerWidth/2 - 40, top: window.innerHeight/2 - 40, width: 80, height: 80 };
   const cx = rect.left + rect.width / 2;
   const cy = rect.top  + rect.height / 2;
-
   const flash = document.createElement('div');
   flash.className = 'lightning-flash play';
   c.appendChild(flash);
   setTimeout(() => flash.remove(), 1500);
-
   document.body.classList.add('fx-shake');
   setTimeout(() => document.body.classList.remove('fx-shake'), 700);
-
   const bolt = document.createElement('div');
   bolt.className = 'lightning-bolt play';
   bolt.innerText = '⚡';
@@ -1414,7 +1211,6 @@ function playLightningEffect(cardEl) {
   bolt.style.top  = (cy - 55) + 'px';
   c.appendChild(bolt);
   setTimeout(() => bolt.remove(), 1300);
-
   for (let i = 0; i < 2; i++) {
     const b = document.createElement('div');
     b.className = 'lightning-bolt small play';
@@ -1425,7 +1221,6 @@ function playLightningEffect(cardEl) {
     c.appendChild(b);
     setTimeout(() => b.remove(), 1700);
   }
-
   for (let i = 0; i < 3; i++) {
     const sw = document.createElement('div');
     sw.className = 'shockwave play';
@@ -1435,7 +1230,6 @@ function playLightningEffect(cardEl) {
     c.appendChild(sw);
     setTimeout(() => sw.remove(), 1900);
   }
-
   for (let i = 0; i < 10; i++) {
     const mini = document.createElement('div');
     mini.className = 'mini-bolt play';
@@ -1450,16 +1244,14 @@ function playLightningEffect(cardEl) {
   }
 }
 
-/* ========== SHIELD – PHÒNG THI CHUYÊN DỤNG ========== */
+/* ========== SHIELD ========== */
 function playShieldEffect() {
   const c = document.getElementById('fxContainer');
-
   const shield = document.createElement('div');
   shield.className = 'shield-burst play';
   shield.innerText = '🛡️';
   c.appendChild(shield);
   setTimeout(() => shield.remove(), 1700);
-
   for (let i = 0; i < 4; i++) {
     const ring = document.createElement('div');
     ring.className = 'shield-ring play';
@@ -1471,7 +1263,6 @@ function playShieldEffect() {
     c.appendChild(ring);
     setTimeout(() => ring.remove(), 2100);
   }
-
   for (let i = 0; i < 24; i++) {
     const p = document.createElement('div');
     p.className = 'shield-particle play';
@@ -1485,7 +1276,7 @@ function playShieldEffect() {
   }
 }
 
-/* ========== HÀM TÍNH ĐIỂM TỰ ĐỘNG PHÂN BỐ LẠI ========== */
+/* ========== TÍNH ĐIỂM ========== */
 function redistributeScores(questions, targetTotal = 10) {
   if (!questions || questions.length === 0) return questions;
   let currentTotal = 0;
@@ -1519,7 +1310,7 @@ function redistributeTfBranchScores(questions) {
   return questions;
 }
 
-/* ========== MODAL CƯỠNG CHẾ NỘP BÀI ========== */
+/* ========== MODAL CƯỠNG CHẾ ========== */
 function showForcedSubmitModal(reason, detailText, emoji) {
   forcedSubmitContext = reason;
   const modal = document.getElementById('forcedSubmitModal');
@@ -1527,7 +1318,6 @@ function showForcedSubmitModal(reason, detailText, emoji) {
   const titleEl = document.getElementById('forcedSubmitTitle');
   const reasonEl = document.getElementById('forcedSubmitReasonText');
   const detailEl = document.getElementById('forcedSubmitDetailText');
-
   const config = {
     teacher: { emoji: '🛑', title: 'GIÁO VIÊN ĐÃ KẾT THÚC BÀI THI', reason: 'Giáo viên kết thúc kì thi', detail: 'Bài làm của bạn đã được cưỡng chế nộp.' },
     kick: { emoji: '🚫', title: 'BẠN ĐÃ BỊ ĐUỔI KHỎI PHÒNG THI', reason: 'Bị giáo viên kick khỏi phòng', detail: 'Bài làm của bạn đã được cưỡng chế nộp.' },
@@ -1547,7 +1337,6 @@ async function acknowledgeForcedSubmit() {
   document.getElementById('forcedSubmitModal').classList.remove('show');
   const ctx = forcedSubmitContext;
   forcedSubmitContext = null;
-
   if (ctx === 'qp') {
     if (isQpActive) {
       isQpActive = false;
@@ -1555,9 +1344,7 @@ async function acknowledgeForcedSubmit() {
       stopQpWaitingPoll();
       if (activeQpRoomListener) { try { activeQpRoomListener(); } catch (e) {} activeQpRoomListener = null; }
       try { await submitQpPractice('already'); } catch (e) { console.error(e); }
-    } else {
-      switchView('studentLoginView');
-    }
+    } else { switchView('studentLoginView'); }
   } else if (ctx === 'kick') {
     await cancelStudentExamSilently();
   } else if (ctx === 'timeout' || ctx === 'violation' || ctx === 'teacher') {
@@ -1567,12 +1354,8 @@ async function acknowledgeForcedSubmit() {
       stopLiveWaitingPoll();
       if (activeStudentRoomListener) { try { activeStudentRoomListener(); } catch (e) {} activeStudentRoomListener = null; }
       try { await submitStudentExam('already'); } catch (e) { console.error(e); }
-    } else {
-      switchView('studentLoginView');
-    }
-  } else {
-    switchView('studentLoginView');
-  }
+    } else { switchView('studentLoginView'); }
+  } else { switchView('studentLoginView'); }
 }
 
 /* ========== MẬT KHẨU BẢO MẬT ========== */
@@ -1624,25 +1407,53 @@ function loadSecurityPassList(){
 
 /* ========== WELCOME CONFIG ========== */
 function defaultWelcomeConfig(){
-  return{enabled:true,title:'CHÀO MỪNG ĐẾN VỚI AURORA',content:'🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',bgColor:'#ffffff',textColor:'#333333',auraColor:'#ffc107',auraIntensity:25,fontFamily:"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",fontSize:14,textEffect:'none',crownEnabled:true};
+  return {
+    enabled: true,
+    title: 'CHÀO MỪNG ĐẾN VỚI AURORA',
+    content: '🌐 Web được tạo bởi: <b style="color:#d32f2f">DaoDaiThuan</b>\n🤖 Aurora AI: <b style="color:#198754">make by thuan2810</b>',
+    bgColor: '#ffffff',
+    textColor: '#333333',
+    auraColor: '#ffc107',
+    auraIntensity: 25,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    fontSize: 14,
+    textEffect: 'none',
+    crownEnabled: true,
+    effect: 'fireworks',
+    effectIntensity: 'medium'
+  };
 }
 function applyWelcomeConfig(cfg){
-  if(!cfg)return;currentWelcomeConfig=cfg;
-  const box=document.getElementById('welcomeModalBox'),modal=document.getElementById('welcomeModal'),crown=document.getElementById('welcomeCrown'),title=document.getElementById('welcomeModalTitle'),content=document.getElementById('welcomeModalContent');
-  if(!cfg.enabled){modal.style.display='none';return;}
-  modal.style.display='flex';
-  box.style.background=cfg.bgColor||'#fff';box.style.fontFamily=cfg.fontFamily||"'Segoe UI',sans-serif";
-  box.style.fontSize=(cfg.fontSize||14)+'px';box.style.color=cfg.textColor||'#333';
-  const aura=cfg.auraIntensity||0,auraColor=cfg.auraColor||'#ffc107';
-  if(aura>0){box.style.boxShadow=`0 0 ${aura}px ${auraColor}, 0 0 ${aura*2}px ${auraColor}88, 0 20px 60px rgba(0,0,0,.5)`;}
-  else{box.style.boxShadow='0 10px 25px rgba(0,0,0,.3)';}
-  crown.style.display=cfg.crownEnabled===false?'none':'block';
-  box.classList.toggle('crown-none',cfg.crownEnabled===false);
-  title.innerText=cfg.title||'CHÀO MỪNG';title.style.color=cfg.textColor||'#333';title.className='';
-  const eff=cfg.textEffect||'none';if(eff!=='none')title.classList.add('we-'+eff);
-  const lines=(cfg.content||'').split('\n').filter(l=>l.trim());
-  content.innerHTML=lines.map(l=>`<p class="welcome-line">${l}</p>`).join('');
-  content.style.background=cfg.bgColor==='#ffffff'?'#f8f9fa':'rgba(0,0,0,0.05)';content.style.color=cfg.textColor||'#333';
+  if(!cfg) return; currentWelcomeConfig = cfg;
+  const box = document.getElementById('welcomeModalBox');
+  const modal = document.getElementById('welcomeModal');
+  const crown = document.getElementById('welcomeCrown');
+  const title = document.getElementById('welcomeModalTitle');
+  const content = document.getElementById('welcomeModalContent');
+  if(!cfg.enabled){ modal.style.display = 'none'; stopWelcomeFx(); return; }
+  modal.style.display = 'flex';
+  box.style.background = cfg.bgColor || '#fff';
+  box.style.fontFamily = cfg.fontFamily || "'Segoe UI',sans-serif";
+  box.style.fontSize = (cfg.fontSize || 14) + 'px';
+  box.style.color = cfg.textColor || '#333';
+  const aura = cfg.auraIntensity || 0, auraColor = cfg.auraColor || '#ffc107';
+  if(aura > 0){
+    box.style.boxShadow = `0 0 ${aura}px ${auraColor}, 0 0 ${aura*2}px ${auraColor}88, 0 20px 60px rgba(0,0,0,.5)`;
+  } else {
+    box.style.boxShadow = '0 10px 25px rgba(0,0,0,.3)';
+  }
+  crown.style.display = cfg.crownEnabled === false ? 'none' : 'block';
+  box.classList.toggle('crown-none', cfg.crownEnabled === false);
+  title.innerText = cfg.title || 'CHÀO MỪNG';
+  title.style.color = cfg.textColor || '#333';
+  title.className = '';
+  const eff = cfg.textEffect || 'none';
+  if(eff !== 'none') title.classList.add('we-' + eff);
+  const lines = (cfg.content || '').split('\n').filter(l => l.trim());
+  content.innerHTML = lines.map(l => `<p class="welcome-line">${l}</p>`).join('');
+  content.style.background = cfg.bgColor === '#ffffff' ? '#f8f9fa' : 'rgba(0,0,0,0.05)';
+  content.style.color = cfg.textColor || '#333';
+  setTimeout(() => startWelcomeFx(cfg.effect || 'none', cfg.effectIntensity || 'medium'), 50);
 }
 function loadWelcomeConfig(){
   if(welcomeConfigListener)welcomeConfigListener();
@@ -1660,17 +1471,19 @@ function fillWelcomeForm(cfg){
   $('welcomeAuraIntensity').value=cfg.auraIntensity||25;$('welcomeFontFamily').value=cfg.fontFamily||"'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
   $('welcomeFontSize').value=cfg.fontSize||14;$('welcomeTextEffect').value=cfg.textEffect||'none';
   $('welcomeCrownEnabled').checked=cfg.crownEnabled!==false;
+  const effSel=$('welcomeEffect'); if(effSel) effSel.value=cfg.effect||'none';
+  const intSel=$('welcomeEffectIntensity'); if(intSel) intSel.value=cfg.effectIntensity||'medium';
 }
 function toggleWelcomeAdvanced(){const p=document.getElementById('welcomeAdvancedPanel');p.style.display=p.style.display==='none'?'block':'none';}
 async function saveWelcomeConfig(){
   const $=id=>document.getElementById(id);
-  const cfg={enabled:$('welcomeEnabled').checked,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI AURORA',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,updatedAt:Date.now()};
+  const cfg={enabled:$('welcomeEnabled').checked,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG ĐẾN VỚI AURORA',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,effect:$('welcomeEffect')?$('welcomeEffect').value:'none',effectIntensity:$('welcomeEffectIntensity')?$('welcomeEffectIntensity').value:'medium',updatedAt:Date.now()};
   try{await window.dbSet(window.ref(window.db,'system/welcome_config'),cfg);showToast('✅ Đã lưu tùy chỉnh thông báo!','success');}
   catch(e){showToast('❌ Lỗi: '+e.message,'error');}
 }
 function previewWelcome(){
   const $=id=>document.getElementById(id);
-  const cfg={enabled:true,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked};
+  const cfg={enabled:true,title:$('welcomeTitle').value.trim()||'CHÀO MỪNG',content:$('welcomeContent').value,bgColor:$('welcomeBgColor').value,textColor:$('welcomeTextColor').value,auraColor:$('welcomeAuraColor').value,auraIntensity:parseInt($('welcomeAuraIntensity').value)||0,fontFamily:$('welcomeFontFamily').value,fontSize:parseInt($('welcomeFontSize').value)||14,textEffect:$('welcomeTextEffect').value,crownEnabled:$('welcomeCrownEnabled').checked,effect:$('welcomeEffect')?$('welcomeEffect').value:'none',effectIntensity:$('welcomeEffectIntensity')?$('welcomeEffectIntensity').value:'medium'};
   applyWelcomeConfig(cfg);document.getElementById('welcomeModal').style.display='flex';
 }
 
@@ -1678,7 +1491,7 @@ function previewWelcome(){
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{
     if(!window.db)return;
-    loadSecurityPasswords();loadWelcomeConfig();loadWebNameAndFx();
+    loadSecurityPasswords();loadWelcomeConfig();loadWebConfig();
     window.onValue(window.ref(window.db,'system/broadcast'),(snapshot)=>{
       let data=snapshot.val();const banner=document.getElementById('globalBroadcastBanner'),noticeSpan=document.getElementById('currentCloudNotice');
       if(data&&data.text){
@@ -1994,7 +1807,6 @@ async function executeSaveExam(){
   }
   questions = redistributeScores(questions, 10);
   questions = redistributeTfBranchScores(questions);
-
   let mediaData={type:type,files:[]};
   if(type==='pdf'){let pdfInput=document.getElementById('teacherPdfInput');if(pdfInput.files.length>0)mediaData.files.push(await fileToBase64(pdfInput.files[0]));}
   else{let imgInput=document.getElementById('teacherImgInput');for(let i=0;i<imgInput.files.length;i++)mediaData.files.push(await fileToBase64(imgInput.files[i]));}
@@ -2131,9 +1943,7 @@ function startLiveWaitingPoll(code,studentKey){
     }catch(e){console.error('[STUDENT-POLL] error:',e);}
   }, 1000);
 }
-function stopLiveWaitingPoll(){
-  if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
-}
+function stopLiveWaitingPoll(){ if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;} }
 function startQpWaitingPoll(code,studentKey){
   if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;}
   qpWaitingPollInterval=setInterval(async()=>{
@@ -2162,9 +1972,7 @@ function startQpWaitingPoll(code,studentKey){
     }catch(e){console.error('[QP-POLL] error:',e);}
   }, 1000);
 }
-function stopQpWaitingPoll(){
-  if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;}
-}
+function stopQpWaitingPoll(){ if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;} }
 
 function addQpQuestionItem(){
   let container=document.getElementById('qpQuestionsContainer'),idx=container.children.length+1;
@@ -2218,7 +2026,6 @@ async function executeSaveQuickPractice(){
     questions.push({id:idx+1,question:qText,image:qImgB64,options,correct:correctOpt,score:scoreVal,explanation:expText,expImage:expImgB64});
   }
   questions = redistributeScores(questions, 10);
-
   let qpObj={code,title,password,isAdvancedMode,limit,durationMinutes,enableTimer,enableAntiCheat,antiCheatType,maxWarnings,useLayoutV2,questions};
   try{
     await window.dbSet(window.ref(window.db,'quick_practices/'+code),qpObj);
@@ -2361,7 +2168,6 @@ async function launchOfficialExamInterface(){
   cheatWarnings=0;totalTabLeaveTime=0;
   document.getElementById('cheatWarningBadge').innerText='Cảnh báo: 0';
   isExamActive=true;setExamActiveClass(true);switchView('studentExamView');
-
   if(currentExamData.isLiveRoom){
     const roomWatchRef=window.ref(window.db,`liverooms/${currentExamData.code}`);
     activeStudentRoomListener=window.onValue(roomWatchRef,(snapshot)=>{
@@ -2594,6 +2400,593 @@ async function loadLeaderboard(){
   showToast('📊 Tải thành công!','success');
 }
 function toggleLbDetail(rowId){let el=document.getElementById(rowId),btn=el.previousElementSibling;if(el.style.display==='block'){el.style.display='none';btn.innerText='>';}else{el.style.display='block';btn.innerText='v';}}
+
+/* ========== HƯỚNG DẪN ========== */
+function switchGuideTab(tabName, btnEl) {
+  document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.guide-panel').forEach(p => p.classList.remove('active'));
+  btnEl.classList.add('active');
+  const panel = document.getElementById('guide-' + tabName);
+  if (panel) panel.classList.add('active');
+}
+
+/* ========== WELCOME FX ENGINE ========== */
+let welcomeFxRAF = null;
+let welcomeFxCleanup = null;
+let welcomeFxAutoStopTimer = null;
+const WELCOME_FX_DURATION_MS = 5000;
+
+function closeWelcomeModal(){
+  document.getElementById('welcomeModal').style.display = 'none';
+  stopWelcomeFx();
+}
+
+function stopWelcomeFx(){
+  if(welcomeFxAutoStopTimer){ clearTimeout(welcomeFxAutoStopTimer); welcomeFxAutoStopTimer = null; }
+  if(welcomeFxRAF){ cancelAnimationFrame(welcomeFxRAF); welcomeFxRAF = null; }
+  if(welcomeFxCleanup){ try{ welcomeFxCleanup(); }catch(e){} welcomeFxCleanup = null; }
+  const canvas = document.getElementById('welcomeFxCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.opacity = '1';
+  }
+}
+
+function startWelcomeFx(type, intensity){
+  stopWelcomeFx();
+  const canvas = document.getElementById('welcomeFxCanvas');
+  if(!canvas || !type || type === 'none') return;
+  const ctx = canvas.getContext('2d');
+  canvas.style.opacity = '1';
+  canvas.style.transition = 'opacity .8s ease';
+
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  welcomeFxCleanup = () => window.removeEventListener('resize', resize);
+
+  const W = () => window.innerWidth;
+  const H = () => window.innerHeight;
+  const mul = intensity === 'low' ? 0.6 : intensity === 'high' ? 1.6 : 1;
+  let particles = [];
+
+  // ===== FIRE =====
+  if(type === 'fire'){
+    const N = Math.floor(90 * mul);
+    const spawn = () => ({
+      x: Math.random() * W(),
+      y: H() + Math.random() * 60,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: -2 - Math.random() * 3,
+      life: 1,
+      decay: 0.008 + Math.random() * 0.012,
+      size: 10 + Math.random() * 25
+    });
+    for(let i = 0; i < N; i++) particles.push(spawn());
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      ctx.globalCompositeOperation = 'lighter';
+      particles.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy; p.vy -= 0.02; p.life -= p.decay;
+        if(p.life <= 0){ particles[i] = spawn(); return; }
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        const a = p.life;
+        grad.addColorStop(0, `rgba(255,255,200,${a})`);
+        grad.addColorStop(0.3, `rgba(255,200,50,${a*0.8})`);
+        grad.addColorStop(0.6, `rgba(255,100,0,${a*0.5})`);
+        grad.addColorStop(1, `rgba(150,20,0,0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+      });
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== VORTEX =====
+  if(type === 'vortex'){
+    const N = Math.floor(180 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        a: Math.random() * Math.PI * 2,
+        r: 50 + Math.random() * Math.max(W(), H()) * 0.6,
+        speed: 0.005 + Math.random() * 0.02,
+        color: Math.random() > 0.5 ? '#a55eea' : '#4a9eff',
+        size: 2 + Math.random() * 4
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      const cx = W()/2, cy = H()/2;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
+      g.addColorStop(0, 'rgba(165,94,234,0.35)');
+      g.addColorStop(0.5, 'rgba(74,158,255,0.18)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W(), H());
+      ctx.globalCompositeOperation = 'lighter';
+      particles.forEach(p => {
+        p.a += p.speed;
+        p.r -= 0.3;
+        if(p.r < 40) p.r = 50 + Math.random() * Math.max(W(), H()) * 0.6;
+        const x = cx + Math.cos(p.a) * p.r;
+        const y = cy + Math.sin(p.a) * p.r * 0.5;
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 0.85;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = p.color;
+        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2); ctx.fill();
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== FIREWORKS =====
+  if(type === 'fireworks'){
+    let rockets = [], sparks = [], nextLaunch = 0;
+    const launch = () => {
+      rockets.push({
+        x: 100 + Math.random() * (W() - 200),
+        y: H() + 20,
+        targetY: 100 + Math.random() * (H() * 0.5),
+        vy: -8 - Math.random() * 4,
+        color: `hsl(${Math.random()*360}, 100%, 60%)`
+      });
+    };
+    const explode = (x, y) => {
+      const count = Math.floor((60 + Math.random() * 40) * mul);
+      const hue = Math.random() * 360;
+      for(let i = 0; i < count; i++){
+        const angle = (Math.PI*2*i)/count + Math.random()*0.1;
+        const speed = 2 + Math.random() * 5;
+        sparks.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          decay: 0.012 + Math.random() * 0.01,
+          color: `hsl(${hue + Math.random()*40-20}, 100%, 65%)`,
+          size: 1.5 + Math.random() * 2
+        });
+      }
+    };
+    const loop = (t) => {
+      ctx.clearRect(0, 0, W(), H());
+      ctx.globalCompositeOperation = 'lighter';
+      if(t > nextLaunch){ launch(); nextLaunch = t + 400 + Math.random()*600/mul; }
+      rockets = rockets.filter(r => {
+        r.y += r.vy; r.vy += 0.12;
+        ctx.fillStyle = r.color;
+        ctx.shadowBlur = 18; ctx.shadowColor = r.color;
+        ctx.beginPath(); ctx.arc(r.x, r.y, 3, 0, Math.PI*2); ctx.fill();
+        if(r.y <= r.targetY || r.vy >= 0){ explode(r.x, r.y); return false; }
+        return true;
+      });
+      sparks = sparks.filter(s => {
+        s.x += s.vx; s.y += s.vy; s.vy += 0.06; s.vx *= 0.99; s.vy *= 0.99;
+        s.life -= s.decay;
+        if(s.life <= 0) return false;
+        ctx.globalAlpha = s.life;
+        ctx.fillStyle = s.color;
+        ctx.shadowBlur = 10; ctx.shadowColor = s.color;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+        return true;
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== HALLOWEEN =====
+  if(type === 'halloween'){
+    const emojis = ['🎃','🦇','👻','🕷️','💀','🕸️','🧟'];
+    const N = Math.floor(30 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random() * W(), y: Math.random() * H(),
+        vx: (Math.random()-0.5)*1.5,
+        vy: 0.3 + Math.random()*1,
+        rot: Math.random()*Math.PI*2,
+        rotV: (Math.random()-0.5)*0.05,
+        size: 26 + Math.random()*26,
+        emoji: emojis[Math.floor(Math.random()*emojis.length)],
+        wobble: Math.random()*Math.PI*2
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      const g = ctx.createRadialGradient(W()/2, H()/2, 0, W()/2, H()/2, Math.max(W(),H())/2);
+      g.addColorStop(0, 'rgba(255,120,0,0.18)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
+      particles.forEach(p => {
+        p.wobble += 0.05;
+        p.x += p.vx + Math.sin(p.wobble)*0.5;
+        p.y += p.vy; p.rot += p.rotV;
+        if(p.y > H()+40){ p.y = -40; p.x = Math.random()*W(); }
+        if(p.x < -40) p.x = W()+40;
+        if(p.x > W()+40) p.x = -40;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.font = p.size + 'px serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 15; ctx.shadowColor = '#ff8c00';
+        ctx.fillText(p.emoji, 0, 0);
+        ctx.restore();
+      });
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== CHRISTMAS =====
+  if(type === 'christmas'){
+    const N = Math.floor(150 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random()*W(), y: Math.random()*H(),
+        vx: (Math.random()-0.5)*0.6, vy: 0.5 + Math.random()*1.5,
+        size: 1.5 + Math.random()*3,
+        alpha: 0.4 + Math.random()*0.6,
+        wobble: Math.random()*Math.PI*2,
+        isEmoji: false
+      });
+    }
+    const ornaments = ['🎄','🎅','❄️','🎁','🔔','⛄'];
+    const O = Math.floor(8 * mul);
+    for(let i = 0; i < O; i++){
+      particles.push({
+        x: Math.random()*W(), y: Math.random()*H(),
+        vx: (Math.random()-0.5)*0.4, vy: 0.2 + Math.random()*0.5,
+        size: 34 + Math.random()*30,
+        emoji: ornaments[Math.floor(Math.random()*ornaments.length)],
+        wobble: Math.random()*Math.PI*2,
+        isEmoji: true
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      const g = ctx.createLinearGradient(0, 0, 0, H());
+      g.addColorStop(0, 'rgba(100,150,255,0.12)');
+      g.addColorStop(1, 'rgba(255,255,255,0.04)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
+      particles.forEach(p => {
+        p.wobble += 0.03;
+        if(p.isEmoji){
+          p.x += p.vx + Math.sin(p.wobble)*0.3;
+          p.y += p.vy;
+          if(p.y > H()+50){ p.y = -50; p.x = Math.random()*W(); }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(Math.sin(p.wobble)*0.15);
+          ctx.font = p.size + 'px serif';
+          ctx.textAlign = 'center';
+          ctx.shadowBlur = 18; ctx.shadowColor = '#a8d8ff';
+          ctx.fillText(p.emoji, 0, 0);
+          ctx.restore();
+        } else {
+          p.x += p.vx + Math.sin(p.wobble)*0.5;
+          p.y += p.vy;
+          if(p.y > H()){ p.y = -10; p.x = Math.random()*W(); }
+          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+          ctx.shadowBlur = 8; ctx.shadowColor = '#fff';
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+        }
+      });
+      ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== TET =====
+  if(type === 'tet'){
+    const flowerEmojis = ['🌸','🌺','🧧','🏮','🌼'];
+    const N = Math.floor(45 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random()*W(), y: Math.random()*H(),
+        vx: (Math.random()-0.5)*1.2, vy: 0.5 + Math.random()*1.5,
+        size: 18 + Math.random()*16,
+        emoji: flowerEmojis[Math.floor(Math.random()*flowerEmojis.length)],
+        rot: Math.random()*Math.PI*2,
+        rotV: (Math.random()-0.5)*0.08,
+        wobble: Math.random()*Math.PI*2
+      });
+    }
+    let fireworks = [], nextLaunch = 0;
+    const launch = () => {
+      const x = 100 + Math.random()*(W()-200);
+      const y = 100 + Math.random()*(H()*0.4);
+      const count = Math.floor(35 * mul);
+      const hue = Math.random() > 0.5 ? 0 : 45;
+      for(let i = 0; i < count; i++){
+        const angle = (Math.PI*2*i)/count;
+        const speed = 2 + Math.random()*3;
+        fireworks.push({
+          x, y,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed,
+          life: 1, decay: 0.015,
+          color: `hsl(${hue + Math.random()*20-10}, 100%, ${60+Math.random()*20}%)`
+        });
+      }
+    };
+    const loop = (t) => {
+      ctx.clearRect(0, 0, W(), H());
+      const g = ctx.createRadialGradient(W()/2, H()/2, 0, W()/2, H()/2, Math.max(W(),H())/2);
+      g.addColorStop(0, 'rgba(255,80,0,0.12)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
+      ctx.globalCompositeOperation = 'lighter';
+      if(t > nextLaunch){ launch(); nextLaunch = t + 500 + Math.random()*700/mul; }
+      fireworks = fireworks.filter(f => {
+        f.x += f.vx; f.y += f.vy; f.vy += 0.05; f.life -= f.decay;
+        if(f.life <= 0) return false;
+        ctx.globalAlpha = f.life;
+        ctx.fillStyle = f.color;
+        ctx.shadowBlur = 12; ctx.shadowColor = f.color;
+        ctx.beginPath(); ctx.arc(f.x, f.y, 2, 0, Math.PI*2); ctx.fill();
+        return true;
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      ctx.globalCompositeOperation = 'source-over';
+      particles.forEach(p => {
+        p.wobble += 0.04;
+        p.x += p.vx + Math.sin(p.wobble)*0.6;
+        p.y += p.vy; p.rot += p.rotV;
+        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.font = p.size + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.shadowBlur = 12; ctx.shadowColor = '#ffb700';
+        ctx.fillText(p.emoji, 0, 0);
+        ctx.restore();
+      });
+      ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== GALAXY =====
+  if(type === 'galaxy'){
+    const N = Math.floor(220 * mul);
+    for(let i = 0; i < N; i++){
+      const a = Math.random()*Math.PI*2;
+      const r = Math.random()*Math.max(W(),H())*0.7;
+      particles.push({
+        a, r,
+        speed: 0.0005 + Math.random()*0.003,
+        size: 0.5 + Math.random()*2.5,
+        color: ['#fff','#a55eea','#4a9eff','#ff6bcb','#ffd54f'][Math.floor(Math.random()*5)],
+        twinkle: Math.random()*Math.PI*2
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      const cx = W()/2, cy = H()/2;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W(),H())*0.6);
+      g.addColorStop(0, 'rgba(165,94,234,0.25)');
+      g.addColorStop(0.4, 'rgba(74,158,255,0.15)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
+      ctx.globalCompositeOperation = 'lighter';
+      particles.forEach(p => {
+        p.a += p.speed; p.twinkle += 0.05;
+        const x = cx + Math.cos(p.a) * p.r;
+        const y = cy + Math.sin(p.a) * p.r * 0.55;
+        ctx.globalAlpha = 0.5 + Math.sin(p.twinkle)*0.5;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 14; ctx.shadowColor = p.color;
+        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2); ctx.fill();
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== MATRIX =====
+  if(type === 'matrix'){
+    const fontSize = 16;
+    const cols = Math.floor(W() / fontSize);
+    const drops = new Array(cols).fill(0).map(() => Math.random()*H()/fontSize);
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789アイウエオカキクケコサシスセソ';
+    let lastDraw = 0;
+    const loop = (t) => {
+      if(t - lastDraw > 50){
+        ctx.fillStyle = 'rgba(0,0,0,0.08)';
+        ctx.fillRect(0, 0, W(), H());
+        ctx.fillStyle = '#0f0';
+        ctx.font = fontSize + 'px monospace';
+        ctx.shadowBlur = 8; ctx.shadowColor = '#0f0';
+        for(let i = 0; i < cols; i++){
+          const ch = chars[Math.floor(Math.random()*chars.length)];
+          ctx.fillText(ch, i*fontSize, drops[i]*fontSize);
+          if(drops[i]*fontSize > H() && Math.random() > 0.975) drops[i] = 0;
+          drops[i] += 0.5 * mul;
+        }
+        ctx.shadowBlur = 0;
+        lastDraw = t;
+      }
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== SAKURA =====
+  if(type === 'sakura'){
+    const N = Math.floor(70 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random()*W(), y: Math.random()*H(),
+        vx: (Math.random()-0.5)*1.5 + 0.5, vy: 1 + Math.random()*2,
+        size: 14 + Math.random()*16,
+        rot: Math.random()*Math.PI*2,
+        rotV: (Math.random()-0.5)*0.1,
+        wobble: Math.random()*Math.PI*2,
+        alpha: 0.6 + Math.random()*0.4
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      const g = ctx.createLinearGradient(0, 0, 0, H());
+      g.addColorStop(0, 'rgba(255,200,220,0.12)');
+      g.addColorStop(1, 'rgba(255,150,200,0.05)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W(), H());
+      particles.forEach(p => {
+        p.wobble += 0.04;
+        p.x += p.vx + Math.sin(p.wobble)*0.8;
+        p.y += p.vy; p.rot += p.rotV;
+        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
+        if(p.x > W()+30) p.x = -30;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = '#ffb3d9';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.size*0.6, p.size*0.35, 0, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = '#ff85c0';
+        ctx.beginPath();
+        ctx.ellipse(p.size*0.4, 0, p.size*0.5, p.size*0.3, 0.5, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      ctx.globalAlpha = 1;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== CONFETTI =====
+  if(type === 'confetti'){
+    const colors = ['#ff4757','#ffa502','#2ed573','#1e90ff','#a55eea','#ffdd59','#ff6bcb'];
+    const N = Math.floor(150 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random()*W(), y: -Math.random()*H(),
+        vx: (Math.random()-0.5)*3, vy: 2 + Math.random()*4,
+        w: 6 + Math.random()*8, h: 10 + Math.random()*10,
+        rot: Math.random()*Math.PI*2,
+        rotV: (Math.random()-0.5)*0.3,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        wobble: Math.random()*Math.PI*2
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      particles.forEach(p => {
+        p.wobble += 0.08;
+        p.x += p.vx + Math.sin(p.wobble)*0.8;
+        p.y += p.vy; p.rot += p.rotV;
+        if(p.y > H()+30){ p.y = -30; p.x = Math.random()*W(); }
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+
+  // ===== STARS =====
+  if(type === 'stars'){
+    const N = Math.floor(180 * mul);
+    for(let i = 0; i < N; i++){
+      particles.push({
+        x: Math.random()*W(), y: Math.random()*H(),
+        size: 0.5 + Math.random()*2.5,
+        twinkle: Math.random()*Math.PI*2,
+        speed: 0.02 + Math.random()*0.05
+      });
+    }
+    const loop = () => {
+      ctx.clearRect(0, 0, W(), H());
+      particles.forEach(p => {
+        p.twinkle += p.speed;
+        ctx.globalAlpha = 0.3 + Math.abs(Math.sin(p.twinkle))*0.7;
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 12; ctx.shadowColor = '#fff';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      welcomeFxRAF = requestAnimationFrame(loop);
+    };
+    loop();
+    scheduleFxAutoStop();
+    return;
+  }
+}
+
+function scheduleFxAutoStop(){
+  if(welcomeFxAutoStopTimer) clearTimeout(welcomeFxAutoStopTimer);
+  welcomeFxAutoStopTimer = setTimeout(() => {
+    const canvas = document.getElementById('welcomeFxCanvas');
+    if(canvas){
+      canvas.style.transition = 'opacity .8s ease';
+      canvas.style.opacity = '0';
+      setTimeout(() => {
+        if(welcomeFxRAF){ cancelAnimationFrame(welcomeFxRAF); welcomeFxRAF = null; }
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.opacity = '1';
+        canvas.style.transition = '';
+      }, 800);
+    }
+  }, WELCOME_FX_DURATION_MS);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden && welcomeFxRAF){
+    cancelAnimationFrame(welcomeFxRAF);
+    welcomeFxRAF = null;
+  } else if(!document.hidden && !welcomeFxRAF && currentWelcomeConfig && currentWelcomeConfig.effect && currentWelcomeConfig.effect !== 'none' && document.getElementById('welcomeModal').style.display !== 'none'){
+    startWelcomeFx(currentWelcomeConfig.effect, currentWelcomeConfig.effectIntensity || 'medium');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && document.getElementById('welcomeModal').style.display !== 'none'){
+    closeWelcomeModal();
+  }
+});
 
 addQuestionV2('mc');addQuestionV2('tf');
 </script>
