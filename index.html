@@ -211,7 +211,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   </div>
 </div>
 
-<!-- MODAL MỚI: GIÁO VIÊN KẾT THÚC BÀI THI -->
+<!-- MODAL: GIÁO VIÊN KẾT THÚC BÀI THI -->
 <div class="modal-overlay" id="examEndedModal">
   <div class="modal-box" style="text-align:center;max-width:400px;padding:25px">
     <div style="font-size:50px;margin-bottom:10px">🛑</div>
@@ -326,10 +326,10 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
       <input type="file" id="autoKeyImageInput" accept="image/*" style="font-size:13px;margin:0;background:#fff;padding:6px" onchange="processKeyImage(this)">
     </div>
     <h3 style="margin-top:25px;margin-bottom:8px;font-size:16px">📋 Cấu Trúc Câu Hỏi V2</h3>
-    <p style="font-size:12px;color:#666;margin-bottom:10px">* Thang điểm: Trắc nghiệm 0.25đ | Đúng/Sai 1.0đ | Trả lời ngắn 0.5đ.</p>
+    <p style="font-size:12px;color:#666;margin-bottom:10px">* Thang điểm: Trắc nghiệm 0.25đ | Đúng/Sai 1.0đ | Trả lời ngắn 0.5đ. Hệ thống sẽ tự động phân bố lại nếu tổng điểm lệch khỏi thang 10.</p>
     <div class="section-title"><span>I. TRẮC NGHIỆM (A, B, C, D)</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('mc')">+ Thêm Câu Trắc Nghiệm</button></div>
     <div id="builderMC"></div>
-    <div class="section-title"><span>II. ĐÚNG / SAI (Cơ chế điểm nhánh)</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button></div>
+    <div class="section-title"><span>II. ĐÚNG / SAI (Điểm chia đều các nhánh)</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('tf')">+ Thêm Câu Đúng/Sai</button></div>
     <div id="builderTF"></div>
     <div class="section-title"><span>III. TRẢ LỜI NGẮN</span><button class="btn btn-success" style="width:auto;padding:4px 10px;font-size:12px" onclick="addQuestionV2('sa')">+ Thêm Câu Trả Lời Ngắn</button></div>
     <div id="builderSA"></div>
@@ -390,7 +390,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   <div class="card" style="max-width:800px;margin:0 auto">
     <div style="text-align:center;border-bottom:1px solid #eee;padding-bottom:12px">
       <h2 style="color:#1877f2;font-size:20px">🎉 Kết Quả Bài Kiểm Tra</h2>
-      <h1 style="font-size:38px;color:#198754;margin:8px 0" id="resultScore">0 / 10</h1>
+      <h1 style="font-size:38px;color:#1877f2;margin:8px 0" id="resultScore">0 / 10</h1>
       <p id="resultDetailText" style="font-size:13px"></p>
     </div>
     <h3 style="margin-top:15px;margin-bottom:10px;font-size:15px">🔍 Chi Tiết Bài Làm & Lời Giải Chú Thích</h3>
@@ -403,7 +403,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
   <div class="card">
     <div style="text-align:center;border-bottom:1px solid #eee;padding-bottom:12px">
       <h2 style="color:#1877f2;font-size:20px">🎉 Kết Quả Bài Luyện Nhanh</h2>
-      <h1 style="font-size:38px;color:#198754;margin:8px 0" id="qpResultScore">0 / 10</h1>
+      <h1 style="font-size:38px;color:#1877f2;margin:8px 0" id="qpResultScore">0 / 10</h1>
       <p id="qpResultDetailText" style="font-size:13px"></p>
     </div>
     <h3 style="margin-top:15px;margin-bottom:10px;font-size:15px">🔍 Chi Tiết Đáp Án & Chú Thích Từng Câu</h3>
@@ -490,7 +490,7 @@ body.exam-active #studentLoginView .floating-shape{display:none!important}
       </div>
       <p style="font-size:12px;font-weight:bold;color:#1877f2">👥 Danh Sách Học Sinh:</p>
       <div class="table-responsive" style="max-height:150px;overflow-y:auto;margin-bottom:15px"><table><thead><tr><th>STT</th><th>Họ Tên</th><th>Trạng Thái</th><th>Thao Tác</th></tr></thead><tbody id="qpManageStudentsBody"><tr><td colspan="4">Chưa có học sinh</td></tr></tbody></table></div>
-      <p style="font-size:12px;font-weight:bold;color:#198754">📊 Bảng Kết Quả:</p>
+      <p style="font-size:12px;font-weight:bold;color:#1877f2">📊 Bảng Kết Quả:</p>
       <div class="table-responsive" style="max-height:200px;overflow-y:auto"><table><thead><tr><th>Hạng</th><th>Họ Tên</th><th>Điểm</th><th>Thời Gian</th></tr></thead><tbody id="qpManageResultsBody"><tr><td colspan="4">Chưa có kết quả</td></tr></tbody></table></div>
     </div>
   </div>
@@ -700,6 +700,40 @@ let liveWaitingPollInterval=null,qpWaitingPollInterval=null;
 /* ===== CỜ ĐÁNH DẤU GV ĐÃ KẾT THÚC ===== */
 let examEndedByTeacher = false;
 let examEndedForQp = false;
+
+/* ========== HÀM TÍNH ĐIỂM TỰ ĐỘNG PHÂN BỐ LẠI ========== */
+function redistributeScores(questions, targetTotal = 10) {
+  if (!questions || questions.length === 0) return questions;
+  let currentTotal = 0;
+  questions.forEach(q => { currentTotal += (typeof q.score === 'number' && !isNaN(q.score)) ? q.score : 0; });
+  if (currentTotal <= 0) {
+    const each = targetTotal / questions.length;
+    questions.forEach(q => { q.score = Math.round(each * 100) / 100; });
+    return questions;
+  }
+  const ratio = currentTotal / targetTotal;
+  if (ratio < 0.8 || ratio > 1.2) {
+    questions.forEach(q => {
+      const base = (typeof q.score === 'number' && q.score > 0) ? q.score : 1;
+      q.score = Math.round((base / currentTotal) * targetTotal * 100) / 100;
+    });
+  }
+  return questions;
+}
+
+function redistributeTfBranchScores(questions) {
+  if (!questions) return questions;
+  questions.forEach(q => {
+    if (q.type === 'tf') {
+      const branchCount = (q.correctAnswer || '').split(',').length;
+      if (branchCount > 0 && q.score > 0) {
+        const each = Math.round((q.score / branchCount) * 1000) / 1000;
+        q.branchScores = new Array(branchCount).fill(each);
+      }
+    }
+  });
+  return questions;
+}
 
 /* ========== MẬT KHẨU BẢO MẬT ========== */
 async function loadSecurityPasswords(){
@@ -924,8 +958,8 @@ async function supremeViewDetail(type,code){
   document.getElementById('supremeModalTitle').innerText=`Chi Tiết [${code}] - ${data.title}`;
   let contentDiv=document.getElementById('supremeModalContent');
   let html=`<p><b>Mã:</b> ${data.code} | <b>Tên:</b> ${data.title}</p><hr style="margin:10px 0"><b>Danh sách câu hỏi & Đáp án chuẩn:</b><br>`;
-  if(type==='exam'){data.questions.forEach(q=>{html+=`<div style="background:#f8f9fa;padding:8px;border-radius:6px;margin-top:8px"><b>Câu ${q.id} (${q.type}):</b> Đáp án chuẩn: <b style="color:green">${q.correctAnswer}</b><br><small>Điểm: ${q.score} | Giải thích: ${q.explanation||'Không có'}</small></div>`;});}
-  else{data.questions.forEach(q=>{let opts=q.options.map(o=>`${o.label}. ${o.text}`).join(' | ');html+=`<div style="background:#f8f9fa;padding:8px;border-radius:6px;margin-top:8px"><b>Câu ${q.id}:</b> ${q.question}<br>- Các đáp án: ${opts}<br>- Đáp án đúng: <b style="color:green">${q.correct}</b></div>`;});}
+  if(type==='exam'){data.questions.forEach(q=>{html+=`<div style="background:#f8f9fa;padding:8px;border-radius:6px;margin-top:8px"><b>Câu ${q.id} (${q.type}):</b> Đáp án chuẩn: <b style="color:#1877f2">${q.correctAnswer}</b><br><small>Điểm: ${q.score} | Giải thích: ${q.explanation||'Không có'}</small></div>`;});}
+  else{data.questions.forEach(q=>{let opts=q.options.map(o=>`${o.label}. ${o.text}`).join(' | ');html+=`<div style="background:#f8f9fa;padding:8px;border-radius:6px;margin-top:8px"><b>Câu ${q.id}:</b> ${q.question}<br>- Các đáp án: ${opts}<br>- Đáp án đúng: <b style="color:#1877f2">${q.correct}</b></div>`;});}
   contentDiv.innerHTML=html;document.getElementById('supremeDetailModal').style.display='flex';
 }
 async function supremeDeleteData(folder,code){
@@ -1051,11 +1085,10 @@ function updateTfV2Inputs(countInput,presetValues=null){
   let wrapper=countInput.parentElement.querySelector('.tf-branches-builder');
   let count=parseInt(countInput.value)||4;
   let letters=['a','b','c','d','e','f','g','h'];
-  let defaultBranchScores=[0.1,0.15,0.25,0.5];
   let html='<div style="display:flex;flex-direction:column;gap:4px;margin-top:4px">';
   for(let i=0;i<count;i++){
-    let l=letters[i]||(i+1),presetAns=(presetValues&&presetValues[i])?presetValues[i]:'Đ',bScore=defaultBranchScores[i]||0.25;
-    html+=`<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;padding:4px 8px;border:1px solid #ddd;border-radius:4px"><span style="font-size:12px;font-weight:bold">Nhánh ${l}:</span><div style="display:flex;gap:6px;align-items:center"><select class="tf-branch-ans-${i}" style="width:70px;padding:2px;margin:0;font-size:12px"><option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option><option value="S" ${presetAns==='S'?'selected':''}>Sai</option></select><input type="number" class="tf-branch-score-${i}" value="${bScore}" step="0.05" style="width:60px;padding:2px;margin:0;font-size:12px"></div></div>`;
+    let l=letters[i]||(i+1),presetAns=(presetValues&&presetValues[i])?presetValues[i]:'Đ';
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;padding:4px 8px;border:1px solid #ddd;border-radius:4px"><span style="font-size:12px;font-weight:bold">Nhánh ${l}:</span><div style="display:flex;gap:6px;align-items:center"><select class="tf-branch-ans-${i}" style="width:70px;padding:2px;margin:0;font-size:12px"><option value="Đ" ${presetAns==='Đ'?'selected':''}>Đúng</option><option value="S" ${presetAns==='S'?'selected':''}>Sai</option></select></div></div>`;
   }
   html+='</div>';wrapper.innerHTML=html;
 }
@@ -1116,11 +1149,20 @@ async function executeSaveExam(){
     if(qType==='mc'){qData.correctAnswer=item.querySelector('.correct-ans').value.trim();questions.push(qData);}
     else if(qType==='tf'){
       let count=parseInt(item.querySelector('.tf-branch-count').value)||4;
-      let branches=[],branchScores=[];
-      for(let i=0;i<count;i++){let ans=item.querySelector(`.tf-branch-ans-${i}`).value;let bScoreInput=parseFloat(item.querySelector(`.tf-branch-score-${i}`).value);let bScore=!isNaN(bScoreInput)?bScoreInput:0.25;branches.push(ans);branchScores.push(bScore);}
-      qData.correctAnswer=branches.join(',');qData.branchScores=branchScores;questions.push(qData);
+      let branches=[];
+      for(let i=0;i<count;i++){
+        let ans=item.querySelector(`.tf-branch-ans-${i}`).value;
+        branches.push(ans);
+      }
+      qData.correctAnswer=branches.join(',');
+      // branchScores sẽ được hệ thống tự chia đều ở bước redistributeTfBranchScores
+      questions.push(qData);
     }else if(qType==='sa'){qData.correctAnswer=item.querySelector('.correct-ans').value.trim();questions.push(qData);}
   }
+  /* ===== TỰ ĐỘNG PHÂN BỐ LẠI ĐIỂM ===== */
+  questions = redistributeScores(questions, 10);
+  questions = redistributeTfBranchScores(questions);
+
   let mediaData={type:type,files:[]};
   if(type==='pdf'){let pdfInput=document.getElementById('teacherPdfInput');if(pdfInput.files.length>0)mediaData.files.push(await fileToBase64(pdfInput.files[0]));}
   else{let imgInput=document.getElementById('teacherImgInput');for(let i=0;i<imgInput.files.length;i++)mediaData.files.push(await fileToBase64(imgInput.files[i]));}
@@ -1195,10 +1237,9 @@ async function kickLiveStudent(code,studentId){
   }
 }
 
-/* ===== HÀM CẬP NHẬT STATUS PHÒNG LIVE (đã sửa: dùng dbSet toàn bộ) ===== */
+/* ===== HÀM CẬP NHẬT STATUS PHÒNG LIVE ===== */
 async function updateLiveRoomStatus(status){
   if(!managedLiveCodeGlobal){showToast('Chưa kết nối phòng live! Nhập mã + mật khẩu và bấm "Kết Nối Quản Lý Phòng Live" trước.','error');return;}
-  console.log('[LIVE] >>> Attempting to set status:', status, 'for room:', managedLiveCodeGlobal);
   try{
     const roomRef=window.ref(window.db,`liverooms/${managedLiveCodeGlobal}`);
     const snap=await window.dbGet(roomRef);
@@ -1206,7 +1247,6 @@ async function updateLiveRoomStatus(status){
     fullData.status=status;
     fullData.updatedAt=Date.now();
     await window.dbSet(roomRef, fullData);
-    console.log('[LIVE] >>> dbSet succeeded with full data');
     showToast(`✅ Đã ${status==='started'?'BẮT ĐẦU':'KẾT THÚC'} phòng thi! Học sinh sẽ nhận thông báo ngay.`,'success');
     const statusEl=document.getElementById('liveRoomStatusDisplay');
     if(statusEl){
@@ -1219,10 +1259,8 @@ async function updateLiveRoomStatus(status){
     showToast('❌ Lỗi cập nhật: '+(err.message||err),'error');
   }
 }
-/* ===== HÀM CẬP NHẬT STATUS QP (đã sửa) ===== */
 async function updateQpStatus(status){
   if(!managedQpCodeGlobal){showToast('Chưa kết nối!','error');return;}
-  console.log('[QP] >>> Attempting to set status:', status, 'for room:', managedQpCodeGlobal);
   try{
     const roomRef=window.ref(window.db,`qp_rooms/${managedQpCodeGlobal}`);
     const snap=await window.dbGet(roomRef);
@@ -1237,21 +1275,18 @@ async function updateQpStatus(status){
 /* ===== POLLING - 1 giây ===== */
 function startLiveWaitingPoll(code,studentKey){
   if(liveWaitingPollInterval){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;}
-  console.log('[STUDENT-POLL] Starting live poll for code:', code, 'student:', studentKey);
   liveWaitingPollInterval=setInterval(async()=>{
     if(isExamActive){clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;return;}
     try{
       const snap=await window.dbGet(window.dbChild(window.dbRef,`liverooms/${code}`));
       const data=snap.val()||{};
       const students=data.students||{};
-      console.log('[STUDENT-POLL] status:', data.status, '| my presence:', !!students[studentKey]);
       if(!students[studentKey]){
         clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
         showToast('Bạn đã bị kick!','error');switchView('studentLoginView');return;
       }
       if(data.status==='started'){
-        console.log('[STUDENT-POLL] >>> DETECTED started! Launching exam.');
         clearInterval(liveWaitingPollInterval);liveWaitingPollInterval=null;
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
         try{await window.dbUpdate(window.ref(window.db,`liverooms/${code}/students/${studentKey}`),{status:'testing'});}catch(e){}
@@ -1270,14 +1305,12 @@ function stopLiveWaitingPoll(){
 }
 function startQpWaitingPoll(code,studentKey){
   if(qpWaitingPollInterval){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;}
-  console.log('[QP-POLL] Starting QP poll for code:', code, 'student:', studentKey);
   qpWaitingPollInterval=setInterval(async()=>{
     if(isQpActive){clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;return;}
     try{
       const snap=await window.dbGet(window.dbChild(window.dbRef,`qp_rooms/${code}`));
       const data=snap.val()||{};
       const students=data.students||{};
-      console.log('[QP-POLL] status:', data.status, '| my presence:', !!students[studentKey]);
       if(!students[studentKey]){
         clearInterval(qpWaitingPollInterval);qpWaitingPollInterval=null;
         if(activeQpRoomListener){try{activeQpRoomListener();}catch(e){}activeQpRoomListener=null;}
@@ -1352,6 +1385,9 @@ async function executeSaveQuickPractice(){
     let expImgB64=expImgInput&&expImgInput.files.length>0?await fileToBase64(expImgInput.files[0]):'';
     questions.push({id:idx+1,question:qText,image:qImgB64,options,correct:correctOpt,score:scoreVal,explanation:expText,expImage:expImgB64});
   }
+  /* ===== TỰ ĐỘNG PHÂN BỐ LẠI ĐIỂM QP ===== */
+  questions = redistributeScores(questions, 10);
+
   let qpObj={code,title,password,isAdvancedMode,limit,durationMinutes,enableTimer,enableAntiCheat,antiCheatType,maxWarnings,useLayoutV2,questions};
   try{
     await window.dbSet(window.ref(window.db,'quick_practices/'+code),qpObj);
@@ -1382,7 +1418,7 @@ async function openQpManagementRoom(){
     if(!snapshot.exists()){lbTbody.innerHTML='<tr><td colspan="4">Chưa có kết quả.</td></tr>';return;}
     let history=Object.values(snapshot.val());
     history.sort((a,b)=>(b.score!==a.score)?b.score-a.score:a.timeSpent-b.timeSpent);
-    history.forEach((row,idx)=>{let m=Math.floor(row.timeSpent/60),s=row.timeSpent%60;lbTbody.innerHTML+=`<tr><td><b>#${idx+1}</b></td><td>${row.name}</td><td><b style="color:#198754">${row.score}</b></td><td>${m}p ${s}s</td></tr>`;});
+    history.forEach((row,idx)=>{let m=Math.floor(row.timeSpent/60),s=row.timeSpent%60;lbTbody.innerHTML+=`<tr><td><b>#${idx+1}</b></td><td>${row.name}</td><td><b style="color:#1877f2">${row.score}</b></td><td>${m}p ${s}s</td></tr>`;});
   });
 }
 async function kickQpStudent(code,studentId){if(confirm('Kick học sinh này?')){await window.dbRemove(window.ref(window.db,`qp_rooms/${code}/students/${studentId}`));showToast('Đã kick!','warn');}}
@@ -1495,20 +1531,18 @@ async function launchOfficialExamInterface(){
   document.getElementById('cheatWarningBadge').innerText='Cảnh báo: 0';
   isExamActive=true;setExamActiveClass(true);switchView('studentExamView');
 
-  /* ===== LISTENER MỚI: THEO DÕI PHÒNG LIVE KHI ĐANG LÀM BÀI ===== */
+  /* ===== LISTENER THEO DÕI PHÒNG LIVE KHI ĐANG LÀM BÀI ===== */
   if(currentExamData.isLiveRoom){
     const roomWatchRef=window.ref(window.db,`liverooms/${currentExamData.code}`);
     activeStudentRoomListener=window.onValue(roomWatchRef,(snapshot)=>{
       const data=snapshot.val()||{};
       const students=data.students||{};
-      // Bị kick khi đang thi
       if(!students[studentSessionKeyGlobal]){
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
         showToast('Bạn đã bị kick khỏi phòng!','error');
         cancelStudentExamSilently();
         return;
       }
-      // GV kết thúc bài thi
       if(data.status==='ended'&&isExamActive){
         if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
         showExamEndedModal(false);
@@ -1517,7 +1551,7 @@ async function launchOfficialExamInterface(){
   }
 }
 
-/* ===== HÀM XỬ LÝ KHI GV KẾT THÚC ===== */
+/* ===== XỬ LÝ KHI GV KẾT THÚC ===== */
 function showExamEndedModal(forQp = false) {
   examEndedForQp = forQp;
   document.getElementById('examEndedModal').style.display = 'flex';
@@ -1525,7 +1559,6 @@ function showExamEndedModal(forQp = false) {
 
 async function acknowledgeExamEnded() {
   document.getElementById('examEndedModal').style.display = 'none';
-
   if (examEndedForQp) {
     examEndedForQp = false;
     if (isQpActive) {
@@ -1591,22 +1624,43 @@ function selectTfSub(btn,val){let p=btn.parentElement;p.querySelectorAll('.tf-su
 
 async function submitStudentExam(forced=false){
   if(!forced&&!confirm('Xác nhận nộp bài?'))return;
-  if(!isExamActive&&forced!=='already')return; // tránh nộp 2 lần
+  if(!isExamActive&&forced!=='already')return;
   clearInterval(examTimer);isExamActive=false;setExamActiveClass(false);stopLiveWaitingPoll();
   if(activeStudentRoomListener){try{activeStudentRoomListener();}catch(e){}activeStudentRoomListener=null;}
   let totalEarnedScore=0,reviewHtml='';
   currentExamData.questions.forEach(q=>{
     let studentAns='',isCorrect=false,qEarned=0;
     if(q.type==='mc'){let grp=document.querySelector(`.opt-group[data-qid="${q.id}"]`);studentAns=grp?(grp.dataset.val||''):'';isCorrect=studentAns.toLowerCase()===q.correctAnswer.toLowerCase();if(isCorrect)qEarned=q.score;}
-    else if(q.type==='tf'){let correctArr=q.correctAnswer.split(','),studentArr=[],subEarned=0,branchScores=q.branchScores||[0.1,0.15,0.25,0.5];correctArr.forEach((ansCorrect,i)=>{let row=document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);let val=row&&row.dataset.val?row.dataset.val:'_';studentArr.push(val);if(val===ansCorrect)subEarned+=branchScores[i];});studentAns=studentArr.join(',');qEarned=subEarned;isCorrect=(studentAns===q.correctAnswer);}
+    else if(q.type==='tf'){
+      let correctArr=q.correctAnswer.split(',');
+      let studentArr=[];
+      let subEarned=0;
+      let branchScores = q.branchScores;
+      if (!branchScores || branchScores.length !== correctArr.length) {
+        const each = q.score / correctArr.length;
+        branchScores = new Array(correctArr.length).fill(each);
+      }
+      correctArr.forEach((ansCorrect, i) => {
+        let row = document.querySelector(`.tf-branch-opts[data-qid="${q.id}"][data-index="${i}"]`);
+        let val = (row && row.dataset.val) ? row.dataset.val : '_';
+        studentArr.push(val);
+        if (val === ansCorrect) subEarned += branchScores[i];
+      });
+      studentAns = studentArr.join(',');
+      qEarned = subEarned;
+      isCorrect = (subEarned > 0);
+    }
     else if(q.type==='sa'){let input=document.querySelector(`.student-sa-input[data-qid="${q.id}"]`);studentAns=input?input.value.trim():'';isCorrect=studentAns.toLowerCase()===q.correctAnswer.toLowerCase();if(isCorrect)qEarned=q.score;}
     totalEarnedScore+=qEarned;
     let hasExp=q.explanation||q.expImage,expContent='';
     if(q.explanation)expContent+=`<p>${q.explanation}</p>`;
     if(q.expImage)expContent+=`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`;
-    reviewHtml+=`<div style="border:1px solid #ddd;padding:10px;border-radius:6px;margin-bottom:8px;background:${isCorrect?'#f6ffed':'#fff2f0'};font-size:13px"><strong>Câu ${q.id}:</strong> <span style="color:${isCorrect?'#52c41a':'#ff4d4f'};font-weight:bold">${isCorrect?'✓ Đúng':'✗ Sai'} (+${qEarned.toFixed(2)}đ)</span><div>- Bạn chọn: <b>${studentAns||'Chưa làm'}</b></div>${!isCorrect?`<div>- Đáp án đúng: <b style="color:green">${q.correctAnswer}</b></div>`:''}${hasExp?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>`:''}</div>`;
+    reviewHtml+=`<div style="border:1px solid #ddd;padding:10px;border-radius:6px;margin-bottom:8px;background:${isCorrect?'#e7f3ff':'#fff2f0'};font-size:13px"><strong>Câu ${q.id}:</strong> <span style="color:${isCorrect?'#1877f2':'#ff4d4f'};font-weight:bold">${isCorrect?'✓ Đúng':'✗ Sai'} (+${qEarned.toFixed(2)}đ)</span><div>- Bạn chọn: <b>${studentAns||'Chưa làm'}</b></div>${!isCorrect?`<div>- Đáp án đúng: <b style="color:#1877f2">${q.correctAnswer}</b></div>`:''}${hasExp?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>`:''}</div>`;
   });
-  let finalScore=Math.round(totalEarnedScore*100)/100;
+  let maxScore = 0;
+  currentExamData.questions.forEach(q => { maxScore += (q.score || 0); });
+  if (maxScore <= 0) maxScore = 10;
+  let finalScore = Math.round((totalEarnedScore / maxScore) * 10 * 100) / 100;
   let timeSpentSeconds=currentTimerEnabled?((currentExamData.duration*60)-timeLeft):0;
   document.getElementById('resultScore').innerText=`${finalScore} / 10`;
   document.getElementById('resultDetailText').innerText=currentTimerEnabled?`Thời gian: ${Math.floor(timeSpentSeconds/60)}p ${timeSpentSeconds%60}s`:'Không giới hạn';
@@ -1674,13 +1728,13 @@ function renderQpQuestionV2Item(){
   let optHtml='';
   q.options.forEach(opt=>{
     let isSel=(savedVal===opt.label),bgStyle='';
-    if(isAnswered){if(opt.label===savedVal)bgStyle=(savedVal===q.correct)?'background:#198754;color:white;':'background:#dc3545;color:white;';else if(opt.label===q.correct)bgStyle='background:#198754;color:white;';}
+    if(isAnswered){if(opt.label===savedVal)bgStyle=(savedVal===q.correct)?'background:#1877f2;color:white;':'background:#dc3545;color:white;';else if(opt.label===q.correct)bgStyle='background:#1877f2;color:white;';}
     else{let group=document.querySelector(`.opt-group[data-qid="${q.id}"]`);if(group&&group.dataset.val===opt.label){isSel=true;bgStyle='background:#1877f2;color:white;';}}
     let clickEvent=isAnswered?'':`onclick="selectQpOpt(this,${q.id},'${opt.label}')"`,cursorStyle=isAnswered?'cursor:not-allowed;opacity:0.8;':'cursor:pointer;';
     optHtml+=`<div class="opt-btn ${isSel?'selected':''}" ${clickEvent} style="width:auto;height:auto;padding:8px 12px;border-radius:6px;${bgStyle}${cursorStyle}">${opt.label}. ${opt.text}</div>`;
   });
   let hasExp=q.explanation||q.expImage,feedbackHtml='';
-  if(isAnswered){if(savedVal===q.correct)feedbackHtml=`<span style="color:#198754">✓ Chính xác!</span>`;else feedbackHtml=`<span style="color:#dc3545">✗ Sai! Đáp án đúng là ${q.correct}</span>`;}
+  if(isAnswered){if(savedVal===q.correct)feedbackHtml=`<span style="color:#1877f2">✓ Chính xác!</span>`;else feedbackHtml=`<span style="color:#dc3545">✗ Sai! Đáp án đúng là ${q.correct}</span>`;}
   container.innerHTML=`<div class="card" style="background:#fdfdfd;border:1px solid #ddd"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:bold;color:#1877f2">Câu ${currentQpV2Index+1} / ${totalQ} ${isAnswered?'<span style="color:red;font-size:12px">(Đã khóa)</span>':''}</span><span style="font-size:12px;color:#666">Điểm: ${q.score||0.25}đ</span></div><p style="font-weight:bold;margin-bottom:8px">${q.question}</p>${q.image?`<img src="${q.image}" class="img-preview">`:''}<div class="opt-group" data-qid="${q.id}" data-val="${savedVal}" style="flex-direction:column;gap:6px">${optHtml}</div><div id="qp-feedback-${q.id}" style="font-size:13px;font-weight:bold;margin-top:6px">${feedbackHtml}</div>${(hasExp&&isAnswered)?`<div style="margin-top:6px"><button class="toggle-exp-btn" onclick="toggleQpExp(${q.id})">></button><div id="qp-exp-${q.id}" class="explanation-box">${q.explanation?`<p>${q.explanation}</p>`:''}${q.expImage?`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`:''}</div></div>`:''}</div>`;
 }
 function nextQpQuestionV2(){
@@ -1703,11 +1757,11 @@ async function submitQpPractice(forced=false){
     else{let group=document.querySelector(`.opt-group[data-qid="${q.id}"]`);val=group?(group.dataset.val||''):'';}
     let isCorrect=(val&&val===q.correct),isUnanswered=!val;
     if(isCorrect)totalEarned+=qScore;
-    let statusColor=isUnanswered?'#1877f2':(isCorrect?'#52c41a':'#ff4d4f'),statusText=isUnanswered?'Chưa làm':(isCorrect?'✓ Đúng':'✗ Sai');
+    let statusColor=isUnanswered?'#1877f2':(isCorrect?'#1877f2':'#ff4d4f'),statusText=isUnanswered?'Chưa làm':(isCorrect?'✓ Đúng':'✗ Sai');
     let hasExp=q.explanation||q.expImage,expContent='';
     if(q.explanation)expContent+=`<p>${q.explanation}</p>`;
     if(q.expImage)expContent+=`<img src="${q.expImage}" class="img-preview" style="margin-top:5px">`;
-    reviewHtml+=`<div style="border:1px solid #ddd;padding:10px;border-radius:6px;margin-bottom:8px;background:${isUnanswered?'#e7f3ff':(isCorrect?'#f6ffed':'#fff2f0')};font-size:13px"><strong>Câu ${q.id}:</strong> <span style="color:${statusColor};font-weight:bold">${statusText} (+${qScore}đ)</span><div style="margin-top:4px">- Bạn chọn: <b style="color:${statusColor}">${val||'Không làm'}</b><br>${!isCorrect?`- Đáp án đúng: <b style="color:green">${q.correct}</b>`:''}</div>${hasExp?`<div style="margin-top:5px"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>`:''}</div>`;
+    reviewHtml+=`<div style="border:1px solid #ddd;padding:10px;border-radius:6px;margin-bottom:8px;background:${isUnanswered?'#e7f3ff':(isCorrect?'#e7f3ff':'#fff2f0')};font-size:13px"><strong>Câu ${q.id}:</strong> <span style="color:${statusColor};font-weight:bold">${statusText} (+${qScore}đ)</span><div style="margin-top:4px">- Bạn chọn: <b style="color:${statusColor}">${val||'Không làm'}</b><br>${!isCorrect?`- Đáp án đúng: <b style="color:#1877f2">${q.correct}</b>`:''}</div>${hasExp?`<div style="margin-top:5px"><button class="toggle-exp-btn" onclick="toggleResultExp(this)">></button><div class="explanation-box">${expContent}</div></div>`:''}</div>`;
   });
   let finalScore=Math.round((totalEarned/totalMax)*10*100)/100;
   let timeSpentSeconds=currentQpData.enableTimer?((currentQpData.durationMinutes||15)*60)-qpTimeLeft:qpTimeLeft;
@@ -1735,7 +1789,7 @@ async function loadLeaderboard(){
   history.forEach((row,idx)=>{
     let m=Math.floor(row.timeSpent/60),s=row.timeSpent%60;
     let warnings=row.cheatWarnings||0,leaveSec=row.totalLeaveTime||0,rowId=`lb_detail_${idx}`;
-    tbody.innerHTML+=`<tr><td><b>#${idx+1}</b></td><td>${row.name}</td><td><b style="color:#198754">${row.score}</b></td><td>${m}p ${s}s</td><td><button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button><div id="${rowId}" style="display:none;text-align:left;font-size:12px;margin-top:5px;background:#f8f9fa;padding:6px;border-radius:4px">- Cảnh cáo: <b style="color:red">${warnings} lần</b><br>- Rời phòng: <b>${leaveSec} giây</b></div></td></tr>`;
+    tbody.innerHTML+=`<tr><td><b>#${idx+1}</b></td><td>${row.name}</td><td><b style="color:#1877f2">${row.score}</b></td><td>${m}p ${s}s</td><td><button class="toggle-exp-btn" onclick="toggleLbDetail('${rowId}')">&gt;</button><div id="${rowId}" style="display:none;text-align:left;font-size:12px;margin-top:5px;background:#f8f9fa;padding:6px;border-radius:4px">- Cảnh cáo: <b style="color:red">${warnings} lần</b><br>- Rời phòng: <b>${leaveSec} giây</b></div></td></tr>`;
   });
   showToast('📊 Tải thành công!','success');
 }
