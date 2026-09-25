@@ -1257,12 +1257,12 @@ async function handleSendResetCode(btn){
       if(codeDisplay){codeDisplay.style.display='none';}
       if(codeLabel){codeLabel.style.display='none';}
       if(lockedInfo)lockedInfo.style.display='block';
-      showCenterSquareToast('📧','Đã gửi email!',`Mã xác nhận đã được gửi đến:\n${email}\n\n💡 Kiểm tra cả hộp thư Spam/Quảng cáo.`,'success',7000);
+      showCenterSquareToast('📧','Đã gửi email!',`Mã xác nhận đã được gửi đến:\n${email}\n\n💡 Kiểm tra cả hộp thư Spam/Quảng cáo.`,'success',4000);
     }else{
       if(codeDisplay){codeDisplay.style.display='block';codeDisplay.innerText=code;codeDisplay.style.fontSize='22px';codeDisplay.style.letterSpacing='6px';}
       if(codeLabel){codeLabel.style.display='block';codeLabel.innerText='Mã đã tạo (DEMO):';}
       if(lockedInfo)lockedInfo.style.display='none';
-      showCenterSquareToast('📧','Mã đã tạo!',`Mã (DEMO): ${code}\nHết hạn 10 phút.\n\n💡 Cấu hình EmailJS để gửi qua mail thật (Tab 👑 TỐI CAO → 🔧 Cấu hình).`,'warn',7500);
+      showCenterSquareToast('📧','Mã đã tạo!',`Mã (DEMO): ${code}\nHết hạn 10 phút.\n\n💡 Cấu hình EmailJS để gửi qua mail thật (Tab 👑 TỐI CAO → 🔧 Cấu hình).`,'warn',4000);
     }
   }catch(e){
     showToast('❌ '+(e.message||e),'error');
